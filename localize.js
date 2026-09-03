@@ -983,6 +983,17 @@ const DOM_TRANSLATOR_INJECTION = `
     "Restart to Update": "重启以应用更新",
     "Up to date": "已是最新版本",
     "New version available": "有新版本可用",
+    "Automatic 检查更新": "自动检查更新",
+    "Automatic check for updates": "自动检查更新",
+    "Automatic Check for Updates": "自动检查更新",
+    "Automatic Updates": "自动更新",
+    "Automatic updates": "自动更新",
+    "Automatically prompt you to restart the app when a new update is available. When disabled, you can check for updates manually from the app menu.": "当有新版本可用时，自动提示您重启应用以完成更新。禁用后，您仍可通过应用菜单手动检查更新。",
+    "Automatically prompt you to restart the app when a new update is available. When disabled, you can check for updates manually from the app menu": "当有新版本可用时，自动提示您重启应用以完成更新。禁用后，您仍可通过应用菜单手动检查更新",
+    "Automatically prompt you to restart the app when a new update is available.": "当有新版本可用时，自动提示您重启应用以完成更新。",
+    "Automatically prompt you to restart the app when a new update is available": "当有新版本可用时，自动提示您重启应用以完成更新",
+    "When disabled, you can check for updates manually from the app menu.": "禁用后，您仍可通过应用菜单手动检查更新。",
+    "When disabled, you can check for updates manually from the app menu": "禁用后，您仍可通过应用菜单手动检查更新",
     "Copy code": "复制代码",
     "Copied!": "已复制！",
     "Copied": "已复制",
@@ -1476,6 +1487,7 @@ const DOM_TRANSLATOR_INJECTION = `
     // 特殊去重清洗：防止前置分词造成的“使用使用”与半中半英长句残留
     finalTranslated = finalTranslated.replace(/使用使用 Google 插件构建/g, '使用 Google 插件构建');
     finalTranslated = finalTranslated.replace(/Configure 智能体 执行[,\s]+queued 消息 delivery[,\s]+and 权限[。.]?/g, '配置智能体执行策略、消息队列发送机制以及安全权限。');
+    finalTranslated = finalTranslated.replace(/Automatic 检查更新/g, '自动检查更新');
     if (matchPunc) {
       finalTranslated += trailPunc;
     }
