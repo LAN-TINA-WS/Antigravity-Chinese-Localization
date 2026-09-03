@@ -1057,6 +1057,41 @@ const DOM_TRANSLATOR_INJECTION = `
     "Details": "详情",
     "Overview": "概览",
 
+    // ===== 顶部应用菜单与命令面板 (Application Menu & Command Palette) =====
+    "Command Palette": "命令面板",
+    "Command Palette...": "命令面板...",
+    "Command palette": "命令面板",
+    "command palette": "命令面板",
+    "Palette": "面板",
+    "palette": "面板",
+    "命令palette": "命令面板",
+    "命令 Palette": "命令面板",
+    "命令 palette": "命令面板",
+    "New Window": "新建窗口",
+    "new window": "新建窗口",
+    "Open Folder": "打开文件夹",
+    "Open folder": "打开文件夹",
+    "Open Folder...": "打开文件夹...",
+    "Open Workspace": "打开工作区",
+    "Open workspace": "打开工作区",
+    "Open Workspace...": "打开工作区...",
+    "Save As...": "另存为...",
+    "Save As": "另存为",
+    "Save as": "另存为",
+    "Save all": "全部保存",
+    "Save All": "全部保存",
+    "Close Window": "关闭窗口",
+    "close window": "关闭窗口",
+    "Close Workspace": "关闭工作区",
+    "close workspace": "关闭工作区",
+    "Close Editor": "关闭编辑器",
+    "close editor": "关闭编辑器",
+    "Close Folder": "关闭文件夹",
+    "close folder": "关闭文件夹",
+    "Quit Antigravity": "退出 Antigravity",
+    "Exit": "退出",
+    "exit": "退出",
+
     // ===== 深度汉化补充：通用与应用设置 (General & App Settings) =====
     "Appearance": "外观",
     "appearance": "外观",
@@ -1334,7 +1369,7 @@ const DOM_TRANSLATOR_INJECTION = `
     "update": "更新", "select": "选择", "clear": "清除", "search": "搜索", "find": "查找", "view": "查看", "show": "显示", "hide": "隐藏",
     "agent": "智能体", "agents": "智能体", "subagent": "子智能体", "subagents": "子智能体", "task": "任务", "tasks": "任务",
     "workspace": "工作区", "workspaces": "工作区", "directory": "目录", "folder": "文件夹", "file": "文件", "files": "文件",
-    "command": "命令", "commands": "命令", "terminal": "终端", "console": "控制台", "output": "输出", "input": "输入",
+    "command": "命令", "commands": "命令", "palette": "面板", "terminal": "终端", "console": "控制台", "output": "输出", "input": "输入",
     "log": "日志", "logs": "日志", "setting": "设置", "settings": "设置", "preference": "偏好", "preferences": "偏好",
     "theme": "主题", "themes": "主题", "model": "模型", "models": "模型", "capability": "能力", "capabilities": "能力",
     "running": "运行中", "completed": "已完成", "failed": "已失败", "pending": "等待中", "success": "成功", "error": "错误",
@@ -1567,6 +1602,7 @@ const DOM_TRANSLATOR_INJECTION = `
     finalTranslated = finalTranslated.replace(/每周限额\s*Remaining/gi, '每周限额剩余');
     finalTranslated = finalTranslated.replace(/五小时限额\s*Remaining/gi, '5 小时限额剩余');
     finalTranslated = finalTranslated.replace(/Claude and GPT 模型/g, 'Claude 与 GPT 模型');
+    finalTranslated = finalTranslated.replace(/命令\s*palette/gi, '命令面板');
     if (matchPunc) {
       finalTranslated += trailPunc;
     }
