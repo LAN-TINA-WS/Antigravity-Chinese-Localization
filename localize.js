@@ -850,9 +850,27 @@ const DOM_TRANSLATOR_INJECTION = `
     "Inherit model": "继承模型",
     "Select a model": "选择模型",
     "Model tier": "模型级别",
-    "Token usage": "Token 用量",
-    "Context window": "上下文窗口",
     "Remaining tokens": "剩余 Token",
+    "Remaining": "剩余",
+    "remaining": "剩余",
+    "Weekly limit remaining": "每周限额剩余",
+    "Weekly limit Remaining": "每周限额剩余",
+    "Weekly Limit Remaining": "每周限额剩余",
+    "5-hour limit remaining": "5 小时限额剩余",
+    "5-hour limit Remaining": "5 小时限额剩余",
+    "5-Hour Limit Remaining": "5 小时限额剩余",
+    "每周限额 Remaining": "每周限额剩余",
+    "五小时限额 Remaining": "5 小时限额剩余",
+    "Weekly limit": "每周限额",
+    "weekly limit": "每周限额",
+    "Weekly Limit": "每周限额",
+    "5-hour limit": "5 小时限额",
+    "5-Hour Limit": "5 小时限额",
+    "Claude and GPT models": "Claude 与 GPT 模型",
+    "Claude and GPT Models": "Claude 与 GPT 模型",
+    "Claude and GPT 模型": "Claude 与 GPT 模型",
+    "Gemini models": "Gemini 模型",
+    "Gemini Models": "Gemini 模型",
 
     // 多智能体协同与子智能体 (Subagents & Teamwork)
     "Teamwork": "团队协作",
@@ -1362,6 +1380,29 @@ const DOM_TRANSLATOR_INJECTION = `
       isDynamic = true;
     }
 
+    // 模型配额剩余动态匹配 (例如 "100% Remaining", "85.4% remaining")
+    if (/^(\d+(?:\.\d+)?%?)\s+remaining$/i.test(trimmed)) {
+      dynamicMatch = dynamicMatch.replace(/^(\d+(?:\.\d+)?%?)\s+remaining$/i, '$1 剩余');
+      isDynamic = true;
+    }
+    // 剩余时间刷新动态匹配 (例如 "15 minutes", "1 hour 26 minutes", "2 hours", "1 day")
+    if (/^(\d+)\s+hours?\s+(\d+)\s+minutes?$/i.test(trimmed)) {
+      dynamicMatch = dynamicMatch.replace(/^(\d+)\s+hours?\s+(\d+)\s+minutes?$/i, '$1 小时 $2 分钟');
+      isDynamic = true;
+    }
+    if (/^(\d+)\s+minutes?$/i.test(trimmed)) {
+      dynamicMatch = dynamicMatch.replace(/^(\d+)\s+minutes?$/i, '$1 分钟');
+      isDynamic = true;
+    }
+    if (/^(\d+)\s+hours?$/i.test(trimmed)) {
+      dynamicMatch = dynamicMatch.replace(/^(\d+)\s+hours?$/i, '$1 小时');
+      isDynamic = true;
+    }
+    if (/^(\d+)\s+days?$/i.test(trimmed)) {
+      dynamicMatch = dynamicMatch.replace(/^(\d+)\s+days?$/i, '$1 天');
+      isDynamic = true;
+    }
+
     // 项目/路径不存在的动态提示 (项目名 + " does not exist"，超3词无法走分词)
     if (/^.+ does not exist\.?$/i.test(trimmed)) {
       dynamicMatch = dynamicMatch.replace(/^(.+) does not exist\.?$/i, '$1 不存在');
@@ -1488,6 +1529,9 @@ const DOM_TRANSLATOR_INJECTION = `
     finalTranslated = finalTranslated.replace(/使用使用 Google 插件构建/g, '使用 Google 插件构建');
     finalTranslated = finalTranslated.replace(/Configure 智能体 执行[,\s]+queued 消息 delivery[,\s]+and 权限[。.]?/g, '配置智能体执行策略、消息队列发送机制以及安全权限。');
     finalTranslated = finalTranslated.replace(/Automatic 检查更新/g, '自动检查更新');
+    finalTranslated = finalTranslated.replace(/每周限额\s*Remaining/gi, '每周限额剩余');
+    finalTranslated = finalTranslated.replace(/五小时限额\s*Remaining/gi, '5 小时限额剩余');
+    finalTranslated = finalTranslated.replace(/Claude and GPT 模型/g, 'Claude 与 GPT 模型');
     if (matchPunc) {
       finalTranslated += trailPunc;
     }
