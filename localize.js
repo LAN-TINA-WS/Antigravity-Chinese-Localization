@@ -337,6 +337,15 @@ const DOM_TRANSLATOR_INJECTION = `
     "MCP servers included": "包含 MCP 服务器",
     "Hooks included": "包含钩子",
     "Author: Google": "作者: Google",
+    "Browse and enable plugins from the Build With Google catalog.": "浏览并启用来自 Build With Google 目录的官方插件。",
+    "Browse and enable plugins from the Build With Google catalog": "浏览并启用来自 Build With Google 目录的官方插件",
+    "Use Add MCP to browse the store, or add a custom server via the MCP config.": "使用“添加 MCP”浏览应用商店，或通过 MCP 配置文件添加自定义服务器。",
+    "Use Add MCP to browse the store, or add a custom server via the MCP config": "使用“添加 MCP”浏览应用商店，或通过 MCP 配置文件添加自定义服务器",
+    "No MCP servers installed": "未安装任何 MCP 服务器",
+    "Add MCP": "添加 MCP",
+    "Open MCP Config": "打开 MCP 配置文件",
+    "Automatically migrate legacy workflows to modern skills across global and workspace configurations. Scans for existing workflows, creates target SKILL.md files, and safely archives old workflow files.": "在全局与工作区配置中将旧版工作流自动迁移为新版技能。扫描现有工作流，生成目标 SKILL.md 文件并安全归档旧文件。",
+    "Guidelines for interacting with GitHub and request permissions from the user when commands fail due to restrictions in the agent environment.": "与 GitHub 交互的执行规范；当命令因智能体环境受限失败时，向用户提请权限确认的指南。",
 
     // 官方首发插件 (gemini-api 及扩展体系) 长句深度汉化
     "Build applications with the Gemini Interactions API and Live API, including text generation, multi-turn chat, streaming, function calling, managed agents, and real-time audio/video.": "使用 Gemini Interactions API 和 Live API 构建应用，包括文本生成、多轮对话、流式响应、函数调用、托管智能体以及实时音视频处理。",
@@ -1100,7 +1109,42 @@ const DOM_TRANSLATOR_INJECTION = `
     "Log out": "退出登录",
     "Sign out": "退出登录",
     "Manage subscription": "管理订阅计划",
-    "Manage Google account": "管理 Google 账号"
+    "Manage Google account": "管理 Google 账号",
+
+    // ===== 深度汉化补充：通用偏好、系统托盘与远程控制 =====
+    "Manage Antigravity app settings.": "管理 Antigravity 应用程序偏好设置。",
+    "Keep the app accessible from the menu bar and running in the background when all windows are closed.": "关闭所有窗口后，保持应用常驻系统托盘并继续在后台运行。",
+    "Work with local agents from another device.": "支持从其他设备远程协同与控制本地智能体。",
+    "Browser settings have moved": "浏览器设置已迁移",
+    "Browser settings have moved to the Browser section of General settings.": "浏览器设置已移动到“常规设置”的“浏览器”板块中。",
+    "Go to General settings": "前往常规设置",
+    "Models & Usage": "模型配额与用量",
+    "Manage your model quota and credits.": "管理您的模型配额与个人 AI 点数。",
+    "Show Selection Actions": "显示划词快捷操作",
+    "Show Selection Actions when selecting text": "选中文本时显示划词操作",
+    "Show \"Edit\" and \"Chat\" buttons when selecting text in the editor.": "在编辑器中选中代码或文本时，浮动显示“编辑”与“聊天”快捷按钮。",
+    "Selection Actions": "划词操作",
+    "Previous Pane Tab": "切换到上一个窗格",
+    "Next Pane Tab": "切换到下一个窗格",
+    "Toggle Terminal": "切换终端面板",
+    "Add to Chat/Quote": "添加到聊天引用",
+
+    // ===== 深度汉化补充：Labs 实验功能与开发者工具 =====
+    "Try out early-stage features before they ship. These may change or be removed at any time.": "在正式发布前抢先体验早期新特性。这些功能可能会随时变更或移除。",
+    "Experimental features": "实验性功能",
+    "Conversation Sharing": "对话分享",
+    "Generate a link that lets any Googler load a read-only copy of a conversation. Sharing exports the conversation history to your public x20 folder, so it needs that folder to be readable by others.": "生成一个只读对话分享链接。分享操作会将对话记录导出至公开目录，需要该目录对外具备读取权限。",
+    "Inline Actions": "内联操作卡片",
+    "Show a floating notification card when background conversations need your input. Answer questions, approve commands, and grant permissions without leaving your current conversation. Share feedback at go/inline-actions-feedback.": "当后台对话需要您的输入时显示浮动通知卡片。无需切换离开当前对话即可直接回答问题、审批命令及授予权限。",
+    "CitC Settings": "CitC 工作区设置",
+    "Manage settings specific to Google CitC workspaces development.": "管理专用于 Google CitC 工作区开发的配置项。",
+    "Best of N": "Best of N 策略配置",
+    "Manage how Best of N sets up the workspaces its arms run in.": "配置 Best of N 在各分支运行时的工作区环境。",
+    "Developer-only tools. These settings are stored locally in this browser and do not affect other users.": "仅限开发者使用的内部工具。这些设置仅保存在本地，不会影响其他用户。",
+    "Regroup Google3 Chats": "重新归类 Google3 对话",
+    "Google3 chats will be regrouped into their workspaces in the sidebar.": "侧边栏中的 Google3 对话将按所属工作区重新归类分组。",
+    "This migration may mess up your settings, chats, and sidebar.": "此项迁移可能会影响您的偏好设置、对话记录及侧边栏布局。",
+    "Follow the guide at go/jetski-project-migration to back up your data and run the migration.": "请按照相关指南备份您的数据后再执行迁移。"
   };
 
   const coreWords = {
@@ -1162,6 +1206,11 @@ const DOM_TRANSLATOR_INJECTION = `
     }
     if (/^Canceled taskkill/.test(trimmed)) {
       dynamicMatch = dynamicMatch.replace(/^Canceled (.*)/, '已取消 $1');
+      isDynamic = true;
+    }
+    if (/^\\d+(\\.\\d+)?% of the (customization budget|budget) is (available|used)\\.?$/i.test(trimmed)) {
+      dynamicMatch = dynamicMatch.replace(/(\\d+(?:\\.\\d+)?)% of the (?:customization )?budget is available\\.?/i, '自定义额度尚有 $1% 可用。');
+      dynamicMatch = dynamicMatch.replace(/(\\d+(?:\\.\\d+)?)% of the (?:customization )?budget is used\\.?/i, '已使用 $1% 的自定义额度。');
       isDynamic = true;
     }
 
@@ -1313,8 +1362,8 @@ const DOM_TRANSLATOR_INJECTION = `
     return text.replace(trimmed, finalTranslated);
   }
 
-  // 用于模糊匹配类名中包含代码/预览/diff相关关键词的正则
-  const codeClassPattern = /(?:^|[\\s_-])(code|diff|source|syntax|highlight|viewer|hljs|shiki|prism|monaco|codemirror|token|line-number|line-content|gutter|codeblock|code-block|code-view|code-preview|file-preview|file-content)(?:$|[\\s_-])/i;
+  // 用于精确匹配代码编辑器、语法高亮等容器类名（收敛范围，防止误杀带 font-mono 或 viewer 的正常 UI）
+  const codeClassPattern = /(?:^|[\\s_-])(monaco-editor|editor-instance|hljs|shiki|prism|codemirror|line-content|gutter|codeblock|code-block|code-line|view-line)(?:$|[\\s_-])/i;
 
   function shouldSkipNode(node) {
     if (!node) return true;
@@ -1382,13 +1431,12 @@ const DOM_TRANSLATOR_INJECTION = `
         return true;
       }
 
-      // 4e. 类名匹配 — 精确与模糊检测（高精度防御，防止 Tailwind 选择器如 [&_code] 引起的误杀）
+      // 4e. 类名匹配 — 精确代码行与编辑器检测
       if (cur.className && typeof cur.className === 'string') {
         const lowerClass = cur.className.toLowerCase();
         if (
           lowerClass.includes('code-line') ||
-          lowerClass.includes('select-contain') ||
-          lowerClass.includes('font-mono') ||
+          lowerClass.includes('view-line') ||
           codeClassPattern.test(cur.className)
         ) {
           return true;
