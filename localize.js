@@ -1122,7 +1122,7 @@ const DOM_TRANSLATOR_INJECTION = `
     "Manage your model quota and credits.": "管理您的模型配额与个人 AI 点数。",
     "Show Selection Actions": "显示划词快捷操作",
     "Show Selection Actions when selecting text": "选中文本时显示划词操作",
-    "Show \"Edit\" and \"Chat\" buttons when selecting text in the editor.": "在编辑器中选中代码或文本时，浮动显示“编辑”与“聊天”快捷按钮。",
+    'Show "Edit" and "Chat" buttons when selecting text in the editor.': '在编辑器中选中代码或文本时，浮动显示“编辑”与“聊天”快捷按钮。',
     "Selection Actions": "划词操作",
     "Previous Pane Tab": "切换到上一个窗格",
     "Next Pane Tab": "切换到下一个窗格",
