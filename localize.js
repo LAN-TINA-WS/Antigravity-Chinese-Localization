@@ -344,8 +344,22 @@ const DOM_TRANSLATOR_INJECTION = `
     "No MCP servers installed": "未安装任何 MCP 服务器",
     "Add MCP": "添加 MCP",
     "Open MCP Config": "打开 MCP 配置文件",
-    "Automatically migrate legacy workflows to modern skills across global and workspace configurations. Scans for existing workflows, creates target SKILL.md files, and safely archives old workflow files.": "在全局与工作区配置中将旧版工作流自动迁移为新版技能。扫描现有工作流，生成目标 SKILL.md 文件并安全归档旧文件。",
     "Guidelines for interacting with GitHub and request permissions from the user when commands fail due to restrictions in the agent environment.": "与 GitHub 交互的执行规范；当命令因智能体环境受限失败时，向用户提请权限确认的指南。",
+    // 官方 Firebase 与 Google Cloud 扩展插件深度汉化
+    "Skills and MCP servers for building with Firebase.": "用于基于 Firebase 构建应用的专属技能与 MCP 服务器。",
+    "Skills and MCP servers for building with Firebase": "用于基于 Firebase 构建应用的专属技能与 MCP 服务器",
+    "Skills and MCP servers for working with Google Cloud.": "用于在 Google Cloud 云平台上进行开发的技能与 MCP 服务器。",
+    "Skills and MCP servers for working with Google Cloud": "用于在 Google Cloud 云平台上进行开发的技能与 MCP 服务器",
+    "Configure agent execution, queued message delivery, and permissions.": "配置智能体执行策略、消息队列发送机制以及安全权限。",
+    "Configure agent execution, queued message delivery, and permissions": "配置智能体执行策略、消息队列发送机制以及安全权限",
+    "Configure 智能体 执行, queued 消息 delivery, and 权限。": "配置智能体执行策略、消息队列发送机制以及安全权限。",
+    "Configure 智能体 执行, queued 消息 delivery, and 权限": "配置智能体执行策略、消息队列发送机制以及安全权限",
+    "Use Build With Google Plugins": "使用 Google 插件构建",
+    "Use Build with Google Plugins": "使用 Google 插件构建",
+    "Use Build With Google Plugins to": "使用 Google 插件构建以",
+    "queued message delivery": "消息队列发送",
+    "queued message": "排队消息",
+    "queued messages": "排队消息",
 
     // 官方首发插件 (gemini-api 及扩展体系) 长句深度汉化
     "Build applications with the Gemini Interactions API and Live API, including text generation, multi-turn chat, streaming, function calling, managed agents, and real-time audio/video.": "使用 Gemini Interactions API 和 Live API 构建应用，包括文本生成、多轮对话、流式响应、函数调用、托管智能体以及实时音视频处理。",
@@ -1356,6 +1370,9 @@ const DOM_TRANSLATOR_INJECTION = `
     let finalTranslated = replaced ? temp : core;
     // 消除中文字符之间可能由分词替换残留的英文空格，提升翻译句子的连贯精致度
     finalTranslated = finalTranslated.replace(/([\u4e00-\u9fa5])\s+([\u4e00-\u9fa5])/g, '$1$2');
+    // 特殊去重清洗：防止前置分词造成的“使用使用”与半中半英长句残留
+    finalTranslated = finalTranslated.replace(/使用使用 Google 插件构建/g, '使用 Google 插件构建');
+    finalTranslated = finalTranslated.replace(/Configure 智能体 执行[,\s]+queued 消息 delivery[,\s]+and 权限[。.]?/g, '配置智能体执行策略、消息队列发送机制以及安全权限。');
     if (matchPunc) {
       finalTranslated += trailPunc;
     }
@@ -1481,6 +1498,7 @@ const DOM_TRANSLATOR_INJECTION = `
         }
       });
       if (node.shadowRoot) {
+        observeRoot(node.shadowRoot);
         translateNode(node.shadowRoot);
       }
       for (let i = 0; i < node.childNodes.length; i++) {
@@ -1501,15 +1519,21 @@ const DOM_TRANSLATOR_INJECTION = `
     attributeFilter: ['placeholder', 'title', 'aria-label', 'value']
   };
 
-  const observers = [];
+  const observedRoots = new WeakSet();
 
   function observeRoot(root) {
+    if (!root || observedRoots.has(root)) return;
+    observedRoots.add(root);
+
     const observer = new MutationObserver((mutations) => {
       observer.disconnect();
       try {
         for (const mutation of mutations) {
           if (mutation.type === 'childList') {
             mutation.addedNodes.forEach(node => {
+              if (node.shadowRoot) {
+                observeRoot(node.shadowRoot);
+              }
               if (!shouldSkipNode(node)) {
                 translateNode(node);
               }
@@ -1546,7 +1570,6 @@ const DOM_TRANSLATOR_INJECTION = `
       observer.observe(root, observerConfig);
     });
     observer.observe(root, observerConfig);
-    observers.push(observer);
   }
 
   // Hook attachShadow
