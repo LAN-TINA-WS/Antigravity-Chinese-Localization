@@ -934,6 +934,18 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     "No trajectory metadata available": "暂无轨迹元数据",
     "Delete Conversation": "删除对话",
     "delete conversation": "删除对话",
+    "Updated": "已更新",
+    "updated": "已更新",
+    "Action Required": "需要操作",
+    "action required": "需要操作",
+    "Unread": "未读",
+    "unread": "未读",
+    "Active": "活跃",
+    "active": "活跃",
+    "Idle": "空闲",
+    "idle": "空闲",
+    "Canceling": "正在取消",
+    "canceling": "正在取消",
 
     // 多智能体协同与子智能体 (Subagents & Teamwork)
     "Teamwork": "团队协作",
@@ -1928,6 +1940,14 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     }
     if (/^Version\s+(\d+.*)$/i.test(trimmed)) {
       dynamicMatch = dynamicMatch.replace(/^Version\s+(\d+.*)$/i, '版本 $1');
+      isDynamic = true;
+    }
+    if (/^Updated\s+(.+)$/i.test(trimmed)) {
+      dynamicMatch = dynamicMatch.replace(/^Updated\s+(.+)$/i, '更新于 $1')
+        .replace(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2})\b/gi, (m, mon, day) => {
+          const monMap = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
+          return monMap[mon.toLowerCase()] + '月' + day + '日';
+        });
       isDynamic = true;
     }
 

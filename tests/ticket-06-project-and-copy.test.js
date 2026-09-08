@@ -122,7 +122,21 @@ check('Copy project 汉化', translateString('Copy project'), '复制项目');
 check('Copy debug info 汉化', translateString('Copy debug info'), '复制调试信息');
 check('Copy conversation markdown 汉化', translateString('Copy conversation markdown'), '复制对话 Markdown');
 
-// 5. Electron 原生菜单映射测试
+// 5. 鼠标悬停预览窗 (Hover Card) 动态时间与状态测试
+console.log('\n--- 鼠标悬停预览窗 (Hover Card) 测试 ---');
+check('Updated 单独词条汉化', translateString('Updated'), '已更新');
+check('updated 小写词条汉化', translateString('updated'), '已更新');
+check('Action Required 汉化', translateString('Action Required'), '需要操作');
+check('Unread 汉化', translateString('Unread'), '未读');
+check('Active 汉化', translateString('Active'), '活跃');
+check('Idle 汉化', translateString('Idle'), '空闲');
+check('Canceling 汉化', translateString('Canceling'), '正在取消');
+check('Updated 当天时间动态汉化', translateString('Updated 13:22'), '更新于 13:22');
+check('Updated 历史时间动态汉化 (中文系统)', translateString('Updated 9月6日, 19:34'), '更新于 9月6日, 19:34');
+check('Updated 历史时间动态汉化 (英文月份自动本地化)', translateString('Updated Sep 6, 19:34'), '更新于 9月6日, 19:34');
+check('Updated 英文月份无逗号', translateString('Updated Oct 15, 08:30'), '更新于 10月15日, 08:30');
+
+// 6. Electron 原生菜单映射测试
 console.log('\n--- 原生菜单映射测试 ---');
 check('menuTranslationMap: Create Project', menuTranslationMap['Create Project'], '创建项目');
 check('menuTranslationMap: New Project', menuTranslationMap['New Project'], '新建项目');
