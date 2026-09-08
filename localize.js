@@ -542,11 +542,16 @@ const DOM_TRANSLATOR_INJECTION = `
     "Your Plan: Google AI Pro": "您的计划：Google AI Pro",
     "You can upgrade to a Google AI Ultra plan to receive the highest rate limits.": "您可以升级到 Google AI Ultra 计划以获得更高额的使用速率限制。",
     "Email": "电子邮件",
+    "Labs": "实验室",
+    "For help, visit": "如需帮助，请访问",
+    "Follow the guide at": "请参考此指南：",
+    "to back up your data and run the migration.": "以备份您的数据并执行迁移。",
     
     // Browser & App Settings
     "Browser Settings": "浏览器设置",
     "Configure the browser subagent. It requires Google Chrome to be installed. The browser subagent can be invoked by typing /browser in the conversation input box.": "配置浏览器子智能体。这需要安装 Google Chrome。可以在对话输入框中输入 /browser 来调用浏览器子智能体。",
     "Configure the browser subagent. It requires Google Chrome to be installed. The browser subagent can be invoked by typing": "配置浏览器子智能体。这需要安装 Google Chrome。可以通过输入",
+    "Configure the browser subagent. It requires": "配置浏览器子智能体。这需要",
     "in the conversation input box.": "在对话输入框中调用该子智能体。",
     "Browser Javascript Execution Policy": "浏览器 JavaScript 执行策略",
     "Controls whether the agent can run custom JavaScript to automate complex browser actions.": "控制智能体是否可以运行自定义 JavaScript 以自动化复杂的浏览器操作。",
@@ -735,6 +740,7 @@ const DOM_TRANSLATOR_INJECTION = `
 
     // 浏览器子智能体
     "Configure the browser subagent.": "配置浏览器子智能体。",
+    "Configure the browser subagent. It requires": "配置浏览器子智能体。这需要",
     "It requires": "它需要",
     "Google Chrome to be installed.": "安装 Google Chrome。",
     "The browser subagent can be invoked by typing": "可以通过输入",
