@@ -911,6 +911,13 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
     "Claude and GPT 模型": "Claude 与 GPT 模型",
     "Gemini models": "Gemini 模型",
     "Gemini Models": "Gemini 模型",
+    "Gemini 3.8 Flash": "Gemini 3.8 Flash",
+    "Gemini 3.8 Flash using ADC in AGY Enterprise": "AGY 企业版通过 ADC 使用 Gemini 3.8 Flash",
+    "Gemini 3.8 Flash using ADC": "通过 ADC 使用 Gemini 3.8 Flash",
+    "Enterprise users can now select and use Gemini 3.8 Flash via ADC for agentic tasks.": "企业用户现可通过 ADC 为智能体任务选用 Gemini 3.8 Flash 推理模型。",
+    "Application Default Credentials": "应用默认凭据 (ADC)",
+    "Application Default Credentials (ADC)": "应用默认凭据 (ADC)",
+    "Quoting, /boost, and improved Settings": "划词引用、/boost 与设置优化",
 
     // 会话管理与右键/操作菜单 (Conversation Management & Context Menu)
     "Rename": "重命名",
