@@ -678,6 +678,17 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
     "/browser": "/browser",
     "in the conversation input box.": "在对话输入框中调用浏览器子智能体。",
 
+    // 提及菜单 (@ Mentions)
+    "Rules": "规则",
+    "Conversation": "对话",
+    "PDF Document": "PDF 文档",
+    "MCP Resource": "MCP 资源",
+    "Browser Page": "浏览器页面",
+    "Browser Text": "浏览器文本",
+    "Git Commit": "Git 提交",
+    "Git Diff": "Git 差异",
+    "Directory": "目录",
+
     // 对话区
     "Conversation Width": "对话宽度",
     "Configure the maximum width of the conversation panel.": "配置对话面板的最大宽度。",
@@ -2058,6 +2069,28 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
   // 用于精确匹配代码编辑器、语法高亮等容器类名（收敛范围，防止误杀带 font-mono 或 viewer 的正常 UI）
   const codeClassPattern = /(?:^|[\s_-])(monaco-editor|editor-instance|hljs|shiki|prism|codemirror|line-content|gutter|codeblock|code-block|code-line|view-line)(?:$|[\s_-])/i;
 
+  // 提及菜单 (@ Mentions) 分类白名单：放行汉化，同时保持斜杠命令 (/boost 等) 与代码文件名严格跳过
+  const MENTION_CATEGORIES = new Set([
+    'Rules',
+    '规则',
+    'Conversation',
+    '对话',
+    'PDF Document',
+    'PDF 文档',
+    'MCP Resource',
+    'MCP 资源',
+    'Browser Page',
+    '浏览器页面',
+    'Browser Text',
+    '浏览器文本',
+    'Directory',
+    '目录',
+    'Git Commit',
+    'Git 提交',
+    'Git Diff',
+    'Git 差异'
+  ]);
+
   const skipCache = new WeakMap();
 
   function shouldSkipNode(node) {
@@ -2079,9 +2112,15 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
       return true;
     }
 
-    // 核心保护：斜杠命令与提及建议菜单的触发词标签（绝对保持 /boost, /schedule, /browser 等原生命令标识不变，严禁被词典单词污染）
+    // 核心保护：斜杠命令与提及建议菜单的触发词标签（保持 /boost, /schedule, /browser 等原生命令标识不变）
+    // 但针对提及菜单（@）中的分类标签（如 Rules -> 规则, Conversation -> 对话 等）放行汉化
     const isMenuOptionLabel = element.closest && element.closest('[data-testid="menu-option-label"]');
     if (isMenuOptionLabel) {
+      const labelText = (isMenuOptionLabel.innerText || isMenuOptionLabel.textContent || '').trim();
+      if (MENTION_CATEGORIES.has(labelText)) {
+        skipCache.set(element, false);
+        return false;
+      }
       skipCache.set(element, true);
       return true;
     }

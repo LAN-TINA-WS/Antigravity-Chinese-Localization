@@ -110,6 +110,14 @@ class MockElement extends MockNode {
     }
     return null;
   }
+
+  get textContent() {
+    return this.children.map(c => c.textContent || c.nodeValue || '').join('');
+  }
+
+  get innerText() {
+    return this.textContent;
+  }
 }
 
 class MockTextNode extends MockNode {
