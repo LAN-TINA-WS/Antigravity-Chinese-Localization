@@ -1609,6 +1609,55 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
     "Manage Pub/Sub resources and publish messages. Create, list, get, update, and delete Pub/Sub topics, subscriptions, and snapshots, as well as publish messages to topics.": "管理 Pub/Sub 资源并发布消息。支持创建、列出、获取、更新和删除 Pub/Sub 主题 (Topics)、订阅 (Subscriptions) 及快照，并向指定主题投递消息。",
     "The Cloud Quotas MCP server allows you to view quota allocations, request quota increases, and manage Quota Adjuster configurations.": "Cloud Quotas MCP 服务器允许您查看配额分配情况、申请提升服务配额，以及管理 Quota Adjuster 自动配额调整器配置。",
     "Enable Antigravity to control and inspect a live Chrome browser, with access to the full power of Chrome DevTools for reliable automation, in-depth debugging, and performance analysis.": "让 Antigravity 能够直接控制并检查运行中的 Chrome 浏览器，充分调用 Chrome DevTools 的强大能力，实现高可靠的自动化操作、深度调试与性能分析。",
+
+    // 斜杠命令（Slash Commands）原生说明、浮动卡片与简介汉化
+    "Invoke the Boost multi-agent orchestrator for complex tasks.": "调用 Boost 多智能体编排器处理复杂任务。",
+    "Run until the specified goal is completely finished.": "持续自主运行，直至指定目标彻底完成。",
+    "Run an instruction on a recurring schedule or as a one-time timer.": "按周期循环计划或单次定时器执行指令。",
+    "Invoke a browser agent for web tasks.": "调用浏览器智能体执行网页相关任务。",
+    "[Teamfood] Invoke a browser with computer-use tools only with experimental model.": "[内部测试] 仅在实验模型下调用具备计算机操作工具的浏览器。",
+    "Plan carefully before executing a task.": "在执行任务前进行周密规划。",
+    "Interview me to align on a plan.": "通过交互式提问访谈，与我沟通对齐方案设计。",
+    "Invoke a team of agents to autonomously tackle large projects.": "调度智能体团队协同自主处理大型工程项目。",
+    "Reflect on recent successes or corrections to capture reusable skills or rules.": "回顾近期的成功经验或纠偏记录，沉淀可复用的技能或规则。",
+    "Experimental. Invoke the deep agent to plan, build, verify complex coding tasks.": "实验性。调用深度智能体进行复杂编程任务的规划、构建与验证。",
+    "Ask a quick question without interrupting the main conversation.": "提出快速疑问，不中断主对话流程。",
+    "enhance thinking effort by using a multi-agent reasoning pipeline.": "通过多智能体推理流水线增强深度思考能力。",
+
+    // 斜杠命令智能体推荐文案 (System / Language Server Recommendation Prompts)
+    "Available slash commands you can recommend to the user:": "可推荐给用户的可用斜杠命令：",
+    "You cannot execute these commands yourself. Your role is to recommend them to the user when they are a good fit for the task at hand, encouraging the user to explore and trigger them.": "您不能自行执行这些命令。您的职责是在命令契合当前任务时向用户推荐，引导用户主动探索并触发它们。",
+    'To recommend a slash command, suggest it clearly in your response (e.g., "You can use the \x60/goal\x60 command to...").': '如需推荐斜杠命令，请在回复中明确建议（例如："您可以使用 \x60/goal\x60 命令来..."）。',
+    "Recommend this when the user has a complex coding or research project that requires deep thinking, strategic planning, multiple perspectives, and rigorous verification.": "当用户拥有需要深度思考、策略规划、多视角审视和严谨验证的复杂编程或调研项目时推荐此项。",
+    "Recommend this when the user wants to run a long-running task (e.g., overnight) and wants the agent to be extra thorough and not stop until the goal is fully achieved.": "当用户希望执行长时间运行的任务（例如通宵运行），且要求智能体格外彻底并在目标完全达成前不停止时推荐此项。",
+    "Recommend this when the user wants to run an instruction on a recurring schedule or set a one-time timer.": "当用户希望按周期循环计划运行指令或设置单次定时器时推荐此项。",
+    "Recommend this when the user's task involves web browsing, searching the web, or interacting with web applications.": "当用户的任务涉及网页浏览、搜索网络或与 Web 应用程序交互时推荐此项。",
+    "Recommend this when the user wants to align on a plan through an interactive interview to resolve design decisions.": "当用户希望通过交互式访谈对齐方案以敲定设计决策时推荐此项。",
+    "Recommend this when the user has a large project that would benefit from a team of autonomous agents working together.": "当用户拥有适合由自主智能体团队协作推进的大型工程项目时推荐此项。",
+    "Recommend this when the user has corrected the agent or solved a complex setup and wants the agent to persist this behavior for future tasks.": "当用户纠正了智能体或解决了复杂配置，并希望智能体在后续任务中持久复用该行为时推荐此项。",
+
+    // 内置技能（自动注入斜杠命令菜单）说明文案
+    "Automatically migrate legacy workflows to modern skills across global and workspace configurations. Scans for existing workflows, creates target SKILL.md files, and safely archives old workflow files.": "在全局与工作区配置中将旧版工作流自动迁移为现代技能。扫描现有工作流，生成目标 SKILL.md 文件并安全归档旧文件。",
+    "Use this skill when configuring, managing, or troubleshooting MCP (Model Context Protocol) tool permissions and whitelist authorizations in Antigravity. Covers syntax rules, config file locations, automatic whitelist injection, avoiding UI overwrite traps, and troubleshooting Windows environment gotchas.": "在 Antigravity 中配置、管理或排查 MCP 工具权限与白名单授权时使用此技能。涵盖语法规则、配置文件位置、自动白名单注入、规避 UI 覆盖陷阱以及 Windows 避坑指南。",
+    "Guidelines for interacting with GitHub and request permissions from the user when commands fail due to restrictions in the agent environment.": "与 GitHub 交互的操作准则，当命令因智能体环境限制执行失败时向用户申请授权。",
+    "Provides a comprehensive guide, quick reference, and sitemap for Google Antigravity (AGY), including the Antigravity CLI (agy), Antigravity 2.0, Antigravity IDE, Python SDK, slash commands, keybindings, and customizations (skills, rules, MCP, sidecars). Activate this skill when the user asks questions about how to use, configure, or customize Antigravity, AGY, the agy CLI, the Antigravity IDE, or Antigravity 2.0.": "提供 Google Antigravity (AGY) 的完整指南、速查参考与系统导航，涵盖 Antigravity CLI (agy)、Antigravity 2.0、Antigravity IDE、Python SDK、斜杠命令、快捷键及自定义扩展（技能、规则、MCP、Sidecar）。",
+    "Comprehensive guide and reference for the Antigravity Customization System. Use to explain how customizations work, their loading priority, discovery mechanisms, and to guide the creation of skills, rules, plugins, hooks, and MCP servers.": "Antigravity 自定义扩展系统的完整指南与技术参考。用于阐述自定义项的工作机制、加载优先级、自动发现机制，并指导技能、规则、插件、钩子及 MCP 服务器的创建。",
+    "How to render rich interactive HTML widgets inline in the chat or as standalone artifacts. Use this skill when you want to show the user diagrams, data visualizations, interactive controls, educational walkthroughs, or any rich visual content beyond plain text and markdown.": "如何在对话中以内联方式或作为独立工件渲染丰富的交互式 HTML 小部件。当需要向用户展示架构图表、数据可视化、交互式控件、教程回顾或超出纯文本与 Markdown 的丰富视觉内容时使用此技能。",
+
+    // 斜杠菜单与提及（Mention）下拉弹出容器状态与分组提示
+    "recently opened": "最近打开",
+    "Recently opened": "最近打开",
+    "Recently Opened": "最近打开",
+    "file results": "文件结果",
+    "File results": "文件结果",
+    "File Results": "文件结果",
+    "No matching results": "无匹配结果",
+    "Searching…": "搜索中…",
+    "Searching...": "搜索中...",
+    "Mentions": "提及",
+    "Commands": "命令",
+    "Skills": "技能",
+    "Workflows": "工作流",
   };
 
   const coreWords = {
@@ -2024,6 +2073,13 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
       return true;
     }
 
+    // 核心保护：斜杠命令与提及建议菜单的触发词标签（绝对保持 /boost, /schedule, /browser 等原生命令标识不变，严禁被词典单词污染）
+    const isMenuOptionLabel = element.closest && element.closest('[data-testid="menu-option-label"]');
+    if (isMenuOptionLabel) {
+      skipCache.set(element, true);
+      return true;
+    }
+
     // 思考过程触发药丸按钮（如“Thought for 4s”折叠栏标题）：必须放行汉化为“思考了 4s”
     const isThinkingTrigger = element.closest && element.closest('button[data-testid="thinking-collapsible-trigger"]');
     if (isThinkingTrigger) {
@@ -2046,7 +2102,7 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
             break;
           }
         }
-        if (checkCur.parentElement) {
+        if (checkCur.parentElement && checkCur.parentElement.querySelector) {
           const trigger = checkCur.parentElement.querySelector(':scope > button[data-testid="thinking-collapsible-trigger"]');
           if (trigger && checkCur !== trigger && !trigger.contains(checkCur)) {
             inThinkingContent = true;
@@ -2119,7 +2175,7 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
       }
 
       // 思考折叠栏内容区域：位于 thinking-collapsible-trigger 旁的展开正文容器
-      if (cur.parentElement) {
+      if (cur.parentElement && cur.parentElement.querySelector) {
         const trigger = cur.parentElement.querySelector(':scope > button[data-testid="thinking-collapsible-trigger"]');
         if (trigger && cur !== trigger && !trigger.contains(cur)) {
           shouldSkip = true;
