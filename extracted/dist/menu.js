@@ -102,7 +102,15 @@ const menuTranslationMap = {
   'Actual Size': '实际大小',
   'Zoom In': '放大',
   'Zoom Out': '缩小',
-  'Toggle Full Screen': '切换全屏'
+  'Toggle Full Screen': '切换全屏',
+  'Toggle Fullscreen': '切换全屏',
+  'Reset Zoom': '重置缩放',
+  'New Conversation': '新建对话',
+  'Create Project': '创建项目',
+  'New Project': '新建项目',
+  'Create New Project': '创建新项目',
+  'Open Project': '打开项目',
+  'Command Palette': '命令面板'
 };
 function translateMenu(menuItem) {
   if (menuItem.label && menuTranslationMap[menuItem.label]) {

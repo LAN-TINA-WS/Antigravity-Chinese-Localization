@@ -193,7 +193,15 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
     "Disconnected": "已断开",
     "Select a folder": "选择文件夹",
     "Open Folder": "打开文件夹",
+    "Create Project": "创建项目",
+    "create project": "创建项目",
+    "New Project": "新建项目",
+    "new project": "新建项目",
     "Create New Project": "创建新项目",
+    "Open Project": "打开项目",
+    "open project": "打开项目",
+    "Reset Zoom": "重置缩放",
+    "Toggle Fullscreen": "切换全屏",
     "Antigravity": "Antigravity",
     "Antigravity 2.0": "Antigravity 2.0",
     "Google DeepMind": "谷歌 DeepMind",
@@ -968,6 +976,48 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
     "Copy terminal command": "复制终端命令",
     "Conversation name": "对话名称",
     "Conversation Name": "对话名称",
+    "Conversation ID": "对话 ID",
+    "conversation id": "对话 ID",
+    "Workspace Name": "工作区名称",
+    "workspace name": "工作区名称",
+    "Worktree Name": "Worktree 名称",
+    "worktree name": "Worktree 名称",
+    "Project Name": "项目名称",
+    "project name": "项目名称",
+    "Copy": "复制",
+    "copy": "复制",
+    "Copied": "已复制",
+    "copied": "已复制",
+    "Copied!": "已复制！",
+    "Copy Content": "复制内容",
+    "Copy content": "复制内容",
+    "Copy Link": "复制链接",
+    "Copy link": "复制链接",
+    "Copy Path": "复制路径",
+    "Copy path": "复制路径",
+    "Copy Image": "复制图片",
+    "Copy image": "复制图片",
+    "Copy prompt": "复制提示词",
+    "Copy Command": "复制命令",
+    "Copy command": "复制命令",
+    "Copy error": "复制错误信息",
+    "Copy error to clipboard": "复制错误信息到剪贴板",
+    "Copy config file path": "复制配置文件路径",
+    "Copy full URL to clipboard": "复制完整 URL 到剪贴板",
+    "Copy to clipboard": "复制到剪贴板",
+    "Copy File Path": "复制文件路径",
+    "Copy File Name": "复制文件名",
+    "Copy workspace": "复制工作区",
+    "Copy project": "复制项目",
+    "Copy debug info": "复制调试信息",
+    "Copy conversation markdown": "复制对话 Markdown",
+    "Copy trajectory ID": "复制轨迹 ID",
+    "Copy the trajectory ID": "复制轨迹 ID",
+    "Trajectory ID": "轨迹 ID",
+    "Attach the trajectory ID to the feedback form": "将轨迹 ID 附加到反馈表单中",
+    "Open in Trajectory Dashboard": "在轨迹仪表盘中打开",
+    "Trajectory Metadata": "轨迹元数据",
+    "No trajectory metadata available": "暂无轨迹元数据",
     "Delete Conversation": "删除对话",
     "delete conversation": "删除对话",
 
@@ -1678,11 +1728,11 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
   };
 
   const coreWords = {
-    "create": "创建", "delete": "删除", "new": "新建", "edit": "编辑", "save": "保存", "cancel": "取消", "confirm": "确认",
+    "create": "创建", "delete": "删除", "new": "新建", "edit": "编辑", "save": "保存", "cancel": "取消", "confirm": "确认", "copy": "复制",
     "close": "关闭", "open": "打开", "stop": "停止", "start": "启动", "run": "运行", "add": "添加", "remove": "移除",
     "update": "更新", "select": "选择", "clear": "清除", "search": "搜索", "find": "查找", "view": "查看", "show": "显示", "hide": "隐藏",
     "agent": "智能体", "agents": "智能体", "subagent": "子智能体", "subagents": "子智能体", "task": "任务", "tasks": "任务",
-    "workspace": "工作区", "workspaces": "工作区", "directory": "目录", "folder": "文件夹", "file": "文件", "files": "文件",
+    "workspace": "工作区", "workspaces": "工作区", "project": "项目", "projects": "项目", "directory": "目录", "folder": "文件夹", "file": "文件", "files": "文件",
     "command": "命令", "commands": "命令", "palette": "面板", "terminal": "终端", "console": "控制台", "output": "输出", "input": "输入", "remote": "远程", "control": "控制", "device": "设备", "devices": "设备", "link": "链接",
     "log": "日志", "logs": "日志", "setting": "设置", "settings": "设置", "preference": "偏好", "preferences": "偏好", "permission": "权限", "permissions": "权限",
     "theme": "主题", "themes": "主题", "model": "模型", "models": "模型", "capability": "能力", "capabilities": "能力",
@@ -1960,6 +2010,10 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
     }
     if (/^Thinking \((.+)\)$/i.test(trimmed)) {
       dynamicMatch = dynamicMatch.replace(/^Thinking \((.+)\)$/i, '正在思考 ($1)');
+      isDynamic = true;
+    }
+    if (/^Version\s+(\d+.*)$/i.test(trimmed)) {
+      dynamicMatch = dynamicMatch.replace(/^Version\s+(\d+.*)$/i, '版本 $1');
       isDynamic = true;
     }
 
