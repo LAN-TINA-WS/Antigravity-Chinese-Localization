@@ -219,6 +219,7 @@ The script will restore the original file from `app.asar.bak`.
 | [liominsb](https://github.com/liominsb) | Original project creator, built the initial Electron asar injection and Web dashboard architecture |
 | [LAN-TINA-WS](https://github.com/LAN-TINA-WS) | v2.12.0+ deep refactoring, computational & DOM scheduling performance leap (1.68M/s), 4.53MB slimming fix, hot-upgrade engine, lifecycle & slice auto-stitching, comprehensive Settings/Plugins dictionary expansion, and standalone maintenance |
 | [Justin-Mai](https://github.com/Justin-Mai) | 2.0 Web dashboard architecture upgrade, multi-user/custom path support, heartbeat self-healing, code preview & diff isolation mechanisms |
+| [songxitao](https://github.com/songxitao) | v2.10.0+ deep adaptation, 3-layer DOM physical isolation defense (eliminating Project directory mistranslation), Markdown & code area anti-pollution, and full TDD automated test suite construction |
 
 - **Contributions**: Pull Requests and Issues reporting untranslated strings are welcome.
 
