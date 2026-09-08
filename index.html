@@ -866,7 +866,7 @@
     <div class="top-bar">
       <div class="repo-badge">
         <span class="pulse-indicator" id="repo-status-dot"></span>
-        <span id="version-display">本地词库 v2.12.0.1</span>
+        <span id="version-display">本地词库 v2.12.2</span>
       </div>
       <div class="top-bar-actions">
         <button class="icon-tool-btn" id="btn-check-release" onclick="checkReleaseUpdate(false)" title="在线检测 GitHub 最新汉化词库与补丁">
@@ -890,7 +890,7 @@
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>
         </svg>
       </div>
-      <h1>Antigravity 2.0 / 2.12.0+</h1>
+      <h1>Antigravity 2.0 / 2.12.2+</h1>
       <p class="subtitle">智能控制台 &amp; 极简一键汉化系统 (含规划模式 / 多智能体 / 模型推理全功能深度汉化)</p>
     </header>
 
@@ -1570,7 +1570,7 @@
           if (ghRes.ok) {
             const raw = await ghRes.json();
             const latestTag = (raw.tag_name || '').replace(/^[vV]/, '');
-            const currentVer = '2.12.0.1';
+            const currentVer = '2.12.2';
             const hasUpdate = compareVersions(latestTag, currentVer) > 0;
             releaseData = {
               success: true,

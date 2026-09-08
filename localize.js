@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { exec, execSync, spawn } = require('child_process');
 
-const CURRENT_VERSION = '2.12.0.1';
+const CURRENT_VERSION = '2.12.2';
 
 function compareVersions(v1, v2) {
   const parse = (v) => (v || '').replace(/^[vV]/, '').split('.').map(n => parseInt(n, 10) || 0);
