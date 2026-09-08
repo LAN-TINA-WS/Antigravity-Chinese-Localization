@@ -160,6 +160,23 @@ node localize.js --pack-only
 
 ## 版本更新日志 (Changelog)
 
+### v2.12.2 (2026-09-08)
+- **全面适配 Antigravity v2.12.2 核心架构**：
+  - 适配 Gemini 3.8 Flash 与 2.12.2 企业级更新词库与模型选择菜单。
+  - 全量汉化设置中心 63 款官方与社区预置 MCP 服务卡片、长句说明及权限声明。
+- **斜杠命令（Slash Commands）与悬浮卡片汉化**：
+  - 汉化斜杠命令浮动菜单（`/boost`、`/goal`、`/schedule`、`/browser`、`/grill-me`、`/plan`、`/teamwork-preview`、`/learn` 等）及其详细说明卡片。
+  - 严格保护原生触发字符（如 `boost`、`goal` 保持英文不被误译破坏）。
+- **上下文提及（@ Mention）菜单精准汉化与放行保护**：
+  - 汉化 `@` 触发的规则（Rules）、对话（Conversation）、文档、提交、差异等全部分类项。
+  - 建立标签与文件名隔离策略，保护项目代码文件名与触发参数原生结构。
+- **通用设置项深层补齐**：
+  - 补齐通用设置中浏览器子智能体（Browser Subagent）分段长句与实验室功能词条汉化。
+- **原生应用菜单与侧边栏会话交互体验提升**：
+  - 顶部原生菜单 `Create Project`、`New Project`、`Open Project`、`Copy` 等精准汉化。
+  - 侧边栏历史会话详情与复制子菜单汉化（`Copy trajectory ID`、`Trajectory Metadata` 等）。
+  - 历史会话悬停卡片（Hover Card）更新时间（`Updated <time>` -> `更新于 <time>`）及多状态标签（`空闲`、`活跃`、`需要操作`、`未读`）深度汉化。
+
 ### v2.12.0.1 (2026-09-04)
 - **模型思考链 (Thinking Process) 绝对物理隔离**：
   - 彻底解决 AI 流式吐字时单词 token 命中分词逻辑导致中英杂糅的缺陷（如英文原句中 `Control` 误译为“控制”）。

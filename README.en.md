@@ -157,6 +157,23 @@ Detailed architectural designs, benchmarks (1.68M qps), and engineering practice
 
 ## Changelog
 
+### v2.12.2 (2026-09-08)
+- **Comprehensive Adaptation to Antigravity v2.12.2 Architecture**:
+  - Full support for Gemini 3.8 Flash, v2.12.2 enterprise release notes, and model selection menus.
+  - Complete translation for all 63 official and community MCP service cards, descriptions, and permission dialogues in Settings.
+- **Slash Commands & Floating Cards Localization**:
+  - Full localization for slash commands (`/boost`, `/goal`, `/schedule`, `/browser`, `/grill-me`, `/plan`, `/teamwork-preview`, `/learn`, etc.) and their descriptive popup cards.
+  - Strict protection for native trigger identifiers (e.g. keeping `boost`, `goal` intact).
+- **Context Mention (@ Mention) Menu Localization & Parameter Protection**:
+  - Precision localization for all `@` context categories: Rules, Conversation, PDF Document, Commit, Diff, Directory, etc.
+  - Category-aware tagging and filename filtering to prevent altering project paths and arguments.
+- **General Settings In-depth Completion**:
+  - Completed segmented sentence and lab feature translations for Browser Subagent settings.
+- **Native Application Menu & Sidebar Experience Refinements**:
+  - Precision localization for top native menus (`Create Project`, `New Project`, `Open Project`, `Copy`, etc.).
+  - Localization for sidebar conversation details and Copy submenus (`Copy trajectory ID`, `Trajectory Metadata`, etc.).
+  - Deep localization for history conversation Hover Card update timestamps (`Updated <time>` -> `更新于 <time>`) and multi-state tags (`Idle`, `Active`, `Action Required`, `Unread`).
+
 ### v2.12.0.1 (2026-09-04)
 - **Thinking Process Physical Immunity**:
   - Completely resolved the issue where streaming token generation triggered word-by-word dictionary matching, causing English text corruption (e.g. `Control` translated into Chinese inside sentences).
