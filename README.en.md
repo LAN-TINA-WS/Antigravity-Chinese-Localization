@@ -174,6 +174,9 @@ Detailed architectural designs, benchmarks (1.68M qps), and engineering practice
   - Localized `Create plugin`, `Describe a plugin and the agent builds it`, recommended skills toggles, and customization source tags (`Installed by you`, `Bundled with the app`, `Found in this workspace`, `Pre-installed`, `Builtin`, etc.).
 - **Conversation Pinning, Scratch Files & Diff Inspector Enhancements**:
   - Localized conversation pinning (`Pin this conversation` / `Unpin this conversation`), scratch files panel (`Scratch Files` / `No scratch files`), whitespace changes toggling (`Show Whitespace Changes` / `Hide Whitespace Changes`).
+- **Split, Fork & Conversation Group Menu In-Depth Localization**:
+  - Full localization for left sidebar conversation context menu and Split submenus: `Split`, `Split Right`, `Split Down`, `Replace With New`, `Remove From Split`, `Split Terminal`, `Split Conversation Vertically`, `Split Conversation Horizontally`, `Equalize Split Panes`.
+  - Full localization for Fork and Group submenus: `Fork`, `Create fork in current/shared/new workspace`, `Move to Group`, `New Group`, `Create Group`, and self-healing multi-turn correction rules.
 
 ### v2.12.2 (2026-09-08)
 - **Comprehensive Adaptation to Antigravity v2.12.2 Architecture**:

@@ -69,8 +69,6 @@ function addItemToSubmenu(appMenu, submenuLabel, position, item) {
     submenuItem.submenu.insert(position, item);
 }
 
-
-
 const menuTranslationMap = {
   'File': '文件',
   'Edit': '编辑',
@@ -111,13 +109,29 @@ const menuTranslationMap = {
   'New Project': '新建项目',
   'Create New Project': '创建新项目',
   'Open Project': '打开项目',
-  'Command Palette': '命令面板'
+  'Command Palette': '命令面板',
+  'Split': '分屏',
+  'Split Right': '向右分屏',
+  'Split Down': '向下分屏',
+  'Replace With New': '替换为新建',
+  'Remove From Split': '从分屏中移除',
+  'Split Terminal': '拆分终端',
+  'Split Conversation Vertically': '垂直分屏对话',
+  'Split Conversation Horizontally': '水平分屏对话',
+  'Equalize Split Panes': '均分分屏窗格',
+  'Fork': '派生',
+  'Fork Conversation': '派生对话'
 };
 function translateMenu(menuItem) {
   if (menuItem.label && menuTranslationMap[menuItem.label]) {
     menuItem.label = menuTranslationMap[menuItem.label];
   }
-  if (menuItem.submenu && menuItem.submenu.items) {
-    menuItem.submenu.items.forEach(translateMenu);
+
+const origBuildMenu = buildMenu;
+buildMenu = function(...args) {
+  const template = origBuildMenu.apply(this, args);
+  if (Array.isArray(template)) {
+    template.forEach(translateMenu);
   }
-}
+  return template;
+};

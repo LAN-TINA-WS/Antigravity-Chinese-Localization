@@ -177,6 +177,9 @@ node localize.js --pack-only
   - 汉化 `Create plugin`（创建插件）、`Describe a plugin and the agent builds it`（描述插件功能，智能体将自动构建）、推荐技能开关与自定义项来源标签（`由您安装`、`随应用内置`、`在此工作区中找到`、`预置`、`内置`等）。
 - **会话置顶、暂存文件与比对器增强**：
   - 汉化会话置顶（`Pin this conversation` / `Unpin this conversation`）、暂存文件面板（`Scratch Files` / `No scratch files`）、差异比对空白字符显示切换（`Show Whitespace Changes` / `Hide Whitespace Changes`）。
+- **分屏 (Split)、派生 (Fork) 与会话分组全套菜单深度汉化**：
+  - 全量汉化左侧栏会话上下文菜单与分屏子菜单：`Split`（分屏）、`Split Right`（向右分屏）、`Split Down`（向下分屏）、`Replace With New`（替换为新建）、`Remove From Split`（从分屏中移除）、`Split Terminal`（拆分终端）、`Split Conversation Vertically`（垂直分屏对话）、`Split Conversation Horizontally`（水平分屏对话）、`Equalize Split Panes`（均分分屏窗格）。
+  - 全量汉化会话派生与分组菜单：`Fork`（派生）、`Create fork in current/shared/new workspace`（在当前/共享/新建工作区创建派生）、`Move to Group`（移动到分组）、`New Group`（新建分组）、`Create Group`（创建分组）及相关自愈纠偏规则。
 
 ### v2.12.2 (2026-09-08)
 - **全面适配 Antigravity v2.12.2 核心架构**：
