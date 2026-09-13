@@ -71,6 +71,7 @@ vitest_1.vi.mock('./languageServer', () => ({
     LS_BINARY: '/mock/ls',
     getLsProcess: vitest_1.vi.fn(),
     clearLsProcess: vitest_1.vi.fn(),
+    getLsPort: vitest_1.vi.fn().mockReturnValue(49152),
     startLanguageServer: vitest_1.vi.fn(),
     killLanguageServer: vitest_1.vi.fn(),
     startAndMonitorLanguageServer: vitest_1.vi.fn(),
@@ -236,5 +237,27 @@ vitest_1.vi.mock('./ideInstall', () => ({
         const windows = vitest_1.vi.mocked(BrowserWindow.getAllWindows).mock.results[0]
             .value;
         (0, vitest_1.expect)(windows[0].loadURL).toHaveBeenCalledWith(`https://127.0.0.1:${NEW_PORT}/`);
+    });
+    (0, vitest_1.it)('should call showOrCreateWindow on second-instance when no windows exist', async () => {
+        const { existsSync } = await Promise.resolve().then(() => __importStar(require('fs')));
+        const { showOrCreateWindow } = await Promise.resolve().then(() => __importStar(require('./utils')));
+        const { startAndMonitorLanguageServer } = await Promise.resolve().then(() => __importStar(require('./languageServer')));
+        const { app, BrowserWindow } = await Promise.resolve().then(() => __importStar(require('electron')));
+        const ACTUAL_PORT = 49152;
+        vitest_1.vi.mocked(existsSync).mockReturnValue(true);
+        vitest_1.vi.mocked(startAndMonitorLanguageServer).mockResolvedValue({
+            port: ACTUAL_PORT,
+            process: { pid: 1234 },
+            exitPromise: new Promise(() => { }),
+        });
+        await Promise.resolve().then(() => __importStar(require('./main')));
+        const whenReadyCall = vitest_1.vi.mocked(app.whenReady).mock.results[0].value;
+        await whenReadyCall.cb();
+        vitest_1.vi.mocked(BrowserWindow.getAllWindows).mockReturnValue([]);
+        const secondInstanceHandler = vitest_1.vi.mocked(app.on).mock.calls.find(([event]) => event === 'second-instance')?.[1];
+        (0, vitest_1.expect)(secondInstanceHandler).toBeDefined();
+        secondInstanceHandler({}, []);
+        (0, vitest_1.expect)(showOrCreateWindow).toHaveBeenCalledWith(ACTUAL_PORT);
+        (0, vitest_1.expect)(app.focus).toHaveBeenCalledWith({ steal: true });
     });
 });

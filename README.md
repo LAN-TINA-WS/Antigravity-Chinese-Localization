@@ -12,7 +12,7 @@ Antigravity 深度汉化与高性能本地化补丁程序
 [![Node Runtime](https://img.shields.io/badge/Node.js-%3E%3D%2014.0.0-informational)](https://nodejs.org/)
 [![license](https://img.shields.io/github/license/liominsb/Antigravity-Chinese-Localization)](LICENSE)
 
-专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁。全面适配 **Antigravity v2.12.0+** 最新架构，深度重构基础算力层与 DOM 调度层，带来百万级吞吐量的极致流畅体验。全量汉化规划模式、系统设置、权限沙盒、官方插件生态等上千条核心界面文案，严格遵循官方 4.53 MB 轻量级打包规格，并对用户打字与代码编辑区实施绝对物理免疫。
+专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁。全面适配 **Antigravity v2.13.0+** 最新架构，深度重构基础算力层与 DOM 调度层，带来百万级吞吐量的极致流畅体验。全量汉化规划模式、系统设置、权限沙盒、官方插件生态等上千条核心界面文案，严格遵循官方 4.53 MB 轻量级打包规格，并对用户打字与代码编辑区实施绝对物理免疫。
 
 > [最新 Release 下载](https://github.com/liominsb/Antigravity-Chinese-Localization/releases/latest) · [问题反馈与建议](https://github.com/liominsb/Antigravity-Chinese-Localization/issues)
 
@@ -159,6 +159,24 @@ node localize.js --pack-only
 ---
 
 ## 版本更新日志 (Changelog)
+
+### v2.13.0 (2026-09-13)
+- **全面适配 Antigravity v2.13.0 核心架构**：
+  - 适配官方 2.13.0 前端 Bundle 结构变动，提取并全量汉化 116+ 处新增界面文案。
+- **侧边问答系统 (Side Question / Questionnaire) 深度汉化**：
+  - 汉化全新独立侧边追问浮窗与问答表单：`Side Question`（侧边提问）、`Side question answered.`（侧边提问已回答。）、`Minimize side question`（最小化侧边提问）、`Cancel questionnaire and stop the agent`（取消问答并停止智能体）等全套交互文案。
+- **源码控制 Git Amend（追加提交）全流程汉化**：
+  - 汉化源码控制面板新增的追加提交能力：`Amend`（追加提交）、`Amending...`（正在追加提交...）、`Amend staged changes into the current commit`（将已暂存改动追加合并至当前提交）、`Stage and amend all changes into the current commit`（暂存并将所有改动追加合并至当前提交）及冲突与状态提示。
+- **通用设置中心高级区域重构深度适配**：
+  - 适配 2.13.0 将 `Best of N`、`CitC`、`Labs`（实验室）集中迁移至“通用设置 - 高级”区域的架构变动，精准汉化各设置项的迁移引导提示与版本控制选择器说明。
+- **产物与表格宽度自适应显示控制**：
+  - 汉化产物显示新设置项：`Markdown Artifact Width`（Markdown 产物宽度）、`Table Width`（表格宽度）、`Fit to content`（适应内容）与 `Fit to width`（适应宽度）。
+- **Windows 管理员权限 UAC 提升流程汉化**：
+  - 汉化 Windows 端一次性管理员 UAC 权限提升交互：`Administrator access (UAC)`（管理员权限 (UAC)）、`Grant one-time administrator access`（授予一次性管理员权限）、`Requesting a one-time administrator (UAC) elevation` 等提示弹窗。
+- **自然语言插件构建与自定义项视图分类**：
+  - 汉化 `Create plugin`（创建插件）、`Describe a plugin and the agent builds it`（描述插件功能，智能体将自动构建）、推荐技能开关与自定义项来源标签（`由您安装`、`随应用内置`、`在此工作区中找到`、`预置`、`内置`等）。
+- **会话置顶、暂存文件与比对器增强**：
+  - 汉化会话置顶（`Pin this conversation` / `Unpin this conversation`）、暂存文件面板（`Scratch Files` / `No scratch files`）、差异比对空白字符显示切换（`Show Whitespace Changes` / `Hide Whitespace Changes`）。
 
 ### v2.12.2 (2026-09-08)
 - **全面适配 Antigravity v2.12.2 核心架构**：

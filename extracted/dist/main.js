@@ -115,14 +115,9 @@ const PROTOCOL = electron_1.app
 if (!electron_1.app.isDefaultProtocolClient(PROTOCOL)) {
     electron_1.app.setAsDefaultProtocolClient(PROTOCOL);
 }
-electron_1.app.on('second-instance', (event, commandLine) => {
-    const wins = electron_1.BrowserWindow.getAllWindows();
-    if (wins.length > 0) {
-        if (wins[0].isMinimized()) {
-            wins[0].restore();
-        }
-        wins[0].show();
-        wins[0].focus();
+electron_1.app.on('second-instance', (_event, commandLine) => {
+    if (!HEADLESS && hasStartedMainApplication) {
+        (0, utils_1.showOrCreateWindow)((0, languageServer_1.getLsPort)());
         electron_1.app.focus({ steal: true });
     }
     const url = commandLine.find((arg) => arg.startsWith(`${PROTOCOL}://`));

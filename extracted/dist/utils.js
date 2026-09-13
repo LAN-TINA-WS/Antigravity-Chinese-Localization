@@ -193,6 +193,9 @@ function createWindow(url, storageManager) {
 const showOrCreateWindow = (port) => {
     const wins = electron_1.BrowserWindow.getAllWindows();
     if (wins.length > 0) {
+        if (wins[0].isMinimized()) {
+            wins[0].restore();
+        }
         wins[0].show();
         wins[0].focus();
     }

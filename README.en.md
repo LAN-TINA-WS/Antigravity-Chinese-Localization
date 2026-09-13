@@ -12,7 +12,7 @@ Deep Localization & High-Performance Chinese Patch for Google Antigravity
 [![Node Runtime](https://img.shields.io/badge/Node.js-%3E%3D%2014.0.0-informational)](https://nodejs.org/)
 [![license](https://img.shields.io/github/license/liominsb/Antigravity-Chinese-Localization)](LICENSE)
 
-A high-performance, non-destructive deep Chinese localization patch designed for Google Antigravity. Fully adapted to the latest architecture of **Antigravity v2.12.0+**, featuring fundamental computational refactoring and DOM micro-batch scheduling that delivers 1.68 million queries/sec throughput. It provides comprehensive translation for Planning Mode, System Settings, Security Sandbox, and Google Plugin Ecosystem, strictly follows the official 4.53 MB slim packaging standard, and guarantees absolute physical immunity for code editors and user input fields.
+A high-performance, non-destructive deep Chinese localization patch designed for Google Antigravity. Fully adapted to the latest architecture of **Antigravity v2.13.0+**, featuring fundamental computational refactoring and DOM micro-batch scheduling that delivers 1.68 million queries/sec throughput. It provides comprehensive translation for Planning Mode, System Settings, Security Sandbox, and Google Plugin Ecosystem, strictly follows the official 4.53 MB slim packaging standard, and guarantees absolute physical immunity for code editors and user input fields.
 
 > [Download Latest Release](https://github.com/liominsb/Antigravity-Chinese-Localization/releases/latest) · [Issues & Feedback](https://github.com/liominsb/Antigravity-Chinese-Localization/issues)
 
@@ -156,6 +156,24 @@ Detailed architectural designs, benchmarks (1.68M qps), and engineering practice
 ---
 
 ## Changelog
+ 
+### v2.13.0 (2026-09-13)
+- **Comprehensive Adaptation to Antigravity v2.13.0 Architecture**:
+  - Full support for official 2.13.0 frontend bundle structure, extracting and localizing 116+ new interface strings.
+- **Side Question & Questionnaire System In-depth Localization**:
+  - Complete translation for the new independent side question flyout and questionnaires: `Side Question`, `Side question answered.`, `Minimize side question`, `Cancel questionnaire and stop the agent`, etc.
+- **Source Control Git Amend Flow Full Localization**:
+  - Full localization for new Git Amend features in Source Control: `Amend`, `Amending...`, `Amend staged changes into the current commit`, `Stage and amend all changes into the current commit`, conflict resolution, and status notices.
+- **General Settings Advanced Area Reorganization Adaptation**:
+  - Adapted to 2.13.0 migration of `Best of N`, `CitC`, and `Labs` under General Settings -> Advanced, with precise migration guidance notices and VCS selection notes.
+- **Artifact & Table Width Display Customization**:
+  - Localized new artifact settings: `Markdown Artifact Width`, `Table Width`, `Fit to content`, and `Fit to width`.
+- **Windows Administrator Elevation (UAC) Flow Localization**:
+  - Localized Windows one-time UAC administrator elevation dialogs: `Administrator access (UAC)`, `Grant one-time administrator access`, `Requesting a one-time administrator (UAC) elevation`, etc.
+- **Natural Language Plugin Builder & Customization View Categorization**:
+  - Localized `Create plugin`, `Describe a plugin and the agent builds it`, recommended skills toggles, and customization source tags (`Installed by you`, `Bundled with the app`, `Found in this workspace`, `Pre-installed`, `Builtin`, etc.).
+- **Conversation Pinning, Scratch Files & Diff Inspector Enhancements**:
+  - Localized conversation pinning (`Pin this conversation` / `Unpin this conversation`), scratch files panel (`Scratch Files` / `No scratch files`), whitespace changes toggling (`Show Whitespace Changes` / `Hide Whitespace Changes`).
 
 ### v2.12.2 (2026-09-08)
 - **Comprehensive Adaptation to Antigravity v2.12.2 Architecture**:

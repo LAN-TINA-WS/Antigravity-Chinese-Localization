@@ -70,4 +70,49 @@ vitest_1.vi.mock('path', () => {
             (0, vitest_1.expect)(win.webContents.on).toHaveBeenCalledWith('before-input-event', vitest_1.expect.any(Function));
         });
     });
+    (0, vitest_1.describe)('showOrCreateWindow', () => {
+        (0, vitest_1.it)('should restore, show, and focus window if already exists and is minimized', async () => {
+            const { BrowserWindow } = await Promise.resolve().then(() => __importStar(require('electron')));
+            const { showOrCreateWindow } = await Promise.resolve().then(() => __importStar(require('./utils')));
+            const mockWin = {
+                isMinimized: vitest_1.vi.fn().mockReturnValue(true),
+                restore: vitest_1.vi.fn(),
+                show: vitest_1.vi.fn(),
+                focus: vitest_1.vi.fn(),
+            };
+            vitest_1.vi.mocked(BrowserWindow.getAllWindows).mockReturnValue([
+                mockWin,
+            ]);
+            showOrCreateWindow(49152);
+            (0, vitest_1.expect)(mockWin.isMinimized).toHaveBeenCalled();
+            (0, vitest_1.expect)(mockWin.restore).toHaveBeenCalled();
+            (0, vitest_1.expect)(mockWin.show).toHaveBeenCalled();
+            (0, vitest_1.expect)(mockWin.focus).toHaveBeenCalled();
+        });
+        (0, vitest_1.it)('should show and focus window without restoring if not minimized', async () => {
+            const { BrowserWindow } = await Promise.resolve().then(() => __importStar(require('electron')));
+            const { showOrCreateWindow } = await Promise.resolve().then(() => __importStar(require('./utils')));
+            const mockWin = {
+                isMinimized: vitest_1.vi.fn().mockReturnValue(false),
+                restore: vitest_1.vi.fn(),
+                show: vitest_1.vi.fn(),
+                focus: vitest_1.vi.fn(),
+            };
+            vitest_1.vi.mocked(BrowserWindow.getAllWindows).mockReturnValue([
+                mockWin,
+            ]);
+            showOrCreateWindow(49152);
+            (0, vitest_1.expect)(mockWin.isMinimized).toHaveBeenCalled();
+            (0, vitest_1.expect)(mockWin.restore).not.toHaveBeenCalled();
+            (0, vitest_1.expect)(mockWin.show).toHaveBeenCalled();
+            (0, vitest_1.expect)(mockWin.focus).toHaveBeenCalled();
+        });
+        (0, vitest_1.it)('should create a new window when no windows exist', async () => {
+            const { BrowserWindow } = await Promise.resolve().then(() => __importStar(require('electron')));
+            const { showOrCreateWindow } = await Promise.resolve().then(() => __importStar(require('./utils')));
+            vitest_1.vi.mocked(BrowserWindow.getAllWindows).mockReturnValue([]);
+            showOrCreateWindow(49152);
+            (0, vitest_1.expect)(BrowserWindow).toHaveBeenCalled();
+        });
+    });
 });
