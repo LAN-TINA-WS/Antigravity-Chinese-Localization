@@ -126,12 +126,4 @@ function translateMenu(menuItem) {
   if (menuItem.label && menuTranslationMap[menuItem.label]) {
     menuItem.label = menuTranslationMap[menuItem.label];
   }
-
-const origBuildMenu = buildMenu;
-buildMenu = function(...args) {
-  const template = origBuildMenu.apply(this, args);
-  if (Array.isArray(template)) {
-    template.forEach(translateMenu);
-  }
-  return template;
-};
+}
