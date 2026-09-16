@@ -20,18 +20,33 @@ A high-performance, non-destructive deep Chinese localization patch designed for
 
 ## Core Feature Matrix
 
-| Module | Capability | Description |
+### 1. UI & Workflow Coverage
+
+| Core Module | Coverage Depth & Metrics | Translation Scope & Value |
 | :--- | :--- | :--- |
-| Planning Mode | Full Lifecycle Translation | Translates Planning Mode toggles, Implementation Plans, Walkthrough reviews, Approval prompts, Open Questions, Proposed Changes, Automated Tests, and Manual Verification. |
-| System Settings | 150+ Configuration Items | Translates Appearance (Light/Dark/System), Conversation Width (Compact/Medium/Wide/Full), Keep-awake, Background Running, Auto Updates, Command Approval Policies (Always Run/Review/Strict/Turbo), Storage and Cache Maintenance. |
-| Security & Sandbox | Security Rules & Whitelists | Translates Terminal Sandbox modes, Command execution confirmation outside sandbox, Workspace file access rules (Allow/Ask/Deny), Network policies, Command whitelist/blacklist, Browser domain access whitelist. |
-| Google Plugin Ecosystem | "Build with Google Plugins" | Deeply translates Plugin lifecycle operations (Install/Uninstall/Update/Enable/Disable), Component badges (Skills/Rules/MCP/Hooks), and official plugin descriptions (gemini-api, etc.). |
-| Model & Reasoning Display | 100% Native English Kept | Follows developer ergonomics: Model selection dropdowns (Gemini 3.8 / Claude 3.7) and Thinking/Thought processes strictly retain native English without disruptive translations. |
-| Extreme Computational Speed | 1.68 Million Queries/Sec | Precompiled $O(1)$ Hash Map, ASCII short-circuit, unified regex stream scanning, DOM ancestor pruning, and microtask scheduling ensure smooth 60fps/120fps display. |
-| Slim Packaging | 4.53 MB Official Standard | Resolves package bloat by using `--unpack-dir` to exclude external Node modules, keeping the final asar aligned with the official standard size. |
-| Hot Upgrade Engine | Seamless Patch Migration | Replaces the legacy `appendOnce` mechanism with `injectOrUpdate` truncation logic, allowing seamless one-click updates across versions. |
-| Render Security & Input Immunity | Zero-Touch Code/Input Guard | Penetrates Shadow DOM to actively exempt `INPUT`, `TEXTAREA`, Monaco Code Editor, and user message bubbles, ensuring zero tampering with code or prompts. |
-| Safe Backup & Restore | Lossless Bidirectional Switch | Automatically creates `app.asar.bak` on first run, enabling instant one-click rollback to pristine English at any time. |
+| **Planning Mode** | Full Lifecycle Closed-Loop | Translates Planning Mode toggles, Implementation Plans, Walkthrough reviews, Approval prompts, Open Questions, Proposed Changes, Automated Tests, and Manual Verification workflows. |
+| **System Settings** | 150+ Configuration Items | Translates Appearance (Light/Dark/System), Conversation Width, Keep-awake, Background Running, Auto Updates, Command Approval Policies (Always Run/Review/Strict/Turbo), Storage and Cache Maintenance. |
+| **Security & Sandbox** | Granular Policy Engine | Fully adapted to 2.14.0 Global Permissions and Inherit Global architecture; translates Terminal Sandbox, confirmation rules, workspace file access (Allow/Ask/Deny), network policies, and domain/command whitelists. |
+| **Split & Fork Collaboration** | Native Menu + DOM Cascades | Comprehensive coverage of left sidebar split views (Split Right/Down, Equalize Panes, Split Diff), Conversation Forking, and Group Management (New/Move/Rename/Delete) menus. |
+| **Side Questions & VCS** | 2.13.0+ Deep Adaptation | Deeply translates Side Question / Questionnaire interactions (question cards, response choices, minimized counter), Git Amend full workflow, and Sidebar Hover Cards. |
+| **Plugins & Remote Ecosystem** | Full Lifecycle Ecosystem | Translates Plugin Center operations (Install/Uninstall/Enable/Disable), Component badges (Skills/Rules/MCP/Hooks), and Remote Control cross-device flow modals. |
+
+### 2. Developer Ergonomics & Physical Sandbox Guard
+
+| Core Strategy | Guard Mechanism | Developer Protection & Value |
+| :--- | :--- | :--- |
+| **Native Model & Thinking Display** | 100% Native English Retained | Strictly adheres to developer ergonomics: Model selector dropdowns (Gemini 3.8 / Claude 3.7) and Thinking/Thought processes strictly retain native English, eliminating confusion caused by machine translation. |
+| **Physical Code & Input Immunity** | Shadow DOM Penetration | Actively protects `INPUT`, `TEXTAREA`, rich text editors, Monaco Code Editor, Diff views, and user message bubbles with absolute physical isolation, guaranteeing zero tampering with prompts and source code. |
+| **Lossless Backup & Self-Healing** | Instant Bidirectional Switch | Automatically creates `app.asar.bak` on first run, enabling instant one-click rollback to pristine English via UI or `node localize.js --restore` at any time. |
+
+### 3. High-Performance Engine & Engineering Standards
+
+| Engineering Dimension | Performance & Standards | Implementation Details |
+| :--- | :--- | :--- |
+| **High Throughput & Frame Rate** | Over 1.68 Million QPS | Leverages precompiled $O(1)$ Hash Map, ASCII short-circuit, unified regex stream scanning, DOM ancestor pruning, and microtask frame aggregation to ensure buttery-smooth 60fps/120fps operation. |
+| **Slim Packaging Standards** | Aligned with 4.53 ~ 4.66 MB | Uses `--unpack-dir` to exclude redundant external Node modules, completely eliminating legacy 14MB+ package bloat and matching official distribution size. |
+| **Lifecycle Self-Healing & Hot Updates** | `injectOrUpdate` Truncation Logic | Overcomes legacy limitations where existing markers prevented updates; supports hot file replacement and instantaneous `Ctrl + R` reload across versions. |
+| **TDD Automated Test Gate** | 215+ Test Cases 100% PASS | Robust test matrix (Ticket-06 through Ticket-09) coupled with strict `node --check` AST syntax verification across 37 core JavaScript files, preventing runtime crashes. |
 
 ---
 
