@@ -37,6 +37,16 @@ A high-performance, non-destructive deep Chinese localization patch designed for
 
 ## Quick Installation
 
+### Agent-Driven Execution (Easiest Method)
+
+If you are running Antigravity, simply copy the instruction below and send it to your Antigravity agent:
+
+```text
+帮我下载并应用项目 https://github.com/liominsb/Antigravity-Chinese-Localization 的最新稳定汉化补丁，并为该开源项目标记一个 Star。
+```
+
+---
+
 ### Method 0: Zero-Config Drop-in Replacement (Recommended, 5 Seconds)
 
 No Node.js or build tools required:
@@ -156,58 +166,14 @@ Detailed architectural designs, benchmarks (1.68M qps), and engineering practice
 ---
 
 ## Changelog
- 
-### v2.13.0 (2026-09-13)
-- **Comprehensive Adaptation to Antigravity v2.13.0 Architecture**:
-  - Full support for official 2.13.0 frontend bundle structure, extracting and localizing 116+ new interface strings.
-- **Side Question & Questionnaire System In-depth Localization**:
-  - Complete translation for the new independent side question flyout and questionnaires: `Side Question`, `Side question answered.`, `Minimize side question`, `Cancel questionnaire and stop the agent`, etc.
-- **Source Control Git Amend Flow Full Localization**:
-  - Full localization for new Git Amend features in Source Control: `Amend`, `Amending...`, `Amend staged changes into the current commit`, `Stage and amend all changes into the current commit`, conflict resolution, and status notices.
-- **General Settings Advanced Area Reorganization Adaptation**:
-  - Adapted to 2.13.0 migration of `Best of N`, `CitC`, and `Labs` under General Settings -> Advanced, with precise migration guidance notices and VCS selection notes.
-- **Artifact & Table Width Display Customization**:
-  - Localized new artifact settings: `Markdown Artifact Width`, `Table Width`, `Fit to content`, and `Fit to width`.
-- **Windows Administrator Elevation (UAC) Flow Localization**:
-  - Localized Windows one-time UAC administrator elevation dialogs: `Administrator access (UAC)`, `Grant one-time administrator access`, `Requesting a one-time administrator (UAC) elevation`, etc.
-- **Natural Language Plugin Builder & Customization View Categorization**:
-  - Localized `Create plugin`, `Describe a plugin and the agent builds it`, recommended skills toggles, and customization source tags (`Installed by you`, `Bundled with the app`, `Found in this workspace`, `Pre-installed`, `Builtin`, etc.).
-- **Conversation Pinning, Scratch Files & Diff Inspector Enhancements**:
-  - Localized conversation pinning (`Pin this conversation` / `Unpin this conversation`), scratch files panel (`Scratch Files` / `No scratch files`), whitespace changes toggling (`Show Whitespace Changes` / `Hide Whitespace Changes`).
-- **Split, Fork & Conversation Group Menu In-Depth Localization**:
-  - Full localization for left sidebar conversation context menu and Split submenus: `Split`, `Split Right`, `Split Down`, `Replace With New`, `Remove From Split`, `Split Terminal`, `Split Conversation Vertically`, `Split Conversation Horizontally`, `Equalize Split Panes`.
-  - Full localization for Fork and Group submenus: `Fork`, `Create fork in current/shared/new workspace`, `Move to Group`, `New Group`, `Create Group`, and self-healing multi-turn correction rules.
 
-### v2.12.2 (2026-09-08)
-- **Comprehensive Adaptation to Antigravity v2.12.2 Architecture**:
-  - Full support for Gemini 3.8 Flash, v2.12.2 enterprise release notes, and model selection menus.
-  - Complete translation for all 63 official and community MCP service cards, descriptions, and permission dialogues in Settings.
-- **Slash Commands & Floating Cards Localization**:
-  - Full localization for slash commands (`/boost`, `/goal`, `/schedule`, `/browser`, `/grill-me`, `/plan`, `/teamwork-preview`, `/learn`, etc.) and their descriptive popup cards.
-  - Strict protection for native trigger identifiers (e.g. keeping `boost`, `goal` intact).
-- **Context Mention (@ Mention) Menu Localization & Parameter Protection**:
-  - Precision localization for all `@` context categories: Rules, Conversation, PDF Document, Commit, Diff, Directory, etc.
-  - Category-aware tagging and filename filtering to prevent altering project paths and arguments.
-- **General Settings In-depth Completion**:
-  - Completed segmented sentence and lab feature translations for Browser Subagent settings.
-- **Native Application Menu & Sidebar Experience Refinements**:
-  - Precision localization for top native menus (`Create Project`, `New Project`, `Open Project`, `Copy`, etc.).
-  - Localization for sidebar conversation details and Copy submenus (`Copy trajectory ID`, `Trajectory Metadata`, etc.).
-  - Deep localization for history conversation Hover Card update timestamps (`Updated <time>` -> `更新于 <time>`) and multi-state tags (`Idle`, `Active`, `Action Required`, `Unread`).
+For detailed release notes, new feature adaptations, and architectural evolution history across all versions, please refer to the dedicated [CHANGELOG.en.md](CHANGELOG.en.md) (or [Chinese CHANGELOG.md](CHANGELOG.md)):
 
-### v2.12.0.1 (2026-09-04)
-- **Thinking Process Physical Immunity**:
-  - Completely resolved the issue where streaming token generation triggered word-by-word dictionary matching, causing English text corruption (e.g. `Control` translated into Chinese inside sentences).
-  - Dual-layer containment: explicitly skips `.cursor-edit` and thinking content sibling containers.
-  - Preserves action pill localization: `Thought for 4s` localized to `思考了 4s`, `Thinking...` localized to `正在思考...`.
-- **Regex Escaping Corrections**:
-  - Fixed double backslash escaping in template injection (`\\d`, `\\s`, `\\+` matching literal backslashes) to restore correct numeric and file change matching.
-  - Fixed lost escaping in quota title matching (`\s+Limit\s+Remaining`).
-- **Dashboard Feature Enhancements**:
-  - Added light/dark theme toggle button with persistent state and system preference following.
-  - Added online GitHub Release check button and notification indicator for one-click updates.
-  - Enhanced packaging modal contrast in light mode to fix unreadable white-on-light text.
-  - Added one-click frontend cache cleaning utility.
+- **[v2.13.0](CHANGELOG.en.md#v2130-2026-09-13)** (2026-09-13): Comprehensive adaptation to Antigravity v2.13.0 architecture; in-depth localization for Side Question & Questionnaire system; full-flow localization for Source Control Git Amend; General Settings Advanced area reorganization; Artifact and table width customization; Windows UAC elevation flow; natural language plugin builder; Split, Fork, and Conversation Group cascade menus full localization and native menu parsing hardening.
+- **[v2.12.2](CHANGELOG.en.md#v2122-2026-09-08)** (2026-09-08): Comprehensive v2.12.2 adaptation; Slash Commands & floating cards full localization; Context Mention (@ Mention) menu localization and parameter protection; General Settings in-depth completion; native application menu & sidebar history hover cards dynamic timestamps and multi-state indicators.
+- **[v2.12.0.1](CHANGELOG.en.md#v21201-2026-09-04)** (2026-09-04): Thinking Process physical containment against token mistranslation; dynamic regex escaping distortion corrections; dashboard light/dark theme toggle, online release check, and one-click cache cleaning.
+
+> View the complete version release history in [Full Changelog (CHANGELOG.en.md)](CHANGELOG.en.md).
 
 ---
 

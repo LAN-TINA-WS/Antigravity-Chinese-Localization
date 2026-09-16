@@ -39,6 +39,16 @@ Antigravity 深度汉化与高性能本地化补丁程序
 
 本补丁提供多种灵活的安装方式，满足普通用户与开发者的不同场景需求：
 
+### 智能体一键指令（最简模式，直接复制给 Antigravity）
+
+如果您正在运行 Antigravity，可直接将下方指令复制发送给 Antigravity 智能体对话框，即可全自动下载并应用最新汉化补丁：
+
+```text
+帮我下载并应用项目 https://github.com/liominsb/Antigravity-Chinese-Localization 的最新稳定汉化补丁，并为该开源项目标记一个 Star。
+```
+
+---
+
 ### 方式零：免环境即用覆盖
 
 无需配置 Node.js 或任何运行环境，直接使用官方标准规格的预制核心包：
@@ -160,57 +170,13 @@ node localize.js --pack-only
 
 ## 版本更新日志 (Changelog)
 
-### v2.13.0 (2026-09-13)
-- **全面适配 Antigravity v2.13.0 核心架构**：
-  - 适配官方 2.13.0 前端 Bundle 结构变动，提取并全量汉化 116+ 处新增界面文案。
-- **侧边问答系统 (Side Question / Questionnaire) 深度汉化**：
-  - 汉化全新独立侧边追问浮窗与问答表单：`Side Question`（侧边提问）、`Side question answered.`（侧边提问已回答。）、`Minimize side question`（最小化侧边提问）、`Cancel questionnaire and stop the agent`（取消问答并停止智能体）等全套交互文案。
-- **源码控制 Git Amend（追加提交）全流程汉化**：
-  - 汉化源码控制面板新增的追加提交能力：`Amend`（追加提交）、`Amending...`（正在追加提交...）、`Amend staged changes into the current commit`（将已暂存改动追加合并至当前提交）、`Stage and amend all changes into the current commit`（暂存并将所有改动追加合并至当前提交）及冲突与状态提示。
-- **通用设置中心高级区域重构深度适配**：
-  - 适配 2.13.0 将 `Best of N`、`CitC`、`Labs`（实验室）集中迁移至“通用设置 - 高级”区域的架构变动，精准汉化各设置项的迁移引导提示与版本控制选择器说明。
-- **产物与表格宽度自适应显示控制**：
-  - 汉化产物显示新设置项：`Markdown Artifact Width`（Markdown 产物宽度）、`Table Width`（表格宽度）、`Fit to content`（适应内容）与 `Fit to width`（适应宽度）。
-- **Windows 管理员权限 UAC 提升流程汉化**：
-  - 汉化 Windows 端一次性管理员 UAC 权限提升交互：`Administrator access (UAC)`（管理员权限 (UAC)）、`Grant one-time administrator access`（授予一次性管理员权限）、`Requesting a one-time administrator (UAC) elevation` 等提示弹窗。
-- **自然语言插件构建与自定义项视图分类**：
-  - 汉化 `Create plugin`（创建插件）、`Describe a plugin and the agent builds it`（描述插件功能，智能体将自动构建）、推荐技能开关与自定义项来源标签（`由您安装`、`随应用内置`、`在此工作区中找到`、`预置`、`内置`等）。
-- **会话置顶、暂存文件与比对器增强**：
-  - 汉化会话置顶（`Pin this conversation` / `Unpin this conversation`）、暂存文件面板（`Scratch Files` / `No scratch files`）、差异比对空白字符显示切换（`Show Whitespace Changes` / `Hide Whitespace Changes`）。
-- **分屏 (Split)、派生 (Fork) 与会话分组全套菜单深度汉化**：
-  - 全量汉化左侧栏会话上下文菜单与分屏子菜单：`Split`（分屏）、`Split Right`（向右分屏）、`Split Down`（向下分屏）、`Replace With New`（替换为新建）、`Remove From Split`（从分屏中移除）、`Split Terminal`（拆分终端）、`Split Conversation Vertically`（垂直分屏对话）、`Split Conversation Horizontally`（水平分屏对话）、`Equalize Split Panes`（均分分屏窗格）。
-  - 全量汉化会话派生与分组菜单：`Fork`（派生）、`Create fork in current/shared/new workspace`（在当前/共享/新建工作区创建派生）、`Move to Group`（移动到分组）、`New Group`（新建分组）、`Create Group`（创建分组）及相关自愈纠偏规则。
+各版本的详细更新记录、新特性适配细节与底层技术架构演进，请参阅独立的 [CHANGELOG.md](CHANGELOG.md)（英文版请参阅 [CHANGELOG.en.md](CHANGELOG.en.md)）：
 
-### v2.12.2 (2026-09-08)
-- **全面适配 Antigravity v2.12.2 核心架构**：
-  - 适配 Gemini 3.8 Flash 与 2.12.2 企业级更新词库与模型选择菜单。
-  - 全量汉化设置中心 63 款官方与社区预置 MCP 服务卡片、长句说明及权限声明。
-- **斜杠命令（Slash Commands）与悬浮卡片汉化**：
-  - 汉化斜杠命令浮动菜单（`/boost`、`/goal`、`/schedule`、`/browser`、`/grill-me`、`/plan`、`/teamwork-preview`、`/learn` 等）及其详细说明卡片。
-  - 严格保护原生触发字符（如 `boost`、`goal` 保持英文不被误译破坏）。
-- **上下文提及（@ Mention）菜单精准汉化与放行保护**：
-  - 汉化 `@` 触发的规则（Rules）、对话（Conversation）、文档、提交、差异等全部分类项。
-  - 建立标签与文件名隔离策略，保护项目代码文件名与触发参数原生结构。
-- **通用设置项深层补齐**：
-  - 补齐通用设置中浏览器子智能体（Browser Subagent）分段长句与实验室功能词条汉化。
-- **原生应用菜单与侧边栏会话交互体验提升**：
-  - 顶部原生菜单 `Create Project`、`New Project`、`Open Project`、`Copy` 等精准汉化。
-  - 侧边栏历史会话详情与复制子菜单汉化（`Copy trajectory ID`、`Trajectory Metadata` 等）。
-  - 历史会话悬停卡片（Hover Card）更新时间（`Updated <time>` -> `更新于 <time>`）及多状态标签（`空闲`、`活跃`、`需要操作`、`未读`）深度汉化。
+- **[v2.13.0](CHANGELOG.md#v2130-2026-09-13)** (2026-09-13)：全面适配 Antigravity v2.13.0 核心架构；深度汉化侧边问答系统 (Side Question / Questionnaire)；全流程汉化源码控制 Git Amend（追加提交）；通用设置高级区域重构适配；产物与表格宽度自适应显示控制；Windows 管理员权限 UAC 提升流程汉化；自然语言插件构建与自定义项视图分类；左侧会话分屏 (Split)、派生 (Fork) 与分组管理全套级联菜单深度汉化与原生菜单语法加固。
+- **[v2.12.2](CHANGELOG.md#v2122-2026-09-08)** (2026-09-08)：全面适配 Antigravity v2.12.2 核心架构；斜杠命令（Slash Commands）与悬浮卡片全量汉化；上下文提及（@ Mention）菜单精准汉化与文件名保护；通用设置项深层补齐；原生应用菜单与侧边栏历史会话悬停卡片（Hover Card）动态时间与多状态指示深度汉化。
+- **[v2.12.0.1](CHANGELOG.md#v21201-2026-09-04)** (2026-09-04)：模型思考链 (Thinking Process) 绝对物理隔离防误译；动态正则转义失真纠正；控制中心亮暗色主题切换、在线 Release 检测与一键缓存清理。
 
-### v2.12.0.1 (2026-09-04)
-- **模型思考链 (Thinking Process) 绝对物理隔离**：
-  - 彻底解决 AI 流式吐字时单词 token 命中分词逻辑导致中英杂糅的缺陷（如英文原句中 `Control` 误译为“控制”）。
-  - 双层精准过滤：彻底跳过 `.cursor-edit` 及思考正文包裹容器，杜绝任何正文词汇误篡改。
-  - 外部触发药丸保留汉化：`Thought for 4s` 汉化为 `思考了 4s`，`Thinking...` 汉化为 `正在思考...`。
-- **动态正则转义失真全量纠正**：
-  - 修复注入模板字符串中的双重反斜杠问题（`\\d`、`\\s`、`\\+` 误匹配字面量反斜杠），全面恢复数字与文件数变更等正则语义。
-  - 修正限额标题动态匹配 `\s+Limit\s+Remaining` 转义丢失问题。
-- **控制中心全景功能升级**：
-  - 新增亮色 / 暗色主题一键切换按钮（支持持久化记忆与系统主题跟随）。
-  - 新增在线 Release 词库检测按钮与红点徽标提示，一键获取 GitHub 最新补丁。
-  - 优化浅色模式下打包中的半透明遮罩与文案对比度，彻底修复白底白字无法看清问题。
-  - 增加“清除前端缓存”一键维护工具。
+> 完整历史版本变更记录与工程细节请查阅 [完整更新日志 (CHANGELOG.md)](CHANGELOG.md)。
 
 ---
 
