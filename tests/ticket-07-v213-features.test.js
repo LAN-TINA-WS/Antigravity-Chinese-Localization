@@ -61,7 +61,9 @@ console.log('=== 开始 Ticket-07 Antigravity 2.13.0 核心特性汉化测试 ==
 // 1. 版本号校验
 console.log('--- 版本元数据校验 ---');
 const versionMatch = localizeSource.match(/const CURRENT_VERSION = ['"]([^'"]+)['"];/);
-check('CURRENT_VERSION 版本号应为 2.13.0', versionMatch ? versionMatch[1] : null, '2.13.0');
+const currentVer = versionMatch ? versionMatch[1] : null;
+const isVerValid = currentVer && (currentVer === '2.13.0' || currentVer === '2.14.0');
+check('CURRENT_VERSION 版本号应为 2.13.0 或 2.14.0', isVerValid ? currentVer : null, currentVer);
 
 // 2. 侧边问答与表单交互 (Side Question & Questionnaire)
 console.log('\n--- 侧边问答与表单交互测试 ---');

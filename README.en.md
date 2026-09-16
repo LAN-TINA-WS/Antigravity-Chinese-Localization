@@ -12,7 +12,7 @@ Deep Localization & High-Performance Chinese Patch for Google Antigravity
 [![Node Runtime](https://img.shields.io/badge/Node.js-%3E%3D%2014.0.0-informational)](https://nodejs.org/)
 [![license](https://img.shields.io/github/license/liominsb/Antigravity-Chinese-Localization)](LICENSE)
 
-A high-performance, non-destructive deep Chinese localization patch designed for Google Antigravity. Fully adapted to the latest architecture of **Antigravity v2.13.0+**, featuring fundamental computational refactoring and DOM micro-batch scheduling that delivers 1.68 million queries/sec throughput. It provides comprehensive translation for Planning Mode, System Settings, Security Sandbox, and Google Plugin Ecosystem, strictly follows the official 4.53 MB slim packaging standard, and guarantees absolute physical immunity for code editors and user input fields.
+A high-performance, non-destructive deep Chinese localization patch designed for Google Antigravity. Fully adapted to the latest architecture of **Antigravity v2.14.0+**, featuring fundamental computational refactoring and DOM micro-batch scheduling that delivers 1.68 million queries/sec throughput. It provides comprehensive translation for Planning Mode, System Settings, Security Sandbox, and Google Plugin Ecosystem, strictly follows the official 4.53 MB slim packaging standard, and guarantees absolute physical immunity for code editors and user input fields.
 
 > [Download Latest Release](https://github.com/liominsb/Antigravity-Chinese-Localization/releases/latest) · [Issues & Feedback](https://github.com/liominsb/Antigravity-Chinese-Localization/issues)
 
@@ -169,6 +169,7 @@ Detailed architectural designs, benchmarks (1.68M qps), and engineering practice
 
 For detailed release notes, new feature adaptations, and architectural evolution history across all versions, please refer to the dedicated [CHANGELOG.en.md](CHANGELOG.en.md) (or [Chinese CHANGELOG.md](CHANGELOG.md)):
 
+- **[v2.14.0](CHANGELOG.en.md#v2140-2026-09-16)** (2026-09-16): Comprehensive adaptation to Antigravity v2.14.0 architecture; version metadata and dependencies seamless upgrade; 100% TDD test suite and 37 dist JS AST static syntax check gates passed.
 - **[v2.13.0](CHANGELOG.en.md#v2130-2026-09-13)** (2026-09-13): Comprehensive adaptation to Antigravity v2.13.0 architecture; in-depth localization for Side Question & Questionnaire system; full-flow localization for Source Control Git Amend; General Settings Advanced area reorganization; Artifact and table width customization; Windows UAC elevation flow; natural language plugin builder; Split, Fork, and Conversation Group cascade menus full localization and native menu parsing hardening.
 - **[v2.12.2](CHANGELOG.en.md#v2122-2026-09-08)** (2026-09-08): Comprehensive v2.12.2 adaptation; Slash Commands & floating cards full localization; Context Mention (@ Mention) menu localization and parameter protection; General Settings in-depth completion; native application menu & sidebar history hover cards dynamic timestamps and multi-state indicators.
 - **[v2.12.0.1](CHANGELOG.en.md#v21201-2026-09-04)** (2026-09-04): Thinking Process physical containment against token mistranslation; dynamic regex escaping distortion corrections; dashboard light/dark theme toggle, online release check, and one-click cache cleaning.

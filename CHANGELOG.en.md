@@ -4,6 +4,15 @@ This document tracks all version releases, core architecture adaptations, and fe
 
 ---
 
+## v2.14.0 (2026-09-16)
+
+### 1. Comprehensive Adaptation to Antigravity v2.14.0 Architecture
+- **Version Metadata & Environment Seamless Upgrade**: Upgraded to 2.14.0, fully compatible with Google official Sep 16 release build.
+- **Full Localization Engine Inheritance & Syntax Hardening**: Maintained 100% localization coverage across DOM mutation, Electron native application menus, tray, and splash overlays.
+- **Full TDD Test Suite Validation**: Added Ticket-09 test suite, passing all 37 dist JS AST static syntax check gates.
+
+---
+
 ## v2.13.0 (2026-09-13)
 
 ### 1. Comprehensive Adaptation to Antigravity v2.13.0 Architecture
