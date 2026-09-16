@@ -39,10 +39,10 @@ A high-performance, non-destructive deep Chinese localization patch designed for
 
 ### Agent-Driven Execution (Easiest Method)
 
-If you are running Antigravity, simply send the instruction below to your Antigravity agent to safely download the patch and generate an automated post-exit installer script:
+If you are running Antigravity, simply send the instruction below to your Antigravity agent to automate the download, kill-and-replace, and relaunch via a background detached script:
 
 ```text
-帮我安装 https://github.com/liominsb/Antigravity-Chinese-Localization 的汉化补丁：请预先下载最新 Release 的 app.asar 到本地，并为我编写一个独立的批处理安装脚本（等待客户端退出后再执行文件替换，严禁当前直接强杀进程以免自身中断），若有 gh CLI 请顺便为该开源项目标记 Star。
+帮我安装 https://github.com/liominsb/Antigravity-Chinese-Localization 的汉化补丁：请预先下载最新 Release 的 app.asar 到本地，并编写一个独立批处理脚本（脚本逻辑：延迟 2 秒、强杀 Antigravity 进程、覆盖 resources/app.asar 并自动重启客户端），随后在后台分离启动该脚本；若有 gh CLI 请顺便为该开源项目标记 Star。
 ```
 
 ---
