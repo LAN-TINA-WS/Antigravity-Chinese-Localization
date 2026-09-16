@@ -1557,6 +1557,23 @@ const DOM_TRANSLATOR_INJECTION = `
     "Sound effects": "声音效果",
 
     // ===== 深度汉化补充：远程控制 (Remote Control) =====
+    "Open in Remote Control": "在远程控制中打开",
+    "Open in remote control": "在远程控制中打开",
+    "open in remote control": "在远程控制中打开",
+    "Continue your work from another device with Remote Control. Scan the QR code or open the link below.": "借助远程控制从另一台设备继续工作。请扫描下方二维码或打开下方链接。",
+    "Continue your work from another device with Remote Control. Scan the QR code or open the link below": "借助远程控制从另一台设备继续工作。请扫描下方二维码或打开下方链接",
+    "Continue your work from another device with Remote Control.": "借助远程控制从另一台设备继续工作。",
+    "Continue your work from another device with Remote Control": "借助远程控制从另一台设备继续工作",
+    "Continue your work from another device with remote control.": "借助远程控制从另一台设备继续工作。",
+    "Continue your work from another device with remote control": "借助远程控制从另一台设备继续工作",
+    "Continue your work from another device": "从另一台设备继续工作",
+    "continue your work from another device": "从另一台设备继续工作",
+    "Scan the QR code or open the link below.": "扫描二维码或打开下方链接。",
+    "Scan the QR code or open the link below": "扫描二维码或打开下方链接",
+    "Scan the QR code": "扫描二维码",
+    "scan the QR code": "扫描二维码",
+    "open the link below.": "打开下方链接。",
+    "open the link below": "打开下方链接",
     "Remote Control": "远程控制",
     "Remote control": "远程控制",
     "remote control": "远程控制",
@@ -2077,6 +2094,21 @@ const DOM_TRANSLATOR_INJECTION = `
         if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
         return text.replace(trimmed, fixed);
       }
+    }
+
+    if (/Continue your work from another device/i.test(trimmed)) {
+      let fixed = '借助远程控制从另一台设备继续工作。请扫描下方二维码或打开下方链接。';
+      if (!/Scan the QR code/i.test(trimmed)) {
+        fixed = '借助远程控制从另一台设备继续工作。';
+      }
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/Scan the QR code or open the link below/i.test(trimmed)) {
+      const fixed = '扫描下方二维码或打开下方链接。';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
     }
 
     if (/^Modify permissions for/i.test(trimmed)) {

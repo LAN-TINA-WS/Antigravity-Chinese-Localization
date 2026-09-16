@@ -49,6 +49,15 @@ check('menu.js 包含 Replace With New 汉化映射', menuSource.includes("'Repl
 check('menu.js 包含 Remove From Split 汉化映射', menuSource.includes("'Remove From Split': '从分屏中移除'"), true);
 check('menu.js 包含 Fork 汉化映射', menuSource.includes("'Fork': '派生'"), true);
 
+// 4. 远程控制 (Remote Control) 汉化校验
+console.log('\n--- 远程控制 (Remote Control) 汉化校验 ---');
+const preloadSource = fs.readFileSync(path.join(distDir, 'preload.js'), 'utf-8');
+check('preload.js 包含 Open in Remote Control 汉化', preloadSource.includes('"Open in Remote Control": "在远程控制中打开"'), true);
+check('preload.js 包含 Continue your work 汉化', preloadSource.includes('借助远程控制从另一台设备继续工作'), true);
+check('localize.js 包含 Open in Remote Control 汉化', localizeSource.includes('"Open in Remote Control": "在远程控制中打开"'), true);
+check('localize.js 包含 Continue your work 汉化', localizeSource.includes('借助远程控制从另一台设备继续工作'), true);
+
+
 console.log('\n========================================');
 console.log(`测试完成: ${passed}/${total} 通过 (${passed === total ? 'ALL PASS' : 'FAILED'})`);
 console.log('========================================');
