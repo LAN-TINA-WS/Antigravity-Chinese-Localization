@@ -41,10 +41,10 @@ Antigravity 深度汉化与高性能本地化补丁程序
 
 ### 智能体一键指令（最简模式，直接复制给 Antigravity）
 
-如果您正在运行 Antigravity，可直接将下方指令复制发送给 Antigravity 智能体对话框，即可全自动下载并应用最新汉化补丁：
+如果您正在运行 Antigravity，可直接将下方指令发送给当前智能体，即可自动下载最新补丁并生成安全的后置安装脚本：
 
 ```text
-帮我下载并应用项目 https://github.com/liominsb/Antigravity-Chinese-Localization 的最新稳定汉化补丁，并为该开源项目标记一个 Star。
+帮我安装 https://github.com/liominsb/Antigravity-Chinese-Localization 的汉化补丁：请预先下载最新 Release 的 app.asar 到本地，并为我编写一个独立的批处理安装脚本（等待客户端退出后再执行文件替换，严禁当前直接强杀进程以免自身中断），若有 gh CLI 请顺便为该开源项目标记 Star。
 ```
 
 ---
