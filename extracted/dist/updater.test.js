@@ -46,6 +46,9 @@ vitest_1.vi.mock('./services/settingsService', () => {
     });
     (0, vitest_1.it)('should register IPC handlers and updater events on init', async () => {
         (0, updater_1.initAutoUpdater)(false, mockSettingsService);
+        (0, vitest_1.expect)(electron_updater_1.autoUpdater.requestHeaders).toEqual({
+            'x-app-version': '1.0.0',
+        });
         // Verify autoUpdater events were registered
         (0, vitest_1.expect)(electron_updater_1.autoUpdater.on).toHaveBeenCalledWith('checking-for-update', vitest_1.expect.any(Function));
         (0, vitest_1.expect)(electron_updater_1.autoUpdater.on).toHaveBeenCalledWith('update-available', vitest_1.expect.any(Function));

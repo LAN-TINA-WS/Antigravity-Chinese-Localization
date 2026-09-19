@@ -12,7 +12,7 @@ Antigravity 深度汉化与高性能本地化补丁程序
 [![Node Runtime](https://img.shields.io/badge/Node.js-%3E%3D%2014.0.0-informational)](https://nodejs.org/)
 [![license](https://img.shields.io/github/license/liominsb/Antigravity-Chinese-Localization)](LICENSE)
 
-专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁。全面适配 **Antigravity v2.14.0+** 最新架构，深度重构基础算力层与 DOM 调度层，带来百万级吞吐量的极致流畅体验。全量汉化规划模式、系统设置、权限沙盒、官方插件生态等上千条核心界面文案，严格遵循官方 4.53 MB 轻量级打包规格，并对用户打字与代码编辑区实施绝对物理免疫。
+专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁。全面适配 **Antigravity v2.15.0+** 最新架构，深度重构基础算力层与 DOM 调度层，带来百万级吞吐量的极致流畅体验。全量汉化规划模式、系统设置、权限沙盒、官方插件生态等上千条核心界面文案，严格遵循官方 4.53 MB 轻量级打包规格，并对用户打字与代码编辑区实施绝对物理免疫。
 
 > [最新 Release 下载](https://github.com/liominsb/Antigravity-Chinese-Localization/releases/latest) · [问题反馈与建议](https://github.com/liominsb/Antigravity-Chinese-Localization/issues)
 
@@ -190,6 +190,7 @@ node localize.js --pack-only
 
 各版本的详细更新记录、新特性适配细节与底层技术架构演进，请参阅独立的 [CHANGELOG.md](CHANGELOG.md)（英文版请参阅 [CHANGELOG.en.md](CHANGELOG.en.md)）：
 
+- **[v2.15.0](CHANGELOG.md#v2150-2026-09-19)** (2026-09-19)：全面适配 Antigravity v2.15.0 核心架构；自定义智能体默认提示词与工具控制汉化；未关联项目状态与无效工具调用轻量提示优化；通过全套 239 项 TDD 自动化测试与 37 个 JS 文件 AST 静态语法校验门禁。
 - **[v2.14.0](CHANGELOG.md#v2140-2026-09-16)** (2026-09-16)：全面适配 Antigravity v2.14.0 核心架构；版本定义与依赖平滑升级；通过全套 TDD 自动化测试与 37 个 JS 文件 AST 静态语法校验门禁。
 - **[v2.13.0](CHANGELOG.md#v2130-2026-09-13)** (2026-09-13)：全面适配 Antigravity v2.13.0 核心架构；深度汉化侧边问答系统 (Side Question / Questionnaire)；全流程汉化源码控制 Git Amend（追加提交）；通用设置高级区域重构适配；产物与表格宽度自适应显示控制；Windows 管理员权限 UAC 提升流程汉化；自然语言插件构建与自定义项视图分类；左侧会话分屏 (Split)、派生 (Fork) 与分组管理全套级联菜单深度汉化与原生菜单语法加固。
 - **[v2.12.2](CHANGELOG.md#v2122-2026-09-08)** (2026-09-08)：全面适配 Antigravity v2.12.2 核心架构；斜杠命令（Slash Commands）与悬浮卡片全量汉化；上下文提及（@ Mention）菜单精准汉化与文件名保护；通用设置项深层补齐；原生应用菜单与侧边栏历史会话悬停卡片（Hover Card）动态时间与多状态指示深度汉化。

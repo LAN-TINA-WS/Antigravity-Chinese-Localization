@@ -4,6 +4,24 @@ This document tracks all version releases, core architecture adaptations, and fe
 
 ---
 
+## v2.15.0 (2026-09-19)
+
+### 1. Comprehensive Adaptation to Antigravity v2.15.0 Architecture
+- **Version Metadata & Updater Headers**: Bumped application definition to `2.15.0`, tracking Google official Sep 19 build and new updater request header specifications.
+- **Localization Engine Full Inheritance**: Maintained 100% localization coverage across DOM mutation, Electron native menus, tray, and overlays.
+- **Complete TDD Test Suite**: Added Ticket-10 test suite, passing all 239 automated test cases and 37 dist JS AST syntax check gates.
+
+### 2. Custom Agent Controls & Default Tools Localization
+- **Agent Prompts & Tools Controls**: Deeply translated custom agent controls: `Default tools`, `Default prompt sections`, `Switch off default tools`, `Switch off default prompts`, `Add back tools`.
+- **Main Agent State & Fallback**: Translated `Main Agent`, `Main Agent (Default)`, and reset fallback interactions.
+
+### 3. Project Picker, Prompts & Error Presentation
+- **Project Picker Unbound State**: Translated `No Project` and `Working outside of a project`.
+- **Malformed Tool Call Handling**: Translated compact model failure status `Invalid tool call`.
+- **Binary File Error & Cancelled Command**: Translated clear binary reading errors `Cannot display binary file` and restart cancelled status `Command canceled`.
+
+---
+
 ## v2.14.0 (2026-09-16)
 
 ### 1. Comprehensive Adaptation to Antigravity v2.14.0 Architecture

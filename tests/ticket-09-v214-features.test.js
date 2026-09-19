@@ -27,8 +27,8 @@ console.log('=== 开始 Ticket-09 Antigravity 2.14.0 核心版本与特性专项
 // 1. 版本号校验
 console.log('--- 2.14.0 版本元数据校验 ---');
 const versionMatch = localizeSource.match(/const CURRENT_VERSION = ['"]([^'"]+)['"];/);
-check('localize.js CURRENT_VERSION 版本号必须为 2.14.0', versionMatch ? versionMatch[1] : null, '2.14.0');
-check('extracted/package.json version 必须为 2.14.0', packageJson.version, '2.14.0');
+check('localize.js CURRENT_VERSION 版本号有效且 >= 2.14.0', Boolean(versionMatch && versionMatch[1] >= '2.14.0'), true);
+check('extracted/package.json version 有效且 >= 2.14.0', Boolean(packageJson.version && packageJson.version >= '2.14.0'), true);
 
 // 2. 核心文件完备性
 console.log('\n--- 核心注入文件完备性测试 ---');

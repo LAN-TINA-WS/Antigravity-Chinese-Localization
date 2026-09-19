@@ -1487,6 +1487,39 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
     "Play sound on task completion": "任务完成时播放提示音",
     "Sound effects": "声音效果",
 
+    // ===== 深度汉化补充：v2.15.0 智能体控制、项目状态与键位导航 (v2.15.0 Features) =====
+    "No Project": "无项目",
+    "No project": "无项目",
+    "no project": "无项目",
+    "Invalid tool call": "无效的工具调用",
+    "Invalid Tool Call": "无效的工具调用",
+    "invalid tool call": "无效的工具调用",
+    "Main Agent": "主智能体",
+    "Main agent": "主智能体",
+    "main agent": "主智能体",
+    "Main Agent (Default)": "主智能体 (默认)",
+    "Main agent (default)": "主智能体 (默认)",
+    "Default tools": "默认工具",
+    "default tools": "默认工具",
+    "Default Tools": "默认工具",
+    "Default prompt sections": "默认提示词小节",
+    "default prompt sections": "默认提示词小节",
+    "Default prompts": "默认提示词",
+    "default prompts": "默认提示词",
+    "Switch off default tools": "关闭默认工具",
+    "Switch off default prompts": "关闭默认提示词",
+    "Switch off default prompt sections": "关闭默认提示词小节",
+    "Add back tools": "重新添加工具",
+    "Cannot display binary file": "无法显示二进制文件",
+    "Binary file cannot be displayed": "无法显示二进制文件",
+    "Unable to display binary file": "无法显示二进制文件",
+    "Command canceled": "命令已取消",
+    "Command cancelled": "命令已取消",
+    "Canceled on restart": "重启时已取消",
+    "Cancelled on restart": "重启时已取消",
+    "Working outside of a project": "在项目外部工作",
+    "Working outside of a project.": "在项目外部工作。",
+
     // ===== 深度汉化补充：远程控制 (Remote Control) =====
     "Open in Remote Control": "在远程控制中打开",
     "Open in remote control": "在远程控制中打开",
@@ -2038,6 +2071,18 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
 
     if (/Scan the QR code or open the link below/i.test(trimmed)) {
       const fixed = '扫描下方二维码或打开下方链接。';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Invalid tool call$/i.test(trimmed)) {
+      const fixed = '无效的工具调用';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^No Project$/i.test(trimmed)) {
+      const fixed = '无项目';
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
