@@ -61,6 +61,33 @@ check('localize.js 包含 Invalid tool call 映射', localizeSource.includes('"I
 check('localize.js 包含 Main Agent 映射', localizeSource.includes('"Main Agent": "主智能体"'), true);
 check('localize.js 包含 Default tools 映射', localizeSource.includes('"Default tools": "默认工具"'), true);
 
+// 5. 高频交互操作与无障碍标签校验
+console.log('\n--- 高频交互操作与无障碍标签校验 ---');
+check('preload.js 包含 Good response 映射', preloadSource.includes('"Good response": "好评回复"'), true);
+check('preload.js 包含 Bad response 映射', preloadSource.includes('"Bad response": "差评回复"'), true);
+check('preload.js 包含 More actions 映射', preloadSource.includes('"More actions": "更多操作"'), true);
+check('preload.js 包含 Pin conversation 映射', preloadSource.includes('"Pin conversation": "置顶对话"'), true);
+check('preload.js 包含 Undo to this point 映射', preloadSource.includes('"Undo to this point": "撤销到此处"'), true);
+check('preload.js 包含 Copy code 映射', preloadSource.includes('"Copy code": "复制代码"'), true);
+check('preload.js 包含 At mention code block 映射', preloadSource.includes('"At mention code block": "提及代码块"'), true);
+check('preload.js 包含 Add inline comment 映射', preloadSource.includes('"Add inline comment": "添加行内注释"'), true);
+check('preload.js 包含 Fold code block 映射', preloadSource.includes('"Fold code block": "折叠代码块"'), true);
+check('preload.js 包含 User message 映射', preloadSource.includes('"User message": "用户消息"'), true);
+check('preload.js 包含 Send message 映射', preloadSource.includes('"Send message": "发送消息"'), true);
+check('preload.js 包含 Agent execution terminated 报错映射', preloadSource.includes('"Agent execution terminated due to error.": "智能体执行因错误而终止。"'), true);
+
+// 6. 动态模板正则替换校验
+console.log('\n--- 动态模板正则替换逻辑校验 ---');
+check('preload.js 包含 See all (N) 动态正则', preloadSource.includes('/^See all\\s*\\(([^)]+)\\)$/i'), true);
+check('preload.js 包含 Ran N commands 动态正则', preloadSource.includes('/^Ran\\s+(\\d+)\\s*(?:commands|命令)$/i'), true);
+check('preload.js 包含 Load older messages 动态正则', preloadSource.includes('/^Load older messages,\\s*showing\\s+(\\d+)\\s+of\\s+(\\d+)$/i'), true);
+check('preload.js 包含 Fold lines 动态正则', preloadSource.includes('/^Fold lines\\s+([0-9-]+)$/i'), true);
+
+check('localize.js 包含 Good response 映射', localizeSource.includes('"Good response": "好评回复"'), true);
+check('localize.js 包含 Bad response 映射', localizeSource.includes('"Bad response": "差评回复"'), true);
+check('localize.js 包含 More actions 映射', localizeSource.includes('"More actions": "更多操作"'), true);
+check('localize.js 包含 See all (N) 动态正则', localizeSource.includes('/^See all\\s*\\(([^)]+)\\)$/i'), true);
+
 console.log('\n========================================');
 console.log(`测试完成: ${passed}/${total} 通过 (${passed === total ? 'ALL PASS' : 'FAILED'})`);
 console.log('========================================');

@@ -1589,6 +1589,38 @@ const DOM_TRANSLATOR_INJECTION = `
     "Working outside of a project": "在项目外部工作",
     "Working outside of a project.": "在项目外部工作。",
 
+    // ===== 深度汉化补充：高频交互操作、无障碍标签与反馈按钮 =====
+    "Good response": "好评回复",
+    "Bad response": "差评回复",
+    "More actions": "更多操作",
+    "more actions": "更多操作",
+    "More options": "更多选项",
+    "more options": "更多选项",
+    "Pin conversation": "置顶对话",
+    "Unpin conversation": "取消置顶对话",
+    "Archive conversation": "归档对话",
+    "Undo to this point": "撤销到此处",
+    "Copy code": "复制代码",
+    "copy code": "复制代码",
+    "At mention code block": "提及代码块",
+    "Add inline comment": "添加行内注释",
+    "Fold code block": "折叠代码块",
+    "User message": "用户消息",
+    "user message": "用户消息",
+    "Send message": "发送消息",
+    "send message": "发送消息",
+    "Agent execution terminated due to error.": "智能体执行因错误而终止。",
+    "Agent execution terminated due to error": "智能体执行因错误而终止",
+    "Agent execution terminated": "智能体执行已终止",
+    "See all": "查看全部",
+    "see all": "查看全部",
+    "Media actions": "媒体操作",
+    "Overview tab": "概览标签页",
+    "Review tab": "评审标签页",
+    "Terminal tab": "终端标签页",
+    "Resolve Merge": "解决合并",
+    "Add comment": "添加注释",
+
     // ===== 深度汉化补充：远程控制 (Remote Control) =====
     "Open in Remote Control": "在远程控制中打开",
     "Open in remote control": "在远程控制中打开",
@@ -2152,6 +2184,30 @@ const DOM_TRANSLATOR_INJECTION = `
 
     if (/^No Project$/i.test(trimmed)) {
       const fixed = '无项目';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^See all\s*\(([^)]+)\)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^See all\s*\(([^)]+)\)$/i, '查看全部 ($1)');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Ran\s+(\d+)\s*(?:commands|命令)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Ran\s+(\d+)\s*(?:commands|命令)$/i, '已运行 $1 条命令');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Load older messages,\s*showing\s+(\d+)\s+of\s+(\d+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Load older messages,\s*showing\s+(\d+)\s+of\s+(\d+)$/i, '加载历史消息，正在显示 $1 / $2 条');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Fold lines\s+([0-9-]+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Fold lines\s+([0-9-]+)$/i, '折叠第 $1 行');
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
