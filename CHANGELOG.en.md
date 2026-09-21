@@ -4,6 +4,19 @@ This document tracks all version releases, core architecture adaptations, and fe
 
 ---
 
+## v2.15.1 (2026-09-21)
+
+### 1. Comprehensive Adaptation to Antigravity v2.15.1 Architecture
+- **Version Metadata & Environment Seamless Upgrade**: Upgraded application definition to `2.15.1`, tracking Google official Sep 21 build with 100% compatibility with updater and dependencies.
+- **Localization Engine Full Inheritance**: Maintained 100% localization coverage across DOM mutation, Electron native menus, tray, and overlays.
+- **Complete TDD Test Suite**: Added Ticket-11 test suite, passing all 305 automated regression test cases and 37 dist JS AST syntax check gates.
+
+### 2. Sidebar Pinned Conversations & Grouping Titles Localization
+- **Pinned & Recent Group Titles**: Translated left sidebar section headers including `Pinned Conversations` / `pinned conversations`, `Recent Conversations`, `All Conversations`, and `Other Conversations`.
+- **Status & Accessibility Labels**: Normalized `Pinned` and `Unpinned` UI interaction labels.
+
+---
+
 ## v2.15.0 (2026-09-19)
 
 ### 1. Comprehensive Adaptation to Antigravity v2.15.0 Architecture
