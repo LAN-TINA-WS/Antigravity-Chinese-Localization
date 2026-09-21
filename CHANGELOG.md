@@ -21,7 +21,7 @@
 - **二进制文件与已取消状态**：汉化智能体尝试读取不可预览文件时的明晰报错 `Cannot display binary file`（无法显示二进制文件），以及应用重启时终端命令状态纠正为 `Command canceled`（命令已取消）。
 
 ### 4. 高频交互操作、无障碍属性与动态模板全量补全
-- **会话交互与反馈按钮**：汉化 `Good response`（好评回复）、`Bad response`（差评回复）、`More actions` / `More options`（更多操作 / 更多选项）、`Pin conversation`（置顶对话）、`Undo to this point`（撤销到此处）。
+- **会话交互与反馈按钮**：汉化 `Good response`（好评回复）、`Bad response`（差评回复）、`More actions` / `More options`（更多操作 / 更多选项）、`Pin conversation` / `Pinned Conversations`（置顶对话）、`Recent Conversations`（最近对话）、`All Conversations`（全部对话）、`Undo to this point`（撤销到此处）。
 - **代码块与浮动操作**：汉化 `Copy code`（复制代码）、`At mention code block`（提及代码块）、`Add inline comment`（添加行内注释）、`Fold code block`（折叠代码块）、`User message`（用户消息）、`Send message`（发送消息）。
 - **执行报错与动态模板**：汉化智能体异常终止提示 `Agent execution terminated due to error.`（智能体执行因错误而终止。），并新增 `See all (N)`（查看全部 (N)）、`Ran N commands`（已运行 N 条命令）、`Load older messages, showing N of M`（加载历史消息，正在显示 N / M 条）、`Fold lines N-M`（折叠第 N-M 行）等高频动态正则匹配。
 

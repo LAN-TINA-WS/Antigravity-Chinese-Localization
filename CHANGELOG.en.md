@@ -21,7 +21,7 @@ This document tracks all version releases, core architecture adaptations, and fe
 - **Binary File Error & Cancelled Command**: Translated clear binary reading errors `Cannot display binary file` and restart cancelled status `Command canceled`.
 
 ### 4. High-frequency UI Interactions, Accessibility Labels & Dynamic Templates
-- **Conversation Feedback & Actions**: Translated `Good response`, `Bad response`, `More actions`, `More options`, `Pin conversation`, `Undo to this point`.
+- **Conversation Feedback & Actions**: Translated `Good response`, `Bad response`, `More actions`, `More options`, `Pin conversation` / `Pinned Conversations`, `Recent Conversations`, `All Conversations`, `Undo to this point`.
 - **Code Block Actions & Floating Controls**: Translated `Copy code`, `At mention code block`, `Add inline comment`, `Fold code block`, `User message`, `Send message`.
 - **Error Banners & Dynamic Templates**: Translated `Agent execution terminated due to error.` and added dynamic regex handlers for `See all (N)`, `Ran N commands`, `Load older messages, showing N of M`, and `Fold lines N-M`.
 

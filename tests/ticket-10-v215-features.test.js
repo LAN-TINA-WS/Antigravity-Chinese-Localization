@@ -67,6 +67,9 @@ check('preload.js 包含 Good response 映射', preloadSource.includes('"Good re
 check('preload.js 包含 Bad response 映射', preloadSource.includes('"Bad response": "差评回复"'), true);
 check('preload.js 包含 More actions 映射', preloadSource.includes('"More actions": "更多操作"'), true);
 check('preload.js 包含 Pin conversation 映射', preloadSource.includes('"Pin conversation": "置顶对话"'), true);
+check('preload.js 包含 Pinned Conversations 映射', preloadSource.includes('"Pinned Conversations": "置顶对话"'), true);
+check('preload.js 包含 pinned conversations 映射', preloadSource.includes('"pinned conversations": "置顶对话"'), true);
+check('preload.js 包含 Recent Conversations 映射', preloadSource.includes('"Recent Conversations": "最近对话"'), true);
 check('preload.js 包含 Undo to this point 映射', preloadSource.includes('"Undo to this point": "撤销到此处"'), true);
 check('preload.js 包含 Copy code 映射', preloadSource.includes('"Copy code": "复制代码"'), true);
 check('preload.js 包含 At mention code block 映射', preloadSource.includes('"At mention code block": "提及代码块"'), true);
@@ -86,6 +89,7 @@ check('preload.js 包含 Fold lines 动态正则', preloadSource.includes('/^Fol
 check('localize.js 包含 Good response 映射', localizeSource.includes('"Good response": "好评回复"'), true);
 check('localize.js 包含 Bad response 映射', localizeSource.includes('"Bad response": "差评回复"'), true);
 check('localize.js 包含 More actions 映射', localizeSource.includes('"More actions": "更多操作"'), true);
+check('localize.js 包含 Pinned Conversations 映射', localizeSource.includes('"Pinned Conversations": "置顶对话"'), true);
 check('localize.js 包含 See all (N) 动态正则', localizeSource.includes('/^See all\\s*\\(([^)]+)\\)$/i'), true);
 
 console.log('\n========================================');
