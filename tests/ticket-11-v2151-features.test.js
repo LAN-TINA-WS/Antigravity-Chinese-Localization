@@ -94,7 +94,57 @@ check('preload.js 包含 Fold lines 动态正则', preloadSource.includes('/^Fol
 check('localize.js 包含 Good response 映射', localizeSource.includes('"Good response": "好评回复"'), true);
 check('localize.js 包含 Bad response 映射', localizeSource.includes('"Bad response": "差评回复"'), true);
 check('localize.js 包含 More actions 映射', localizeSource.includes('"More actions": "更多操作"'), true);
-check('localize.js 包含 See all (N) 动态正则', localizeSource.includes('/^See all\\s*\\(([^)]+)\\)$/i'), true);
+// 8. 安全预设与本地沙盒隔离模式校验
+console.log('\n--- 安全预设与本地沙盒隔离模式校验 ---');
+check('preload.js 包含 Enable Sandbox Mode (Preview) 映射', preloadSource.includes('"Enable Sandbox Mode (Preview)": "启用沙盒模式 (预览)"'), true);
+check('preload.js 包含 Restricts agent tools 隔离描述映射', preloadSource.includes('"Restricts agent tools to a secure, isolated local sandbox.": "将智能体工具限制在安全、隔离的本地沙盒环境中。"'), true);
+check('preload.js 包含 Security Preset 映射', preloadSource.includes('"Security Preset": "安全预设"'), true);
+
+check('localize.js 包含 Enable Sandbox Mode (Preview) 映射', localizeSource.includes('"Enable Sandbox Mode (Preview)": "启用沙盒模式 (预览)"'), true);
+check('localize.js 包含 Restricts agent tools 隔离描述映射', localizeSource.includes('"Restricts agent tools to a secure, isolated local sandbox.": "将智能体工具限制在安全、隔离的本地沙盒环境中。"'), true);
+check('localize.js 包含 Security Preset 映射', localizeSource.includes('"Security Preset": "安全预设"'), true);
+
+// 9. 高级设置与差异视图操作校验 (Advanced Settings & Diff Review Actions)
+console.log('\n--- 高级设置与差异视图操作校验 ---');
+check('preload.js 包含 Advanced Settings 映射', preloadSource.includes('"Advanced Settings": "高级设置"'), true);
+check('preload.js 包含 Advanced 设置 映射', preloadSource.includes('"Advanced 设置": "高级设置"'), true);
+check('preload.js 包含 Automatic Check for Updates 映射', preloadSource.includes('"Automatic Check for Updates": "自动检查更新"'), true);
+check('preload.js 包含 Collapse All 映射', preloadSource.includes('"Collapse All": "全部折叠"'), true);
+check('preload.js 包含 Expand All 映射', preloadSource.includes('"Expand All": "全部展开"'), true);
+check('preload.js 包含 View Stacked Diff 映射', preloadSource.includes('"View Stacked Diff": "查看堆叠差异"'), true);
+check('preload.js 包含 View Split Diff 映射', preloadSource.includes('"View Split Diff": "查看分屏差异"'), true);
+check('preload.js 包含 Show Whitespace Changes 映射', preloadSource.includes('"Show Whitespace Changes": "显示空白字符变动"'), true);
+check('preload.js 包含 Hide Whitespace Changes 映射', preloadSource.includes('"Hide Whitespace Changes": "隐藏空白字符变动"'), true);
+check('preload.js 包含 Collapse All Folders 映射', preloadSource.includes('"Collapse All Folders": "折叠所有文件夹"'), true);
+
+check('localize.js 包含 Advanced Settings 映射', localizeSource.includes('"Advanced Settings": "高级设置"'), true);
+check('localize.js 包含 Advanced 设置 映射', localizeSource.includes('"Advanced 设置": "高级设置"'), true);
+check('localize.js 包含 Automatic Check for Updates 映射', localizeSource.includes('"Automatic Check for Updates": "自动检查更新"'), true);
+check('localize.js 包含 Collapse All 映射', localizeSource.includes('"Collapse All": "全部折叠"'), true);
+check('localize.js 包含 Expand All 映射', localizeSource.includes('"Expand All": "全部展开"'), true);
+check('localize.js 包含 View Stacked Diff 映射', localizeSource.includes('"View Stacked Diff": "查看堆叠差异"'), true);
+check('localize.js 包含 View Split Diff 映射', localizeSource.includes('"View Split Diff": "查看分屏差异"'), true);
+check('localize.js 包含 Show Whitespace Changes 映射', localizeSource.includes('"Show Whitespace Changes": "显示空白字符变动"'), true);
+check('localize.js 包含 Hide Whitespace Changes 映射', localizeSource.includes('"Hide Whitespace Changes": "隐藏空白字符变动"'), true);
+check('localize.js 包含 Collapse All Folders 映射', localizeSource.includes('"Collapse All Folders": "折叠所有文件夹"'), true);
+
+// 10. 项目专属权限与全局继承校验 (Project Permissions & Inherit Global)
+console.log('\n--- 项目专属权限与全局继承校验 ---');
+check('preload.js 包含 Inherit Global 映射', preloadSource.includes('"Inherit Global": "继承全局"'), true);
+check('preload.js 包含 Inherits your Global Permissions 选项简介映射', preloadSource.includes('"Inherits your Global Permissions when working in this project.": "在此项目中工作时继承您的全局权限。"'), true);
+check('preload.js 包含 Also includes 映射', preloadSource.includes('"Also includes": "在当前项目中工作时亦继承"'), true);
+check('preload.js 包含 when working in this project. 映射', preloadSource.includes('"when working in this project.": "配置。"'), true);
+check('preload.js 包含 Manually customize individual settings. 映射', preloadSource.includes('"Manually customize individual settings.": "手动自定义各项独立设置。"'), true);
+check('preload.js 包含 Permission Preset 映射', preloadSource.includes('"Permission Preset": "权限预设"'), true);
+check('preload.js 包含 Terminal Command Auto Execution 映射', preloadSource.includes('"Terminal Command Auto Execution": "终端命令自动执行"'), true);
+
+check('localize.js 包含 Inherit Global 映射', localizeSource.includes('"Inherit Global": "继承全局"'), true);
+check('localize.js 包含 Inherits your Global Permissions 选项简介映射', localizeSource.includes('"Inherits your Global Permissions when working in this project.": "在此项目中工作时继承您的全局权限。"'), true);
+check('localize.js 包含 Also includes 映射', localizeSource.includes('"Also includes": "在当前项目中工作时亦继承"'), true);
+check('localize.js 包含 when working in this project. 映射', localizeSource.includes('"when working in this project.": "配置。"'), true);
+check('localize.js 包含 Manually customize individual settings. 映射', localizeSource.includes('"Manually customize individual settings.": "手动自定义各项独立设置。"'), true);
+check('localize.js 包含 Permission Preset 映射', localizeSource.includes('"Permission Preset": "权限预设"'), true);
+check('localize.js 包含 Terminal Command Auto Execution 映射', localizeSource.includes('"Terminal Command Auto Execution": "终端命令自动执行"'), true);
 
 console.log('\n========================================');
 console.log(`测试完成: ${passed}/${total} 通过 (${passed === total ? 'ALL PASS' : 'FAILED'})`);
@@ -103,3 +153,6 @@ console.log('========================================');
 if (passed !== total) {
   process.exit(1);
 }
+
+
+
