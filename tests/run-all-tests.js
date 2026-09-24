@@ -2,9 +2,16 @@ const { execSync } = require('child_process');
 const path = require('path');
 
 const tests = [
-  'ticket-01-translation.test.js',
-  'ticket-02-dom-skip.test.js',
-  'ticket-03-workflow-safety.test.js'
+  'ticket-03-workflow-safety.test.js',
+  'ticket-04-slash-commands.test.js',
+  'ticket-05-at-mentions.test.js',
+  'ticket-06-project-and-copy.test.js',
+  'ticket-07-v213-features.test.js',
+  'ticket-08-split-and-menus.test.js',
+  'ticket-09-v214-features.test.js',
+  'ticket-10-v215-features.test.js',
+  'ticket-11-v2151-features.test.js',
+  'ticket-12-v2170-features.test.js'
 ];
 
 console.log('================ 全套 TDD 回归测试套件 ================\n');
@@ -13,6 +20,7 @@ let allPassed = true;
 
 for (const test of tests) {
   const testPath = path.join(__dirname, test);
+  console.log(`\n>>> [RUNNING TEST]: ${test}`);
   try {
     const output = execSync(`node "${testPath}"`, { encoding: 'utf-8' });
     console.log(output);

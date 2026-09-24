@@ -79,3 +79,21 @@ const languageServer_1 = require("./languageServer");
         (0, vitest_1.expect)(cl).toBe('');
     });
 });
+(0, vitest_1.describe)('extractOpenUrl', () => {
+    (0, vitest_1.it)('extracts a valid https URL', () => {
+        const line = 'ANTIGRAVITY_OPEN_URL: https://accounts.google.com/o/oauth2/auth?x=1';
+        (0, vitest_1.expect)((0, languageServer_1.extractOpenUrl)(line)).toBe('https://accounts.google.com/o/oauth2/auth?x=1');
+    });
+    (0, vitest_1.it)('extracts when the marker is mid-line (log prefix)', () => {
+        const line = 'I0910 01:00:00 acquirer.go:120] ANTIGRAVITY_OPEN_URL: http://127.0.0.1:1234/cb';
+        (0, vitest_1.expect)((0, languageServer_1.extractOpenUrl)(line)).toBe('http://127.0.0.1:1234/cb');
+    });
+    (0, vitest_1.it)('rejects non-http(s) schemes', () => {
+        (0, vitest_1.expect)((0, languageServer_1.extractOpenUrl)('ANTIGRAVITY_OPEN_URL: file:///etc/passwd')).toBe(null);
+        (0, vitest_1.expect)((0, languageServer_1.extractOpenUrl)('ANTIGRAVITY_OPEN_URL: javascript:alert(1)')).toBe(null);
+    });
+    (0, vitest_1.it)('rejects malformed URLs and unrelated lines', () => {
+        (0, vitest_1.expect)((0, languageServer_1.extractOpenUrl)('ANTIGRAVITY_OPEN_URL: not-a-url')).toBe(null);
+        (0, vitest_1.expect)((0, languageServer_1.extractOpenUrl)('listening on tcp port at 4242 for HTTPS')).toBe(null);
+    });
+});

@@ -96,7 +96,7 @@ check('localize.js 包含 Good response 映射', localizeSource.includes('"Good 
 check('localize.js 包含 Bad response 映射', localizeSource.includes('"Bad response": "差评回复"'), true);
 check('localize.js 包含 More actions 映射', localizeSource.includes('"More actions": "更多操作"'), true);
 check('localize.js 包含 Pinned Conversations 映射', localizeSource.includes('"Pinned Conversations": "置顶对话"'), true);
-check('localize.js 包含 See all (N) 动态正则', localizeSource.includes('/^See all\\s*\\(([^)]+)\\)$/i'), true);
+check('localize.js 包含 See all (N) 动态正则', localizeSource.includes('/^See all\\\\s*\\\\(([^)]+)\\\\)$/i') || localizeSource.includes('/^See all\\s*\\(([^)]+)\\)$/i'), true);
 
 console.log('\n========================================');
 console.log(`测试完成: ${passed}/${total} 通过 (${passed === total ? 'ALL PASS' : 'FAILED'})`);

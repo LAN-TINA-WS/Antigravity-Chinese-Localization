@@ -47,20 +47,57 @@ const customScheme_1 = require("./customScheme");
 const tray_1 = require("./tray");
 const constants_1 = require("./ideInstall/constants");
 const url_1 = require("url");
+const wsl_1 = require("./wsl");
+const menu_1 = require("./menu");
 /**
  * Registers all IPC handlers for the main process.
  */
 function registerIpcHandlers(storageManager) {
     // Dialog
+    // In WSL mode, start the folder dialog in the distro's home directory.
+    async function dialogDefaultPath() {
+        const distro = (0, wsl_1.getActiveWslDistro)();
+        if (!distro) {
+            return undefined;
+        }
+        try {
+            return (0, wsl_1.distroToWindowsPath)(await (0, wsl_1.getDistroHome)(distro), distro);
+        }
+        catch {
+            return undefined;
+        }
+    }
+    // In WSL mode, translate a picked Windows path to the distro's view.
+    // Returns undefined when the path is unusable (e.g. another distro).
+    function mapPickedPath(picked) {
+        const distro = (0, wsl_1.getActiveWslDistro)();
+        if (!distro) {
+            return picked;
+        }
+        const t = (0, wsl_1.windowsToDistroPath)(picked, distro);
+        if (t.error) {
+            electron_1.dialog.showErrorBox('无法打开文件夹', t.error);
+            return undefined;
+        }
+        if (t.warning) {
+            void electron_1.dialog.showMessageBox({
+                type: 'warning',
+                message: '文件夹位于 Windows 文件系统中',
+                detail: t.warning,
+            });
+        }
+        return t.path;
+    }
     electron_1.ipcMain.handle('dialog:open-workspace', async () => {
         const result = await electron_1.dialog.showOpenDialog({
             properties: ['openDirectory', 'createDirectory'],
-            title: 'Open workspace',
+            title: '打开工作区',
+            defaultPath: await dialogDefaultPath(),
         });
         if (result.canceled || result.filePaths.length === 0) {
             return undefined;
         }
-        return result.filePaths[0];
+        return mapPickedPath(result.filePaths[0]);
     });
     // Like 'dialog:open-workspace' but allows selecting multiple folders,
     // returning an array of paths (empty if cancelled).
@@ -68,11 +105,14 @@ function registerIpcHandlers(storageManager) {
         const result = await electron_1.dialog.showOpenDialog({
             properties: ['openDirectory', 'createDirectory', 'multiSelections'],
             title: 'Open workspaces',
+            defaultPath: await dialogDefaultPath(),
         });
         if (result.canceled || result.filePaths.length === 0) {
             return [];
         }
-        return result.filePaths;
+        return result.filePaths
+            .map(mapPickedPath)
+            .filter((p) => p !== undefined);
     });
     // Auto-updater
     electron_1.ipcMain.handle('updater:apply', async () => {
@@ -258,6 +298,12 @@ function registerIpcHandlers(storageManager) {
         }
     });
     electron_1.ipcMain.handle('shell:reveal-in-file-picker', (_event, path) => {
+        const distro = (0, wsl_1.getActiveWslDistro)();
+        if (distro) {
+            const posixPath = (0, url_1.fileURLToPath)(path, { windows: false });
+            electron_1.shell.showItemInFolder((0, wsl_1.distroToWindowsPath)(posixPath, distro));
+            return;
+        }
         electron_1.shell.showItemInFolder((0, url_1.fileURLToPath)(path));
     });
     // IDE installation check
@@ -270,5 +316,28 @@ function registerIpcHandlers(storageManager) {
         catch {
             return false;
         }
+    });
+    // WSL environment switching (Windows only). Lets the web UI (e.g. the
+    // Settings page) discover WSL distros and relaunch the app into/out of one.
+    electron_1.ipcMain.handle('wsl:get-state', async () => {
+        if (!(0, wsl_1.isWslAvailable)()) {
+            return { available: false, activeDistro: null, distros: [] };
+        }
+        try {
+            const distros = await (0, wsl_1.listWslDistros)();
+            return {
+                available: true,
+                activeDistro: (0, wsl_1.getActiveWslDistro)() ?? null,
+                distros: distros.map((d) => ({ name: d.name, isDefault: d.isDefault })),
+            };
+        }
+        catch (err) {
+            main_1.default.error('wsl:get-state failed:', err);
+            return { available: false, activeDistro: null, distros: [] };
+        }
+    });
+    // Relaunches into the given distro, or locally when `distro` is empty.
+    electron_1.ipcMain.handle('wsl:connect', (_event, distro) => {
+        (0, menu_1.relaunchWithWslDistro)(distro || '');
     });
 }

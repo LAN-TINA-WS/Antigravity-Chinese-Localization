@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { exec, execSync, spawn } = require('child_process');
 
-const CURRENT_VERSION = '2.15.1';
+const CURRENT_VERSION = '2.17.0';
 
 function compareVersions(v1, v2) {
   const parse = (v) => (v || '').replace(/^[vV]/, '').split('.').map(n => parseInt(n, 10) || 0);
@@ -197,6 +197,27 @@ const DOM_TRANSLATOR_INJECTION = `
     "Confirm Quit": "确认退出",
     "Are you sure you want to quit?": "您确定要退出吗？",
     "There may be agents or background tasks running.": "可能还有智能体或后台任务正在运行。",
+    "Connect to WSL": "连接到 WSL",
+    "Reopen Locally": "本地重新打开",
+    "WSL": "WSL",
+    "WSL Environment": "WSL 环境",
+    "WSL environment": "WSL 环境",
+    "Distro": "发行版",
+    "Distros": "发行版",
+    "Default Distro": "默认发行版",
+    "Setting up WSL": "正在配置 WSL",
+    "Setting up WSL…": "正在配置 WSL...",
+    "Downloading the Antigravity binary…": "正在下载 Antigravity 二进制组件…",
+    "Downloading the Antigravity binary": "正在下载 Antigravity 二进制组件",
+    "Installing into": "正在安装到",
+    "Folder is on the Windows filesystem": "文件夹位于 Windows 文件系统",
+    "Cannot open folder": "无法打开文件夹",
+    "WSL distro not found": "未找到 WSL 发行版",
+    "WSL setup failed": "WSL 配置失败",
+    "Open workspace": "打开工作区",
+    "Open workspaces": "打开工作区",
+    "Open Workspace": "打开工作区",
+    "Open Workspaces": "打开工作区",
     "Welcome to the new Antigravity!": "欢迎使用全新 Antigravity！",
     "Antigravity has been redesigned to put agents first with new capabilities. If you'd still like a code editor, you can download it as a separate app named": "Antigravity 已经重构为以智能体为核心的全新平台。如果您仍需要代码编辑器，可以将其作为名为以下的独立应用下载：",
     "Antigravity IDE": "Antigravity IDE 编辑器",
@@ -2235,7 +2256,8 @@ const DOM_TRANSLATOR_INJECTION = `
     "turn": "回合", "turns": "回合",
     "analyzed": "分析", "analyzing": "分析",
     "advanced": "高级", "collapse": "折叠", "expand": "展开",
-    "global": "全局", "inherits": "继承"
+    "global": "全局", "inherits": "继承",
+    "wsl": "WSL", "distro": "发行版", "distros": "发行版"
   };
 
   const combinedDict = Object.assign({}, coreWords, dictionary);
@@ -2329,61 +2351,61 @@ const DOM_TRANSLATOR_INJECTION = `
       return text.replace(trimmed, fixed);
     }
 
-    if (/^See all\s*\(([^)]+)\)$/i.test(trimmed)) {
-      const fixed = trimmed.replace(/^See all\s*\(([^)]+)\)$/i, '查看全部 ($1)');
+    if (/^See all\\s*\\(([^)]+)\\)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^See all\\s*\\(([^)]+)\\)$/i, '查看全部 ($1)');
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
 
-    if (/^Ran\s+(\d+)\s*(?:commands|命令)$/i.test(trimmed)) {
-      const fixed = trimmed.replace(/^Ran\s+(\d+)\s*(?:commands|命令)$/i, '已运行 $1 条命令');
+    if (/^Ran\\s+(\\d+)\\s*(?:commands|命令)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Ran\\s+(\\d+)\\s*(?:commands|命令)$/i, '已运行 $1 条命令');
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
 
-    if (/^Load older messages,\s*showing\s+(\d+)\s+of\s+(\d+)$/i.test(trimmed)) {
-      const fixed = trimmed.replace(/^Load older messages,\s*showing\s+(\d+)\s+of\s+(\d+)$/i, '加载历史消息，正在显示 $1 / $2 条');
+    if (/^Load older messages,\\s*showing\\s+(\\d+)\\s+of\\s+(\\d+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Load older messages,\\s*showing\\s+(\\d+)\\s+of\\s+(\\d+)$/i, '加载历史消息，正在显示 $1 / $2 条');
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
 
-    if (/^Fold lines\s+([0-9-]+)$/i.test(trimmed)) {
-      const fixed = trimmed.replace(/^Fold lines\s+([0-9-]+)$/i, '折叠第 $1 行');
+    if (/^Fold lines\\s+([0-9-]+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Fold lines\\s+([0-9-]+)$/i, '折叠第 $1 行');
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
 
-    if (/^(?:Advanced\s*Settings|Advanced\s*设置|advanced\s*settings)$/i.test(trimmed)) {
+    if (/^(?:Advanced\\s*Settings|Advanced\\s*设置|advanced\\s*settings)$/i.test(trimmed)) {
       const fixed = '高级设置';
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
 
-    if (/^(?:Collapse\s*All|Collapse\s*all|collapse\s*all)$/i.test(trimmed)) {
+    if (/^(?:Collapse\\s*All|Collapse\\s*all|collapse\\s*all)$/i.test(trimmed)) {
       const fixed = '全部折叠';
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
 
-    if (/^(?:Expand\s*All|Expand\s*all|expand\s*all)$/i.test(trimmed)) {
+    if (/^(?:Expand\\s*All|Expand\\s*all|expand\\s*all)$/i.test(trimmed)) {
       const fixed = '全部展开';
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
 
-    if (/^(?:Inherit\s*Global|Inherits\s*Global|继承\s*Global)$/i.test(trimmed)) {
+    if (/^(?:Inherit\\s*Global|Inherits\\s*Global|继承\\s*Global)$/i.test(trimmed)) {
       const fixed = '继承全局';
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
 
-    if (/^Inherits\s+your\s+Global\s+Permissions\s+when\s+working\s+in\s+this\s+project\.?$/i.test(trimmed)) {
+    if (/^Inherits\\s+your\\s+Global\\s+Permissions\\s+when\\s+working\\s+in\\s+this\\s+project\\.?$/i.test(trimmed)) {
       const fixed = '在此项目中工作时继承您的全局权限。';
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
 
-    if (/^Also\s+includes.*(?:Global\s+Permissions|全局权限).*when\s+working\s+in\s+this\s+project/i.test(trimmed)) {
+    if (/^Also\\s+includes.*(?:Global\\s+Permissions|全局权限).*when\\s+working\\s+in\\s+this\\s+project/i.test(trimmed)) {
       const fixed = '在当前项目中工作时，亦继承全局权限配置。';
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
@@ -2397,6 +2419,48 @@ const DOM_TRANSLATOR_INJECTION = `
 
     if (/^(?:Tool[\\s ]+Permissions|工具[\\s ]*Permissions)$/i.test(trimmed)) {
       const fixed = '工具权限';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Setting up WSL:\\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Setting up WSL:\\s*(.+)$/i, '正在配置 WSL: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Installing into\\s*(.+?)[…\\.]*$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Installing into\\s*(.+?)[…\\.]*$/i, '正在安装到 $1…');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^This folder belongs to the WSL distro "([^"]+)", but this window is connected to "([^"]+)"\\.?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^This folder belongs to the WSL distro "([^"]+)", but this window is connected to "([^"]+)"\\.?$/i, '此文件夹属于 WSL 发行版“$1”，但当前窗口连接到“$2”。');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^This location cannot be opened in WSL:\\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^This location cannot be opened in WSL:\\s*(.+)$/i, '无法在 WSL 中打开此位置: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^The WSL distro "([^"]+)" is no longer installed\\.?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^The WSL distro "([^"]+)" is no longer installed\\.?$/i, 'WSL 发行版“$1”已不再安装。');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Antigravity opened on Windows instead\\.?$/i.test(trimmed)) {
+      const fixed = 'Antigravity 已改为在 Windows 本地打开。';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Connected to WSL:\\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Connected to WSL:\\s*(.+)$/i, '已连接到 WSL: $1');
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
@@ -3210,7 +3274,7 @@ function replaceInFile(filePath, target, replacement) {
     log(`文件 ${path.basename(filePath)} 已经应用过此汉化修改，跳过。`);
     return;
   }
-  content = content.replace(target, replacement);
+  content = content.split(target).join(replacement);
   fs.writeFileSync(filePath, content, 'utf-8');
   log(`已成功修改 ${path.basename(filePath)}`);
 }
@@ -3298,21 +3362,34 @@ const menuTranslationMap = {
   'Split Conversation Horizontally': '水平分屏对话',
   'Equalize Split Panes': '均分分屏窗格',
   'Fork': '派生',
-  'Fork Conversation': '派生对话'
+  'Fork Conversation': '派生对话',
+  'Connect to WSL': '连接到 WSL',
+  'Reopen Locally': '本地重新打开'
 };
 function translateMenu(menuItem) {
   if (menuItem.label && menuTranslationMap[menuItem.label]) {
     menuItem.label = menuTranslationMap[menuItem.label];
   }
-  if (menuItem.submenu && menuItem.submenu.items) {
-    menuItem.submenu.items.forEach(translateMenu);
+  if (menuItem.submenu) {
+    if (menuItem.submenu.items) {
+      menuItem.submenu.items.forEach(translateMenu);
+    } else if (Array.isArray(menuItem.submenu)) {
+      menuItem.submenu.forEach(translateMenu);
+    }
   }
 }
 `;
   // Append definitions at the end of the file
   injectOrUpdate(menuPath, menuInjectCode, 'const menuTranslationMap = {', '原生菜单翻译映射');
 
-  // Replace menu application step safely
+  // Fix submenu finding so it matches both original English and translated Chinese labels
+  replaceInFile(
+    menuPath,
+    'const submenuItem = appMenu.items.find((item) => item.label === submenuLabel);',
+    'const submenuItem = appMenu.items.find((item) => item.label === submenuLabel || (typeof menuTranslationMap !== "undefined" && item.label === menuTranslationMap[submenuLabel]));'
+  );
+
+  // Replace menu application step safely (both initial and WSL async addition)
   replaceInFile(
     menuPath,
     'electron_1.Menu.setApplicationMenu(menu);',
@@ -3353,6 +3430,86 @@ function translateMenu(menuItem) {
       loadingOverlayPath,
       '<div class="text">Loading Antigravity</div>',
       '<div class="text">正在加载 Antigravity...</div>'
+    );
+  }
+
+  // 6. Localize dist/provisionSplash.js (WSL Provision Splash Screen)
+  const splashPath = path.join(EXTRACT_DIR, 'dist', 'provisionSplash.js');
+  if (fs.existsSync(splashPath)) {
+    replaceInFile(
+      splashPath,
+      '<div>Setting up WSL: ${escapeHtml(distro)}</div>',
+      '<div>正在配置 WSL: ${escapeHtml(distro)}</div>'
+    );
+    replaceInFile(
+      splashPath,
+      "document.getElementById('status').textContent = ${JSON.stringify(text)}",
+      "document.getElementById('status').textContent = ${JSON.stringify(typeof text === 'string' ? (text.includes('Downloading the Antigravity binary') ? '正在下载 Antigravity 二进制组件…' : (text.startsWith('Installing into ') ? text.replace('Installing into ', '正在安装到 ') : text)) : text)}"
+    );
+  }
+
+  // 7. Localize dist/ipcHandlers.js (Workspace Dialogs & WSL Alerts)
+  const ipcPath = path.join(EXTRACT_DIR, 'dist', 'ipcHandlers.js');
+  if (fs.existsSync(ipcPath)) {
+    replaceInFile(ipcPath, "title: 'Open workspace',", "title: '打开工作区',");
+    replaceInFile(ipcPath, "title: 'Open workspaces',", "title: '打开工作区',");
+    replaceInFile(ipcPath, "electron_1.dialog.showErrorBox('Cannot open folder', t.error);", "electron_1.dialog.showErrorBox('无法打开文件夹', t.error);");
+    replaceInFile(ipcPath, "message: 'Folder is on the Windows filesystem',", "message: '文件夹位于 Windows 文件系统中',");
+  }
+
+  // 8. Localize dist/wsl.js (WSL Path Mappings & Status Messages)
+  const wslPath = path.join(EXTRACT_DIR, 'dist', 'wsl.js');
+  if (fs.existsSync(wslPath)) {
+    replaceInFile(
+      wslPath,
+      "warning: 'This folder is on the Windows filesystem. Accessing it from WSL (via /mnt) can be slow — for best performance keep projects inside the WSL filesystem.',",
+      "warning: '此文件夹位于 Windows 文件系统。从 WSL 访问（通过 /mnt）可能较慢 — 为获得最佳性能，建议将项目保留在 WSL 文件系统中。',"
+    );
+    replaceInFile(
+      wslPath,
+      "error: `This folder belongs to the WSL distro \"${unc[1]}\", but this window is connected to \"${distro}\".`,",
+      "error: `此文件夹属于 WSL 发行版 \"${unc[1]}\"，但当前窗口连接到 \"${distro}\"。`,"
+    );
+    replaceInFile(
+      wslPath,
+      "error: `This location cannot be opened in WSL: ${winPath}`",
+      "error: `无法在 WSL 中打开此位置: ${winPath}`"
+    );
+    replaceInFile(
+      wslPath,
+      "onStatus?.('Downloading the Antigravity binary\\u2026');",
+      "onStatus?.('正在下载 Antigravity 二进制组件\\u2026');"
+    );
+    replaceInFile(
+      wslPath,
+      "onStatus?.(`Installing into ${distro}\\u2026`);",
+      "onStatus?.(`正在安装到 ${distro}\\u2026`);"
+    );
+  }
+
+  // 9. Localize dist/main.js (Startup & WSL Warnings)
+  const mainPath = path.join(EXTRACT_DIR, 'dist', 'main.js');
+  if (fs.existsSync(mainPath)) {
+    replaceInFile(mainPath, "title: 'WSL distro not found',", "title: '未找到 WSL 发行版',");
+    replaceInFile(
+      mainPath,
+      "message: `The WSL distro \"${WSL_DISTRO}\" is no longer installed.`,",
+      "message: `WSL 发行版 \"${WSL_DISTRO}\" 已不再安装。`,"
+    );
+    replaceInFile(
+      mainPath,
+      "detail: 'Antigravity opened on Windows instead.',",
+      "detail: 'Antigravity 已改为在 Windows 本地打开。',"
+    );
+    replaceInFile(
+      mainPath,
+      "await electron_1.dialog.showErrorBox('WSL setup failed', msg);",
+      "await electron_1.dialog.showErrorBox('WSL 配置失败', msg);"
+    );
+    replaceInFile(
+      mainPath,
+      "await electron_1.dialog.showErrorBox('Startup failed', msg);",
+      "await electron_1.dialog.showErrorBox('启动失败', msg);"
     );
   }
 
@@ -3695,6 +3852,17 @@ const server = http.createServer((req, res) => {
     res.end('Not Found');
   }
 });
+
+if (process.argv.includes('--apply-only')) {
+  try {
+    applyTranslations();
+    console.log('🎉 静态文件汉化注入全部成功！');
+    process.exit(0);
+  } catch (err) {
+    console.error('❌ 汉化注入失败:', err.message);
+    process.exit(1);
+  }
+}
 
 if (process.argv.includes('--now')) {
   const defaultAppDir = getAppDir(getHostUsername(), true, '');

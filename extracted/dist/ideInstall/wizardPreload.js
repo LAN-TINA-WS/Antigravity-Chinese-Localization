@@ -42,6 +42,27 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     "Confirm Quit": "确认退出",
     "Are you sure you want to quit?": "您确定要退出吗？",
     "There may be agents or background tasks running.": "可能还有智能体或后台任务正在运行。",
+    "Connect to WSL": "连接到 WSL",
+    "Reopen Locally": "本地重新打开",
+    "WSL": "WSL",
+    "WSL Environment": "WSL 环境",
+    "WSL environment": "WSL 环境",
+    "Distro": "发行版",
+    "Distros": "发行版",
+    "Default Distro": "默认发行版",
+    "Setting up WSL": "正在配置 WSL",
+    "Setting up WSL…": "正在配置 WSL...",
+    "Downloading the Antigravity binary…": "正在下载 Antigravity 二进制组件…",
+    "Downloading the Antigravity binary": "正在下载 Antigravity 二进制组件",
+    "Installing into": "正在安装到",
+    "Folder is on the Windows filesystem": "文件夹位于 Windows 文件系统",
+    "Cannot open folder": "无法打开文件夹",
+    "WSL distro not found": "未找到 WSL 发行版",
+    "WSL setup failed": "WSL 配置失败",
+    "Open workspace": "打开工作区",
+    "Open workspaces": "打开工作区",
+    "Open Workspace": "打开工作区",
+    "Open Workspaces": "打开工作区",
     "Welcome to the new Antigravity!": "欢迎使用全新 Antigravity！",
     "Antigravity has been redesigned to put agents first with new capabilities. If you'd still like a code editor, you can download it as a separate app named": "Antigravity 已经重构为以智能体为核心的全新平台。如果您仍需要代码编辑器，可以将其作为名为以下的独立应用下载：",
     "Antigravity IDE": "Antigravity IDE 编辑器",
@@ -1401,7 +1422,108 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     "Play sound on task completion": "任务完成时播放提示音",
     "Sound effects": "声音效果",
 
+    // ===== 深度汉化补充：v2.15.0 智能体控制、项目状态与键位导航 (v2.15.0 Features) =====
+    "No Project": "无项目",
+    "No project": "无项目",
+    "no project": "无项目",
+    "Invalid tool call": "无效的工具调用",
+    "Invalid Tool Call": "无效的工具调用",
+    "invalid tool call": "无效的工具调用",
+    "Main Agent": "主智能体",
+    "Main agent": "主智能体",
+    "main agent": "主智能体",
+    "Main Agent (Default)": "主智能体 (默认)",
+    "Main agent (default)": "主智能体 (默认)",
+    "Default tools": "默认工具",
+    "default tools": "默认工具",
+    "Default Tools": "默认工具",
+    "Default prompt sections": "默认提示词小节",
+    "default prompt sections": "默认提示词小节",
+    "Default prompts": "默认提示词",
+    "default prompts": "默认提示词",
+    "Switch off default tools": "关闭默认工具",
+    "Switch off default prompts": "关闭默认提示词",
+    "Switch off default prompt sections": "关闭默认提示词小节",
+    "Add back tools": "重新添加工具",
+    "Cannot display binary file": "无法显示二进制文件",
+    "Binary file cannot be displayed": "无法显示二进制文件",
+    "Unable to display binary file": "无法显示二进制文件",
+    "Command canceled": "命令已取消",
+    "Command cancelled": "命令已取消",
+    "Canceled on restart": "重启时已取消",
+    "Cancelled on restart": "重启时已取消",
+    "Working outside of a project": "在项目外部工作",
+    "Working outside of a project.": "在项目外部工作。",
+
+    // ===== 深度汉化补充：高频交互操作、无障碍标签与反馈按钮 =====
+    "Good response": "好评回复",
+    "Bad response": "差评回复",
+    "More actions": "更多操作",
+    "more actions": "更多操作",
+    "More options": "更多选项",
+    "more options": "更多选项",
+    "Pin conversation": "置顶对话",
+    "Unpin conversation": "取消置顶对话",
+    "Archive conversation": "归档对话",
+    "Pinned Conversations": "置顶对话",
+    "Pinned conversations": "置顶对话",
+    "pinned conversations": "置顶对话",
+    "PINNED CONVERSATIONS": "置顶对话",
+    "Pinned Conversation": "置顶对话",
+    "Pinned conversation": "置顶对话",
+    "pinned conversation": "置顶对话",
+    "Pinned": "已置顶",
+    "pinned": "已置顶",
+    "Unpinned": "未置顶",
+    "unpinned": "未置顶",
+    "Recent Conversations": "最近对话",
+    "Recent conversations": "最近对话",
+    "recent conversations": "最近对话",
+    "All Conversations": "全部对话",
+    "All conversations": "全部对话",
+    "all conversations": "全部对话",
+    "Other Conversations": "其他对话",
+    "other conversations": "其他对话",
+    "Undo to this point": "撤销到此处",
+    "Copy code": "复制代码",
+    "copy code": "复制代码",
+    "At mention code block": "提及代码块",
+    "Add inline comment": "添加行内注释",
+    "Fold code block": "折叠代码块",
+    "User message": "用户消息",
+    "user message": "用户消息",
+    "Send message": "发送消息",
+    "send message": "发送消息",
+    "Agent execution terminated due to error.": "智能体执行因错误而终止。",
+    "Agent execution terminated due to error": "智能体执行因错误而终止",
+    "Agent execution terminated": "智能体执行已终止",
+    "See all": "查看全部",
+    "see all": "查看全部",
+    "Media actions": "媒体操作",
+    "Overview tab": "概览标签页",
+    "Review tab": "评审标签页",
+    "Terminal tab": "终端标签页",
+    "Resolve Merge": "解决合并",
+    "Add comment": "添加注释",
+
     // ===== 深度汉化补充：远程控制 (Remote Control) =====
+    "Open in Remote Control": "在远程控制中打开",
+    "Open in remote control": "在远程控制中打开",
+    "open in remote control": "在远程控制中打开",
+    "Continue your work from another device with Remote Control. Scan the QR code or open the link below.": "借助远程控制从另一台设备继续工作。请扫描下方二维码或打开下方链接。",
+    "Continue your work from another device with Remote Control. Scan the QR code or open the link below": "借助远程控制从另一台设备继续工作。请扫描下方二维码或打开下方链接",
+    "Continue your work from another device with Remote Control.": "借助远程控制从另一台设备继续工作。",
+    "Continue your work from another device with Remote Control": "借助远程控制从另一台设备继续工作",
+    "Continue your work from another device with remote control.": "借助远程控制从另一台设备继续工作。",
+    "Continue your work from another device with remote control": "借助远程控制从另一台设备继续工作",
+    "Continue your work from another device": "从另一台设备继续工作",
+    "continue your work from another device": "从另一台设备继续工作",
+    "Scan the QR code or open the link below.": "扫描二维码或打开下方链接。",
+    "Scan the QR code or open the link below": "扫描二维码或打开下方链接",
+    "Scan the QR code": "扫描二维码",
+    "scan the QR code": "扫描二维码",
+    "open the link below.": "打开下方链接。",
+    "open the link below": "打开下方链接",
     "Remote Control": "远程控制",
     "Remote control": "远程控制",
     "remote control": "远程控制",
@@ -1532,8 +1654,19 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     "terminal sandbox": "终端沙盒",
     "Sandbox Mode": "沙盒模式",
     "sandbox mode": "沙盒模式",
+    "Enable Sandbox Mode (Preview)": "启用沙盒模式 (预览)",
+    "Enable Sandbox Mode (preview)": "启用沙盒模式 (预览)",
+    "enable sandbox mode (preview)": "启用沙盒模式 (预览)",
+    "Enable Sandbox Mode": "启用沙盒模式",
+    "enable sandbox mode": "启用沙盒模式",
+    "Sandbox Mode (Preview)": "沙盒模式 (预览)",
+    "sandbox mode (preview)": "沙盒模式 (预览)",
     "Enable Terminal Sandbox": "启用终端沙盒",
     "enable terminal sandbox": "启用终端沙盒",
+    "Restricts agent tools to a secure, isolated local sandbox.": "将智能体工具限制在安全、隔离的本地沙盒环境中。",
+    "Restricts agent tools to a secure, isolated local sandbox": "将智能体工具限制在安全、隔离的本地沙盒环境中",
+    "restricts agent tools to a secure, isolated local sandbox.": "将智能体工具限制在安全、隔离的本地沙盒环境中。",
+    "restricts agent tools to a secure, isolated local sandbox": "将智能体工具限制在安全、隔离的本地沙盒环境中",
     "Run agent commands inside a restricted sandbox environment for added security.": "在受限沙盒环境中运行智能体命令以提高系统安全性。",
     "Run agent commands inside a restricted sandbox environment": "在受限沙盒环境中运行智能体命令",
     "for added security.": "以提高安全性。",
@@ -1541,6 +1674,78 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     "Commands executed outside the sandbox require explicit user confirmation.": "在沙盒外执行的命令需要用户显式确认。",
     "Sandbox allowed domains": "沙盒允许访问的域名",
     "Sandbox Allowed Domains": "沙盒允许域名",
+    "Security Preset": "安全预设",
+    "Security preset": "安全预设",
+    "security preset": "安全预设",
+    "Security Presets": "安全预设",
+    "Security presets": "安全预设",
+    "security presets": "安全预设",
+    "Custom Preset": "自定义预设",
+    "Standard Preset": "标准预设",
+    "Strict Preset": "严格预设",
+
+    // ===== 深度汉化补充：项目与对话权限继承 (Project & Conversation Permission Inheritance) =====
+    "Inherit Global": "继承全局",
+    "inherit global": "继承全局",
+    "Inherits Global": "继承全局",
+    "inherits global": "继承全局",
+    "Inherit global": "继承全局",
+    "Inherit Global Permissions": "继承全局权限",
+    "inherit global permissions": "继承全局权限",
+    "Inherit Global Permissions.": "继承全局权限。",
+    "Inherits your Global Permissions when working in this project.": "在此项目中工作时继承您的全局权限。",
+    "Inherits your Global Permissions when working in this project": "在此项目中工作时继承您的全局权限",
+    "inherits your global permissions when working in this project.": "在此项目中工作时继承您的全局权限。",
+    "inherits your global permissions when working in this project": "在此项目中工作时继承您的全局权限",
+    "Inherits your Global Permissions": "继承您的全局权限",
+    "inherits your global permissions": "继承您的全局权限",
+    "Manually customize individual settings.": "手动自定义各项独立设置。",
+    "Manually customize individual settings": "手动自定义各项独立设置",
+    "manually customize individual settings.": "手动自定义各项独立设置。",
+    "Also includes": "在当前项目中工作时亦继承",
+    "also includes": "在当前项目中工作时亦继承",
+    "when working in this project.": "配置。",
+    "when working in this project": "配置",
+    "When working in this project.": "在当前项目中工作时。",
+    "When working in this project": "在当前项目中工作时",
+    "This project was created for": "此项目创建用于",
+    "automation. Automations do not inherit Global Permissions.": "自动化任务。自动化任务不会继承全局权限。",
+    "Automations do not inherit Global Permissions.": "自动化任务不会继承全局权限。",
+    "Automations do not inherit Global Permissions": "自动化任务不会继承全局权限",
+    "automations do not inherit global permissions.": "自动化任务不会继承全局权限。",
+    "Outside of folders file access policy": "工作文件夹外文件访问策略",
+    "Configures how the agent tries to access files outside of its working folders.": "配置智能体尝试访问其工作文件夹之外的文件时的访问策略。",
+    "Configures how the agent tries to access files outside of its working folders": "配置智能体尝试访问其工作文件夹之外的文件时的访问策略",
+    "Terminal Command Auto Execution": "终端命令自动执行",
+    "Controls whether terminal commands require your approval before running.": "控制终端命令在运行前是否需要您的批准。",
+    "Controls whether terminal commands require your approval before running": "控制终端命令在运行前是否需要您的批准",
+    "Proceed in Sandbox": "在沙盒中执行",
+    "proceed in sandbox": "在沙盒中执行",
+    "Require Review": "需要审查",
+    "require review": "需要审查",
+    "Permission Preset": "权限预设",
+    "permission preset": "权限预设",
+    "Permission Presets": "权限预设",
+    "permission presets": "权限预设",
+    "Permission Settings": "权限设置",
+    "permission settings": "权限设置",
+    "Local Permissions": "本地权限",
+    "local permissions": "本地权限",
+    "Agent Settings (For Project)": "智能体设置 (适用于项目)",
+    "Configure global allowed and denied resource permissions.": "配置全局允许或禁止的资源权限。",
+    "Requires manual review for all terminal commands and file accesses outside of the working folders.": "对所有终端命令以及工作区文件夹之外的文件访问均需要手动审查。",
+    "Requires manual review for all terminal commands and file accesses outside of the working folders": "对所有终端命令以及工作区文件夹之外的文件访问均需要手动审查",
+    "All terminal commands require review. The agent can read or write to any file in the machine.": "所有终端命令均需审查。智能体可以读写本机上的任意文件。",
+    "All terminal commands require review.": "所有终端命令均需审查。",
+    "The agent can read or write to any file in the machine.": "智能体可以读写本机上的任意文件。",
+    "Disables all safety barriers for maximal iteration velocity.": "禁用所有安全防护以换取最快的迭代速度。",
+    "Full machine": "本机全部权限",
+    "full machine": "本机全部权限",
+    "Useful for typical development with an emphasis on security. It prioritizes safety over speed by requiring manual approval for all terminal commands and files outside the project directory.": "适用于注重安全性的常规开发场景。通过要求对所有终端命令及项目目录之外的文件操作进行手动批准，将安全性置于速度之上。",
+    "Useful for tasks that require file access across your full machine. The agent has full read and write access to all local files, but all proposed terminal commands require manual review and approval before running.": "适用于需要跨整台计算机访问文件的任务。智能体对所有本地文件拥有完全读写权限，但所有拟执行的终端命令在运行前均需手动审查与批准。",
+    "A high-risk mode that disables all safety barriers. The agent operates with full system access, auto-executes all terminal commands, and reads or writes to all local files without review prompts.": "高风险模式，禁用所有安全防护。智能体拥有完整的系统访问权限，会自动执行所有终端命令，并在读写任意本地文件时均不弹出审查提示。",
+    "managed by your organization": "由您的组织统一管理",
+    "Disabled by organization policy": "已由组织策略禁用",
 
     // ===== 深度汉化补充：文件与网络访问策略 (File & Network Access) =====
     "Non-Workspace File Access": "工作区外文件访问",
@@ -1837,6 +2042,43 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     "Commands": "命令",
     "Skills": "技能",
     "Workflows": "工作流",
+
+    // ===== 深度汉化补充：高级设置与差异视图操作 (Advanced Settings & Diff Review Actions) =====
+    "Advanced Settings": "高级设置",
+    "Advanced settings": "高级设置",
+    "advanced settings": "高级设置",
+    "Advanced 设置": "高级设置",
+    "advanced 设置": "高级设置",
+    "Advanced": "高级",
+    "advanced": "高级",
+    "Automatic Check for Updates": "自动检查更新",
+    "automatic check for updates": "自动检查更新",
+    "Automatically prompt you to restart the app when a new update is available. When disabled, you can check for updates manually from the app menu.": "当有新版本可用时，自动提示您重启应用以完成更新。禁用后，您可以在应用菜单中手动检查更新。",
+    "Automatically prompt you to restart the app when a new update is available.": "当有新版本可用时，自动提示您重启应用以完成更新。",
+    "When disabled, you can check for updates manually from the app menu.": "禁用后，您可以在应用菜单中手动检查更新。",
+    "Collapse All": "全部折叠",
+    "collapse all": "全部折叠",
+    "Collapse all": "全部折叠",
+    "Expand All": "全部展开",
+    "expand all": "全部展开",
+    "Expand all": "全部展开",
+    "View Stacked Diff": "查看堆叠差异",
+    "view stacked diff": "查看堆叠差异",
+    "View Split Diff": "查看分屏差异",
+    "view split diff": "查看分屏差异",
+    "Show Whitespace Changes": "显示空白字符变动",
+    "show whitespace changes": "显示空白字符变动",
+    "Hide Whitespace Changes": "隐藏空白字符变动",
+    "hide whitespace changes": "隐藏空白字符变动",
+    "Collapse All Folders": "折叠所有文件夹",
+    "collapse all folders": "折叠所有文件夹",
+    "Expand All Folders": "展开所有文件夹",
+    "expand all folders": "展开所有文件夹",
+    "Collapse folder": "折叠文件夹",
+    "Expand folder": "展开文件夹",
+    "Collapse file": "折叠文件",
+    "Expand file": "展开文件",
+    "Open in Code Search": "在代码搜索中打开",
   };
 
   const coreWords = {
@@ -1857,7 +2099,10 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     "canceled": "已取消", "js": "Js",
     "explore": "探索", "search": "搜索", "change": "更改", "changes": "更改",
     "turn": "回合", "turns": "回合",
-    "analyzed": "分析", "analyzing": "分析"
+    "analyzed": "分析", "analyzing": "分析",
+    "advanced": "高级", "collapse": "折叠", "expand": "展开",
+    "global": "全局", "inherits": "继承",
+    "wsl": "WSL", "distro": "发行版", "distros": "发行版"
   };
 
   const combinedDict = Object.assign({}, coreWords, dictionary);
@@ -1924,6 +2169,93 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
       }
     }
 
+    if (/Continue your work from another device/i.test(trimmed)) {
+      let fixed = '借助远程控制从另一台设备继续工作。请扫描下方二维码或打开下方链接。';
+      if (!/Scan the QR code/i.test(trimmed)) {
+        fixed = '借助远程控制从另一台设备继续工作。';
+      }
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/Scan the QR code or open the link below/i.test(trimmed)) {
+      const fixed = '扫描下方二维码或打开下方链接。';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Invalid tool call$/i.test(trimmed)) {
+      const fixed = '无效的工具调用';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^No Project$/i.test(trimmed)) {
+      const fixed = '无项目';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^See all\s*\(([^)]+)\)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^See all\s*\(([^)]+)\)$/i, '查看全部 ($1)');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Ran\s+(\d+)\s*(?:commands|命令)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Ran\s+(\d+)\s*(?:commands|命令)$/i, '已运行 $1 条命令');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Load older messages,\s*showing\s+(\d+)\s+of\s+(\d+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Load older messages,\s*showing\s+(\d+)\s+of\s+(\d+)$/i, '加载历史消息，正在显示 $1 / $2 条');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Fold lines\s+([0-9-]+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Fold lines\s+([0-9-]+)$/i, '折叠第 $1 行');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Advanced\s*Settings|Advanced\s*设置|advanced\s*settings)$/i.test(trimmed)) {
+      const fixed = '高级设置';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Collapse\s*All|Collapse\s*all|collapse\s*all)$/i.test(trimmed)) {
+      const fixed = '全部折叠';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Expand\s*All|Expand\s*all|expand\s*all)$/i.test(trimmed)) {
+      const fixed = '全部展开';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Inherit\s*Global|Inherits\s*Global|继承\s*Global)$/i.test(trimmed)) {
+      const fixed = '继承全局';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Inherits\s+your\s+Global\s+Permissions\s+when\s+working\s+in\s+this\s+project\.?$/i.test(trimmed)) {
+      const fixed = '在此项目中工作时继承您的全局权限。';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Also\s+includes.*(?:Global\s+Permissions|全局权限).*when\s+working\s+in\s+this\s+project/i.test(trimmed)) {
+      const fixed = '在当前项目中工作时，亦继承全局权限配置。';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
     if (/^Modify permissions for/i.test(trimmed)) {
       const fixed = '修改针对文件系统、终端命令以及 MCP 工具的安全权限。';
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
@@ -1932,6 +2264,48 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
 
     if (/^(?:Tool[\s ]+Permissions|工具[\s ]*Permissions)$/i.test(trimmed)) {
       const fixed = '工具权限';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Setting up WSL:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Setting up WSL:\s*(.+)$/i, '正在配置 WSL: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Installing into\s*(.+?)[…\.]*$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Installing into\s*(.+?)[…\.]*$/i, '正在安装到 $1…');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^This folder belongs to the WSL distro "([^"]+)", but this window is connected to "([^"]+)"\.?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^This folder belongs to the WSL distro "([^"]+)", but this window is connected to "([^"]+)"\.?$/i, '此文件夹属于 WSL 发行版“$1”，但当前窗口连接到“$2”。');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^This location cannot be opened in WSL:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^This location cannot be opened in WSL:\s*(.+)$/i, '无法在 WSL 中打开此位置: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^The WSL distro "([^"]+)" is no longer installed\.?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^The WSL distro "([^"]+)" is no longer installed\.?$/i, 'WSL 发行版“$1”已不再安装。');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Antigravity opened on Windows instead\.?$/i.test(trimmed)) {
+      const fixed = 'Antigravity 已改为在 Windows 本地打开。';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Connected to WSL:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Connected to WSL:\s*(.+)$/i, '已连接到 WSL: $1');
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
@@ -2218,6 +2592,12 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     finalTranslated = finalTranslated.replace(/([\u4e00-\u9fa5])\s+([\u4e00-\u9fa5])/g, '$1$2');
     // 特殊去重清洗：防止前置分词造成的“使用使用”与半中半英长句残留
     finalTranslated = finalTranslated.replace(/使用使用 Google 插件构建/g, '使用 Google 插件构建');
+    finalTranslated = finalTranslated.replace(/Advanced\s*设置/gi, '高级设置');
+    finalTranslated = finalTranslated.replace(/Collapse\s*All/gi, '全部折叠');
+    finalTranslated = finalTranslated.replace(/Expand\s*All/gi, '全部展开');
+    finalTranslated = finalTranslated.replace(/了解更多关于\s*继承\s*Global/gi, '了解更多关于 继承全局');
+    finalTranslated = finalTranslated.replace(/继承\s*Global/gi, '继承全局');
+    finalTranslated = finalTranslated.replace(/Also\s+includes\s*(?:Global\s*Permissions|全局权限)\s*when\s+working\s+in\s+this\s+project\.?[。.]?/gi, '在当前项目中工作时，亦继承全局权限配置。');
     finalTranslated = finalTranslated.replace(/Configure 智能体 执行[,\s]+queued 消息 delivery[,\s]+and 权限[。.]?/g, '配置智能体执行策略、消息队列发送机制以及安全权限。');
     finalTranslated = finalTranslated.replace(/Automatic 检查更新/g, '自动检查更新');
     finalTranslated = finalTranslated.replace(/每周限额\s*Remaining/gi, '每周限额剩余');

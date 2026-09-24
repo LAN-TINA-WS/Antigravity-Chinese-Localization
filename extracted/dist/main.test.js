@@ -99,6 +99,7 @@ vitest_1.vi.mock('./hostBridgeServer', () => ({
 }));
 vitest_1.vi.mock('./tray', () => ({
     createTray: vitest_1.vi.fn(),
+    insertTrayMenuItem: vitest_1.vi.fn(),
 }));
 vitest_1.vi.mock('./ideInstall', () => ({
     maybeShowIdeInstallWizard: vitest_1.vi.fn().mockResolvedValue('skipped'),

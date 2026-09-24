@@ -27,8 +27,14 @@ console.log('=== 开始 Ticket-11 Antigravity 2.15.1 核心版本与特性专项
 // 1. 版本号校验
 console.log('--- 2.15.1 版本元数据校验 ---');
 const versionMatch = localizeSource.match(/const CURRENT_VERSION = ['"]([^'"]+)['"];/);
-check('localize.js CURRENT_VERSION 版本号必须为 2.15.1', versionMatch ? versionMatch[1] : null, '2.15.1');
-check('extracted/package.json version 必须为 2.15.1', packageJson.version, '2.15.1');
+const currentVer = versionMatch ? versionMatch[1] : '';
+const parseVer = (v) => (v || '').split('.').map(n => parseInt(n, 10) || 0);
+const isVerGte2151 = (v) => {
+  const [maj, min, patch] = parseVer(v);
+  return maj > 2 || (maj === 2 && min > 15) || (maj === 2 && min === 15 && patch >= 1);
+};
+check('localize.js CURRENT_VERSION 版本号有效且 >= 2.15.1', isVerGte2151(currentVer), true);
+check('extracted/package.json version 有效且 >= 2.15.1', isVerGte2151(packageJson.version), true);
 
 // 2. 核心文件完备性
 console.log('\n--- 核心注入文件完备性测试 ---');

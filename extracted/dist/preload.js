@@ -97,6 +97,10 @@ const electronNativeAPI = {
 const ideAPI = {
     isInstalled: () => electron_1.ipcRenderer.invoke('ide:is-installed'),
 };
+const wslAPI = {
+    getState: () => electron_1.ipcRenderer.invoke('wsl:get-state'),
+    connect: (distro) => electron_1.ipcRenderer.invoke('wsl:connect', distro),
+};
 electron_1.contextBridge.exposeInMainWorld('electronUpdater', updaterAPI);
 electron_1.contextBridge.exposeInMainWorld('dialog', dialogAPI);
 electron_1.contextBridge.exposeInMainWorld('nativeNotifications', notificationAPI);
@@ -107,6 +111,7 @@ electron_1.contextBridge.exposeInMainWorld('deepLink', deepLinkAPI);
 electron_1.contextBridge.exposeInMainWorld('agent', agentAPI);
 electron_1.contextBridge.exposeInMainWorld('electronNative', electronNativeAPI);
 electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
+electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
 
 
 // Antigravity 2.0 Chinese Localization Engine Enhanced
@@ -128,6 +133,27 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
     "Confirm Quit": "确认退出",
     "Are you sure you want to quit?": "您确定要退出吗？",
     "There may be agents or background tasks running.": "可能还有智能体或后台任务正在运行。",
+    "Connect to WSL": "连接到 WSL",
+    "Reopen Locally": "本地重新打开",
+    "WSL": "WSL",
+    "WSL Environment": "WSL 环境",
+    "WSL environment": "WSL 环境",
+    "Distro": "发行版",
+    "Distros": "发行版",
+    "Default Distro": "默认发行版",
+    "Setting up WSL": "正在配置 WSL",
+    "Setting up WSL…": "正在配置 WSL...",
+    "Downloading the Antigravity binary…": "正在下载 Antigravity 二进制组件…",
+    "Downloading the Antigravity binary": "正在下载 Antigravity 二进制组件",
+    "Installing into": "正在安装到",
+    "Folder is on the Windows filesystem": "文件夹位于 Windows 文件系统",
+    "Cannot open folder": "无法打开文件夹",
+    "WSL distro not found": "未找到 WSL 发行版",
+    "WSL setup failed": "WSL 配置失败",
+    "Open workspace": "打开工作区",
+    "Open workspaces": "打开工作区",
+    "Open Workspace": "打开工作区",
+    "Open Workspaces": "打开工作区",
     "Welcome to the new Antigravity!": "欢迎使用全新 Antigravity！",
     "Antigravity has been redesigned to put agents first with new capabilities. If you'd still like a code editor, you can download it as a separate app named": "Antigravity 已经重构为以智能体为核心的全新平台。如果您仍需要代码编辑器，可以将其作为名为以下的独立应用下载：",
     "Antigravity IDE": "Antigravity IDE 编辑器",
@@ -2166,7 +2192,8 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
     "turn": "回合", "turns": "回合",
     "analyzed": "分析", "analyzing": "分析",
     "advanced": "高级", "collapse": "折叠", "expand": "展开",
-    "global": "全局", "inherits": "继承"
+    "global": "全局", "inherits": "继承",
+    "wsl": "WSL", "distro": "发行版", "distros": "发行版"
   };
 
   const combinedDict = Object.assign({}, coreWords, dictionary);
@@ -2328,6 +2355,48 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
 
     if (/^(?:Tool[\s ]+Permissions|工具[\s ]*Permissions)$/i.test(trimmed)) {
       const fixed = '工具权限';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Setting up WSL:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Setting up WSL:\s*(.+)$/i, '正在配置 WSL: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Installing into\s*(.+?)[…\.]*$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Installing into\s*(.+?)[…\.]*$/i, '正在安装到 $1…');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^This folder belongs to the WSL distro "([^"]+)", but this window is connected to "([^"]+)"\.?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^This folder belongs to the WSL distro "([^"]+)", but this window is connected to "([^"]+)"\.?$/i, '此文件夹属于 WSL 发行版“$1”，但当前窗口连接到“$2”。');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^This location cannot be opened in WSL:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^This location cannot be opened in WSL:\s*(.+)$/i, '无法在 WSL 中打开此位置: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^The WSL distro "([^"]+)" is no longer installed\.?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^The WSL distro "([^"]+)" is no longer installed\.?$/i, 'WSL 发行版“$1”已不再安装。');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Antigravity opened on Windows instead\.?$/i.test(trimmed)) {
+      const fixed = 'Antigravity 已改为在 Windows 本地打开。';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Connected to WSL:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Connected to WSL:\s*(.+)$/i, '已连接到 WSL: $1');
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
@@ -2619,7 +2688,7 @@ electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
     finalTranslated = finalTranslated.replace(/Expand\s*All/gi, '全部展开');
     finalTranslated = finalTranslated.replace(/了解更多关于\s*继承\s*Global/gi, '了解更多关于 继承全局');
     finalTranslated = finalTranslated.replace(/继承\s*Global/gi, '继承全局');
-    finalTranslated = finalTranslated.replace(/Also\s+includes\s*(?:Global\s*Permissions|全局权限)\s*when\s+working\s+in\s+this\s+project\.?/gi, '在当前项目中工作时，亦继承全局权限配置。');
+    finalTranslated = finalTranslated.replace(/Also\s+includes\s*(?:Global\s*Permissions|全局权限)\s*when\s+working\s+in\s+this\s+project\.?[。.]?/gi, '在当前项目中工作时，亦继承全局权限配置。');
     finalTranslated = finalTranslated.replace(/Configure 智能体 执行[,\s]+queued 消息 delivery[,\s]+and 权限[。.]?/g, '配置智能体执行策略、消息队列发送机制以及安全权限。');
     finalTranslated = finalTranslated.replace(/Automatic 检查更新/g, '自动检查更新');
     finalTranslated = finalTranslated.replace(/每周限额\s*Remaining/gi, '每周限额剩余');

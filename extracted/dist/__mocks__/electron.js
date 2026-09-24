@@ -21,6 +21,7 @@ exports.app = {
     }),
     on: vitest_1.vi.fn(),
     quit: vitest_1.vi.fn(),
+    relaunch: vitest_1.vi.fn(),
     isPackaged: true,
     getAppPath: vitest_1.vi.fn().mockReturnValue('/mock/path'),
     getPath: vitest_1.vi.fn().mockReturnValue('/mock/user/data'),
@@ -118,11 +119,16 @@ const _mockMenuInstance = {
     ],
     getMenuItemById: vitest_1.vi.fn().mockReturnValue({ label: '' }),
 };
-exports.Menu = {
+exports.Menu = Object.assign(vitest_1.vi.fn().mockImplementation(function () {
+    this.items = [];
+    this.append = (item) => {
+        this.items.push(item);
+    };
+}), {
     buildFromTemplate: vitest_1.vi.fn().mockReturnValue(_mockMenuInstance),
     getApplicationMenu: vitest_1.vi.fn().mockReturnValue(_mockMenuInstance),
     setApplicationMenu: vitest_1.vi.fn(),
-};
+});
 const _mockNotificationInstance = {
     show: vitest_1.vi.fn(),
     on: vitest_1.vi.fn(),

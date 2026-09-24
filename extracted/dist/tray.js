@@ -34,6 +34,7 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createTray = createTray;
+exports.insertTrayMenuItem = insertTrayMenuItem;
 exports.updateTrayAgentCount = updateTrayAgentCount;
 const electron_1 = require("electron");
 const path = __importStar(require("path"));
@@ -65,6 +66,18 @@ function createTray(actions) {
         return action;
     });
     contextMenu = electron_1.Menu.buildFromTemplate(translatedActions);
+    tray.setContextMenu(contextMenu);
+}
+/**
+ * Inserts an item into the existing tray context menu at `position`.
+ * Used for items only known asynchronously (e.g. the WSL distro list).
+ */
+function insertTrayMenuItem(position, options) {
+    if (!tray || !contextMenu) {
+        return;
+    }
+    contextMenu.insert(Math.min(position, contextMenu.items.length), new electron_1.MenuItem(options));
+    // Re-set the menu so the tray picks up the change.
     tray.setContextMenu(contextMenu);
 }
 /**

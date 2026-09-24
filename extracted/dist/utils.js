@@ -49,6 +49,7 @@ const path_1 = __importDefault(require("path"));
 const fs = __importStar(require("fs"));
 const paths_1 = require("./paths");
 const loadingOverlay_1 = require("./loadingOverlay");
+const wsl_1 = require("./wsl");
 exports.showQuitConfirmation = false;
 function setShowQuitConfirmation(value) {
     exports.showQuitConfirmation = value;
@@ -107,12 +108,15 @@ function createWindow(url, storageManager) {
     const isLight = theme.includes('LIGHT');
     const backgroundColor = isLight ? '#FAFAFA' : '#131313';
     const foregroundColor = isLight ? '#383A42' : '#FAFAFA';
+    const wslBadge = (0, wsl_1.getActiveWslDistro)()
+        ? ` (WSL: ${(0, wsl_1.getActiveWslDistro)()})`
+        : '';
     const win = new electron_1.BrowserWindow({
         width: 1400,
         height: 900,
         minWidth: 500,
         minHeight: 400,
-        title: electron_1.app.getName(),
+        title: electron_1.app.getName() + wslBadge,
         icon: path_1.default.join(__dirname, '..', 'icon.png'),
         titleBarStyle: 'hidden',
         titleBarOverlay: isMacOS()
@@ -129,14 +133,18 @@ function createWindow(url, storageManager) {
             contextIsolation: true,
             preload: path_1.default.join(__dirname, 'preload.js'),
             devTools: !electron_1.app.isPackaged,
+            // Required for the built-in browser aux pane, which renders web pages
+            // in an Electron <webview> guest inside the embedded Agent UI Toolkit.
+            webviewTag: true,
         },
     });
     // Prevent the menu dropdown from being very wide due to long page titles
     win.on('page-title-updated', (event, title) => {
         const maxLength = 25;
-        if (title.length > maxLength) {
+        const truncated = title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
+        if (truncated !== title || wslBadge) {
             event.preventDefault();
-            win.setTitle(title.substring(0, maxLength) + '...');
+            win.setTitle(truncated + wslBadge);
         }
     });
     win.webContents.setWindowOpenHandler((details) => {

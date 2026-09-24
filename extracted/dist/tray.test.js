@@ -84,4 +84,31 @@ vitest_1.vi.mock('electron');
         quitItem.click();
         (0, vitest_1.expect)(quitApp).toHaveBeenCalled();
     });
+    (0, vitest_1.it)('should insert an item into the existing tray menu', async () => {
+        const { Tray, Menu } = await Promise.resolve().then(() => __importStar(require('electron')));
+        const { createTray, insertTrayMenuItem } = await Promise.resolve().then(() => __importStar(require('./tray')));
+        const items = [
+            { label: 'a' },
+            { label: 'b' },
+            { label: 'c' },
+        ];
+        const existing = {
+            items,
+            insert: vitest_1.vi.fn((pos, item) => {
+                items.splice(pos, 0, item);
+            }),
+        };
+        vitest_1.vi.mocked(Menu.buildFromTemplate).mockReturnValueOnce(existing);
+        createTray([{ label: 'a' }, { label: 'b' }, { label: 'c' }]);
+        insertTrayMenuItem(1, { label: 'Connect to WSL' });
+        const trayInstance = vitest_1.vi.mocked(Tray).mock.results[0].value;
+        (0, vitest_1.expect)(trayInstance.setContextMenu).toHaveBeenCalledTimes(2);
+        (0, vitest_1.expect)(trayInstance.setContextMenu).toHaveBeenLastCalledWith(existing);
+        (0, vitest_1.expect)(existing.items.map((i) => i.label)).toEqual([
+            'a',
+            'Connect to WSL',
+            'b',
+            'c',
+        ]);
+    });
 });

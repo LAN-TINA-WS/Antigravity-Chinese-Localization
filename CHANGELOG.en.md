@@ -4,6 +4,25 @@ This document tracks all version releases, core architecture adaptations, and fe
 
 ---
 
+## v2.17.0 (2026-09-24)
+
+### 1. Comprehensive Adaptation to Antigravity v2.17.0 Architecture
+- **Version Metadata & Environment Seamless Upgrade**: Upgraded application definition to `2.17.0`, tracking Google official Sep 24 build with 100% compatibility with new dependencies (e.g. `js-yaml`) and main/renderer architectures.
+- **Complete TDD Test Suite**: Added Ticket-12 test suite, passing all 45 automated regression test cases and keeping the full test suite 100% green.
+
+### 2. Deep WSL (Windows Subsystem for Linux) Integration Localization
+- **Native File Menu & Dynamic Submenu**: Localized `Connect to WSL` and `Reopen Locally`, and implemented a two-way matching fallback engine in `addItemToSubmenu` to eliminate parent menu lookup failures when adding WSL menu entries asynchronously.
+- **WSL Provision Splash Window**: Localized the dedicated frameless setup splash `Setting up WSL: <distro>` along with real-time status notifications: `Downloading the Antigravity binary…` and `Installing into <distro>…`.
+- **WSL Cross-System Paths & Filesystem Warnings**: Localized performance warnings when opening folders across Windows and WSL filesystems, distro mismatch errors, and path parsing alerts.
+- **WSL Failure & Fallback Dialogs**: Localized `WSL distro not found`, `WSL setup failed`, and automatic fallback notifications when opening locally on Windows.
+
+### 3. Sandbox Mode, Advanced Settings, View Folding & Project Permission Inheritance
+- **Local Sandbox Mode**: Fully translated `Enable Sandbox Mode (Preview)`, `Restricts agent tools to a secure, isolated local sandbox.`, and `Security Preset`.
+- **Application Advanced Settings & Review Actions**: Translated `Advanced Settings` in Settings, and `Collapse All` / `Expand All` in review views.
+- **Project-Specific Permissions & Global Inheritance**: Translated `Inherit Global` and `Also includes Global Permissions when working in this project.`.
+
+---
+
 ## v2.15.1 (2026-09-21)
 
 ### 1. Comprehensive Adaptation to Antigravity v2.15.1 Architecture

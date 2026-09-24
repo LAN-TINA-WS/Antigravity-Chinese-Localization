@@ -4,6 +4,25 @@
 
 ---
 
+## v2.17.0 (2026-09-24)
+
+### 1. 全面深度适配 Antigravity v2.17.0 架构
+- **官方版本无缝平滑升级**：深度跟进官方 9月24日最新发布的 2.17.0 版本，同步升级应用版本定义至 `2.17.0`，适配新增依赖项（如 `js-yaml`）与主进程/渲染进程架构。
+- **全套 TDD 自动化测试验证**：新增 Ticket-12 专项测试套件（45 项断言全部通过），全量回归测试套件 100% 保持通过 (ALL GREEN)。
+
+### 2. WSL (Windows Subsystem for Linux) 远程环境深度汉化
+- **原生文件菜单与动态子菜单**：汉化 `Connect to WSL`（连接到 WSL）、`Reopen Locally`（本地重新打开），并实现原生菜单双向匹配回退引擎，杜绝异步添加 WSL 菜单项时的父菜单查找丢失问题。
+- **WSL 首发部署启动弹窗 (Provision Splash)**：汉化首次接入 WSL 时的专用无边框下载与安装弹窗 `Setting up WSL: <distro>`（正在配置 WSL: <发行版>），并实时翻译状态通知：`Downloading the Antigravity binary…`（正在下载 Antigravity 二进制组件…）、`Installing into <distro>…`（正在安装到 <发行版>…）。
+- **WSL 跨系统路径与文件系统警告**：汉化 Windows 与 WSL 文件系统混用时的性能警告提示（建议保留在 WSL 文件系统内以获得最佳性能）、发行版不匹配提示及路径解析错误。
+- **WSL 故障与环境弹窗**：汉化 `WSL distro not found`（未找到 WSL 发行版）、`WSL setup failed`（WSL 配置失败）以及改在 Windows 本地打开的自动回退提示。
+
+### 3. 沙盒模式、高级设置、视图折叠与项目权限继承补全
+- **本地沙盒隔离模式**：补全 `Enable Sandbox Mode (Preview)`（启用沙盒模式 (预览)）、`Restricts agent tools to a secure, isolated local sandbox.`（将智能体工具限制在安全、隔离的本地沙盒环境中。）、`Security Preset`（安全预设）。
+- **应用高级设置与审查视图**：汉化设置中的 `Advanced Settings`（高级设置）与审查栏操作 `Collapse All`（全部折叠）、`Expand All`（全部展开）。
+- **项目专属权限与全局继承**：汉化 `Inherit Global`（继承全局）、`Also includes 全局权限 when working in this project.`（在当前项目中工作时亦继承 全局权限 配置。）等引导与选项文案。
+
+---
+
 ## v2.15.1 (2026-09-21)
 
 ### 1. 全面适配 Antigravity v2.15.1 核心架构
