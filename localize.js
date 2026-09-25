@@ -3516,6 +3516,19 @@ function translateMenu(menuItem) {
   log('汉化修改注入完成！');
 }
 
+// Helper: Check if an asar file is already localized
+function isLocalizedAsar(filePath) {
+  if (!fs.existsSync(filePath)) return false;
+  try {
+    const buf = fs.readFileSync(filePath);
+    return buf.includes(Buffer.from('// Antigravity 2.0 Chinese Localization Engine')) ||
+           buf.includes(Buffer.from('menuTranslationMap')) ||
+           buf.includes(Buffer.from('DOM_TRANSLATOR_INJECTION'));
+  } catch (e) {
+    return false;
+  }
+}
+
 // Full workflow runner
 async function runLocalizationWorkflow(appDir) {
   const resourcesDir = getResourcesDir(appDir);
@@ -3534,13 +3547,21 @@ async function runLocalizationWorkflow(appDir) {
   // 1. Kill running instances
   killApp();
 
-  // 2. Backup app.asar
+  // 2. Backup app.asar (avoid backing up an already localized file)
   if (!fs.existsSync(backupPath)) {
-    log('正在创建 app.asar 的初始安全备份...');
-    fs.copyFileSync(asarPath, backupPath);
-    log('安全备份创建成功：' + backupPath);
+    if (isLocalizedAsar(asarPath)) {
+      log('提示：当前系统 app.asar 已包含汉化代码，跳过自动备份以避免污染官方原版备份。');
+    } else {
+      log('正在创建 app.asar 的初始安全备份...');
+      fs.copyFileSync(asarPath, backupPath);
+      log('安全备份创建成功：' + backupPath);
+    }
   } else {
-    log('安全备份已存在，跳过备份。备份文件: ' + backupPath);
+    if (isLocalizedAsar(backupPath)) {
+      log('警告：检测到备份文件 app.asar.bak 已被汉化包污染！建议在有官方原版时替换此备份。');
+    } else {
+      log('安全备份已存在且为官方原版，跳过备份。备份文件: ' + backupPath);
+    }
   }
 
   // 3. Clean up existing extract dir if any
@@ -3608,13 +3629,16 @@ function runRestoreWorkflow(appDir) {
   if (!fs.existsSync(backupPath)) {
     throw new Error('未找到备份文件 `app.asar.bak`。无法执行恢复！');
   }
+  if (isLocalizedAsar(backupPath)) {
+    throw new Error('检测到备份文件 `app.asar.bak` 本身已被汉化包污染，无法还原为官方原版！请重新安装官方安装包以恢复。');
+  }
 
   killApp();
 
-  log('正在从备份恢复原始 app.asar...');
+  log('正在从安全备份恢复原始官方 app.asar...');
   try {
     fs.copyFileSync(backupPath, asarPath);
-    log('还原原始 app.asar 成功！软件已恢复为纯英文版。');
+    log('还原原始 app.asar 成功！软件已恢复为官方英文版。');
   } catch (e) {
     throw new Error('恢复文件失败: ' + e.message);
   }
@@ -3646,7 +3670,7 @@ const server = http.createServer((req, res) => {
     const backupPath = path.join(resourcesDir, 'app.asar.bak');
 
     const isInstalled = fs.existsSync(asarPath);
-    const hasBackup = fs.existsSync(backupPath);
+    const hasBackup = fs.existsSync(backupPath) && !isLocalizedAsar(backupPath);
     const isRunning = isAppRunning();
     
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -3657,7 +3681,8 @@ const server = http.createServer((req, res) => {
       asarPath,
       backupPath,
       platform: process.platform,
-      defaultUsername: getHostUsername()
+      defaultUsername: getHostUsername(),
+      currentVersion: CURRENT_VERSION
     }));
   } 
   else if (req.url === '/api/localize' && req.method === 'POST') {
