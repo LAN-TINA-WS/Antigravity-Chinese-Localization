@@ -1,12 +1,12 @@
 @echo off
-chcp 936 >nul
-title Antigravity 2.0 ºº»¯¹ÜÀí·þÎñ
+chcp 65001 >nul
+title Antigravity 2.0 æ±‰åŒ–ç®¡ç†é¢æ¿
 echo =======================================================
-echo  Antigravity 2.0 ºº»¯¹ÜÀíÃæ°å
+echo  Antigravity 2.0 æ±‰åŒ–ç®¡ç†é¢æ¿
 echo =======================================================
 echo.
-echo ÕýÔÚÆô¶¯±¾µØ¹ÜÀí·þÎñ...
-echo ÕýÔÚÄ¬ÈÏä¯ÀÀÆ÷ÖÐ´ò¿ª¿ØÖÆÌ¨...
+echo æ­£åœ¨å¯åŠ¨æ±‰åŒ–ç®¡ç†æœåŠ¡...
+echo å°†åœ¨é»˜è®¤æµè§ˆå™¨ä¸­æ‰“å¼€æŽ§åˆ¶å°...
 echo.
 
 start "" "http://localhost:3388"
@@ -15,8 +15,8 @@ node "%~dp0localize.js"
 
 if %errorlevel% neq 0 (
   echo.
-  echo [´íÎó] Æô¶¯ºº»¯·þÎñÊ§°Ü¡£
-  echo ÇëÈ·ÈÏÏµÍ³ÒÑ°²×° Node.js (https://nodejs.org)
+  echo [é”™è¯¯] è¿è¡Œæ±‰åŒ–ç¨‹åºå¤±è´¥ã€‚
+  echo è¯·ç¡®ä¿ç³»ç»Ÿå·²å®‰è£… Node.js (https://nodejs.org)
   echo.
   pause
 )
