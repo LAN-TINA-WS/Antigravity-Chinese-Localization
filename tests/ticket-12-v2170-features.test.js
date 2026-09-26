@@ -133,6 +133,34 @@ check('正则: Connected to WSL: Ubuntu',
   translateString('Connected to WSL: Ubuntu'), 
   '已连接到 WSL: Ubuntu');
 
+// 10. 智能体行为：计划审核 (Plan Review) 及策略设置汉化测试
+console.log('\n--- 智能体行为：计划审核与策略提示汉化测试 ---');
+check('词典: Plan Review', translateString('Plan Review'), '计划审核');
+check('词典: Plan Review Policy', translateString('Plan Review Policy'), '计划审核策略');
+check('词典: Policy', translateString('Policy'), '策略');
+check('词典: policy', translateString('policy'), '策略');
+check('句子: Type / and select plan to have the agent generate a plan.', 
+  translateString('Type / and select plan to have the agent generate a plan.'), 
+  '输入 / 并选择 plan 来让智能体生成计划。');
+check('句子: Type / and select plan to have the agent generate a plan (无标点)', 
+  translateString('Type / and select plan to have the agent generate a plan'), 
+  '输入 / 并选择 plan 来让智能体生成计划');
+check('夹生容错: Type / and 选择 plan to have the agent generate a plan.', 
+  translateString('Type / and 选择 plan to have the agent generate a plan.'), 
+  '输入 / 并选择 plan 来让智能体生成计划。');
+check('碎片: to have the agent generate a plan.', 
+  translateString('to have the agent generate a plan.'), 
+  '来让智能体生成计划。');
+check('碎片: plan to have the agent generate a plan.', 
+  translateString('plan to have the agent generate a plan.'), 
+  'plan 来让智能体生成计划。');
+check('碎片: Type / and', 
+  translateString('Type / and'), 
+  '输入 / 并');
+check('选项: Never', 
+  translateString('Never'), 
+  '从不');
+
 console.log(`\n======================================================`);
 console.log(`Ticket-12 测试结果: ${passed}/${total} 断言全部通过！`);
 console.log(`======================================================\n`);

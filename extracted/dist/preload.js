@@ -549,6 +549,41 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
     "Artifact Review Policy": "工件审核策略",
     "Specifies agent's behavior when asking for review on artifacts, which are documents it creates to enable a richer conversation experience.": "设置智能体在请求审核工件时的行为方式。工件是其为提供更丰富对话体验而创建的文档。",
     "Always Ask": "始终询问",
+    "Plan Review": "计划审核",
+    "Plan review": "计划审核",
+    "Plan Review Policy": "计划审核策略",
+    "Plan review policy": "计划审核策略",
+    "Policy": "策略",
+    "policy": "策略",
+    "Type / and select plan to have the agent generate a plan.": "输入 / 并选择 plan 来让智能体生成计划。",
+    "Type / and select plan to have the agent generate a plan": "输入 / 并选择 plan 来让智能体生成计划",
+    "Type / and select 'plan' to have the agent generate a plan.": "输入 / 并选择 'plan' 来让智能体生成计划。",
+    "Type / and select 'plan' to have the agent generate a plan": "输入 / 并选择 'plan' 来让智能体生成计划",
+    "Type / and 选择 plan to have the agent generate a plan.": "输入 / 并选择 plan 来让智能体生成计划。",
+    "Type / and 选择 plan to have the agent generate a plan": "输入 / 并选择 plan 来让智能体生成计划",
+    "Type / and 选择 'plan' to have the agent generate a plan.": "输入 / 并选择 'plan' 来让智能体生成计划。",
+    "Type / and 选择 'plan' to have the agent generate a plan": "输入 / 并选择 'plan' 来让智能体生成计划",
+    "Type / and": "输入 / 并",
+    "Type / and ": "输入 / 并 ",
+    "Type / and select": "输入 / 并选择",
+    "Type / and select ": "输入 / 并选择 ",
+    "Type / and 选择": "输入 / 并选择",
+    "Type / and 选择 ": "输入 / 并选择 ",
+    "Type /": "输入 /",
+    "Type / ": "输入 / ",
+    "to have the agent generate a plan.": "来让智能体生成计划。",
+    "to have the agent generate a plan": "来让智能体生成计划",
+    "have the agent generate a plan.": "让智能体生成计划。",
+    "have the agent generate a plan": "让智能体生成计划",
+    "generate a plan.": "生成计划。",
+    "generate a plan": "生成计划",
+    "plan to have the agent generate a plan.": "plan 来让智能体生成计划。",
+    "plan to have the agent generate a plan": "plan 来让智能体生成计划",
+    "Never": "从不",
+    "Always": "总是",
+    "Auto": "自动",
+    "Manual": "手动",
+    "Ask": "询问",
     "Local Permissions": "项目专属权限",
     "Inherits from global settings. Local permissions have higher priority.": "继承自全局设置。项目专属权限具有更高的优先级。",
     "Inherits from global settings.": "继承自全局设置。",
@@ -2186,6 +2221,7 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
     "active": "活跃", "background": "后台", "parent": "父级", "child": "子级", "branch": "分支", "share": "共享", "inherit": "继承",
     "original": "原始", "backup": "备份", "duration": "持续时间", "seconds": "秒", "timer": "定时器", "timers": "定时器",
     "schedule": "调度", "cron": "定时任务", "tools": "工具", "tool": "工具", "execute": "执行", "execution": "执行", "plan": "计划",
+    "policy": "策略", "policies": "策略", "never": "从不", "always": "总是",
     "changed": "已更改", "review": "审核", "reviewing": "审核中", "reviewed": "已审核",
     "canceled": "已取消", "js": "Js",
     "explore": "探索", "search": "搜索", "change": "更改", "changes": "更改",
@@ -2602,6 +2638,24 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
       isDynamic = true;
     }
 
+    // 智能体设置：计划审核策略提示 (包含纯英文、部分翻译、夹生等各种形态)
+    if (/(?:Type|输入)\s*\/\s*(?:and|并|和)?\s*(?:select|选择)?\s*['"]?plan['"]?\s*to\s+have\s+the\s+agent\s+generate\s+a\s+plan[。.]?/i.test(trimmed)) {
+      dynamicMatch = /[。.]\s*$/.test(trimmed) ? '输入 / 并选择 plan 来让智能体生成计划。' : '输入 / 并选择 plan 来让智能体生成计划';
+      isDynamic = true;
+    }
+    if (/^(?:to\s+)?have\s+the\s+agent\s+generate\s+a\s+plan[。.]?$/i.test(trimmed)) {
+      dynamicMatch = /[。.]\s*$/.test(trimmed) ? '来让智能体生成计划。' : '来让智能体生成计划';
+      isDynamic = true;
+    }
+    if (/^plan\s+to\s+have\s+the\s+agent\s+generate\s+a\s+plan[。.]?$/i.test(trimmed)) {
+      dynamicMatch = /[。.]\s*$/.test(trimmed) ? 'plan 来让智能体生成计划。' : 'plan 来让智能体生成计划';
+      isDynamic = true;
+    }
+    if (/^(?:Type|输入)\s*\/\s*(?:and|并|和)\s*$/i.test(trimmed)) {
+      dynamicMatch = '输入 / 并';
+      isDynamic = true;
+    }
+
     if (isDynamic) {
       return text.replace(trimmed, dynamicMatch);
     }
@@ -2702,6 +2756,8 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
     finalTranslated = finalTranslated.replace(/查看\s*could not be opened/gi, '查看文件无法打开');
     finalTranslated = finalTranslated.replace(/could not be opened/gi, '无法打开');
     finalTranslated = finalTranslated.replace(/(\d+)\s+searches?/gi, '$1 次搜索');
+    finalTranslated = finalTranslated.replace(/(?:Type|输入)\s*\/\s*(?:and|并|和)?\s*(?:select|选择)?\s*['"]?plan['"]?\s*to\s+have\s+the\s+agent\s+generate\s+a\s+plan[。.]?/gi, '输入 / 并选择 plan 来让智能体生成计划。');
+    finalTranslated = finalTranslated.replace(/输入\s*\/\s*并\s*选择\s*plan\s*来让智能体生成计划[。.]?/g, '输入 / 并选择 plan 来让智能体生成计划。');
     if (matchPunc) {
       finalTranslated += trailPunc;
     }
