@@ -209,7 +209,7 @@ electron_1.app
             console.error('ERROR:', msg);
         }
         else {
-            await electron_1.dialog.showErrorBox('Binary not found', msg);
+            await electron_1.dialog.showErrorBox('未找到核心二进制组件', msg);
         }
         electron_1.app.quit();
         return;
@@ -456,12 +456,12 @@ electron_1.app.on('before-quit', async (event) => {
     const win = electron_1.BrowserWindow.getFocusedWindow() || electron_1.BrowserWindow.getAllWindows()[0];
     const options = {
         type: 'question',
-        buttons: ['Cancel', 'Quit'],
+        buttons: ['取消', '退出'],
         defaultId: 1,
         cancelId: 0,
-        title: 'Confirm Quit',
-        message: 'Are you sure you want to quit?',
-        detail: 'There may be agents or background tasks running.',
+        title: '确认退出',
+        message: '您确定要退出吗？',
+        detail: '可能还有智能体或后台任务正在运行。',
     };
     (0, utils_1.setShowQuitConfirmation)(false);
     if (win) {

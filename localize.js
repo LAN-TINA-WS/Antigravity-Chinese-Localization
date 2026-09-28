@@ -648,6 +648,24 @@ const DOM_TRANSLATOR_INJECTION = `
     "Auto": "自动",
     "Manual": "手动",
     "Ask": "询问",
+    "Binary not found": "未找到核心二进制组件",
+    "No updates available": "当前已是最新版本，暂无可用更新。",
+    "No updates available.": "当前已是最新版本，暂无可用更新。",
+    "Up to date": "已是最新版本",
+    "Permission denied": "权限不足 / 无访问权限",
+    "Permission denied.": "权限不足 / 无访问权限。",
+    "Permissions and Memberships": "权限与成员资格",
+    "Select all options that apply": "选择所有适用的选项",
+    "Press ENTER to continue": "按回车键继续",
+    "Additional Context": "附加上下文",
+    "Directory not empty": "目录非空",
+    "File already exists": "文件已存在",
+    "File too large": "文件过大",
+    "Filename too long": "文件名过长",
+    "Not a directory": "不是有效目录",
+    "Review this code": "审核此代码",
+    "Review my design": "审核我的设计",
+    "Review this paper": "审核此论文/文档",
     "Local Permissions": "项目专属权限",
     "Inherits from global settings. Local permissions have higher priority.": "继承自全局设置。项目专属权限具有更高的优先级。",
     "Inherits from global settings.": "继承自全局设置。",
@@ -3326,8 +3344,12 @@ function replaceInFile(filePath, target, replacement) {
     throw new Error(`找不到要修改的文件: ${filePath}`);
   }
   let content = fs.readFileSync(filePath, 'utf-8');
-  if (content.includes(replacement)) {
-    log(`文件 ${path.basename(filePath)} 已经应用过此汉化修改，跳过。`);
+  if (!content.includes(target)) {
+    if (content.includes(replacement)) {
+      log(`文件 ${path.basename(filePath)} 已经应用过此汉化修改，跳过。`);
+    } else {
+      log(`提示：文件 ${path.basename(filePath)} 未找到匹配目标内容，跳过。`);
+    }
     return;
   }
   content = content.split(target).join(replacement);
@@ -3567,6 +3589,39 @@ function translateMenu(menuItem) {
       "await electron_1.dialog.showErrorBox('Startup failed', msg);",
       "await electron_1.dialog.showErrorBox('启动失败', msg);"
     );
+    replaceInFile(
+      mainPath,
+      "await electron_1.dialog.showErrorBox('Binary not found', msg);",
+      "await electron_1.dialog.showErrorBox('未找到核心二进制组件', msg);"
+    );
+    replaceInFile(
+      mainPath,
+      "title: 'Confirm Quit',",
+      "title: '确认退出',"
+    );
+    replaceInFile(
+      mainPath,
+      "message: 'Are you sure you want to quit?',",
+      "message: '您确定要退出吗？',"
+    );
+    replaceInFile(
+      mainPath,
+      "detail: 'There may be agents or background tasks running.',",
+      "detail: '可能还有智能体或后台任务正在运行。',"
+    );
+    replaceInFile(
+      mainPath,
+      "buttons: ['Cancel', 'Quit'],",
+      "buttons: ['取消', '退出'],"
+    );
+  }
+
+  // 10. Localize dist/updater.js (Update Notifications & Dialogs)
+  const updaterPath = path.join(EXTRACT_DIR, 'dist', 'updater.js');
+  if (fs.existsSync(updaterPath)) {
+    replaceInFile(updaterPath, "title: 'Check for Updates',", "title: '检查更新',");
+    replaceInFile(updaterPath, "message: 'No updates available',", "message: '当前已是最新版本，暂无可用更新。',");
+    replaceInFile(updaterPath, "buttons: ['OK'],", "buttons: ['确定'],");
   }
 
   log('汉化修改注入完成！');

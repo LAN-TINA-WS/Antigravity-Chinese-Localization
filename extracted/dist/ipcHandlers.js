@@ -104,7 +104,7 @@ function registerIpcHandlers(storageManager) {
     electron_1.ipcMain.handle('dialog:open-workspaces', async () => {
         const result = await electron_1.dialog.showOpenDialog({
             properties: ['openDirectory', 'createDirectory', 'multiSelections'],
-            title: 'Open workspaces',
+            title: '打开工作区',
             defaultPath: await dialogDefaultPath(),
         });
         if (result.canceled || result.filePaths.length === 0) {

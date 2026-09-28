@@ -184,9 +184,9 @@ function initAutoUpdater(isHeadless, settingsService) {
             const win = electron_1.BrowserWindow.getFocusedWindow();
             const options = {
                 type: 'info',
-                title: 'Check for Updates',
-                message: 'No updates available',
-                buttons: ['OK'],
+                title: '检查更新',
+                message: '当前已是最新版本，暂无可用更新。',
+                buttons: ['确定'],
             };
             if (win) {
                 electron_1.dialog.showMessageBox(win, options);

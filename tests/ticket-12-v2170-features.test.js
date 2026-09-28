@@ -80,6 +80,17 @@ check('main.js 包含 WSL 发行版已不再安装 消息', mainSource.includes(
 check('main.js 包含 Antigravity 已改为在 Windows 本地打开 详情', mainSource.includes("detail: 'Antigravity 已改为在 Windows 本地打开。',"), true);
 check('main.js 包含 WSL 配置失败 错误框', mainSource.includes("await electron_1.dialog.showErrorBox('WSL 配置失败', msg);"), true);
 check('main.js 包含 启动失败 错误框', mainSource.includes("await electron_1.dialog.showErrorBox('启动失败', msg);"), true);
+check('main.js 包含 未找到核心二进制组件 错误框', mainSource.includes("await electron_1.dialog.showErrorBox('未找到核心二进制组件', msg);"), true);
+check('main.js 包含 确认退出 弹窗标题', mainSource.includes("title: '确认退出',"), true);
+check('main.js 包含 您确定要退出吗 提示文案', mainSource.includes("message: '您确定要退出吗？',"), true);
+check('main.js 包含 确认退出 取消/退出 按钮', mainSource.includes("buttons: ['取消', '退出'],"), true);
+
+// 7.1 原生自动更新弹窗校验
+console.log('\n--- 原生自动更新弹窗校验 ---');
+const updaterSource = fs.readFileSync(path.join(distDir, 'updater.js'), 'utf-8');
+check('updater.js 包含 检查更新 弹窗标题', updaterSource.includes("title: '检查更新',"), true);
+check('updater.js 包含 当前已是最新版本 提示文案', updaterSource.includes("message: '当前已是最新版本，暂无可用更新。',"), true);
+check('updater.js 包含 确定 按钮', updaterSource.includes("buttons: ['确定'],"), true);
 
 // 8. 启动遮罩 loadingOverlay 校验
 console.log('\n--- 启动遮罩 loadingOverlay 校验 ---');
