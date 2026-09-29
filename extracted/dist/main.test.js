@@ -261,4 +261,9 @@ vitest_1.vi.mock('./ideInstall', () => ({
         (0, vitest_1.expect)(showOrCreateWindow).toHaveBeenCalledWith(ACTUAL_PORT);
         (0, vitest_1.expect)(app.focus).toHaveBeenCalledWith({ steal: true });
     });
+    (0, vitest_1.it)('should disable AutomationControlled blink feature so <webview> does not expose navigator.webdriver', async () => {
+        const { app } = await Promise.resolve().then(() => __importStar(require('electron')));
+        await Promise.resolve().then(() => __importStar(require('./main')));
+        (0, vitest_1.expect)(app.commandLine.appendSwitch).toHaveBeenCalledWith('disable-blink-features', 'AutomationControlled');
+    });
 });

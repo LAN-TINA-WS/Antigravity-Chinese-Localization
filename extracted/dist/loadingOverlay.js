@@ -31,39 +31,29 @@ function getLoadingHtml(foregroundColor, backgroundColor) {
     -webkit-app-region: drag;
     -webkit-user-select: none;
   }
-  .loader {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
+  .logo {
+    width: 64px;
+    height: 64px;
+    color: ${foregroundColor};
+    animation: logo-pulse 2.2s infinite ease-in-out;
   }
-  .loader div {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: ${foregroundColor};
-    opacity: 0.3;
-    animation: dot-pulse 1.5s infinite ease-in-out;
-  }
-  .loader div:nth-child(1) { animation-delay: 0s; }
-  .loader div:nth-child(2) { animation-delay: 0.3s; }
-  .loader div:nth-child(3) { animation-delay: 0.6s; }
-  .text {
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 0.03em;
-    opacity: 0.6;
-  }
-  @keyframes dot-pulse {
-    0%, 100% { opacity: 0.2; transform: scale(0.9); }
-    50% { opacity: 0.7; transform: scale(1.1); }
+  @keyframes logo-pulse {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.5; }
   }
 </style>
 </head>
 <body>
-  <div class="loader">
-    <div></div><div></div><div></div>
-  </div>
-  <div class="text">正在加载 Antigravity...</div>
+  <svg
+    class="logo"
+    viewBox="0 0 180 180"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M144.248 149.062C151.748 154.688 162.998 150.938 152.685 140.625C121.748 110.625 128.31 28.125 89.8727 28.125C51.4352 28.125 57.9977 110.625 27.0602 140.625C15.8102 151.875 27.9977 154.688 35.4977 149.062C64.5602 129.375 62.6852 94.6875 89.8727 94.6875C117.06 94.6875 115.185 129.375 144.248 149.062Z"
+      fill="currentColor"
+    />
+  </svg>
 </body>
 </html>
   `;

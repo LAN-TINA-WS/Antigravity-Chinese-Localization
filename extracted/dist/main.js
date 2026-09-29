@@ -114,6 +114,7 @@ if (HEADLESS) {
 if (!electron_1.app.commandLine.hasSwitch('remote-debugging-port')) {
     electron_1.app.commandLine.appendSwitch('remote-debugging-port', '0');
 }
+electron_1.app.commandLine.appendSwitch('disable-blink-features', 'AutomationControlled');
 // ---------------------------------------------------------------------------
 // Application Lifecycle
 // ---------------------------------------------------------------------------
