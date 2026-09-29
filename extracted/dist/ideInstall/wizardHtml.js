@@ -17,7 +17,7 @@ function getWizardHtml(iconBase64) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welcome to Antigravity</title>
+<title>欢迎使用 Antigravity</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -241,7 +241,7 @@ function getWizardHtml(iconBase64) {
       <div class="loader">
         <div></div><div></div><div></div>
       </div>
-      <div class="text" style="font-size: 13px; opacity: 0.6; letter-spacing: 0.03em;">Setting up…</div>
+      <div class="text" style="font-size: 13px; opacity: 0.6; letter-spacing: 0.03em;">正在配置…</div>
     </div>
 
     <!-- Step 1: Welcome -->
@@ -249,17 +249,17 @@ function getWizardHtml(iconBase64) {
       <div class="icon-wrapper">
         <img src="data:image/png;base64,${iconBase64}" alt="Antigravity Icon">
       </div>
-      <h1>Welcome to the new Antigravity!</h1>
-      <p>Antigravity has been redesigned to put agents first with new capabilities. If you'd still like a code editor, you can download it as a separate app named <b>Antigravity IDE</b>.</p>
+      <h1>欢迎使用全新 Antigravity！</h1>
+      <p>Antigravity 经过全面重构，赋予智能体更强大的原生能力。如果您仍需要代码编辑器，可单独下载独立应用 <b>Antigravity IDE</b>。</p>
       
       <label class="checkbox-label">
         <input type="checkbox" id="chk-download" checked>
         <span class="custom-checkbox"></span>
-        <span>Download the Antigravity IDE</span>
+        <span>下载 Antigravity IDE</span>
       </label>
 
       <div class="button-group">
-        <button class="btn-primary" id="btn-skip">Explore the new Antigravity</button>
+        <button class="btn-primary" id="btn-skip">探索全新 Antigravity</button>
       </div>
     </div>
 

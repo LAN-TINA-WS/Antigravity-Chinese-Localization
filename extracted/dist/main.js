@@ -343,7 +343,7 @@ electron_1.app
         if (electron_1.app.dock) {
             const dockMenu = electron_1.Menu.buildFromTemplate([
                 {
-                    label: 'New Window',
+                    label: '新建窗口',
                     click: () => (0, utils_1.createWindow)(url, storageManager),
                 },
             ]);

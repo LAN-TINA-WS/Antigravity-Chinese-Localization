@@ -2287,6 +2287,112 @@ const DOM_TRANSLATOR_INJECTION = `
     "Collapse file": "折叠文件",
     "Expand file": "展开文件",
     "Open in Code Search": "在代码搜索中打开",
+
+    // === 2.18.1 补全：向导截断容错 ===
+    "Antigravity has been redesigned to put agents first with new capabilities. If you'd still like a code editor, you can download it as a separate app named": "Antigravity 经过全面重构，赋予智能体更强大的原生能力。如果您仍需要代码编辑器，可单独下载独立应用",
+    "If you'd still like a code editor, you can download it as a separate app named": "如果您仍需要代码编辑器，可单独下载独立应用",
+    "separate app named Antigravity IDE": "名为 Antigravity IDE 的独立应用",
+    "separate app named": "独立应用",
+
+    // === 2.18.1 补全：代码差异与 Diff 工具栏 ===
+    "Insert into terminal": "插入至终端",
+    "Run in terminal": "在终端中运行",
+    "Apply diff": "应用改动",
+    "Revert diff": "还原改动",
+    "Accept changes": "接受改动",
+    "Reject changes": "放弃改动",
+    "Show diff": "显示差异",
+    "Hide diff": "隐藏差异",
+    "Inline diff": "行内差异",
+    "Side-by-side diff": "并排差异",
+    "Toggle raw markdown": "切换原生 Markdown",
+    "View raw markdown": "查看原生 Markdown",
+    "Copy raw markdown": "复制原生 Markdown",
+    "Clear Conversation": "清除对话",
+    "Export Conversation": "导出对话",
+    "Share Conversation": "分享对话",
+
+    // === 2.18.1 补全：智能体运行态胶囊与状态提示 ===
+    "Planning...": "正在制定计划...",
+    "Generating plan...": "正在生成计划...",
+    "Executing command...": "正在执行命令...",
+    "Analyzing repository...": "正在分析代码库...",
+    "Reading files...": "正在读取文件...",
+    "Writing changes...": "正在写入改动...",
+    "Running verification...": "正在运行验证...",
+    "Searching codebase...": "正在搜索代码库...",
+    "Waiting for approval...": "等待审批...",
+    "Waiting for approval": "等待审批",
+    "Waiting for user input...": "等待用户输入...",
+    "Waiting for user input": "等待用户输入",
+    "Requires approval": "需要审批",
+    "Stop generating": "停止生成",
+    "Stop execution": "停止执行",
+    "Stop agent": "停止智能体",
+    "Ask anything, @ to mention, / for workflows": "输入任何问题，输入 @ 提及，输入 / 调用工作流",
+    "Type a message or press / for workflows": "输入消息或按 / 调用工作流",
+    "Ask a question or describe a task...": "提出问题或描述任务...",
+
+    // === 2.18.1 补全：设置中心、权限沙箱与模型参数 ===
+    "Terminal auto-execution policy": "终端自动执行策略",
+    "Background terminal execution": "后台终端执行",
+    "Terminal Execution": "终端执行",
+    "Terminal command execution": "终端命令执行",
+    "Command auto-execution": "命令自动执行",
+    "Always deny": "始终拒绝",
+    "Auto-approve": "自动批准",
+    "Auto approve": "自动批准",
+    "Require approval": "需要审批",
+    "Allow background tasks": "允许后台任务",
+    "Cancel task": "取消任务",
+    "Kill task": "终止任务",
+    "Task status": "任务状态",
+    "Reasoning": "推理",
+    "Thinking budget": "思考预算",
+    "Models": "模型",
+    "Temperature": "温度参数",
+    "Context window": "上下文窗口",
+    "Max output tokens": "最大输出 Token",
+    "System instructions": "系统指令",
+    "Custom instructions": "自定义指令",
+    "Active model": "当前活跃模型",
+    "Available models": "可用模型列表",
+    "Keybindings": "快捷键绑定",
+    "Quick Open": "快速打开",
+    "Installed Distros": "已安装发行版",
+    "WSL Distros": "WSL 发行版",
+    "Security": "安全",
+    "Allow once": "允许一次",
+    "Always allow in this project": "在此项目中始终允许",
+    "Standard sandbox": "标准沙箱",
+    "Full access": "完全访问",
+    "Read-only access": "只读访问",
+    "Workspace only": "仅工作区",
+    "Allow network access": "允许网络访问",
+    "Allow file system modifications": "允许修改文件系统",
+    "Add MCP Server": "添加 MCP 服务器",
+    "Restart MCP Server": "重启 MCP 服务器",
+    "Reload customizations": "重新加载自定义项",
+    "Google Cloud Project": "Google Cloud 项目",
+    "Select a Google Cloud Project": "选择 Google Cloud 项目",
+    "No Google Cloud project selected": "未选择 Google Cloud 项目",
+    "Switch Account": "切换账号",
+    "Enterprise License": "企业许可证",
+    "Personal License": "个人许可证",
+    "Free tier": "免费层级",
+    "Pro tier": "专业版层级",
+    "Enterprise tier": "企业版层级",
+    "Quota exceeded": "配额超限",
+    "Rate limit exceeded": "速率限制超限",
+
+    // === 2.18.1 补全：斜杠指令描述长句 ===
+    "Run an autonomous, goal-driven agent loop until task completion": "自主目标驱动的智能体循环，直至彻底完成任务",
+    "Schedule recurring workflows or set delayed reminders": "调度周期性工作流或设定延时提醒",
+    "Generate a detailed step-by-step implementation plan": "生成详尽的分步实施计划",
+    "Interactive interview to clarify and align requirements": "通过互动访谈厘清需求与设计决策",
+    "Coordinate multiple autonomous subagents": "多子智能体并行协作预览模式",
+    "Save corrected workflows and habits to long-term memory": "将纠正后的工作流与习惯沉淀至长期记忆",
+    "Deep thinking and multi-perspective verification mode": "深度思考与多重视角交叉验证增强模式",
   };
 
   const coreWords = {
@@ -3614,6 +3720,11 @@ function translateMenu(menuItem) {
       "buttons: ['Cancel', 'Quit'],",
       "buttons: ['取消', '退出'],"
     );
+    replaceInFile(
+      mainPath,
+      "label: 'New Window',",
+      "label: '新建窗口',"
+    );
   }
 
   // 10. Localize dist/updater.js (Update Notifications & Dialogs)
@@ -3622,6 +3733,21 @@ function translateMenu(menuItem) {
     replaceInFile(updaterPath, "title: 'Check for Updates',", "title: '检查更新',");
     replaceInFile(updaterPath, "message: 'No updates available',", "message: '当前已是最新版本，暂无可用更新。',");
     replaceInFile(updaterPath, "buttons: ['OK'],", "buttons: ['确定'],");
+  }
+
+  // 11. Localize dist/ideInstall/wizardHtml.js (IDE Install Wizard Static Template)
+  const wizardHtmlPath = path.join(EXTRACT_DIR, 'dist', 'ideInstall', 'wizardHtml.js');
+  if (fs.existsSync(wizardHtmlPath)) {
+    replaceInFile(wizardHtmlPath, '<title>Welcome to Antigravity</title>', '<title>欢迎使用 Antigravity</title>');
+    replaceInFile(wizardHtmlPath, 'Setting up…', '正在配置…');
+    replaceInFile(wizardHtmlPath, '<h1>Welcome to the new Antigravity!</h1>', '<h1>欢迎使用全新 Antigravity！</h1>');
+    replaceInFile(
+      wizardHtmlPath,
+      "<p>Antigravity has been redesigned to put agents first with new capabilities. If you'd still like a code editor, you can download it as a separate app named <b>Antigravity IDE</b>.</p>",
+      "<p>Antigravity 经过全面重构，赋予智能体更强大的原生能力。如果您仍需要代码编辑器，可单独下载独立应用 <b>Antigravity IDE</b>。</p>"
+    );
+    replaceInFile(wizardHtmlPath, '<span>Download the Antigravity IDE</span>', '<span>下载 Antigravity IDE</span>');
+    replaceInFile(wizardHtmlPath, '<button class="btn-primary" id="btn-skip">Explore the new Antigravity</button>', '<button class="btn-primary" id="btn-skip">探索全新 Antigravity</button>');
   }
 
   log('汉化修改注入完成！');

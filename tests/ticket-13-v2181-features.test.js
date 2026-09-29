@@ -193,6 +193,148 @@ check('选项: Never',
   translateString('Never'), 
   '从不');
 
+// 12. 向导静态 HTML 模板与主进程 Dock 菜单汉化测试
+console.log('\n--- 向导静态 HTML 模板与 Dock 菜单校验 ---');
+const wizardHtmlSource = fs.readFileSync(path.join(distDir, 'ideInstall', 'wizardHtml.js'), 'utf-8');
+check('wizardHtml.js 包含 欢迎使用 Antigravity 标题', wizardHtmlSource.includes('<title>欢迎使用 Antigravity</title>'), true);
+check('wizardHtml.js 包含 正在配置… 加载态', wizardHtmlSource.includes('<div class="text" style="font-size: 13px; opacity: 0.6; letter-spacing: 0.03em;">正在配置…</div>'), true);
+check('wizardHtml.js 包含 欢迎使用全新 Antigravity！ 主标题', wizardHtmlSource.includes('<h1>欢迎使用全新 Antigravity！</h1>'), true);
+check('wizardHtml.js 包含 全新重构说明段落', wizardHtmlSource.includes('Antigravity 经过全面重构，赋予智能体更强大的原生能力。'), true);
+check('wizardHtml.js 包含 下载 Antigravity IDE 选项', wizardHtmlSource.includes('<span>下载 Antigravity IDE</span>'), true);
+check('wizardHtml.js 包含 探索全新 Antigravity 按钮', wizardHtmlSource.includes('<button class="btn-primary" id="btn-skip">探索全新 Antigravity</button>'), true);
+check('main.js 包含 新建窗口 Dock 菜单', mainSource.includes("label: '新建窗口',"), true);
+
+// 13. 代码差异比对 (Diff) 与交互控件汉化测试
+console.log('\n--- 代码差异比对 (Diff) 与交互控件测试 ---');
+check('词典: Insert into terminal', translateString('Insert into terminal'), '插入至终端');
+check('词典: Run in terminal', translateString('Run in terminal'), '在终端中运行');
+check('词典: Apply diff', translateString('Apply diff'), '应用改动');
+check('词典: Revert diff', translateString('Revert diff'), '还原改动');
+check('词典: Accept changes', translateString('Accept changes'), '接受改动');
+check('词典: Reject changes', translateString('Reject changes'), '放弃改动');
+check('词典: Show diff', translateString('Show diff'), '显示差异');
+check('词典: Hide diff', translateString('Hide diff'), '隐藏差异');
+check('词典: Inline diff', translateString('Inline diff'), '行内差异');
+check('词典: Side-by-side diff', translateString('Side-by-side diff'), '并排差异');
+check('词典: Toggle raw markdown', translateString('Toggle raw markdown'), '切换原生 Markdown');
+check('词典: View raw markdown', translateString('View raw markdown'), '查看原生 Markdown');
+check('词典: Copy raw markdown', translateString('Copy raw markdown'), '复制原生 Markdown');
+check('词典: Clear Conversation', translateString('Clear Conversation'), '清除对话');
+check('词典: Export Conversation', translateString('Export Conversation'), '导出对话');
+check('词典: Share Conversation', translateString('Share Conversation'), '分享对话');
+
+// 14. 智能体运行态胶囊与状态提示测试
+console.log('\n--- 智能体运行态胶囊与状态提示测试 ---');
+check('词典: Planning...', translateString('Planning...'), '正在制定计划...');
+check('词典: Generating plan...', translateString('Generating plan...'), '正在生成计划...');
+check('词典: Executing command...', translateString('Executing command...'), '正在执行命令...');
+check('词典: Analyzing repository...', translateString('Analyzing repository...'), '正在分析代码库...');
+check('词典: Reading files...', translateString('Reading files...'), '正在读取文件...');
+check('词典: Writing changes...', translateString('Writing changes...'), '正在写入改动...');
+check('词典: Running verification...', translateString('Running verification...'), '正在运行验证...');
+check('词典: Searching codebase...', translateString('Searching codebase...'), '正在搜索代码库...');
+check('词典: Waiting for approval...', translateString('Waiting for approval...'), '等待审批...');
+check('词典: Waiting for approval', translateString('Waiting for approval'), '等待审批');
+check('词典: Waiting for user input...', translateString('Waiting for user input...'), '等待用户输入...');
+check('词典: Waiting for user input', translateString('Waiting for user input'), '等待用户输入');
+check('词典: Requires approval', translateString('Requires approval'), '需要审批');
+check('词典: Stop generating', translateString('Stop generating'), '停止生成');
+check('词典: Stop execution', translateString('Stop execution'), '停止执行');
+check('词典: Stop agent', translateString('Stop agent'), '停止智能体');
+check('词典: Ask anything, @ to mention, / for workflows', 
+  translateString('Ask anything, @ to mention, / for workflows'), 
+  '输入任何问题，输入 @ 提及，输入 / 调用工作流');
+check('词典: Type a message or press / for workflows', 
+  translateString('Type a message or press / for workflows'), 
+  '输入消息或按 / 调用工作流');
+check('词典: Ask a question or describe a task...', 
+  translateString('Ask a question or describe a task...'), 
+  '提出问题或描述任务...');
+
+// 15. 设置中心、权限沙箱与模型参数测试
+console.log('\n--- 设置中心、权限沙箱与模型参数测试 ---');
+check('词典: Terminal auto-execution policy', translateString('Terminal auto-execution policy'), '终端自动执行策略');
+check('词典: Background terminal execution', translateString('Background terminal execution'), '后台终端执行');
+check('词典: Terminal Execution', translateString('Terminal Execution'), '终端执行');
+check('词典: Terminal command execution', translateString('Terminal command execution'), '终端命令执行');
+check('词典: Command auto-execution', translateString('Command auto-execution'), '命令自动执行');
+check('词典: Always deny', translateString('Always deny'), '始终拒绝');
+check('词典: Auto-approve', translateString('Auto-approve'), '自动批准');
+check('词典: Allow background tasks', translateString('Allow background tasks'), '允许后台任务');
+check('词典: Cancel task', translateString('Cancel task'), '取消任务');
+check('词典: Kill task', translateString('Kill task'), '终止任务');
+check('词典: Task status', translateString('Task status'), '任务状态');
+check('词典: Reasoning', translateString('Reasoning'), '推理');
+check('词典: Thinking budget', translateString('Thinking budget'), '思考预算');
+check('词典: Models', translateString('Models'), '模型');
+check('词典: Temperature', translateString('Temperature'), '温度参数');
+check('词典: Context window', translateString('Context window'), '上下文窗口');
+check('词典: Max output tokens', translateString('Max output tokens'), '最大输出 Token');
+check('词典: System instructions', translateString('System instructions'), '系统指令');
+check('词典: Custom instructions', translateString('Custom instructions'), '自定义指令');
+check('词典: Active model', translateString('Active model'), '当前活跃模型');
+check('词典: Available models', translateString('Available models'), '可用模型列表');
+check('词典: Keybindings', translateString('Keybindings'), '快捷键绑定');
+check('词典: Quick Open', translateString('Quick Open'), '快速打开');
+check('词典: Installed Distros', translateString('Installed Distros'), '已安装发行版');
+check('词典: WSL Distros', translateString('WSL Distros'), 'WSL 发行版');
+check('词典: Security', translateString('Security'), '安全');
+check('词典: Allow once', translateString('Allow once'), '允许一次');
+check('词典: Always allow in this project', translateString('Always allow in this project'), '在此项目中始终允许');
+check('词典: Standard sandbox', translateString('Standard sandbox'), '标准沙箱');
+check('词典: Full access', translateString('Full access'), '完全访问');
+check('词典: Read-only access', translateString('Read-only access'), '只读访问');
+check('词典: Workspace only', translateString('Workspace only'), '仅工作区');
+check('词典: Allow network access', translateString('Allow network access'), '允许网络访问');
+check('词典: Allow file system modifications', translateString('Allow file system modifications'), '允许修改文件系统');
+check('词典: Add MCP Server', translateString('Add MCP Server'), '添加 MCP 服务器');
+check('词典: Restart MCP Server', translateString('Restart MCP Server'), '重启 MCP 服务器');
+check('词典: Reload customizations', translateString('Reload customizations'), '重新加载自定义项');
+check('词典: Google Cloud Project', translateString('Google Cloud Project'), 'Google Cloud 项目');
+check('词典: Select a Google Cloud Project', translateString('Select a Google Cloud Project'), '选择 Google Cloud 项目');
+check('词典: No Google Cloud project selected', translateString('No Google Cloud project selected'), '未选择 Google Cloud 项目');
+check('词典: Switch Account', translateString('Switch Account'), '切换账号');
+check('词典: Enterprise License', translateString('Enterprise License'), '企业许可证');
+check('词典: Personal License', translateString('Personal License'), '个人许可证');
+check('词典: Free tier', translateString('Free tier'), '免费层级');
+check('词典: Pro tier', translateString('Pro tier'), '专业版层级');
+check('词典: Enterprise tier', translateString('Enterprise tier'), '企业版层级');
+check('词典: Quota exceeded', translateString('Quota exceeded'), '配额超限');
+check('词典: Rate limit exceeded', translateString('Rate limit exceeded'), '速率限制超限');
+
+// 16. 斜杠指令功能描述长句测试
+console.log('\n--- 斜杠指令功能描述长句测试 ---');
+check('长句: /goal 描述', 
+  translateString('Run an autonomous, goal-driven agent loop until task completion'), 
+  '自主目标驱动的智能体循环，直至彻底完成任务');
+check('长句: /schedule 描述', 
+  translateString('Schedule recurring workflows or set delayed reminders'), 
+  '调度周期性工作流或设定延时提醒');
+check('长句: /plan 描述', 
+  translateString('Generate a detailed step-by-step implementation plan'), 
+  '生成详尽的分步实施计划');
+check('长句: /grill-me 描述', 
+  translateString('Interactive interview to clarify and align requirements'), 
+  '通过互动访谈厘清需求与设计决策');
+check('长句: /teamwork-preview 描述', 
+  translateString('Coordinate multiple autonomous subagents'), 
+  '多子智能体并行协作预览模式');
+check('长句: /learn 描述', 
+  translateString('Save corrected workflows and habits to long-term memory'), 
+  '将纠正后的工作流与习惯沉淀至长期记忆');
+check('长句: /boost 描述', 
+  translateString('Deep thinking and multi-perspective verification mode'), 
+  '深度思考与多重视角交叉验证增强模式');
+
+// 17. 向导截断碎片容错测试
+console.log('\n--- 向导截断碎片容错测试 ---');
+check('向导前段碎片: If you\'d still like a code editor, you can download it as a separate app named',
+  translateString("If you'd still like a code editor, you can download it as a separate app named"),
+  '如果您仍需要代码编辑器，可单独下载独立应用');
+check('向导后段碎片: separate app named Antigravity IDE',
+  translateString('separate app named Antigravity IDE'),
+  '名为 Antigravity IDE 的独立应用');
+
 console.log(`\n======================================================`);
 console.log(`Ticket-13 测试结果: ${passed}/${total} 断言全部通过！`);
 console.log(`======================================================\n`);
