@@ -111,4 +111,24 @@ vitest_1.vi.mock('electron');
             'c',
         ]);
     });
+    (0, vitest_1.it)('should register click listener on non-macOS when onClick is provided', async () => {
+        const utils = await Promise.resolve().then(() => __importStar(require('./utils')));
+        vitest_1.vi.spyOn(utils, 'isMacOS').mockReturnValue(false);
+        const { Tray } = await Promise.resolve().then(() => __importStar(require('electron')));
+        const { createTray } = await Promise.resolve().then(() => __importStar(require('./tray')));
+        const onClick = vitest_1.vi.fn();
+        createTray([{ label: 'Open App', click: vitest_1.vi.fn() }], onClick);
+        const trayInstance = vitest_1.vi.mocked(Tray).mock.results[0].value;
+        (0, vitest_1.expect)(trayInstance.on).toHaveBeenCalledWith('click', onClick);
+    });
+    (0, vitest_1.it)('should not register click listener on macOS when onClick is provided', async () => {
+        const utils = await Promise.resolve().then(() => __importStar(require('./utils')));
+        vitest_1.vi.spyOn(utils, 'isMacOS').mockReturnValue(true);
+        const { Tray } = await Promise.resolve().then(() => __importStar(require('electron')));
+        const { createTray } = await Promise.resolve().then(() => __importStar(require('./tray')));
+        const onClick = vitest_1.vi.fn();
+        createTray([{ label: 'Open App', click: vitest_1.vi.fn() }], onClick);
+        const trayInstance = vitest_1.vi.mocked(Tray).mock.results[0].value;
+        (0, vitest_1.expect)(trayInstance.on).not.toHaveBeenCalledWith('click', onClick);
+    });
 });

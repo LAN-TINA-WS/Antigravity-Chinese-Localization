@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { exec, execSync, spawn } = require('child_process');
 
-const CURRENT_VERSION = '2.18.1';
+const CURRENT_VERSION = '2.19.1';
 
 function compareVersions(v1, v2) {
   const parse = (v) => (v || '').replace(/^[vV]/, '').split('.').map(n => parseInt(n, 10) || 0);
@@ -3632,13 +3632,45 @@ function translateMenu(menuItem) {
     );
   }
 
-  // 7. Localize dist/ipcHandlers.js (Workspace Dialogs & WSL Alerts)
+  // 7. Localize dist/ipcHandlers.js (Workspace Dialogs & WSL Alerts & Native Context Menu)
   const ipcPath = path.join(EXTRACT_DIR, 'dist', 'ipcHandlers.js');
   if (fs.existsSync(ipcPath)) {
     replaceInFile(ipcPath, "title: 'Open workspace',", "title: '打开工作区',");
     replaceInFile(ipcPath, "title: 'Open workspaces',", "title: '打开工作区',");
     replaceInFile(ipcPath, "electron_1.dialog.showErrorBox('Cannot open folder', t.error);", "electron_1.dialog.showErrorBox('无法打开文件夹', t.error);");
     replaceInFile(ipcPath, "message: 'Folder is on the Windows filesystem',", "message: '文件夹位于 Windows 文件系统中',");
+
+    // 2.19.1 新增：原生右键上下文菜单汉化注入
+    const contextMenuInject = `
+const contextMenuTranslationMap = {
+  'Cut': '剪切',
+  'Copy': '复制',
+  'Paste': '粘贴',
+  'Select All': '全选',
+  'Undo': '撤销',
+  'Redo': '重做',
+  'Delete': '删除',
+  'New Conversation': '新建对话',
+  'Fork Conversation': '派生对话',
+  'Rename': '重命名',
+  'Pin': '置顶',
+  'Unpin': '取消置顶',
+  'Close': '关闭',
+  'Close Others': '关闭其他',
+  'Close All': '全部关闭',
+  'Copy Path': '复制路径',
+  'Copy Relative Path': '复制相对路径',
+  'Reveal in File Explorer': '在文件资源管理器中显示',
+  'Reveal in Finder': '在访达中显示',
+  'Open in Terminal': '在终端中打开'
+};
+function translateContextLabel(lbl) {
+  if (!lbl) return '';
+  return contextMenuTranslationMap[lbl] || lbl;
+}
+`;
+    injectOrUpdate(ipcPath, contextMenuInject, 'const contextMenuTranslationMap = {', '原生上下文菜单翻译映射');
+    replaceInFile(ipcPath, "label: item.label ?? '',", "label: (typeof translateContextLabel === 'function' ? translateContextLabel(item.label) : item.label) ?? '',");
   }
 
   // 8. Localize dist/wsl.js (WSL Path Mappings & Status Messages)

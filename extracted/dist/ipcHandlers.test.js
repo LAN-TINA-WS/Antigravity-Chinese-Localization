@@ -109,4 +109,78 @@ const ipcHandlers_1 = require("./ipcHandlers");
             (0, vitest_1.expect)(result).toBe(false);
         });
     });
+    (0, vitest_1.describe)('window:show-context-menu', () => {
+        (0, vitest_1.it)('should build native menu, popup on focused window, and resolve with clicked item id', async () => {
+            const handler = handlers.get('window:show-context-menu');
+            const mockMenu = electron_1.Menu.buildFromTemplate([]);
+            vitest_1.vi.mocked(mockMenu.popup).mockImplementation(() => {
+                const template = vitest_1.vi
+                    .mocked(electron_1.Menu.buildFromTemplate)
+                    .mock.calls.at(-1)?.[0];
+                const copySubmenu = template?.[1]?.submenu;
+                copySubmenu?.[0]?.click?.();
+            });
+            const result = await handler({}, [
+                { id: 'sep-1', type: 'separator' },
+                {
+                    id: 'copy-group',
+                    label: 'Copy',
+                    type: 'submenu',
+                    submenu: [
+                        {
+                            id: 'copy-id',
+                            label: 'Copy Conversation ID',
+                            accelerator: 'CmdOrCtrl+C',
+                        },
+                    ],
+                },
+                { id: 'disabled-item', label: 'Disabled', disabled: true },
+            ]);
+            (0, vitest_1.expect)(result).toBe('copy-id');
+            (0, vitest_1.expect)(electron_1.Menu.buildFromTemplate).toHaveBeenCalledWith([
+                { type: 'separator' },
+                {
+                    id: 'copy-group',
+                    label: 'Copy',
+                    type: 'submenu',
+                    enabled: true,
+                    submenu: [
+                        vitest_1.expect.objectContaining({
+                            id: 'copy-id',
+                            label: 'Copy Conversation ID',
+                            type: 'normal',
+                            enabled: true,
+                            accelerator: 'CmdOrCtrl+C',
+                        }),
+                    ],
+                },
+                vitest_1.expect.objectContaining({
+                    id: 'disabled-item',
+                    label: 'Disabled',
+                    type: 'normal',
+                    enabled: false,
+                }),
+            ]);
+            (0, vitest_1.expect)(mockMenu.popup).toHaveBeenCalledWith(vitest_1.expect.objectContaining({
+                window: electron_1.BrowserWindow.getFocusedWindow(),
+                callback: vitest_1.expect.any(Function),
+            }));
+        });
+        (0, vitest_1.it)('should resolve with null when menu closes without selection', async () => {
+            const handler = handlers.get('window:show-context-menu');
+            const mockMenu = electron_1.Menu.buildFromTemplate([]);
+            vitest_1.vi.mocked(mockMenu.popup).mockImplementation((opts) => {
+                opts?.callback?.();
+            });
+            const result = await handler({}, [{ id: 'copy', label: 'Copy' }]);
+            (0, vitest_1.expect)(result).toBeNull();
+        });
+        (0, vitest_1.it)('should return null without popping up menu when items is empty', async () => {
+            const handler = handlers.get('window:show-context-menu');
+            vitest_1.vi.mocked(electron_1.Menu.buildFromTemplate).mockClear();
+            const result = await handler({}, []);
+            (0, vitest_1.expect)(result).toBeNull();
+            (0, vitest_1.expect)(electron_1.Menu.buildFromTemplate).not.toHaveBeenCalled();
+        });
+    });
 });

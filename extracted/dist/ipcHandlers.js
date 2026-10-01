@@ -49,6 +49,33 @@ const constants_1 = require("./ideInstall/constants");
 const url_1 = require("url");
 const wsl_1 = require("./wsl");
 const menu_1 = require("./menu");
+function buildContextMenuTemplate(items, onSelect) {
+    return items.map((item) => {
+        if (item.type === 'separator') {
+            return { type: 'separator' };
+        }
+        if (item.type === 'submenu' || (item.submenu && item.submenu.length > 0)) {
+            return {
+                id: item.id,
+                label: (typeof translateContextLabel === 'function' ? translateContextLabel(item.label) : item.label) ?? '',
+                type: 'submenu',
+                enabled: !item.disabled,
+                submenu: buildContextMenuTemplate(item.submenu ?? [], onSelect),
+            };
+        }
+        return {
+            id: item.id,
+            label: (typeof translateContextLabel === 'function' ? translateContextLabel(item.label) : item.label) ?? '',
+            type: item.type ?? 'normal',
+            checked: item.checked,
+            enabled: !item.disabled,
+            accelerator: item.accelerator,
+            click: () => {
+                onSelect(item.id);
+            },
+        };
+    });
+}
 /**
  * Registers all IPC handlers for the main process.
  */
@@ -253,6 +280,45 @@ function registerIpcHandlers(storageManager) {
             win.webContents.toggleDevTools();
         }
     });
+    let activeContextMenu = null;
+    electron_1.ipcMain.handle('window:show-context-menu', async (_event, items) => {
+        const win = electron_1.BrowserWindow.getFocusedWindow() || electron_1.BrowserWindow.getAllWindows()[0];
+        if (!win || !Array.isArray(items) || items.length === 0) {
+            return null;
+        }
+        activeContextMenu?.closePopup?.(win);
+        return new Promise((resolve) => {
+            let settled = false;
+            const template = buildContextMenuTemplate(items, (id) => {
+                if (!settled) {
+                    settled = true;
+                    activeContextMenu = null;
+                    resolve(id);
+                }
+            });
+            const menu = electron_1.Menu.buildFromTemplate(template);
+            activeContextMenu = menu;
+            menu.popup({
+                window: win,
+                callback: () => {
+                    setImmediate(() => {
+                        if (activeContextMenu === menu) {
+                            activeContextMenu = null;
+                        }
+                        if (!settled) {
+                            settled = true;
+                            resolve(null);
+                        }
+                    });
+                },
+            });
+        });
+    });
+    electron_1.ipcMain.handle('window:close-context-menu', () => {
+        const win = electron_1.BrowserWindow.getFocusedWindow() || electron_1.BrowserWindow.getAllWindows()[0];
+        activeContextMenu?.closePopup?.(win);
+        activeContextMenu = null;
+    });
     // Zoom — main-process source of truth so the level is reliably persisted
     // across restarts on all platforms (works around a Chromium quirk on Windows
     // where renderer-only webFrame.setZoomLevel changes aren't cached).
@@ -340,4 +406,33 @@ function registerIpcHandlers(storageManager) {
     electron_1.ipcMain.handle('wsl:connect', (_event, distro) => {
         (0, menu_1.relaunchWithWslDistro)(distro || '');
     });
+}
+
+
+
+const contextMenuTranslationMap = {
+  'Cut': '剪切',
+  'Copy': '复制',
+  'Paste': '粘贴',
+  'Select All': '全选',
+  'Undo': '撤销',
+  'Redo': '重做',
+  'Delete': '删除',
+  'New Conversation': '新建对话',
+  'Fork Conversation': '派生对话',
+  'Rename': '重命名',
+  'Pin': '置顶',
+  'Unpin': '取消置顶',
+  'Close': '关闭',
+  'Close Others': '关闭其他',
+  'Close All': '全部关闭',
+  'Copy Path': '复制路径',
+  'Copy Relative Path': '复制相对路径',
+  'Reveal in File Explorer': '在文件资源管理器中显示',
+  'Reveal in Finder': '在访达中显示',
+  'Open in Terminal': '在终端中打开'
+};
+function translateContextLabel(lbl) {
+  if (!lbl) return '';
+  return contextMenuTranslationMap[lbl] || lbl;
 }

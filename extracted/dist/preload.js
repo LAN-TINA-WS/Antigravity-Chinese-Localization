@@ -93,6 +93,8 @@ const electronNativeAPI = {
     },
     openExternal: (url) => electron_1.ipcRenderer.invoke('shell:open-external', url),
     revealInFilePicker: (path) => electron_1.ipcRenderer.invoke('shell:reveal-in-file-picker', path),
+    showContextMenu: (items) => electron_1.ipcRenderer.invoke('window:show-context-menu', items),
+    closeContextMenu: () => electron_1.ipcRenderer.invoke('window:close-context-menu'),
 };
 const ideAPI = {
     isInstalled: () => electron_1.ipcRenderer.invoke('ide:is-installed'),
@@ -112,6 +114,7 @@ electron_1.contextBridge.exposeInMainWorld('agent', agentAPI);
 electron_1.contextBridge.exposeInMainWorld('electronNative', electronNativeAPI);
 electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
 electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
+
 
 
 // Antigravity 2.0 Chinese Localization Engine Enhanced

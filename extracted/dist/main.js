@@ -367,7 +367,10 @@ electron_1.app
                     electron_1.app.quit();
                 },
             },
-        ]);
+        ], () => {
+            (0, utils_1.showOrCreateWindow)((0, languageServer_1.getLsPort)());
+            electron_1.app.focus({ steal: true });
+        });
         // The app menu bar isn't reachable on Windows (hidden title bar), so
         // the tray menu also gets the "Connect to WSL" entry.
         void (0, menu_1.wslConnectMenuTemplate)().then((wslItem) => {

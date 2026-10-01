@@ -118,6 +118,7 @@ const _mockMenuInstance = {
         },
     ],
     getMenuItemById: vitest_1.vi.fn().mockReturnValue({ label: '' }),
+    popup: vitest_1.vi.fn(),
 };
 exports.Menu = Object.assign(vitest_1.vi.fn().mockImplementation(function () {
     this.items = [];

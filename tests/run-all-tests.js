@@ -12,7 +12,8 @@ const tests = [
   'ticket-10-v215-features.test.js',
   'ticket-11-v2151-features.test.js',
   'ticket-12-v2170-features.test.js',
-  'ticket-13-v2181-features.test.js'
+  'ticket-13-v2181-features.test.js',
+  'ticket-14-v2191-features.test.js'
 ];
 
 console.log('================ 全套 TDD 回归测试套件 ================\n');

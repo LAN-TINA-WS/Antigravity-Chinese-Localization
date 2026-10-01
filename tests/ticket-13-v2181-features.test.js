@@ -32,17 +32,25 @@ function check(desc, actual, expected) {
 
 console.log('=== 开始 Ticket-13 Antigravity 2.18.1 官方版本与架构特性专项测试 ===\n');
 
-// 1. 版本号与工程元数据校验
+// 1. 版本号校验
 console.log('--- 2.18.1 版本元数据校验 ---');
 const versionMatch = localizeSource.match(/const CURRENT_VERSION = ['"]([^'"]+)['"];/);
 const currentVer = versionMatch ? versionMatch[1] : '';
-check('localize.js CURRENT_VERSION 严格等于 2.18.1', currentVer, '2.18.1');
-check('extracted/package.json version 严格等于 2.18.1', packageJson.version, '2.18.1');
-check('index.html 包含 本地词库 v2.18.1', indexSource.includes('本地词库 v2.18.1'), true);
-check('index.html 包含 Antigravity 2.0 / 2.18.1+', indexSource.includes('<h1>Antigravity 2.0 / 2.18.1+</h1>'), true);
-check('index.html currentVer 变量为 2.18.1', indexSource.includes("const currentVer = '2.18.1';"), true);
-check('README.md 包含 Antigravity v2.18.1+', readmeSource.includes('Antigravity v2.18.1+'), true);
-check('README.en.md 包含 Antigravity v2.18.1+', readmeEnSource.includes('Antigravity v2.18.1+'), true);
+const parseVer = (v) => (v || '').split('.').map(n => parseInt(n, 10) || 0);
+const isVerGte2181 = (v) => {
+  const [maj, min, patch] = parseVer(v);
+  return maj > 2 || (maj === 2 && min > 18) || (maj === 2 && min === 18 && patch >= 1);
+};
+check('localize.js CURRENT_VERSION 版本号有效且 >= 2.18.1', isVerGte2181(currentVer), true);
+check('extracted/package.json version 有效且 >= 2.18.1', isVerGte2181(packageJson.version), true);
+check('index.html 包含 本地词库 v2.18.1 或更新', /本地词库 v2\.(18\.1|19\.\d+)/.test(indexSource), true);
+check('index.html 包含 Antigravity 2.0 / 2.18.1+ 或更新', /Antigravity 2\.0 \/ 2\.(18\.1|19\.\d+)\+/.test(indexSource), true);
+check('index.html currentVer 变量有效且 >= 2.18.1', (() => {
+  const m = indexSource.match(/const currentVer = '([^']+)';/);
+  return m ? isVerGte2181(m[1]) : false;
+})(), true);
+check('README.md 包含 Antigravity v2.18.1+ 或更新', /Antigravity v2\.(18\.1|19\.\d+)\+/.test(readmeSource), true);
+check('README.en.md 包含 Antigravity v2.18.1+ 或更新', /Antigravity v2\.(18\.1|19\.\d+)\+/.test(readmeEnSource), true);
 
 // 2. 2.18.1 核心上游特性与依赖完备性
 console.log('\n--- 2.18.1 上游架构特性校验 ---');

@@ -266,4 +266,26 @@ vitest_1.vi.mock('./ideInstall', () => ({
         await Promise.resolve().then(() => __importStar(require('./main')));
         (0, vitest_1.expect)(app.commandLine.appendSwitch).toHaveBeenCalledWith('disable-blink-features', 'AutomationControlled');
     });
+    (0, vitest_1.it)('should call showOrCreateWindow and app.focus when tray icon is left-clicked', async () => {
+        const { existsSync } = await Promise.resolve().then(() => __importStar(require('fs')));
+        const { showOrCreateWindow } = await Promise.resolve().then(() => __importStar(require('./utils')));
+        const { startAndMonitorLanguageServer } = await Promise.resolve().then(() => __importStar(require('./languageServer')));
+        const { createTray } = await Promise.resolve().then(() => __importStar(require('./tray')));
+        const { app } = await Promise.resolve().then(() => __importStar(require('electron')));
+        const ACTUAL_PORT = 49152;
+        vitest_1.vi.mocked(existsSync).mockReturnValue(true);
+        vitest_1.vi.mocked(startAndMonitorLanguageServer).mockResolvedValue({
+            port: ACTUAL_PORT,
+            process: { pid: 1234 },
+            exitPromise: new Promise(() => { }),
+        });
+        await Promise.resolve().then(() => __importStar(require('./main')));
+        const whenReadyCall = vitest_1.vi.mocked(app.whenReady).mock.results[0].value;
+        await whenReadyCall.cb();
+        const onClick = vitest_1.vi.mocked(createTray).mock.calls[0]?.[1];
+        (0, vitest_1.expect)(onClick).toBeDefined();
+        onClick();
+        (0, vitest_1.expect)(showOrCreateWindow).toHaveBeenCalledWith(ACTUAL_PORT);
+        (0, vitest_1.expect)(app.focus).toHaveBeenCalledWith({ steal: true });
+    });
 });
