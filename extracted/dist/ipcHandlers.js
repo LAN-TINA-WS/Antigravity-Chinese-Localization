@@ -409,7 +409,6 @@ function registerIpcHandlers(storageManager) {
 }
 
 
-
 const contextMenuTranslationMap = {
   'Cut': '剪切',
   'Copy': '复制',
@@ -430,7 +429,17 @@ const contextMenuTranslationMap = {
   'Copy Relative Path': '复制相对路径',
   'Reveal in File Explorer': '在文件资源管理器中显示',
   'Reveal in Finder': '在访达中显示',
-  'Open in Terminal': '在终端中打开'
+  'Open in Terminal': '在终端中打开',
+  'Project options': '项目选项',
+  'View Usage': '查看使用额度',
+  'Duplicate': '创建副本',
+  'Archive': '归档',
+  'Share': '分享',
+  'Copy Link': '复制链接',
+  'Export': '导出',
+  'Export Conversation': '导出对话',
+  'Clear': '清除',
+  'Clear History': '清除历史'
 };
 function translateContextLabel(lbl) {
   if (!lbl) return '';

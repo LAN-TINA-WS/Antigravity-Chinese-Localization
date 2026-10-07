@@ -2393,11 +2393,99 @@ const DOM_TRANSLATOR_INJECTION = `
     "Coordinate multiple autonomous subagents": "多子智能体并行协作预览模式",
     "Save corrected workflows and habits to long-term memory": "将纠正后的工作流与习惯沉淀至长期记忆",
     "Deep thinking and multi-perspective verification mode": "深度思考与多重视角交叉验证增强模式",
+
+    // === 2.21.0 深度补全：官方底座新特性、模型状态、操作卡片与设置中心全量词条 ===
+    // 1. 设置中心新版体验与 Token 明细
+    "Choose the experience that fits how you work.": "选择适合您工作方式的操作体验。",
+    "Choose the experience that fits how you work": "选择适合您工作方式的操作体验",
+    "Choose between the Default and Project 4K experience.": "在默认体验与 4K 项目体验之间切换。",
+    "Choose between the Default and Project 4K experience": "在默认体验与 4K 项目体验之间切换",
+    "Project 4K": "项目 4K",
+    "The breakdown below shows token usage from customizations like rules, skills, and MCP. If a budget is exceeded, large rules are demoted to path pointers and large customizations are excluded automatically.": "下方明细展示了来自规则、技能和 MCP 等自定义项的 Token 用量。如果超出额度，大型规则将自动降级为路径指针，大型自定义项将被自动排除。",
+    "The breakdown below shows token usage from customizations like rules, skills, and MCP.": "下方明细展示了来自规则、技能和 MCP 等自定义项的 Token 用量。",
+    "If a budget is exceeded, large rules are demoted to path pointers and large customizations are excluded automatically.": "如果超出额度，大型规则将自动降级为路径指针，大型自定义项将被自动排除。",
+    "Other Customizations": "其他自定义项",
+    "Show 1 breakdown": "显示 1 项明细",
+    "Show 2 breakdowns": "显示 2 项明细",
+    "Show 5 breakdowns": "显示 5 项明细",
+    "Hide breakdown": "隐藏明细",
+    "Hide breakdowns": "隐藏明细",
+    "File Reads": "文件读取",
+    "File Writes": "文件写入",
+    "file reads": "文件读取",
+    "file writes": "文件写入",
+    "Reads": "读取",
+    "Writes": "写入",
+    "Contrast": "对比度",
+    "Strong": "强烈",
+    "Strong contrast": "高对比度",
+    "Creating Cloud Project": "正在创建云项目",
+    "Creating Chat Bot": "正在创建聊天机器人",
+    "Installing Chat Bot": "正在安装聊天机器人",
+    "Creating Sidecar": "正在创建 Sidecar",
+    "Setup may take over 5 minutes. Please keep this screen open during setup.": "配置可能需要 5 分钟以上。配置期间请保持此界面打开。",
+    "Legal Help": "法律帮助",
+    "to ask for content changes for legal reasons.": "出于法律原因申请内容变更。",
+    "Permanently delete": "永久删除",
+    "Permanently delete this project and all of its conversations.": "永久删除当前项目及其所有历史对话。",
+    "Refreshing...": "正在刷新...",
+    "Refreshing": "正在刷新",
+    "App Version": "应用版本",
+    "Bug Report": "Bug 报告",
+    "Remote Control Issue": "远程控制问题反馈",
+    "Attach Antigravity server logs": "附带 Antigravity 服务器日志",
+
+    // 2. 主聊天交互与按钮
+    "Project options": "项目选项",
+    "Agent response": "智能体回复",
+    "Undo to this point": "撤销至此处",
+    "Explored files, ran commands": "已探索文件，已执行命令",
+    "Exploring file, running commands, editing artifact": "正在探索文件、运行命令、编辑工件",
+    "Exploring file, running commands, editing artifacts": "正在探索文件、运行命令、编辑工件",
+    "Drag to select a region to comment": "拖动以选取区域进行评论",
+    "Select a region to comment": "选取区域以进行评论",
+    "Copy markdown": "复制 Markdown",
+    "Copy code": "复制代码",
+    "Copy raw text": "复制纯文本",
+
+    // 3. 模型状态与官方插件
+    "View Usage": "查看使用额度",
+    "View usage": "查看使用额度",
+    "view usage": "查看使用额度",
+    "Leaving Soon": "即将下线",
+    "leaving soon": "即将下线",
+    "Notice": "重要提示",
+    "High": "高",
+    "Medium": "中",
+    "Low": "低",
+    "Thinking": "深度思考",
+    "Build applications with the Gemini Interactions API and Live API, including text, image, video, and speech generation, managed agents, and real-time multimodal streaming.": "借助 Gemini Interactions API 与 Live API 构建应用程序，涵盖文本、图像、视频与语音生成，托管智能体以及实时多模态流式交互。",
+    "Build applications with the Gemini Interactions API and Live API": "借助 Gemini Interactions API 与 Live API 构建应用程序",
+    "Download": "下载",
+    "Gemini 3.8 Flash High": "Gemini 3.8 Flash (高)",
+    "Gemini 3.7 Flash Medium": "Gemini 3.7 Flash (中)",
+    "Gemini 3.6 Flash Low": "Gemini 3.6 Flash (低)",
+    "Gemini 3.1 Pro Low": "Gemini 3.1 Pro (低)",
+    "Claude Sonnet 4.6 (Thinking)": "Claude Sonnet 4.6 (深度思考)",
+    "Claude Opus 4.6 (Thinking)": "Claude Opus 4.6 (深度思考)",
+    "GPT-OSS 120B (Medium)": "GPT-OSS 120B (中)",
+
+    // 4. 原生上下文菜单新增
+    "Duplicate": "创建副本",
+    "Archive": "归档",
+    "Share": "分享",
+    "Copy Link": "复制链接",
+    "Export": "导出",
+    "Export Conversation": "导出对话",
+    "Clear History": "清除历史",
+    "Message input": "消息输入框",
+    "This plugin provides a specialized suite of skills for data engineers and database practitioners working on Google Cloud. It acts as an expert assistant, allowing you to use natural language prompts in your preferred coding agent to architect complex data pipelines, transform data with dbt, write Spark and BigQuery SQL notebooks, and orchestrate end-to-end workflows across GCP's data ecosystem.": "此插件为在 Google Cloud 上工作的数据工程师和数据库从业人员提供了专业技能套件。它充当专家助手，让您可以在首选的编码智能体中使用自然语言提示来构建复杂的数据管道、使用 dbt 转换数据、编写 Spark 和 BigQuery SQL 笔记本，并在 GCP 的数据生态系统中编排端到端工作流。",
+    "This skill helps the agent generate or update orchestration pipeline definitions for Google Cloud Composer to initialize orchestration pipeline or update the orchestration definition for orchestration of various data pipelines, like dbt pipelines, notebooks, Spark jobs, Dataform, Python scripts or inline BigQuery SQL queries. This skill also helps deploy and trigger orchestration pipelines.": "此技能可帮助智能体为 Google Cloud Composer 生成或更新编排管道定义，以初始化编排管道或更新各种数据管道（如 dbt 管道、笔记本、Spark 作业、Dataform、Python 脚本或内联 BigQuery SQL 查询）的编排定义。此技能还有助于部署和触发编排管道。",
   };
 
   const coreWords = {
     "create": "创建", "delete": "删除", "new": "新建", "edit": "编辑", "save": "保存", "cancel": "取消", "confirm": "确认", "copy": "复制",
-    "close": "关闭", "open": "打开", "stop": "停止", "start": "启动", "run": "运行", "add": "添加", "remove": "移除",
+    "close": "关闭", "open": "打开", "stop": "停止", "start": "启动", "add": "添加", "remove": "移除",
     "update": "更新", "select": "选择", "clear": "清除", "search": "搜索", "find": "查找", "view": "查看", "show": "显示", "hide": "隐藏",
     "agent": "智能体", "agents": "智能体", "subagent": "子智能体", "subagents": "子智能体", "task": "任务", "tasks": "任务",
     "workspace": "工作区", "workspaces": "工作区", "project": "项目", "projects": "项目", "directory": "目录", "folder": "文件夹", "file": "文件", "files": "文件",
@@ -2411,7 +2499,7 @@ const DOM_TRANSLATOR_INJECTION = `
     "schedule": "调度", "cron": "定时任务", "tools": "工具", "tool": "工具", "execute": "执行", "execution": "执行", "plan": "计划",
     "policy": "策略", "policies": "策略", "never": "从不", "always": "总是",
     "changed": "已更改", "review": "审核", "reviewing": "审核中", "reviewed": "已审核",
-    "canceled": "已取消", "js": "Js",
+    "canceled": "已取消",
     "explore": "探索", "search": "搜索", "change": "更改", "changes": "更改",
     "turn": "回合", "turns": "回合",
     "analyzed": "分析", "analyzing": "分析",
@@ -2458,6 +2546,105 @@ const DOM_TRANSLATOR_INJECTION = `
     // 0. 极速缓存查询（O(1) 命中瞬间返回）
     if (stringCache.has(trimmed)) {
       return text.replace(trimmed, stringCache.get(trimmed));
+    }
+
+    // ===== 2.21.0 专属动态模式匹配与防御 =====
+    if (/^Show\\s+(\\d+)\\s+breakdowns?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Show\\s+(\\d+)\\s+breakdowns?$/i, '显示 $1 项明细');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Hide\\s+breakdowns?$/i.test(trimmed)) {
+      const fixed = '隐藏明细';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Explored\\s+(\\d+)\\s+files?,\\s+ran\\s+(\\d+)\\s+commands?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Explored\\s+(\\d+)\\s+files?,\\s+ran\\s+(\\d+)\\s+commands?$/i, '已探索 $1 个文件，已执行 $2 条命令');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Explored files?,\\s*ran commands?$/i.test(trimmed)) {
+      const fixed = '已探索文件，已执行命令';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Exploring files?,\\s*running commands?,\\s*editing (?:files?|artifacts?)$/i.test(trimmed)) {
+      const fixed = trimmed.includes('artifact') ? '正在探索文件、运行命令、编辑工件' : '正在探索文件、运行命令、编辑文件';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^No more older messages(?:,\\s*showing\\s+(\\d+)\\s+of\\s+(\\d+))?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^No more older messages(?:,\\s*showing\\s+(\\d+)\\s+of\\s+(\\d+))?$/i, (m, a, b) => {
+        return a && b ? ('已无更早的历史消息（共显示 ' + a + ' / ' + b + ' 条）') : '已无更早的历史消息';
+      });
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Select model,\\s*current:\\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Select model,\\s*current:\\s*(.+)$/i, '选择模型，当前为: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Opens external link:\\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Opens external link:\\s*(.+)$/i, '打开外部链接: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Send feedback as\\s+(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Send feedback as\\s+(.+)$/i, '以 $1 身份发送反馈');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Show All|Show all|show all|显示 All)$/i.test(trimmed)) {
+      const fixed = '显示全部';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:File Reads|文件 Reads|file reads)$/i.test(trimmed)) {
+      const fixed = '文件读取';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:File Writes|文件 Writes|file writes)$/i.test(trimmed)) {
+      const fixed = '文件写入';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Project options|项目 options)$/i.test(trimmed)) {
+      const fixed = '项目选项';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Agent response|智能体 response)$/i.test(trimmed)) {
+      const fixed = '智能体回复';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:View Usage|View usage|view usage|查看 Usage)$/i.test(trimmed)) {
+      const fixed = '查看使用额度';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Permanently delete|Permanently 删除)$/i.test(trimmed)) {
+      const fixed = '永久删除';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
     }
 
     if (trimmed.includes('could not be opened')) {
@@ -2902,6 +3089,10 @@ const DOM_TRANSLATOR_INJECTION = `
     // 如果短语中已经包含了中文字符（即原本就是汉化内容或中英混排），则严禁进入英文分词翻译
     // 这可以完美阻止像中英文混排短语被分词规则执行二次翻译导致重叠和污染
     if (/[\\u4e00-\\u9fa5]/.test(core)) {
+      return text;
+    }
+    // 防御：若短语包含连字符、下划线、斜杠、反斜杠、点号等，属于代码标识符、文件名、路径或扩展名，绝对跳过分词！
+    if (/[-_\\\\/.]/.test(core)) {
       return text;
     }
     // This prevents long unmatched sentences from getting mangled into Chinglish.
@@ -3662,7 +3853,17 @@ const contextMenuTranslationMap = {
   'Copy Relative Path': '复制相对路径',
   'Reveal in File Explorer': '在文件资源管理器中显示',
   'Reveal in Finder': '在访达中显示',
-  'Open in Terminal': '在终端中打开'
+  'Open in Terminal': '在终端中打开',
+  'Project options': '项目选项',
+  'View Usage': '查看使用额度',
+  'Duplicate': '创建副本',
+  'Archive': '归档',
+  'Share': '分享',
+  'Copy Link': '复制链接',
+  'Export': '导出',
+  'Export Conversation': '导出对话',
+  'Clear': '清除',
+  'Clear History': '清除历史'
 };
 function translateContextLabel(lbl) {
   if (!lbl) return '';
