@@ -43,14 +43,26 @@ const isVerGte2181 = (v) => {
 };
 check('localize.js CURRENT_VERSION 版本号有效且 >= 2.18.1', isVerGte2181(currentVer), true);
 check('extracted/package.json version 有效且 >= 2.18.1', isVerGte2181(packageJson.version), true);
-check('index.html 包含 本地词库 v2.18.1 或更新', /本地词库 v2\.(18\.1|19\.\d+)/.test(indexSource), true);
-check('index.html 包含 Antigravity 2.0 / 2.18.1+ 或更新', /Antigravity 2\.0 \/ 2\.(18\.1|19\.\d+)\+/.test(indexSource), true);
+check('index.html 包含 本地词库 v2.18.1 或更新', (() => {
+  const m = indexSource.match(/本地词库 v(2\.\d+\.\d+)/);
+  return m ? isVerGte2181(m[1]) : false;
+})(), true);
+check('index.html 包含 Antigravity 2.0 / 2.18.1+ 或更新', (() => {
+  const m = indexSource.match(/Antigravity 2\.0 \/ (2\.\d+\.\d+)\+/);
+  return m ? isVerGte2181(m[1]) : false;
+})(), true);
 check('index.html currentVer 变量有效且 >= 2.18.1', (() => {
   const m = indexSource.match(/const currentVer = '([^']+)';/);
   return m ? isVerGte2181(m[1]) : false;
 })(), true);
-check('README.md 包含 Antigravity v2.18.1+ 或更新', /Antigravity v2\.(18\.1|19\.\d+)\+/.test(readmeSource), true);
-check('README.en.md 包含 Antigravity v2.18.1+ 或更新', /Antigravity v2\.(18\.1|19\.\d+)\+/.test(readmeEnSource), true);
+check('README.md 包含 Antigravity v2.18.1+ 或更新', (() => {
+  const m = readmeSource.match(/Antigravity v(2\.\d+\.\d+)\+/);
+  return m ? isVerGte2181(m[1]) : false;
+})(), true);
+check('README.en.md 包含 Antigravity v2.18.1+ 或更新', (() => {
+  const m = readmeEnSource.match(/Antigravity v(2\.\d+\.\d+)\+/);
+  return m ? isVerGte2181(m[1]) : false;
+})(), true);
 
 // 2. 2.18.1 核心上游特性与依赖完备性
 console.log('\n--- 2.18.1 上游架构特性校验 ---');

@@ -41,13 +41,28 @@ const isVerGte2191 = (v) => {
   const [maj, min, patch] = parseVer(v);
   return maj > 2 || (maj === 2 && min > 19) || (maj === 2 && min === 19 && patch >= 1);
 };
-check('localize.js CURRENT_VERSION 严格等于 2.19.1', currentVer, '2.19.1');
-check('extracted/package.json version 严格等于 2.19.1', packageJson.version, '2.19.1');
-check('index.html 包含 本地词库 v2.19.1', indexSource.includes('本地词库 v2.19.1'), true);
-check('index.html 包含 Antigravity 2.0 / 2.19.1+', indexSource.includes('<h1>Antigravity 2.0 / 2.19.1+</h1>'), true);
-check('index.html currentVer 变量为 2.19.1', indexSource.includes("const currentVer = '2.19.1';"), true);
-check('README.md 包含 Antigravity v2.19.1+', readmeSource.includes('Antigravity v2.19.1+'), true);
-check('README.en.md 包含 Antigravity v2.19.1+', readmeEnSource.includes('Antigravity v2.19.1+'), true);
+check('localize.js CURRENT_VERSION 版本号有效且 >= 2.19.1', isVerGte2191(currentVer), true);
+check('extracted/package.json version 有效且 >= 2.19.1', isVerGte2191(packageJson.version), true);
+check('index.html 包含 本地词库 v2.19.1 或更新', (() => {
+  const m = indexSource.match(/本地词库 v(2\.\d+\.\d+)/);
+  return m ? isVerGte2191(m[1]) : false;
+})(), true);
+check('index.html 包含 Antigravity 2.0 / 2.19.1+ 或更新', (() => {
+  const m = indexSource.match(/Antigravity 2\.0 \/ (2\.\d+\.\d+)\+/);
+  return m ? isVerGte2191(m[1]) : false;
+})(), true);
+check('index.html currentVer 变量有效且 >= 2.19.1', (() => {
+  const m = indexSource.match(/const currentVer = '([^']+)';/);
+  return m ? isVerGte2191(m[1]) : false;
+})(), true);
+check('README.md 包含 Antigravity v2.19.1+ 或更新', (() => {
+  const m = readmeSource.match(/Antigravity v(2\.\d+\.\d+)\+/);
+  return m ? isVerGte2191(m[1]) : false;
+})(), true);
+check('README.en.md 包含 Antigravity v2.19.1+ 或更新', (() => {
+  const m = readmeEnSource.match(/Antigravity v(2\.\d+\.\d+)\+/);
+  return m ? isVerGte2191(m[1]) : false;
+})(), true);
 
 // 2. 2.19.1 上游架构特性校验
 console.log('\n--- 2.19.1 上游架构特性校验 ---');

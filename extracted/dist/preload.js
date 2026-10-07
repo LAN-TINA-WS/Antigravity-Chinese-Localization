@@ -75,6 +75,7 @@ const agentAPI = {
 };
 const electronNativeAPI = {
     getZoomLevel: () => electron_1.webFrame.getZoomFactor(),
+    getPathForFile: (file) => electron_1.webUtils.getPathForFile(file),
     setTitleBarOverlay: (options) => electron_1.ipcRenderer.invoke('window:set-title-bar-overlay', options),
     minimize: () => electron_1.ipcRenderer.invoke('window:minimize'),
     maximize: () => electron_1.ipcRenderer.invoke('window:maximize'),
