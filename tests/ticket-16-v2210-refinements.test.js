@@ -119,6 +119,15 @@ assert.strictEqual(
   '借助 Gemini Interactions API 与 Live API 构建应用程序，涵盖文本、图像、视频与语音生成，托管智能体以及实时多模态流式交互。'
 );
 
+// 2.6 Automations navigation & actions
+assert.strictEqual(translate('Automations'), '自动化');
+assert.strictEqual(translate('Automation'), '自动化');
+assert.strictEqual(translate('New Automation'), '新建自动化');
+assert.strictEqual(translate('Scheduled Automations'), '定时自动化');
+assert.strictEqual(translate('Background Automations'), '后台自动化');
+assert.strictEqual(translate('Automation Settings'), '自动化设置');
+assert.strictEqual(translate('Run Automation'), '运行自动化');
+
 // 3. Anti-Corruption Tests (Ensure paths, extensions and kebab-case are NOT corrupted)
 console.log('Testing anti-corruption protections...');
 assert.strictEqual(translate('tests/run-all-tests.js'), 'tests/run-all-tests.js', 'File path with run and .js must NOT be mangled');
@@ -138,5 +147,7 @@ assert.ok(ipcCode.includes("'View Usage': '查看使用额度'"), 'ipcHandlers m
 assert.ok(ipcCode.includes("'Duplicate': '创建副本'"), 'ipcHandlers must contain Duplicate');
 assert.ok(ipcCode.includes("'Archive': '归档'"), 'ipcHandlers must contain Archive');
 assert.ok(ipcCode.includes("'Clear History': '清除历史'"), 'ipcHandlers must contain Clear History');
+assert.ok(ipcCode.includes("'Automations': '自动化'"), 'ipcHandlers must contain Automations');
+assert.ok(ipcCode.includes("'Automation': '自动化'"), 'ipcHandlers must contain Automation');
 
 console.log('Ticket-16: ALL ASSERTIONS PASSED (ALL GREEN)!');

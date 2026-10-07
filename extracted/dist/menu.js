@@ -94,7 +94,7 @@ function setupApplicationMenu(url) {
     };
     hideDevTools(menu);
     // Re-apply the menu so the change takes effect.
-    if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } electron_1.Menu.setApplicationMenu(menu);
+    if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } electron_1.Menu.setApplicationMenu(menu);
     // Asynchronously adds "Connect to WSL" (Windows only, when WSL is present).
     void addWslConnectMenu(menu);
 }
@@ -146,7 +146,7 @@ async function addWslConnectMenu(menu) {
     if (reopen) {
         addItemToSubmenu(menu, 'File', 2, new electron_1.MenuItem(reopen));
     }
-    if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } electron_1.Menu.setApplicationMenu(menu);
+    if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } if (typeof translateMenu === 'function') { menu.items.forEach(translateMenu); } electron_1.Menu.setApplicationMenu(menu);
 }
 /** Relaunches the app connected to `distro` ('' = local mode). */
 function relaunchWithWslDistro(distro) {
@@ -229,7 +229,9 @@ const menuTranslationMap = {
   'Fork': '派生',
   'Fork Conversation': '派生对话',
   'Connect to WSL': '连接到 WSL',
-  'Reopen Locally': '本地重新打开'
+  'Reopen Locally': '本地重新打开',
+  'Automations': '自动化',
+  'Automation': '自动化'
 };
 function translateMenu(menuItem) {
   if (menuItem.label && menuTranslationMap[menuItem.label]) {

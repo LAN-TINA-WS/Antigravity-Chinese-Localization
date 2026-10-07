@@ -439,7 +439,9 @@ const contextMenuTranslationMap = {
   'Export': '导出',
   'Export Conversation': '导出对话',
   'Clear': '清除',
-  'Clear History': '清除历史'
+  'Clear History': '清除历史',
+  'Automations': '自动化',
+  'Automation': '自动化'
 };
 function translateContextLabel(lbl) {
   if (!lbl) return '';

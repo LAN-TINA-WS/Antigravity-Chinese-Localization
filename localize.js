@@ -2481,6 +2481,33 @@ const DOM_TRANSLATOR_INJECTION = `
     "Message input": "消息输入框",
     "This plugin provides a specialized suite of skills for data engineers and database practitioners working on Google Cloud. It acts as an expert assistant, allowing you to use natural language prompts in your preferred coding agent to architect complex data pipelines, transform data with dbt, write Spark and BigQuery SQL notebooks, and orchestrate end-to-end workflows across GCP's data ecosystem.": "此插件为在 Google Cloud 上工作的数据工程师和数据库从业人员提供了专业技能套件。它充当专家助手，让您可以在首选的编码智能体中使用自然语言提示来构建复杂的数据管道、使用 dbt 转换数据、编写 Spark 和 BigQuery SQL 笔记本，并在 GCP 的数据生态系统中编排端到端工作流。",
     "This skill helps the agent generate or update orchestration pipeline definitions for Google Cloud Composer to initialize orchestration pipeline or update the orchestration definition for orchestration of various data pipelines, like dbt pipelines, notebooks, Spark jobs, Dataform, Python scripts or inline BigQuery SQL queries. This skill also helps deploy and trigger orchestration pipelines.": "此技能可帮助智能体为 Google Cloud Composer 生成或更新编排管道定义，以初始化编排管道或更新各种数据管道（如 dbt 管道、笔记本、Spark 作业、Dataform、Python 脚本或内联 BigQuery SQL 查询）的编排定义。此技能还有助于部署和触发编排管道。",
+
+    // 5. 侧边栏与系统导航：Automations (自动化)
+    "Automations": "自动化",
+    "automations": "自动化",
+    "Automation": "自动化",
+    "automation": "自动化",
+    "New Automation": "新建自动化",
+    "new automation": "新建自动化",
+    "Create Automation": "创建自动化",
+    "create automation": "创建自动化",
+    "Scheduled Automations": "定时自动化",
+    "scheduled automations": "定时自动化",
+    "Background Automations": "后台自动化",
+    "background automations": "后台自动化",
+    "Active Automations": "活跃自动化",
+    "active automations": "活跃自动化",
+    "Automation Settings": "自动化设置",
+    "automation settings": "自动化设置",
+    "Automations Settings": "自动化设置",
+    "automations settings": "自动化设置",
+    "No automations": "暂无自动化任务",
+    "no automations": "暂无自动化任务",
+    "No automations found": "未找到自动化任务",
+    "no automations found": "未找到自动化任务",
+    "Run Automation": "运行自动化",
+    "Trigger Automation": "触发自动化",
+    "Manage Automations": "管理自动化",
   };
 
   const coreWords = {
@@ -2488,6 +2515,7 @@ const DOM_TRANSLATOR_INJECTION = `
     "close": "关闭", "open": "打开", "stop": "停止", "start": "启动", "add": "添加", "remove": "移除",
     "update": "更新", "select": "选择", "clear": "清除", "search": "搜索", "find": "查找", "view": "查看", "show": "显示", "hide": "隐藏",
     "agent": "智能体", "agents": "智能体", "subagent": "子智能体", "subagents": "子智能体", "task": "任务", "tasks": "任务",
+    "automation": "自动化", "automations": "自动化",
     "workspace": "工作区", "workspaces": "工作区", "project": "项目", "projects": "项目", "directory": "目录", "folder": "文件夹", "file": "文件", "files": "文件",
     "command": "命令", "commands": "命令", "palette": "面板", "terminal": "终端", "console": "控制台", "output": "输出", "input": "输入", "remote": "远程", "control": "控制", "device": "设备", "devices": "设备", "link": "链接",
     "log": "日志", "logs": "日志", "setting": "设置", "settings": "设置", "preference": "偏好", "preferences": "偏好", "permission": "权限", "permissions": "权限",
@@ -3739,7 +3767,9 @@ const menuTranslationMap = {
   'Fork': '派生',
   'Fork Conversation': '派生对话',
   'Connect to WSL': '连接到 WSL',
-  'Reopen Locally': '本地重新打开'
+  'Reopen Locally': '本地重新打开',
+  'Automations': '自动化',
+  'Automation': '自动化'
 };
 function translateMenu(menuItem) {
   if (menuItem.label && menuTranslationMap[menuItem.label]) {
@@ -3863,7 +3893,9 @@ const contextMenuTranslationMap = {
   'Export': '导出',
   'Export Conversation': '导出对话',
   'Clear': '清除',
-  'Clear History': '清除历史'
+  'Clear History': '清除历史',
+  'Automations': '自动化',
+  'Automation': '自动化'
 };
 function translateContextLabel(lbl) {
   if (!lbl) return '';
