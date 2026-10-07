@@ -2447,6 +2447,73 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
     "Run Automation": "运行自动化",
     "Trigger Automation": "触发自动化",
     "Manage Automations": "管理自动化",
+
+    // 6. 自定义配置（Customizations）扩展市场与管理
+    "Installed": "已安装",
+    "installed": "已安装",
+    "Marketplace": "扩展市场",
+    "marketplace": "扩展市场",
+    "Browse the Marketplace": "浏览扩展市场",
+    "browse the marketplace": "浏览扩展市场",
+    "Find skills, agents, and more in the Marketplace.": "在扩展市场中查找技能、智能体等。",
+    "Search customizations...": "搜索自定义项...",
+    "Search customizations": "搜索自定义项",
+    "search customizations": "搜索自定义项",
+    "Skills & Rules": "技能与规则",
+    "skills & rules": "技能与规则",
+    "Built In": "内置",
+    "built in": "内置",
+    "Built-in": "内置",
+    "See less": "收起",
+    "see less": "收起",
+    "Custom Agents": "自定义智能体",
+    "custom agents": "自定义智能体",
+    "Loading plugin...": "正在加载插件...",
+    "Loading plugin": "正在加载插件",
+    "This is a preview of the plugin's source. Nothing below is active until you install it.": "这是此插件源码的预览。在您安装之前，以下内容均未激活生效。",
+
+    // 官方插件生态与详情
+    "Connect to Google Workspace, including Docs, Sheets, Slides, Drive, and Calendar.": "连接至 Google Workspace，涵盖 Docs、Sheets、Slides、Drive 与 Calendar。",
+    "Google Docs": "Google 文档",
+    "Read, draft, and edit docs.": "阅读、起草和编辑文档。",
+    "Read and write your Google Docs. Summarize any doc from its link, draft proposals and announcements in a new doc, and reply to and resolve open comments.": "阅读与编辑您的 Google 文档。通过链接总结任意文档内容，在新文档中起草提案与公告，并回复与解决未结评论。",
+    "Read, create, edit, and manage Google Docs. Use when the user shares a docs.google.com URL, asks to summarize or extract content from a doc, wants a doc drafted, edited, formatted, or commented on, wants tables, images, or smart chips inserted, wants markdown imported or synchronized with a doc, or wants a doc exported. Requires a known document ID — use the gdrive skill to search for or locate documents. Don't use for Google Sheets, Slides, or Drive file management.": "读取、创建、编辑与管理 Google 文档。当用户分享 docs.google.com 链接、要求总结或提取文档内容、起草或修改文档排版评论、插入表格与图像智能芯片、导入导出 Markdown 时使用。",
+
+    "Google Sheets": "Google 表格",
+    "Read, write, and format spreadsheets.": "读取、编写和格式化电子表格。",
+    "Read, create, edit, and manage Google Sheets spreadsheets. Use when the user shares a sheets.google.com URL, asks to summarize, inspect, or analyze spreadsheet data, wants sheets drafted, edited, formatted, cleared, or deleted, wants rows/columns inserted, appended, deleted, or sorted, wants cells updated, formulas added, charts created, or formatting applied, or wants CSV/tsv imported or synchronized with a sheet. Requires a known spreadsheet ID — use the gdrive skill to search for or locate spreadsheets. Don't use for Google Docs, Slides, or Drive file management.": "读取、创建、编辑与管理 Google 表格。当用户分享 sheets.google.com 链接、要求汇总分析表格数据、增删修改行列单元格、添加公式图表时使用。",
+
+    "Google Slides": "Google 幻灯片",
+    "Read, edit, and export presentations.": "阅读、编辑和导出演示文稿。",
+
+    "Google Drive": "Google 云端硬盘",
+    "Search, upload, download, and share files.": "搜索、上传、下载和共享文件。",
+
+    "Google Calendar": "Google 日历",
+    "Check availability, schedule events, and RSVP.": "查看空闲时间、安排活动日程并回复邀请。",
+
+    "Build with Google": "使用 Google 构建",
+    "Build on Google's developer platforms, including Android, Chrome, Gemini, and Google Cloud.": "基于 Google 开发者平台进行构建，涵盖 Android、Chrome、Gemini 与 Google Cloud。",
+
+    "Google Maps Platform": "Google Maps 平台",
+    "Integration skill and tools for Google Maps Platform APIs": "用于 Google Maps Platform API 的集成技能与工具套件",
+
+    "Dart 与 Flutter": "Dart 与 Flutter",
+    "Official plugin for Dart and Flutter that installs Flutter/Dart Skills, Rules, Custom Agents, and Dart MCP server for building natively compiled, visually stunning applications for mobile, web, desktop, and embedded devices from a single codebase": "Dart 与 Flutter 官方插件，提供 Flutter/Dart 技能、规则、自定义智能体与 Dart MCP 服务器，支持从单一代码库构建适用于移动端、Web、桌面及嵌入式设备的原生编译精美应用。",
+
+    "Firebase": "Firebase",
+    "Prototype, build & run modern apps that users love with Firebase's backend, AI, and operational infrastructure.": "借助 Firebase 的后端、AI 和运维基础设施，原型设计、构建并运行深受用户喜爱的现代化应用程序。",
+
+    "Curated collection of agent skills for science tasks.": "精选的面向科学计算与科研任务的智能体技能套件。",
+    "Google Antigravity SDK": "Google Antigravity SDK",
+    "Using the Google Antigravity Python SDK to build AI agents": "使用 Google Antigravity Python SDK 构建 AI 智能体",
+
+    // 内置技能说明
+    "Interactive guide to design and create a scheduled background automation. Use this skill when the user wants to create an automated or recurring scheduled task (e.g. \"summarize my emails every morning\", \"every Monday send me a to-do list\"). Also triggered by the /automation slash command.": "设计与创建后台定时自动化的交互式指南。当用户需要创建定时或循环调度任务时使用（例如“每天早上总结我的邮件”、“每周一发送待办清单”）。亦可通过 /automation 斜杠命令触发。",
+    "How to manage and create plugins — namespaced bundles of skills, agents, rules, MCP servers and hooks that install, enable and disable as a single unit. Use this skill when the user wants to enable, disable, install or uninstall a plugin, when they want to create a new plugin, or when a new customization should be packaged into a plugin rather than left loose. Also triggered by the /plugin slash command. Don't use for the underlying customization system itself — discovery roots, loading priority, or authoring a standalone skill, agent, rule, hook or MCP server outside a plugin; see the customizations guide skill for those.": "管理与创建插件的指南——插件是将技能、智能体、规则、MCP 服务器和钩子整合成具有独立命名空间的套件包，支持作为独立单元进行安装、启用与禁用。当用户需要管理插件、创建新插件或将扩展组件打包封装时使用。亦可通过 /plugin 斜杠命令触发。",
+    "Build, package, run, and debug UI extensions for Antigravity: interactive web panels that render in the side pane, served by a Node.js sidecar using the built-in Sidecar SDK.": "构建、打包、运行与调试 Antigravity UI 扩展：在侧边窗格中渲染的交互式 Web 面板，由基于内置 Sidecar SDK 的 Node.js sidecar 提供服务。",
+    "Discover UI plugin panels relevant to the current task and surface a one-click pill in chat to open (toggle) them in the side pane. Use when a running UI plugin's panel would help with what the user is doing, or right after the user enables a new UI plugin pane and a shortcut to open it is handy.": "发现与当前任务相关的 UI 插件面板，并在对话中提供一键展开胶囊按钮，以便在侧边窗格中快速切换显示。",
+    "Guidelines for interacting with GitHub, prompting the user for approval when commands fail due to agent environment restrictions.": "与 GitHub 交互的操作准则，当命令因智能体环境限制执行失败时向用户申请授权。",
   };
 
   const coreWords = {
@@ -2516,6 +2583,71 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
     }
 
     // ===== 2.21.0 专属动态模式匹配与防御 =====
+    // Customizations 扩展市场与已安装动态模式
+    if (/^See\s+(\d+)\s+more$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^See\s+(\d+)\s+more$/i, '查看其余 $1 项');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^See\s+less$/i.test(trimmed)) {
+      const fixed = '收起';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^See\s+more\s+in\s+(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^See\s+more\s+in\s+(.+)$/i, '在“$1”中查看更多');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Install\s+(.+)$/i.test(trimmed)) {
+      const target = trimmed.replace(/^Install\s+/i, '');
+      const translatedTarget = translateString(target);
+      const fixed = '安装 ' + translatedTarget;
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Uninstall\s+(.+)$/i.test(trimmed)) {
+      const target = trimmed.replace(/^Uninstall\s+/i, '');
+      const translatedTarget = translateString(target);
+      const fixed = '卸载 ' + translatedTarget;
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+(?:tools?|工具)\s+enabled$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+(?:tools?|工具)\s+enabled$/i, '已启用 $1 个工具');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Custom Agents|Custom 智能体|custom agents)$/i.test(trimmed)) {
+      const fixed = '自定义智能体';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Skills\s*&\s*Rules|skills\s*&\s*rules)$/i.test(trimmed)) {
+      const fixed = '技能与规则';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Built In|Built-in|built in)$/i.test(trimmed)) {
+      const fixed = '内置';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Loading plugin[.…]*$/i.test(trimmed)) {
+      const fixed = '正在加载插件...';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
     if (/^Show\s+(\d+)\s+breakdowns?$/i.test(trimmed)) {
       const fixed = trimmed.replace(/^Show\s+(\d+)\s+breakdowns?$/i, '显示 $1 项明细');
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);

@@ -128,6 +128,35 @@ assert.strictEqual(translate('Background Automations'), '后台自动化');
 assert.strictEqual(translate('Automation Settings'), '自动化设置');
 assert.strictEqual(translate('Run Automation'), '运行自动化');
 
+// 2.7 Customizations dashboard and marketplace
+assert.strictEqual(translate('Installed'), '已安装');
+assert.strictEqual(translate('Search customizations...'), '搜索自定义项...');
+assert.strictEqual(translate('See 4 more'), '查看其余 4 项');
+assert.strictEqual(translate('See 10 more'), '查看其余 10 项');
+assert.strictEqual(translate('See less'), '收起');
+assert.strictEqual(translate('See more in Build with Google'), '在“Build with Google”中查看更多');
+assert.strictEqual(translate('Google Docs'), 'Google 文档');
+assert.strictEqual(translate('Google Sheets'), 'Google 表格');
+assert.strictEqual(translate('Google Slides'), 'Google 幻灯片');
+assert.strictEqual(translate('Google Drive'), 'Google 云端硬盘');
+assert.strictEqual(translate('Google Calendar'), 'Google 日历');
+assert.strictEqual(translate('Read, draft, and edit docs.'), '阅读、起草和编辑文档。');
+assert.strictEqual(translate('Install Google Docs'), '安装 Google 文档');
+assert.strictEqual(translate('Install Firebase'), '安装 Firebase');
+assert.strictEqual(translate('Find skills, agents, and more in the Marketplace.'), '在扩展市场中查找技能、智能体等。');
+assert.strictEqual(translate('Browse the Marketplace'), '浏览扩展市场');
+assert.strictEqual(translate('Skills & Rules'), '技能与规则');
+assert.strictEqual(translate('Built In'), '内置');
+assert.strictEqual(translate('Custom 智能体'), '自定义智能体');
+assert.strictEqual(translate('Custom Agents'), '自定义智能体');
+assert.strictEqual(translate('26 工具 enabled'), '已启用 26 个工具');
+assert.strictEqual(translate('5 tools enabled'), '已启用 5 个工具');
+assert.strictEqual(translate('Loading plugin...'), '正在加载插件...');
+assert.strictEqual(
+  translate("This is a preview of the plugin's source. Nothing below is active until you install it."),
+  '这是此插件源码的预览。在您安装之前，以下内容均未激活生效。'
+);
+
 // 3. Anti-Corruption Tests (Ensure paths, extensions and kebab-case are NOT corrupted)
 console.log('Testing anti-corruption protections...');
 assert.strictEqual(translate('tests/run-all-tests.js'), 'tests/run-all-tests.js', 'File path with run and .js must NOT be mangled');
