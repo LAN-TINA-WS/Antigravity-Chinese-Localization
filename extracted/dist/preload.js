@@ -868,6 +868,47 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
     "to be installed": "需要安装",
     "or join the": "或加入",
 
+    // 智能体执行标签与步骤状态 (Agent Execution Labels)
+    "Ran command": "已运行命令",
+    "Ran commands": "已运行命令",
+    "Running command": "正在运行命令",
+    "Running commands": "正在运行命令",
+    "Run command": "运行命令",
+    "Run commands": "运行命令",
+    "Explored files, ran commands, edited files": "已探索文件、已执行命令、已编辑文件",
+    "Explored files, ran commands, edited artifact": "已探索文件、已执行命令、已编辑工件",
+    "Explored files, ran commands, edited artifacts": "已探索文件、已执行命令、已编辑工件",
+    "Running commands, editing files": "正在运行命令、编辑文件",
+    "Running commands, editing artifact": "正在运行命令、编辑工件",
+    "Running commands, editing artifacts": "正在运行命令、编辑工件",
+    "Checking command status": "正在检查命令状态",
+    "Checked command status": "已检查命令状态",
+    "Analyzing Task Log": "正在分析任务日志",
+    "Analyzed Task Log": "已分析任务日志",
+    "Analyzing content": "正在分析内容",
+    "Analyzed content": "已分析内容",
+    "Unknown file edit": "未知文件编辑",
+    "termination request": "终止请求",
+    "User cancelled agent execution.": "用户已取消智能体执行。",
+    "User cancelled agent execution": "用户已取消智能体执行",
+    "Agent execution failed.": "智能体执行失败。",
+    "Agent execution failed": "智能体执行失败",
+    "The agent has encountered an internal error.": "智能体遇到了内部错误。",
+    "Used MCP tool": "调用 MCP 工具",
+    "Used tool": "调用工具",
+    "Generated image": "已生成图像",
+    "Browser task": "浏览器任务",
+    "Opened browser": "已打开浏览器",
+    "Read URL": "读取 URL",
+    "Searched web": "网页搜索",
+    "Invoked subagent": "调用子智能体",
+    "Git commit": "Git 提交",
+    "Searched for files": "搜索文件",
+    "Searched files": "已搜索文件",
+    "Code search": "代码搜索",
+    "Internal search": "内部搜索",
+
+
     // aria-label 无障碍标签 (这些会影响屏幕阅读器与提示)
     "Sidebar": "侧边栏",
     "Display Options": "显示选项",
@@ -1467,9 +1508,12 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
     "Overview": "概览",
 
     // ===== 对话流步骤标签与执行状态 (用户定制方案 3) =====
+    "Run": "运行",
+    "run": "运行",
     "Ran": "运行",
     "ran": "运行",
     "Running": "运行中",
+    "running": "运行中",
     "Thought": "思考过程",
     "thought": "思考过程",
     "Thinking...": "思考中...",
@@ -2560,6 +2604,148 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
     "All Time": "全部时间",
     "Display": "显示",
     "display": "显示",
+
+    // 8. 智能体执行标签与工具组聚合状态 (Agent Execution Labels & Tool Groups)
+    "Run": "运行",
+    "run": "运行",
+    "Running": "正在运行",
+    "running": "正在运行",
+    "Ran": "已运行",
+    "ran": "已运行",
+    "Working": "正在工作",
+    "working": "正在工作",
+    "Working...": "正在工作...",
+    "Done": "已完成",
+    "done": "已完成",
+    "Done.": "已完成。",
+    "Errored": "已出错",
+    "errored": "已出错",
+    "Rejected": "已拒绝",
+    "rejected": "已拒绝",
+    "Waiting": "等待中",
+    "waiting": "等待中",
+    "Sent": "已发送",
+    "sent": "已发送",
+    "Sending": "正在发送",
+    "sending": "正在发送",
+    "Analyzed": "已分析",
+    "analyzed": "已分析",
+    "Analyzing": "正在分析",
+    "analyzing": "正在分析",
+    "Explored": "已探索",
+    "explored": "已探索",
+    "Exploring": "正在探索",
+    "exploring": "正在探索",
+    "Edited": "已编辑",
+    "edited": "已编辑",
+    "Editing": "正在编辑",
+    "editing": "正在编辑",
+    "Created": "已创建",
+    "created": "已创建",
+    "Creating": "正在创建",
+    "creating": "正在创建",
+    "Deleted": "已删除",
+    "deleted": "已删除",
+    "Deleting": "正在删除",
+    "deleting": "正在删除",
+    "Searched": "已搜索",
+    "searched": "已搜索",
+    "Searching": "正在搜索",
+    "searching": "正在搜索",
+    "Viewed": "已查看",
+    "viewed": "已查看",
+    "Viewing": "正在查看",
+    "viewing": "正在查看",
+
+    // 工具组与单复数完整短语
+    "Ran command": "已运行命令",
+    "ran command": "已运行命令",
+    "Ran commands": "已运行命令",
+    "ran commands": "已运行命令",
+    "Running command": "正在运行命令",
+    "running command": "正在运行命令",
+    "Running commands": "正在运行命令",
+    "running commands": "正在运行命令",
+    "Run command": "运行命令",
+    "run command": "运行命令",
+    "Run commands": "运行命令",
+    "run commands": "运行命令",
+    "Ran 命令": "已运行命令",
+    "Running 命令": "正在运行命令",
+    "Explored files": "已探索文件",
+    "explored files": "已探索文件",
+    "Exploring files": "正在探索文件",
+    "exploring files": "正在探索文件",
+    "Explored file": "已探索文件",
+    "explored file": "已探索文件",
+    "Exploring file": "正在探索文件",
+    "exploring file": "正在探索文件",
+    "Edited files": "已编辑文件",
+    "edited files": "已编辑文件",
+    "Editing files": "正在编辑文件",
+    "editing files": "正在编辑文件",
+    "Edited file": "已编辑文件",
+    "edited file": "已编辑文件",
+    "Editing file": "正在编辑文件",
+    "editing file": "正在编辑文件",
+    "Edited artifact": "已编辑工件",
+    "edited artifact": "已编辑工件",
+    "Edited artifacts": "已编辑工件",
+    "edited artifacts": "已编辑工件",
+    "Editing artifact": "正在编辑工件",
+    "editing artifact": "正在编辑工件",
+    "Editing artifacts": "正在编辑工件",
+    "editing artifacts": "正在编辑工件",
+
+    // 复合动词组合短语 (全量收录 pqb 输出的所有组合)
+    "Explored files, ran commands, edited files": "已探索文件、已执行命令、已编辑文件",
+    "Explored files, ran commands, edited artifact": "已探索文件、已执行命令、已编辑工件",
+    "Explored files, ran commands, edited artifacts": "已探索文件、已执行命令、已编辑工件",
+    "Explored files, ran commands": "已探索文件、已执行命令",
+    "Explored files, edited files": "已探索文件、已编辑文件",
+    "Explored files, edited artifact": "已探索文件、已编辑工件",
+    "Explored files, edited artifacts": "已探索文件、已编辑工件",
+    "Ran commands, edited files": "已执行命令、已编辑文件",
+    "Ran commands, edited artifact": "已执行命令、已编辑工件",
+    "Ran commands, edited artifacts": "已执行命令、已编辑工件",
+    "Exploring files, running commands, editing files": "正在探索文件、运行命令、编辑文件",
+    "Exploring files, running commands, editing artifact": "正在探索文件、运行命令、编辑工件",
+    "Exploring files, running commands, editing artifacts": "正在探索文件、运行命令、编辑工件",
+    "Exploring files, running commands": "正在探索文件、运行命令",
+    "Exploring files, editing files": "正在探索文件、编辑文件",
+    "Exploring files, editing artifact": "正在探索文件、编辑工件",
+    "Exploring files, editing artifacts": "正在探索文件、编辑工件",
+    "Running commands, editing files": "正在运行命令、编辑文件",
+    "Running commands, editing artifact": "正在运行命令、编辑工件",
+    "Running commands, editing artifacts": "正在运行命令、编辑工件",
+
+    // 步骤行具体动作前缀与通知状态
+    "Checking command status": "正在检查命令状态",
+    "Checked command status": "已检查命令状态",
+    "Analyzing Task Log": "正在分析任务日志",
+    "Analyzed Task Log": "已分析任务日志",
+    "Analyzing content": "正在分析内容",
+    "Analyzed content": "已分析内容",
+    "Unknown file edit": "未知文件编辑",
+    "termination request": "终止请求",
+    "User cancelled agent execution.": "用户已取消智能体执行。",
+    "User cancelled agent execution": "用户已取消智能体执行",
+    "Agent execution failed.": "智能体执行失败。",
+    "Agent execution failed": "智能体执行失败",
+    "The agent has encountered an internal error.": "智能体遇到了内部错误。",
+    "Used MCP tool": "调用 MCP 工具",
+    "Used tool": "调用工具",
+    "Generated image": "已生成图像",
+    "Browser task": "浏览器任务",
+    "Opened browser": "已打开浏览器",
+    "Read URL": "读取 URL",
+    "Searched web": "网页搜索",
+    "Invoked subagent": "调用子智能体",
+    "Git commit": "Git 提交",
+    "Searched for files": "搜索文件",
+    "Searched files": "已搜索文件",
+    "Code search": "代码搜索",
+    "Internal search": "内部搜索",
   };
 
   const coreWords = {
@@ -2572,7 +2758,7 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
     "command": "命令", "commands": "命令", "palette": "面板", "terminal": "终端", "console": "控制台", "output": "输出", "input": "输入", "remote": "远程", "control": "控制", "device": "设备", "devices": "设备", "link": "链接",
     "log": "日志", "logs": "日志", "setting": "设置", "settings": "设置", "preference": "偏好", "preferences": "偏好", "permission": "权限", "permissions": "权限",
     "theme": "主题", "themes": "主题", "model": "模型", "models": "模型", "capability": "能力", "capabilities": "能力",
-    "running": "运行中", "completed": "已完成", "failed": "已失败", "pending": "等待中", "success": "成功", "error": "错误",
+    "run": "运行", "ran": "已运行", "running": "运行中", "completed": "已完成", "failed": "已失败", "pending": "等待中", "success": "成功", "error": "错误",
     "system": "系统", "prompt": "提示词", "instructions": "指令", "description": "描述", "name": "名称", "version": "版本",
     "active": "活跃", "background": "后台", "parent": "父级", "child": "子级", "branch": "分支", "share": "共享", "inherit": "继承",
     "original": "原始", "backup": "备份", "duration": "持续时间", "seconds": "秒", "timer": "定时器", "timers": "定时器",
@@ -2737,20 +2923,323 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
       return text.replace(trimmed, fixed);
     }
 
-    if (/^Explored\s+(\d+)\s+files?,\s+ran\s+(\d+)\s+commands?$/i.test(trimmed)) {
-      const fixed = trimmed.replace(/^Explored\s+(\d+)\s+files?,\s+ran\s+(\d+)\s+commands?$/i, '已探索 $1 个文件，已执行 $2 条命令');
+    // ===== 智能体执行标签、工具组与步骤状态动态正则匹配 =====
+    // 1. 夹生词清理：Ran 命令 -> 已运行命令
+    if (/^Ran\s+命令$/i.test(trimmed)) {
+      const fixed = '已运行命令';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+    if (/^Running\s+命令$/i.test(trimmed)) {
+      const fixed = '正在运行命令';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+    if (/^Ran\s+命令:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Ran\s+命令:\s*(.+)$/i, '已运行命令: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+    if (/^Running\s+命令:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Running\s+命令:\s*(.+)$/i, '正在运行命令: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+    if (/^Ran\s+(\d+)\s+命令$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Ran\s+(\d+)\s+命令$/i, '已运行 $1 条命令');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+    if (/^Running\s+(\d+)\s+命令$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Running\s+(\d+)\s+命令$/i, '正在运行 $1 条命令');
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
 
-    if (/^Explored files?,\s*ran commands?$/i.test(trimmed)) {
+    // 2. 动词三联/复合短语（已完成与进行中）
+    if (/^Explored\s+(\d+)\s+files?,\s*ran\s+(\d+)\s+commands?,\s*edited\s+(\d+)\s+(?:files?|artifacts?)$/i.test(trimmed)) {
+      const isArt = /artifacts?$/i.test(trimmed);
+      const fixed = trimmed.replace(/^Explored\s+(\d+)\s+files?,\s*ran\s+(\d+)\s+commands?,\s*edited\s+(\d+)\s+(?:files?|artifacts?)$/i, 
+        isArt ? '已探索 $1 个文件，已执行 $2 条命令，已编辑 $3 个工件' : '已探索 $1 个文件，已执行 $2 条命令，已编辑 $3 个文件');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Exploring\s+(\d+)\s+files?,\s*running\s+(\d+)\s+commands?,\s*editing\s+(\d+)\s+(?:files?|artifacts?)$/i.test(trimmed)) {
+      const isArt = /artifacts?$/i.test(trimmed);
+      const fixed = trimmed.replace(/^Exploring\s+(\d+)\s+files?,\s*running\s+(\d+)\s+commands?,\s*editing\s+(\d+)\s+(?:files?|artifacts?)$/i, 
+        isArt ? '正在探索 $1 个文件，正在运行 $2 条命令，正在编辑 $3 个工件' : '正在探索 $1 个文件，正在运行 $2 条命令，正在编辑 $3 个文件');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Explored\s+files?,\s*ran\s+commands?,\s*edited\s+(?:files?|artifacts?)$/i.test(trimmed)) {
+      const fixed = /artifacts?$/i.test(trimmed) ? '已探索文件、已执行命令、已编辑工件' : '已探索文件、已执行命令、已编辑文件';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Exploring\s+files?,\s*running\s+commands?,\s*editing\s+(?:files?|artifacts?)$/i.test(trimmed)) {
+      const fixed = /artifacts?$/i.test(trimmed) ? '正在探索文件、运行命令、编辑工件' : '正在探索文件、运行命令、编辑文件';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Explored\s+(\d+)\s+files?,\s*ran\s+(\d+)\s+commands?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Explored\s+(\d+)\s+files?,\s*ran\s+(\d+)\s+commands?$/i, '已探索 $1 个文件，已执行 $2 条命令');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Exploring\s+(\d+)\s+files?,\s*running\s+(\d+)\s+commands?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Exploring\s+(\d+)\s+files?,\s*running\s+(\d+)\s+commands?$/i, '正在探索 $1 个文件，正在运行 $2 条命令');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Explored\s+files?,\s*ran\s+commands?$/i.test(trimmed)) {
       const fixed = '已探索文件，已执行命令';
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
 
-    if (/^Exploring files?,\s*running commands?,\s*editing (?:files?|artifacts?)$/i.test(trimmed)) {
-      const fixed = trimmed.includes('artifact') ? '正在探索文件、运行命令、编辑工件' : '正在探索文件、运行命令、编辑文件';
+    if (/^Exploring\s+files?,\s*running\s+commands?$/i.test(trimmed)) {
+      const fixed = '正在探索文件，正在运行命令';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Running\s+commands?,\s*editing\s+(?:files?|artifacts?)$/i.test(trimmed)) {
+      const fixed = /artifacts?$/i.test(trimmed) ? '正在运行命令、编辑工件' : '正在运行命令、编辑文件';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Ran\s+commands?,\s*edited\s+(?:files?|artifacts?)$/i.test(trimmed)) {
+      const fixed = /artifacts?$/i.test(trimmed) ? '已执行命令、已编辑工件' : '已执行命令、已编辑文件';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Explored\s+files?,\s*edited\s+(?:files?|artifacts?)$/i.test(trimmed)) {
+      const fixed = /artifacts?$/i.test(trimmed) ? '已探索文件、已编辑工件' : '已探索文件、已编辑文件';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Exploring\s+files?,\s*editing\s+(?:files?|artifacts?)$/i.test(trimmed)) {
+      const fixed = /artifacts?$/i.test(trimmed) ? '正在探索文件、编辑工件' : '正在探索文件、编辑文件';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    // 3. 统计数字类模式
+    if (/^Ran\s+(\d+)\s+commands?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Ran\s+(\d+)\s+commands?$/i, '已运行 $1 条命令');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Running\s+(\d+)\s+commands?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Running\s+(\d+)\s+commands?$/i, '正在运行 $1 条命令');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Ran\s+(\d+)\s+command$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Ran\s+(\d+)\s+command$/i, '已运行 $1 条命令');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Running\s+(\d+)\s+command$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Running\s+(\d+)\s+command$/i, '正在运行 $1 条命令');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Explored\s+(\d+)\s+files?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Explored\s+(\d+)\s+files?$/i, '已探索 $1 个文件');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Exploring\s+(\d+)\s+files?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Exploring\s+(\d+)\s+files?$/i, '正在探索 $1 个文件');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Edited\s+(\d+)\s+files?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Edited\s+(\d+)\s+files?$/i, '已编辑 $1 个文件');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Editing\s+(\d+)\s+files?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Editing\s+(\d+)\s+files?$/i, '正在编辑 $1 个文件');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Edited\s+(\d+)\s+artifacts?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Edited\s+(\d+)\s+artifacts?$/i, '已编辑 $1 个工件');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Editing\s+(\d+)\s+artifacts?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Editing\s+(\d+)\s+artifacts?$/i, '正在编辑 $1 个工件');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    // 4. 具体工具步骤行模式
+    if (/^Ran\s+command:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Ran\s+command:\s*(.+)$/i, '已运行命令: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Running\s+command:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Running\s+command:\s*(.+)$/i, '正在运行命令: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Waiting for command completion \(up to (\d+) seconds\)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Waiting for command completion \(up to (\d+) seconds\)$/i, '等待命令执行完成（最多 $1 秒）');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Rejected sending (?:termination request|input) to command$/i.test(trimmed)) {
+      const isTerm = /termination/i.test(trimmed);
+      const fixed = isTerm ? '已拒绝向命令发送终止请求' : '已拒绝向命令发送输入';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Sent (?:termination request|input) to command$/i.test(trimmed)) {
+      const isTerm = /termination/i.test(trimmed);
+      const fixed = isTerm ? '已向命令发送终止请求' : '已向命令发送输入';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Suggested sending (?:termination request|input) to command$/i.test(trimmed)) {
+      const isTerm = /termination/i.test(trimmed);
+      const fixed = isTerm ? '建议向命令发送终止请求' : '建议向命令发送输入';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Sending (?:termination request|input) to command$/i.test(trimmed)) {
+      const isTerm = /termination/i.test(trimmed);
+      const fixed = isTerm ? '正在向命令发送终止请求' : '正在向命令发送输入';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Error sending (?:termination request|input) to command$/i.test(trimmed)) {
+      const isTerm = /termination/i.test(trimmed);
+      const fixed = isTerm ? '向命令发送终止请求时出错' : '向命令发送输入时出错';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Canceled edit to (.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Canceled edit to (.+)$/i, '已取消对 $1 的编辑');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Canceled creation of (.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Canceled creation of (.+)$/i, '已取消创建 $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Canceled deletion of (.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Canceled deletion of (.+)$/i, '已取消删除 $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Used MCP tool:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Used MCP tool:\s*(.+)$/i, '调用 MCP 工具: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Used tool:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Used tool:\s*(.+)$/i, '调用工具: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Generated image:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Generated image:\s*(.+)$/i, '生成图像: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Browser task:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Browser task:\s*(.+)$/i, '浏览器任务: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Opened browser:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Opened browser:\s*(.+)$/i, '已打开浏览器: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Read URL:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Read URL:\s*(.+)$/i, '读取 URL: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Searched web:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Searched web:\s*(.+)$/i, '网页搜索: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Invoked subagent:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Invoked subagent:\s*(.+)$/i, '调用子智能体: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Searched for files:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Searched for files:\s*(.+)$/i, '搜索文件: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Searched for\s+"([^"]+)"$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Searched for\s+"([^"]+)"$/i, '搜索: "$1"');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Code search:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Code search:\s*(.+)$/i, '代码搜索: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Internal search:\s*(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Internal search:\s*(.+)$/i, '内部搜索: $1');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Listed directory\s+(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Listed directory\s+(.+)$/i, '列出目录: $1');
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
@@ -3313,6 +3802,12 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
     finalTranslated = finalTranslated.replace(/(\d+)\s+searches?/gi, '$1 次搜索');
     finalTranslated = finalTranslated.replace(/(?:Type|输入)\s*\/\s*(?:and|并|和)?\s*(?:select|选择)?\s*['"]?plan['"]?\s*to\s+have\s+the\s+agent\s+generate\s+a\s+plan[。.]?/gi, '输入 / 并选择 plan 来让智能体生成计划。');
     finalTranslated = finalTranslated.replace(/输入\s*\/\s*并\s*选择\s*plan\s*来让智能体生成计划[。.]?/g, '输入 / 并选择 plan 来让智能体生成计划。');
+    finalTranslated = finalTranslated.replace(/^Ran\s*命令$/i, '已运行命令');
+    finalTranslated = finalTranslated.replace(/^Running\s*命令$/i, '正在运行命令');
+    finalTranslated = finalTranslated.replace(/^Run\s*命令$/i, '运行命令');
+    finalTranslated = finalTranslated.replace(/^Ran\s*命令:\s*(.+)$/i, '已运行命令: $1');
+    finalTranslated = finalTranslated.replace(/^Running\s*命令:\s*(.+)$/i, '正在运行命令: $1');
+    finalTranslated = finalTranslated.replace(/^Run\s*命令:\s*(.+)$/i, '运行命令: $1');
     if (matchPunc) {
       finalTranslated += trailPunc;
     }
@@ -3391,7 +3886,7 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
     // 3. 特殊特权放行：针对执行步骤的药丸标签（如 Ran, Explored, Edited, Viewed, Thought, Thinking, Working 等）
     // 无论其父级为 SPAN、CODE 还是 BUTTON，只要是系统执行药丸且不在用户提问气泡内，一律无条件放行汉化
     const textContent = (element.innerText || element.textContent || '').trim();
-    const isActionPill = textContent.length <= 25 && /^(Explored|Ran|Viewed|Edited|Thought|Thinking|Working)$/i.test(textContent);
+    const isActionPill = textContent.length <= 40 && /^(Explored|Exploring|Ran|Run|Running|Viewed|Viewing|Edited|Editing|Thought|Thinking|Working|Done|Analyzed|Analyzing|Created|Creating|Deleted|Deleting|Waiting|Rejected|Errored|Completed|Used)(\s+(command|commands|files?|tools?|artifacts?))?$/i.test(textContent);
     if (isActionPill) {
       let inUserInput = false;
       let inThinkingContent = false;
