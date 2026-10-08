@@ -23,6 +23,7 @@ const wizardAPI = {
 electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
 
 
+
 // Antigravity 2.0 Chinese Localization Engine Enhanced
 (function() {
   const dictionary = {
