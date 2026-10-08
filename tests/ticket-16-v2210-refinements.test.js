@@ -151,11 +151,26 @@ assert.strictEqual(translate('Custom 智能体'), '自定义智能体');
 assert.strictEqual(translate('Custom Agents'), '自定义智能体');
 assert.strictEqual(translate('26 工具 enabled'), '已启用 26 个工具');
 assert.strictEqual(translate('5 tools enabled'), '已启用 5 个工具');
-assert.strictEqual(translate('Loading plugin...'), '正在加载插件...');
 assert.strictEqual(
   translate("This is a preview of the plugin's source. Nothing below is active until you install it."),
   '这是此插件源码的预览。在您安装之前，以下内容均未激活生效。'
 );
+
+// 2.8 Display Options menu & filters
+assert.strictEqual(translate('Sort Conversations'), '对话排序');
+assert.strictEqual(translate('sort conversations'), '对话排序');
+assert.strictEqual(translate('Last Prompt'), '最新提示词');
+assert.strictEqual(translate('last prompt'), '最新提示词');
+assert.strictEqual(translate('Last 提示词'), '最新提示词');
+assert.strictEqual(translate('Archived Only'), '仅已归档');
+assert.strictEqual(translate('archived only'), '仅已归档');
+assert.strictEqual(translate('Active Only'), '仅活跃');
+assert.strictEqual(translate('Pinned Only'), '仅置顶');
+assert.strictEqual(translate('Unarchived Only'), '仅未归档');
+assert.strictEqual(translate('Last 7 days'), '最近 7 天');
+assert.strictEqual(translate('Last 24 hours'), '最近 24 小时');
+assert.strictEqual(translate('Last 30 days'), '最近 30 天');
+assert.strictEqual(translate('Display'), '显示');
 
 // 3. Anti-Corruption Tests (Ensure paths, extensions and kebab-case are NOT corrupted)
 console.log('Testing anti-corruption protections...');

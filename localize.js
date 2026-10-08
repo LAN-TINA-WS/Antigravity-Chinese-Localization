@@ -957,6 +957,17 @@ const DOM_TRANSLATOR_INJECTION = `
     "Environment": "环境",
     "None": "无",
     "Fast": "快速",
+    "Sort Conversations": "对话排序",
+    "Last Prompt": "最新提示词",
+    "Last prompt": "最新提示词",
+    "Archived Only": "仅已归档",
+    "Active Only": "仅活跃",
+    "Pinned Only": "仅置顶",
+    "Unarchived Only": "仅未归档",
+    "Last 7 days": "最近 7 天",
+    "Last 24 hours": "最近 24 小时",
+    "Last 30 days": "最近 30 天",
+    "Display": "显示",
 
     // 第5轮: 单数形式补全 (分组选项)
     "Project": "项目",
@@ -2575,6 +2586,41 @@ const DOM_TRANSLATOR_INJECTION = `
     "Build, package, run, and debug UI extensions for Antigravity: interactive web panels that render in the side pane, served by a Node.js sidecar using the built-in Sidecar SDK.": "构建、打包、运行与调试 Antigravity UI 扩展：在侧边窗格中渲染的交互式 Web 面板，由基于内置 Sidecar SDK 的 Node.js sidecar 提供服务。",
     "Discover UI plugin panels relevant to the current task and surface a one-click pill in chat to open (toggle) them in the side pane. Use when a running UI plugin's panel would help with what the user is doing, or right after the user enables a new UI plugin pane and a shortcut to open it is handy.": "发现与当前任务相关的 UI 插件面板，并在对话中提供一键展开胶囊按钮，以便在侧边窗格中快速切换显示。",
     "Guidelines for interacting with GitHub, prompting the user for approval when commands fail due to agent environment restrictions.": "与 GitHub 交互的操作准则，当命令因智能体环境限制执行失败时向用户申请授权。",
+
+    // 7. 显示选项与会话列表视图配置 (Display Options)
+    "Sort Conversations": "对话排序",
+    "sort conversations": "对话排序",
+    "Sort conversations": "对话排序",
+    "Last Prompt": "最新提示词",
+    "last prompt": "最新提示词",
+    "Last prompt": "最新提示词",
+    "Archived Only": "仅已归档",
+    "archived only": "仅已归档",
+    "Archived only": "仅已归档",
+    "Active Only": "仅活跃",
+    "active only": "仅活跃",
+    "Pinned Only": "仅置顶",
+    "pinned only": "仅置顶",
+    "Unarchived Only": "仅未归档",
+    "unarchived only": "仅未归档",
+    "Last 7 days": "最近 7 天",
+    "Last 7 Days": "最近 7 天",
+    "last 7 days": "最近 7 天",
+    "Last 24 hours": "最近 24 小时",
+    "Last 24 Hours": "最近 24 小时",
+    "last 24 hours": "最近 24 小时",
+    "Last 30 days": "最近 30 天",
+    "Last 30 Days": "最近 30 天",
+    "last 30 days": "最近 30 天",
+    "Last week": "最近一周",
+    "last week": "最近一周",
+    "Last month": "最近一个月",
+    "last month": "最近一个月",
+    "All time": "全部时间",
+    "all time": "全部时间",
+    "All Time": "全部时间",
+    "Display": "显示",
+    "display": "显示",
   };
 
   const coreWords = {
@@ -2705,6 +2751,37 @@ const DOM_TRANSLATOR_INJECTION = `
 
     if (/^Loading plugin[.…]*$/i.test(trimmed)) {
       const fixed = '正在加载插件...';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    // ===== 显示选项与筛选子菜单动态防御 =====
+    if (/^(?:Last 提示词|Last Prompt|Last prompt)$/i.test(trimmed)) {
+      const fixed = '最新提示词';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Sort Conversations|Sort conversations|sort conversations)$/i.test(trimmed)) {
+      const fixed = '对话排序';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^(?:Archived Only|Archived only|archived only)$/i.test(trimmed)) {
+      const fixed = '仅已归档';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Last\\s+(\\d+)\\s+days?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Last\\s+(\\d+)\\s+days?$/i, '最近 $1 天');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    if (/^Last\\s+(\\d+)\\s+hours?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Last\\s+(\\d+)\\s+hours?$/i, '最近 $1 小时');
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
