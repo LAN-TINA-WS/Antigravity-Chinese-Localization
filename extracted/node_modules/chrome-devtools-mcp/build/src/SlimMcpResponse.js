@@ -5,7 +5,7 @@
  */
 import { McpResponse } from './McpResponse.js';
 export class SlimMcpResponse extends McpResponse {
-    async handle(_toolName, _context) {
+    async handle(_context) {
         const text = {
             type: 'text',
             text: this.responseLines.join('\n'),

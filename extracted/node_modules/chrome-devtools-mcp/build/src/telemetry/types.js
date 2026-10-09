@@ -20,6 +20,10 @@ export var McpClient;
     McpClient[McpClient["MCP_CLIENT_OPENCLAW"] = 5] = "MCP_CLIENT_OPENCLAW";
     McpClient[McpClient["MCP_CLIENT_CODEX"] = 6] = "MCP_CLIENT_CODEX";
     McpClient[McpClient["MCP_CLIENT_ANTIGRAVITY"] = 7] = "MCP_CLIENT_ANTIGRAVITY";
+    McpClient[McpClient["MCP_CLIENT_GROK"] = 8] = "MCP_CLIENT_GROK";
+    McpClient[McpClient["MCP_CLIENT_OPENCODE"] = 9] = "MCP_CLIENT_OPENCODE";
+    McpClient[McpClient["MCP_CLIENT_CLAUDE_DESKTOP"] = 10] = "MCP_CLIENT_CLAUDE_DESKTOP";
+    McpClient[McpClient["MCP_CLIENT_GITHUB_COPILOT"] = 11] = "MCP_CLIENT_GITHUB_COPILOT";
     McpClient[McpClient["MCP_CLIENT_OTHER"] = 3] = "MCP_CLIENT_OTHER";
 })(McpClient || (McpClient = {}));
 // IPC types for messages between the main process and the

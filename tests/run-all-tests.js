@@ -17,7 +17,8 @@ const tests = [
   'ticket-15-v2210-features.test.js',
   'ticket-16-v2210-refinements.test.js',
   'ticket-17-v2211-features.test.js',
-  'ticket-18-agent-execution-labels.test.js'
+  'ticket-18-agent-execution-labels.test.js',
+  'ticket-19-v2220-features.test.js'
 ];
 
 console.log('================ 全套 TDD 回归测试套件 ================\n');

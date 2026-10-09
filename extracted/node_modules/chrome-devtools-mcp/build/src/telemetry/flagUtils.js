@@ -3,8 +3,9 @@
  * Copyright 2026 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-import { toSnakeCase } from '../utils/string.js';
+import { DevTools } from '../third_party/index.js';
 import { stripUnderscoreBeforeNumber } from './transformation.js';
+const { StringUtilities } = DevTools.Platform;
 /**
  * For enums, log the value as uppercase.
  * We're going to have an enum for such flags with choices represented
@@ -30,7 +31,7 @@ export function computeFlagUsage(args, options) {
     const usage = {};
     for (const [flagName, config] of Object.entries(options)) {
         const value = args[flagName];
-        const snakeCaseName = stripUnderscoreBeforeNumber(toSnakeCase(flagName));
+        const snakeCaseName = stripUnderscoreBeforeNumber(StringUtilities.toSnakeCase(flagName));
         // If there isn't a default value provided for the flag,
         // we're going to log whether it's present on the args user
         // provided or not. If there is a default value, we only log presence
@@ -59,7 +60,7 @@ export function computeFlagUsage(args, options) {
 export function getPossibleFlagMetrics(options) {
     const metrics = [];
     for (const [flagName, config] of Object.entries(options)) {
-        const snakeCaseName = stripUnderscoreBeforeNumber(toSnakeCase(flagName));
+        const snakeCaseName = stripUnderscoreBeforeNumber(StringUtilities.toSnakeCase(flagName));
         // _present is always a possible metric
         metrics.push({
             name: `${snakeCaseName}_present`,

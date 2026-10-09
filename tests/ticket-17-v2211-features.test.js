@@ -36,13 +36,33 @@ console.log('=== 开始 Ticket-17 Antigravity 2.21.1 官方版本与架构特性
 console.log('--- 2.21.1 版本元数据校验 ---');
 const versionMatch = localizeSource.match(/const CURRENT_VERSION = ['"]([^'"]+)['"];/);
 const currentVer = versionMatch ? versionMatch[1] : '';
-check('localize.js CURRENT_VERSION 严格等于 2.21.1', currentVer, '2.21.1');
-check('extracted/package.json version 严格等于 2.21.1', packageJson.version, '2.21.1');
-check('index.html 包含 本地词库 v2.21.1', indexSource.includes('本地词库 v2.21.1'), true);
-check('index.html 包含 Antigravity 2.0 / 2.21.1+', indexSource.includes('<h1>Antigravity 2.0 / 2.21.1+</h1>'), true);
-check('index.html currentVer 变量为 2.21.1', indexSource.includes("const currentVer = '2.21.1';"), true);
-check('README.md 包含 Antigravity v2.21.1+', readmeSource.includes('Antigravity v2.21.1+'), true);
-check('README.en.md 包含 Antigravity v2.21.1+', readmeEnSource.includes('Antigravity v2.21.1+'), true);
+const parseVer = (v) => (v || '').split('.').map(n => parseInt(n, 10) || 0);
+const isVerGte2211 = (v) => {
+  const [maj, min, patch] = parseVer(v);
+  return maj > 2 || (maj === 2 && min > 21) || (maj === 2 && min === 21 && patch >= 1);
+};
+check('localize.js CURRENT_VERSION 版本号有效且 >= 2.21.1', isVerGte2211(currentVer), true);
+check('extracted/package.json version 有效且 >= 2.21.1', isVerGte2211(packageJson.version), true);
+check('index.html 包含 本地词库 v2.21.1 或更新', (() => {
+  const m = indexSource.match(/本地词库 v(2\.\d+\.\d+)/);
+  return m ? isVerGte2211(m[1]) : false;
+})(), true);
+check('index.html 包含 Antigravity 2.0 / 2.21.1+ 或更新', (() => {
+  const m = indexSource.match(/<h1>Antigravity 2\.0 \/ (2\.\d+\.\d+)\+<\/h1>/);
+  return m ? isVerGte2211(m[1]) : false;
+})(), true);
+check('index.html currentVer 变量有效且 >= 2.21.1', (() => {
+  const m = indexSource.match(/const currentVer = '(2\.\d+\.\d+)';/);
+  return m ? isVerGte2211(m[1]) : false;
+})(), true);
+check('README.md 包含 Antigravity v2.21.1+ 或更新', (() => {
+  const m = readmeSource.match(/Antigravity v(2\.\d+\.\d+)\+/);
+  return m ? isVerGte2211(m[1]) : false;
+})(), true);
+check('README.en.md 包含 Antigravity v2.21.1+ 或更新', (() => {
+  const m = readmeEnSource.match(/Antigravity v(2\.\d+\.\d+)\+/);
+  return m ? isVerGte2211(m[1]) : false;
+})(), true);
 
 // 2. 2.21.1 上游架构特性校验
 console.log('\n--- 2.21.1 上游架构特性校验 ---');

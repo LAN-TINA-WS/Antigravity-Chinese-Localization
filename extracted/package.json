@@ -1,7 +1,7 @@
 {
   "name": "antigravity",
   "productName": "Antigravity",
-  "version": "2.21.1",
+  "version": "2.22.0",
   "description": "Antigravity - Agentic Desktop Application",
   "homepage": "https://antigravity.google",
   "author": {
@@ -10,7 +10,7 @@
   },
   "main": "dist/main.js",
   "dependencies": {
-    "@bufbuild/protobuf": "^2.13.0",
+    "@bufbuild/protobuf": "^2.11.0",
     "@connectrpc/connect": "^2.1.2",
     "@connectrpc/connect-node": "^2.1.2",
     "chrome-devtools-mcp": "^1.1.0",
