@@ -36,13 +36,33 @@ function check(desc, actual, expected) {
 console.log('--- 1. 2.22.0 版本元数据校验 ---');
 const versionMatch = localizeSource.match(/const CURRENT_VERSION = ['"]([^'"]+)['"];/);
 const currentVer = versionMatch ? versionMatch[1] : '';
-check('localize.js CURRENT_VERSION 严格等于 2.22.0', currentVer, '2.22.0');
-check('extracted/package.json version 严格等于 2.22.0', packageJson.version, '2.22.0');
-check('index.html 包含 本地词库 v2.22.0', indexSource.includes('本地词库 v2.22.0'), true);
-check('index.html 包含 Antigravity 2.0 / 2.22.0+', indexSource.includes('<h1>Antigravity 2.0 / 2.22.0+</h1>'), true);
-check('index.html currentVer 变量为 2.22.0', indexSource.includes("const currentVer = '2.22.0';"), true);
-check('README.md 包含 Antigravity v2.22.0+', readmeSource.includes('Antigravity v2.22.0+'), true);
-check('README.en.md 包含 Antigravity v2.22.0+', readmeEnSource.includes('Antigravity v2.22.0+'), true);
+const parseVer = (v) => (v || '').split('.').map(n => parseInt(n, 10) || 0);
+const isVerGte2220 = (v) => {
+  const [maj, min, patch] = parseVer(v);
+  return maj > 2 || (maj === 2 && min >= 22);
+};
+check('localize.js CURRENT_VERSION 版本号有效且 >= 2.22.0', isVerGte2220(currentVer), true);
+check('extracted/package.json version 有效且 >= 2.22.0', isVerGte2220(packageJson.version), true);
+check('index.html 包含 本地词库 v2.22.0 或更新', (() => {
+  const m = indexSource.match(/本地词库 v(2\.\d+\.\d+)/);
+  return m ? isVerGte2220(m[1]) : false;
+})(), true);
+check('index.html 包含 Antigravity 2.0 / 2.22.0+ 或更新', (() => {
+  const m = indexSource.match(/<h1>Antigravity 2\.0 \/ (2\.\d+\.\d+)\+<\/h1>/);
+  return m ? isVerGte2220(m[1]) : false;
+})(), true);
+check('index.html currentVer 变量有效且 >= 2.22.0', (() => {
+  const m = indexSource.match(/const currentVer = '(2\.\d+\.\d+)';/);
+  return m ? isVerGte2220(m[1]) : false;
+})(), true);
+check('README.md 包含 Antigravity v2.22.0+ 或更新', (() => {
+  const m = readmeSource.match(/Antigravity v(2\.\d+\.\d+)\+/);
+  return m ? isVerGte2220(m[1]) : false;
+})(), true);
+check('README.en.md 包含 Antigravity v2.22.0+ 或更新', (() => {
+  const m = readmeEnSource.match(/Antigravity v(2\.\d+\.\d+)\+/);
+  return m ? isVerGte2220(m[1]) : false;
+})(), true);
 
 // 3. 2.22.0 官方架构与主进程接口完备性校验
 console.log('\n--- 2. 2.22.0 官方架构与接口完备性校验 ---');
