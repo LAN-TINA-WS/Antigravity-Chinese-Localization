@@ -124,6 +124,14 @@ check('Agent 状态文案 - Thinking', translate('Thinking...'), '思考中...')
 check('Settings 文案 - General', translate('General'), '通用');
 check('Settings 文案 - Sandbox', translate('Sandbox'), '沙盒');
 
+// 执行模式菜单副文案汉化断言
+check('执行模式说明: Every command requires approval.', translate('Every command requires approval.'), '每条命令都需要审批。');
+check('执行模式说明: Every command requires approval', translate('Every command requires approval'), '每条命令都需要审批');
+check('执行模式说明: Ask before sensitive operations.', translate('Ask before sensitive operations.'), '在执行敏感操作前询问。');
+check('执行模式说明: Ask before sensitive operations', translate('Ask before sensitive operations'), '在执行敏感操作前询问');
+check('执行模式说明: Run all commands without restrictions.', translate('Run all commands without restrictions.'), '无限制运行所有命令。');
+check('执行模式说明: Run all commands without restrictions', translate('Run all commands without restrictions'), '无限制运行所有命令');
+
 // 验证 isActionPill 判定放行
 const testPills = ['Run', 'Running', 'Ran', 'View', 'Viewing', 'Viewed'];
 testPills.forEach((pill) => {

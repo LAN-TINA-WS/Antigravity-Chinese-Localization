@@ -23,7 +23,6 @@ const wizardAPI = {
 electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
 
 
-
 // Antigravity 2.0 Chinese Localization Engine Enhanced
 (function() {
   const dictionary = {
@@ -1721,6 +1720,24 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     "Turbo mode": "极速模式",
     "turbo mode": "极速模式",
     "极速模式 mode": "极速模式",
+    "Every command requires approval.": "每条命令都需要审批。",
+    "Every command requires approval": "每条命令都需要审批",
+    "every command requires approval.": "每条命令都需要审批。",
+    "every command requires approval": "每条命令都需要审批",
+    "Ask before sensitive operations.": "在执行敏感操作前询问。",
+    "Ask before sensitive operations": "在执行敏感操作前询问",
+    "ask before sensitive operations.": "在执行敏感操作前询问。",
+    "ask before sensitive operations": "在执行敏感操作前询问",
+    "Run all commands without restrictions.": "无限制运行所有命令。",
+    "Run all commands without restrictions": "无限制运行所有命令",
+    "run all commands without restrictions.": "无限制运行所有命令。",
+    "run all commands without restrictions": "无限制运行所有命令",
+    "Run all commands in sandbox without restrictions.": "在沙盒中无限制运行所有命令。",
+    "Run all commands in sandbox without restrictions": "在沙盒中无限制运行所有命令",
+    "Run in sandbox without asking.": "在沙盒中直接运行，无需询问。",
+    "Run in sandbox without asking": "在沙盒中直接运行，无需询问",
+    "Every tool requires approval.": "每个工具调用均需审批。",
+    "Every tool requires approval": "每个工具调用均需审批",
     "Learn more about": "了解更多关于",
     "learn more about": "了解更多关于",
     "了解更多 about": "了解更多关于",
@@ -2859,6 +2876,28 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     }
     if (/^Running\s+(\d+)\s+命令$/i.test(trimmed)) {
       const fixed = trimmed.replace(/^Running\s+(\d+)\s+命令$/i, '正在运行 $1 条命令');
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+
+    // 执行模式副标题动态匹配
+    if (/^Every command requires approval[.。]?$/i.test(trimmed)) {
+      const fixed = /[.。]$/.test(trimmed) ? '每条命令都需要审批。' : '每条命令都需要审批';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+    if (/^Ask before sensitive operations[.。]?$/i.test(trimmed)) {
+      const fixed = /[.。]$/.test(trimmed) ? '在执行敏感操作前询问。' : '在执行敏感操作前询问';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+    if (/^Run all commands without restrictions[.。]?$/i.test(trimmed)) {
+      const fixed = /[.。]$/.test(trimmed) ? '无限制运行所有命令。' : '无限制运行所有命令';
+      if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
+      return text.replace(trimmed, fixed);
+    }
+    if (/^Run all commands in sandbox without restrictions[.。]?$/i.test(trimmed)) {
+      const fixed = /[.。]$/.test(trimmed) ? '在沙盒中无限制运行所有命令。' : '在沙盒中无限制运行所有命令';
       if (stringCache.size < MAX_STRING_CACHE) stringCache.set(trimmed, fixed);
       return text.replace(trimmed, fixed);
     }
