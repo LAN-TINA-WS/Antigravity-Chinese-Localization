@@ -82,21 +82,29 @@ No Node.js or build tools required:
 #### 1. Web Dashboard (Recommended)
 1. Download `default.zip` from Releases or clone repository, then extract;
 2. Double-click **`双击运行汉化.bat`**;
-3. The dashboard opens automatically (`http://localhost:3388`), auto-detects program status, and click "一键汉化" (One-Click Localize).
+3. The dashboard opens automatically (`http://localhost:3388`), auto-detects program status, and highlights automatic recovery if official updates have overwritten the localization.
 
 The dashboard shows the installed `app.asar` version and lets you select the latest stable, historical, or prerelease localization package from GitHub Releases. Use "仅下载" (Download Only) to cache a package, or "下载并安装" (Download and Install) to verify its SHA-256 and confirm installation. Release notes, downloaded packages, and settings/maintenance tools are collapsed by default.
 
 Downloaded packages remain available until you explicitly delete them. Installation asks you to save your work before confirming: running Antigravity instances and background language services will be stopped, and their exit is verified before replacing files. Forced exit can lose unsaved edits. If stopping fails, installation stops without replacing the archive. Backups are deduplicated by SHA-256 and retained; replacement failures attempt to restore the verified backup. An identical installed file skips process termination, installation, and backup creation. The original local-script localization and restore tools remain under settings/maintenance.
 
-The version-management tests require Node.js 18 or later; this does not change the dashboard's runtime requirement:
+#### 2. One-Click Batch Update & Auto Recovery
+When an official update overwrites localization with English defaults, double-click **`一键更新汉化.bat`**:
+- Auto-detects Node.js runtime and client version;
+- Performs strict version compatibility checks to prevent white-screen crashes;
+- Creates safe backups and atomically restores Chinese localization;
+- Gracefully falls back to pure batch script mode if Node.js is not installed.
 
-```bash
-node --test tests/release-manager.test.js tests/package-installer.test.js tests/process-check.test.js tests/asar-version.test.js
-```
-
-#### 2. Headless CLI Deployment
+#### 3. Headless CLI Deployment & Silent Restore
 In your terminal, navigate to the folder and run:
 ```bash
+# Auto-check and restore localization after official updates (safe version guard)
+node localize.js --auto-restore
+
+# Inspect client status and local patch compatibility
+node localize.js --check-status
+
+# Full repack and deployment
 node localize.js --now
 ```
 

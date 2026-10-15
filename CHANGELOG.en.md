@@ -4,6 +4,16 @@ This document tracks all version releases, core architecture adaptations, and fe
 
 ---
 
+## v2.23.1-p1 (2026-10-15)
+
+### 1. Auto Check & Safe Recovery on Official Updates (Issue #35)
+- **Batch Script Enhancements**: Upgraded `一键更新汉化.bat` and `双击运行汉化.bat` to prioritize Node.js-powered safe checks while retaining fallback for environments without Node.js.
+- **Strict Version Compatibility Guard & Anti-Crash Mechanism**: Integrated `auto-restore.js` to inspect the installed client version against the candidate patch; version-matched archives are atomically installed, while mismatched versions are safely blocked from corrupting the client.
+- **Web Dashboard Notification**: Added an update-detection banner to the dashboard home page for one-click recovery.
+- **Full TDD Regression Suite 100% Green**: Added Ticket-22 test suite (8 assertions passing 100%); full regression suite (26 suites) remains ALL GREEN.
+
+---
+
 ## v2.23.1 (2026-10-14)
 
 ### 1. Comprehensive Adaptation to Antigravity v2.23.1 Architecture

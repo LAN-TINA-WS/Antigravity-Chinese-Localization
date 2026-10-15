@@ -943,6 +943,14 @@
     .installed-state { display: flex; align-items: flex-end; flex-direction: column; gap: 7px; }
     .status-pill { font-size: 0.78rem; border-radius: 7px; padding: 5px 9px; color: var(--text-muted); background: var(--card-hover-bg); }
     .status-pill[data-state="localized"] { color: var(--success); background: color-mix(in srgb, var(--success) 10%, transparent); }
+    .update-banner { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0 16px; padding: 12px 14px; background: color-mix(in srgb, var(--accent) 8%, var(--card-bg)); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); border-radius: 12px; }
+    .update-banner-icon { display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; }
+    .update-banner-content { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .update-banner-title { font-size: 0.84rem; font-weight: 600; color: var(--text-main); }
+    .update-banner-desc { font-size: 0.75rem; color: var(--text-muted); }
+    .update-banner-btn { background: var(--accent); color: #fff; border: none; font-size: 0.8rem; font-weight: 600; padding: 7px 14px; border-radius: 8px; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; font-family: inherit; }
+    .update-banner-btn:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+    .update-banner-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .target-strip { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 14px 0 18px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
     .target-text { color: var(--text-muted); font-size: 0.78rem; min-width: 0; overflow-wrap: anywhere; }
     .text-btn { border: 0; background: none; color: var(--text-muted); font: inherit; font-size: 0.8rem; padding: 4px 0; cursor: pointer; white-space: nowrap; }
@@ -1063,6 +1071,20 @@
       <div class="installed-summary">
         <div><p class="eyebrow">当前安装 · app.asar</p><p class="installed-version" id="release-installed-version">正在检测…</p></div>
         <div class="installed-state"><span class="status-pill" id="installed-localization">正在检测</span><span class="eyebrow" id="app-readiness" role="status">正在连接服务…</span></div>
+      </div>
+      <div class="update-banner" id="update-banner" hidden>
+        <div class="update-banner-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div class="update-banner-content">
+          <span class="update-banner-title" id="update-banner-title">检测到客户端处于原版状态</span>
+          <span class="update-banner-desc" id="update-banner-desc">本地已具备兼容补丁，可一键安全恢复汉化。</span>
+        </div>
+        <button class="update-banner-btn" id="btn-auto-restore" onclick="triggerAutoRestore()">立即恢复</button>
       </div>
       <div class="target-strip"><p class="target-text">安装位置：<span id="install-target-summary">正在检测…</span></p><button class="text-btn" onclick="openSettings()">更改</button></div>
       <h2 class="visually-hidden" id="release-panel-title">安装汉化包</h2>
@@ -1310,6 +1332,8 @@
       document.getElementById('app-readiness').textContent = '请启动汉化控制中心';
       document.getElementById('install-target-summary').textContent = '暂时无法检测';
       document.getElementById('install-target-summary').removeAttribute('title');
+      const banner = document.getElementById('update-banner');
+      if (banner) banner.hidden = true;
     }
 
     // ==========================================
@@ -1528,6 +1552,37 @@
         const localizationBadge = document.getElementById('installed-localization');
         localizationBadge.textContent = data.isInstalled ? data.isLocalized ? '已汉化' : '未检测到汉化' : '未找到程序';
         localizationBadge.dataset.state = data.isInstalled && data.isLocalized ? 'localized' : 'unknown';
+
+        const banner = document.getElementById('update-banner');
+        if (banner) {
+          if (data.isInstalled && data.isUpdateOverwritten) {
+            banner.hidden = false;
+            const titleEl = document.getElementById('update-banner-title');
+            const descEl = document.getElementById('update-banner-desc');
+            const btnEl = document.getElementById('btn-auto-restore');
+            if (data.patchAvailable && data.patchIsMatch) {
+              titleEl.textContent = `检测到客户端处于原版状态 (v${data.installedPackageVersion || '未知'})`;
+              descEl.textContent = `本地已就绪匹配汉化包 (v${data.patchVersion})，点击一键恢复汉化。`;
+              btnEl.textContent = '一键恢复';
+              btnEl.onclick = triggerAutoRestore;
+              btnEl.disabled = false;
+            } else if (data.patchAvailable && !data.patchIsMatch) {
+              titleEl.textContent = `检测到官方新版本 (v${data.installedPackageVersion || '未知'})`;
+              descEl.textContent = `本地补丁为 v${data.patchVersion}，为防白屏已安全拦截，请下载对应新版本。`;
+              btnEl.textContent = '选择版本';
+              btnEl.onclick = () => { document.getElementById('release-select').focus(); };
+              btnEl.disabled = false;
+            } else {
+              titleEl.textContent = `检测到客户端未汉化 (v${data.installedPackageVersion || '未知'})`;
+              descEl.textContent = '本地暂无就绪汉化包，请在下方选择并下载匹配版本。';
+              btnEl.textContent = '下载汉化';
+              btnEl.onclick = () => { document.getElementById('btn-release-download').focus(); };
+              btnEl.disabled = false;
+            }
+          } else {
+            banner.hidden = true;
+          }
+        }
         document.getElementById('app-readiness').textContent = data.isInstalled
           ? data.isRunning ? '运行中 · 安装时将关闭' : '已退出 · 可安装' : '请检查安装目录';
         const targetSummary = document.getElementById('install-target-summary');
@@ -1683,6 +1738,39 @@
         setFastPolling(false);
         setButtonLoading('btn-restore', false);
         updateStatus();
+      }
+    }
+
+    async function triggerAutoRestore() {
+      const btn = document.getElementById('btn-auto-restore');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '恢复中...';
+      }
+      setFastPolling(true);
+      try {
+        const params = getParams();
+        const res = await fetch(`${API_BASE}/api/auto-restore`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(params)
+        });
+        const data = await res.json();
+        await fetchLogs();
+        if (data.success) {
+          showToast(data.result && data.result.message ? data.result.message : '汉化已成功恢复！', 'success');
+        } else {
+          showToast(data.error || '恢复汉化失败', 'error');
+        }
+      } catch (e) {
+        showToast('请求服务失败，请检查服务状态。', 'error');
+      } finally {
+        setFastPolling(false);
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '一键恢复';
+        }
+        await updateStatus();
       }
     }
 

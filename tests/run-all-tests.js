@@ -21,6 +21,7 @@ const tests = [
   'ticket-19-v2220-features.test.js',
   'ticket-20-v2230-features.test.js',
   'ticket-21-v2231-features.test.js',
+  'ticket-22-auto-restore-on-update.test.js',
   'asar-version.test.js',
   'process-check.test.js',
   'package-installer.test.js',

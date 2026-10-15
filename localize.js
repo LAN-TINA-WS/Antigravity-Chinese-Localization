@@ -7,6 +7,12 @@ const { createReleaseManager } = require('./release-manager');
 const { createPackageInstaller } = require('./package-installer');
 const { isAppRunningStrict } = require('./process-check');
 const { readAsarPackageVersion } = require('./asar-version');
+const {
+  isLocalizedAsar,
+  checkClientStatus,
+  executeAutoRestore,
+  findAvailablePatch
+} = require('./auto-restore');
 
 const CURRENT_VERSION = '2.23.1';
 
@@ -4769,18 +4775,7 @@ function translateContextLabel(lbl) {
   log('汉化修改注入完成！');
 }
 
-// Helper: Check if an asar file is already localized
-function isLocalizedAsar(filePath) {
-  if (!fs.existsSync(filePath)) return false;
-  try {
-    const buf = fs.readFileSync(filePath);
-    return buf.includes(Buffer.from('// Antigravity 2.0 Chinese Localization Engine')) ||
-           buf.includes(Buffer.from('menuTranslationMap')) ||
-           buf.includes(Buffer.from('DOM_TRANSLATOR_INJECTION'));
-  } catch (e) {
-    return false;
-  }
-}
+// isLocalizedAsar 已统一在 auto-restore.js 中维护并引入
 
 // Full workflow runner
 async function runLocalizationWorkflow(appDir) {
@@ -4928,20 +4923,81 @@ const server = http.createServer((req, res) => {
     const isInstalled = fs.existsSync(asarPath);
     const hasBackup = fs.existsSync(backupPath) && !isLocalizedAsar(backupPath);
     const isRunning = isAppRunning();
-    
-    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-    res.end(JSON.stringify({
-      isInstalled,
-      hasBackup,
-      isRunning,
-      asarPath,
-      backupPath,
-      platform: process.platform,
-      defaultUsername: getHostUsername(),
-      currentVersion: CURRENT_VERSION,
-      installedPackageVersion: isInstalled ? readAsarPackageVersion(asarPath) : null,
-      isLocalized: isInstalled && isLocalizedAsar(asarPath)
-    }));
+    const installedPackageVersion = isInstalled ? readAsarPackageVersion(asarPath) : null;
+    const isLocalized = isInstalled && isLocalizedAsar(asarPath);
+    const isUpdateOverwritten = Boolean(isInstalled && !isLocalized);
+
+    findAvailablePatch({ workspaceDir: WORKSPACE_DIR, targetVersion: installedPackageVersion, releaseManager })
+      .then(patch => {
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({
+          isInstalled,
+          hasBackup,
+          isRunning,
+          asarPath,
+          backupPath,
+          platform: process.platform,
+          defaultUsername: getHostUsername(),
+          currentVersion: CURRENT_VERSION,
+          installedPackageVersion,
+          isLocalized,
+          isUpdateOverwritten,
+          patchAvailable: Boolean(patch),
+          patchVersion: patch ? patch.version : null,
+          patchIsMatch: patch ? patch.isMatch : false
+        }));
+      })
+      .catch(() => {
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({
+          isInstalled,
+          hasBackup,
+          isRunning,
+          asarPath,
+          backupPath,
+          platform: process.platform,
+          defaultUsername: getHostUsername(),
+          currentVersion: CURRENT_VERSION,
+          installedPackageVersion,
+          isLocalized,
+          isUpdateOverwritten,
+          patchAvailable: false,
+          patchVersion: null,
+          patchIsMatch: false
+        }));
+      });
+  }
+  else if (req.url === '/api/auto-restore' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const params = body ? JSON.parse(body) : {};
+        const appDir = getAppDir(params.username, params.useDefault, params.customPath);
+        const result = await executeAutoRestore({
+          appDir,
+          getResourcesDir,
+          workspaceDir: WORKSPACE_DIR,
+          releaseManager,
+          isAppRunning: isAppRunningStrict,
+          stopProcesses: killApp,
+          forceStop: params.forceStop !== false
+        });
+        log(result.message);
+        if (result.success) {
+          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ success: true, result, logs }));
+        } else {
+          const status = result.code === 'VERSION_MISMATCH' ? 409 : 400;
+          res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ success: false, error: result.message, result, logs }));
+        }
+      } catch (err) {
+        log(`自动恢复流程异常: ${err.message}`);
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ success: false, error: err.message, logs }));
+      }
+    });
   } 
   else if (req.url === '/api/localize' && req.method === 'POST') {
     let body = '';
@@ -5139,23 +5195,70 @@ const server = http.createServer((req, res) => {
 if (process.argv.includes('--apply-only')) {
   try {
     applyTranslations();
-    console.log('🎉 静态文件汉化注入全部成功！');
+    console.log('[成功] 静态文件汉化注入全部成功！');
     process.exit(0);
   } catch (err) {
-    console.error('❌ 汉化注入失败:', err.message);
+    console.error('[失败] 汉化注入失败:', err.message);
     process.exit(1);
   }
 }
 
-if (process.argv.includes('--now')) {
+if (process.argv.includes('--auto-restore')) {
+  (async () => {
+    console.log('=======================================================');
+    console.log('  Antigravity 2.0 汉化自动恢复程序 (官方更新后自动检查)');
+    console.log('=======================================================\n');
+    const defaultAppDir = getAppDir(getHostUsername(), true, '');
+    const result = await executeAutoRestore({
+      appDir: defaultAppDir,
+      getResourcesDir,
+      workspaceDir: WORKSPACE_DIR,
+      releaseManager,
+      isAppRunning: isAppRunningStrict,
+      stopProcesses: killApp,
+      forceStop: true
+    });
+    console.log(result.message);
+    if (result.success) {
+      if (result.code === 'RESTORED') {
+        console.log('\n[成功] 汉化已顺利恢复为最新状态。');
+      } else {
+        console.log('\n[状态正常] 客户端运行正常，无需重复操作。');
+      }
+      process.exit(0);
+    } else {
+      if (result.code === 'VERSION_MISMATCH') {
+        console.error('\n[版本警告] 发现官方版本更新，本地暂无兼容补丁。');
+        process.exit(2);
+      } else {
+        console.error('\n[失败] 自动恢复汉化未能完成。');
+        process.exit(1);
+      }
+    }
+  })().catch(err => {
+    console.error('[异常]', err.message);
+    process.exit(1);
+  });
+} else if (process.argv.includes('--check-status')) {
+  (async () => {
+    const defaultAppDir = getAppDir(getHostUsername(), true, '');
+    const status = await checkClientStatus({ appDir: defaultAppDir, getResourcesDir });
+    const patch = await findAvailablePatch({ workspaceDir: WORKSPACE_DIR, targetVersion: status.appVersion, releaseManager });
+    console.log(JSON.stringify({ status, patch }, null, 2));
+    process.exit(0);
+  })().catch(err => {
+    console.error('[异常]', err.message);
+    process.exit(1);
+  });
+} else if (process.argv.includes('--now')) {
   const defaultAppDir = getAppDir(getHostUsername(), true, '');
   runLocalizationWorkflow(defaultAppDir)
     .then(() => {
-      console.log('🎉 汉化打包部署成功！');
+      console.log('[成功] 汉化打包部署成功！');
       process.exit(0);
     })
     .catch((err) => {
-      console.error('❌ 汉化出错:', err.message);
+      console.error('[失败] 汉化出错:', err.message);
       process.exit(1);
     });
 } else {
@@ -5170,10 +5273,21 @@ if (process.argv.includes('--now')) {
     }
   });
 
-  server.listen(PORT, () => {
+  server.listen(PORT, async () => {
     console.log(`\n======================================================`);
     console.log(` Antigravity 2.0 汉化服务已在后台运行！`);
     console.log(` 本地管理面板: http://localhost:${PORT}`);
     console.log(`======================================================\n`);
+    try {
+      const defaultAppDir = getAppDir(getHostUsername(), true, '');
+      const status = await checkClientStatus({ appDir: defaultAppDir, getResourcesDir });
+      if (status.isInstalled) {
+        if (status.isUpdateOverwritten) {
+          log(`[状态检查] 检测到客户端已更新或处于原版状态 (v${status.appVersion || '未知'})，汉化尚未应用。`);
+        } else {
+          log(`[状态检查] 客户端已处于汉化状态 (v${status.appVersion || '未知'})。`);
+        }
+      }
+    } catch (_) {}
   });
 }
