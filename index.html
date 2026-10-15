@@ -1742,6 +1742,16 @@
     }
 
     async function triggerAutoRestore() {
+      const runEl = document.getElementById('status-running');
+      const isRunning = runEl && runEl.textContent.includes('运行中');
+      if (isRunning) {
+        const confirmed = await showConfirm(
+          '恢复汉化确认',
+          '检测到 Antigravity 正在运行。恢复汉化需要关闭客户端以解除文件占用，请先保存未完成的工作。是否继续？'
+        );
+        if (!confirmed) return;
+      }
+
       const btn = document.getElementById('btn-auto-restore');
       if (btn) {
         btn.disabled = true;

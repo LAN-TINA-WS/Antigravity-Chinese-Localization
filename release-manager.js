@@ -471,7 +471,7 @@ function createReleaseManager({ workspaceDir, request = https.request, requestTi
     return true;
   }
 
-  return { handleRequest, withCachedFile };
+  return { handleRequest, withCachedFile, listFiles };
 }
 
 module.exports = { createReleaseManager };

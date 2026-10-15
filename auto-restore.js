@@ -62,15 +62,15 @@ async function findAvailablePatch({ workspaceDir, targetVersion, releaseManager 
   }
 
   // 2. downloads/ 缓存目录中由 releaseManager 下载的补丁包
-  if (releaseManager && typeof releaseManager.listCachedFiles === 'function') {
+  if (releaseManager && typeof releaseManager.listFiles === 'function') {
     try {
-      const cached = await releaseManager.listCachedFiles();
+      const cached = await releaseManager.listFiles();
       for (const item of cached) {
-        if (item.valid && item.path && fs.existsSync(item.path)) {
+        if (!item.modified && item.path && fs.existsSync(item.path)) {
           const patchVersion = readAsarPackageVersion(item.path) || normalizeVersion(item.tag);
           candidates.push({
             source: 'download-cache',
-            cacheId: item.id,
+            cacheId: item.cacheId,
             tag: item.tag,
             path: item.path,
             version: patchVersion,
@@ -81,26 +81,46 @@ async function findAvailablePatch({ workspaceDir, targetVersion, releaseManager 
       }
     } catch (_) {}
   } else {
-    // 即使未注入 releaseManager，也可直接扫描 downloads 目录
+    // 即使未注入 releaseManager，也可直接扫描 downloads 目录（支持平铺文件与子目录）
     const downloadsDir = path.join(wsDir, 'downloads');
     if (fs.existsSync(downloadsDir)) {
       try {
-        const files = await fsp.readdir(downloadsDir);
-        for (const file of files) {
-          if (file.endsWith('.asar') && !file.startsWith('.')) {
-            const fullPath = path.join(downloadsDir, file);
+        const entries = await fsp.readdir(downloadsDir, { withFileTypes: true });
+        for (const entry of entries) {
+          if (entry.isFile() && (entry.name.endsWith('.asar') || entry.name.endsWith('.ready'))) {
+            const fullPath = path.join(downloadsDir, entry.name);
             try {
               const stat = await fsp.stat(fullPath);
-              if (stat.isFile() && stat.size > 0) {
-                const patchVersion = readAsarPackageVersion(fullPath);
+              if (stat.size > 0) {
                 candidates.push({
                   source: 'downloads-dir',
                   path: fullPath,
-                  version: patchVersion,
+                  version: readAsarPackageVersion(fullPath),
                   size: stat.size
                 });
               }
             } catch (_) {}
+          } else if (entry.isDirectory() && !entry.name.startsWith('.')) {
+            // 兼容 releaseManager 创建的 downloads/<cacheId>/app.asar.ready 结构
+            const subDir = path.join(downloadsDir, entry.name);
+            const candidateNames = ['app.asar.ready', 'app.asar'];
+            for (const candName of candidateNames) {
+              const subFile = path.join(subDir, candName);
+              if (fs.existsSync(subFile)) {
+                try {
+                  const stat = await fsp.stat(subFile);
+                  if (stat.isFile() && stat.size > 0) {
+                    candidates.push({
+                      source: 'downloads-sub-dir',
+                      path: subFile,
+                      version: readAsarPackageVersion(subFile),
+                      size: stat.size
+                    });
+                    break;
+                  }
+                } catch (_) {}
+              }
+            }
           }
         }
       } catch (_) {}
@@ -266,6 +286,15 @@ async function executeAutoRestore({
           } catch (_) { break; }
           await new Promise(r => setTimeout(r, 100));
         }
+        try {
+          if (await isAppRunning()) {
+            return {
+              success: false,
+              code: 'APP_RUNNING',
+              message: '未能成功退出 Antigravity 客户端，文件仍在被占用，请先手动退出后再执行恢复。'
+            };
+          }
+        } catch (_) {}
       }
     }
   }
@@ -277,8 +306,19 @@ async function executeAutoRestore({
   const standardBackup = path.join(resourcesDir, 'app.asar.bak');
 
   try {
-    // 若标准备份不存在，或已被污染，则从当前纯净官方原版创建备份
-    if (!fs.existsSync(standardBackup) || isLocalizedAsar(standardBackup)) {
+    const backupExists = fs.existsSync(standardBackup);
+    const backupLocalized = backupExists && isLocalizedAsar(standardBackup);
+    const backupVersion = backupExists ? readAsarPackageVersion(standardBackup) : null;
+    const isDifferentVersion = backupExists && status.appVersion && backupVersion && (status.appVersion !== backupVersion);
+
+    // 如果备份不存在、已被汉化污染、或备份版本与当前官方原版不一致（官方更新覆盖了新版本原版）
+    if (!backupExists || backupLocalized || isDifferentVersion) {
+      if (backupExists && !backupLocalized) {
+        const archivedName = `app.asar.bak.${backupVersion || 'old'}.${Date.now().toString().slice(-6)}`;
+        try {
+          await fsp.copyFile(standardBackup, path.join(resourcesDir, archivedName));
+        } catch (_) {}
+      }
       await fsp.copyFile(asarPath, standardBackup);
       createdBackupPath = standardBackup;
     }

@@ -236,3 +236,101 @@ test('一键更新汉化.bat 与 双击运行汉化.bat 接入自动恢复逻辑
   assert.ok(launcherBat.includes('where node'), '双击运行批处理必须检查 Node 环境');
 });
 
+test('findAvailablePatch 准确识别 downloads 子目录中的缓存结构及 releaseManager.listFiles', async t => {
+  const dir = await workspace(t);
+  const cacheDir = path.join(dir, 'downloads', 'release-v2.23.1-hash');
+  await fs.mkdir(cacheDir, { recursive: true });
+  const cacheFile = path.join(cacheDir, 'app.asar.ready');
+  await fs.writeFile(cacheFile, packedLocalized('2.23.1'));
+
+  // 1. 直接通过目录结构扫描
+  const patchFromDir = await findAvailablePatch({ workspaceDir: dir, targetVersion: '2.23.1' });
+  assert.ok(patchFromDir, '应当能在 downloads 子目录下扫描到 app.asar.ready');
+  assert.equal(patchFromDir.version, '2.23.1');
+  assert.equal(patchFromDir.path, cacheFile);
+
+  // 2. 通过 releaseManager.listFiles 扫描
+  const fakeReleaseManager = {
+    listFiles: async () => [{
+      cacheId: 'release-v2.23.1-hash',
+      tag: 'v2.23.1',
+      path: cacheFile,
+      modified: false,
+      size: 100
+    }]
+  };
+  const patchFromRM = await findAvailablePatch({ workspaceDir: dir, targetVersion: '2.23.1', releaseManager: fakeReleaseManager });
+  assert.ok(patchFromRM, '应当通过 releaseManager 识别到缓存包');
+  assert.equal(patchFromRM.version, '2.23.1');
+});
+
+test('executeAutoRestore 跨大版本更新时归档旧备份并为新版本创建安全备份', async t => {
+  const dir = await workspace(t);
+  const appDir = path.join(dir, 'app');
+  const resDir = path.join(appDir, 'resources');
+  await fs.mkdir(resDir, { recursive: true });
+  const asarPath = path.join(resDir, 'app.asar');
+  const backupPath = path.join(resDir, 'app.asar.bak');
+
+  // 原有旧版 2.22.0 的备份
+  const oldBackupBytes = packedOfficial('2.22.0');
+  await fs.writeFile(backupPath, oldBackupBytes);
+
+  // 官方新版 2.23.1 的客户端原版
+  const newOfficialBytes = packedOfficial('2.23.1');
+  await fs.writeFile(asarPath, newOfficialBytes);
+
+  // 本地 2.23.1 汉化补丁
+  const readyPath = path.join(dir, 'app.asar.ready');
+  const patchBytes = packedLocalized('2.23.1');
+  await fs.writeFile(readyPath, patchBytes);
+
+  const result = await executeAutoRestore({
+    appDir,
+    workspaceDir: dir
+  });
+
+  assert.equal(result.success, true);
+  assert.equal(result.code, 'RESTORED');
+
+  // 验证当前 app.asar.bak 已更新为 2.23.1 原版
+  assert.deepEqual(await fs.readFile(backupPath), newOfficialBytes);
+
+  // 验证旧版 2.22.0 备份已被安全归档保留
+  const files = await fs.readdir(resDir);
+  const archived = files.find(f => f.startsWith('app.asar.bak.2.22.0'));
+  assert.ok(archived, '旧版备份必须归档保留，防止历史数据丢失');
+  assert.deepEqual(await fs.readFile(path.join(resDir, archived)), oldBackupBytes);
+});
+
+test('executeAutoRestore 进程退出超时后若仍在运行则安全中断拒绝写入', async t => {
+  const dir = await workspace(t);
+  const appDir = path.join(dir, 'app');
+  const resDir = path.join(appDir, 'resources');
+  await fs.mkdir(resDir, { recursive: true });
+  const asarPath = path.join(resDir, 'app.asar');
+
+  const officialBytes = packedOfficial('2.23.1');
+  await fs.writeFile(asarPath, officialBytes);
+
+  const readyPath = path.join(dir, 'app.asar.ready');
+  await fs.writeFile(readyPath, packedLocalized('2.23.1'));
+
+  // 模拟进程一直卡死运行
+  const result = await executeAutoRestore({
+    appDir,
+    workspaceDir: dir,
+    isAppRunning: async () => true,
+    stopProcesses: async () => {},
+    stopTimeoutMs: 50
+  });
+
+  assert.equal(result.success, false);
+  assert.equal(result.code, 'APP_RUNNING');
+  assert.match(result.message, /未能成功退出/);
+
+  // 目标文件必须未被改动
+  assert.deepEqual(await fs.readFile(asarPath), officialBytes);
+});
+
+
