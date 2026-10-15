@@ -3,6 +3,10 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const { exec, execSync, spawn } = require('child_process');
+const { createReleaseManager } = require('./release-manager');
+const { createPackageInstaller } = require('./package-installer');
+const { isAppRunningStrict } = require('./process-check');
+const { readAsarPackageVersion } = require('./asar-version');
 
 const CURRENT_VERSION = '2.23.1';
 
@@ -23,6 +27,9 @@ function compareVersions(v1, v2) {
 const PORT = 3388;
 const WORKSPACE_DIR = __dirname;
 const EXTRACT_DIR = path.join(WORKSPACE_DIR, 'extracted');
+const releaseManager = createReleaseManager({ workspaceDir: WORKSPACE_DIR });
+const packageInstaller = createPackageInstaller({ workspaceDir: WORKSPACE_DIR, releaseManager, getAppDir,
+  getResourcesDir, isAppRunning: isAppRunningStrict, stopProcesses: killApp });
 
 let logs = [];
 
@@ -4894,7 +4901,7 @@ function runRestoreWorkflow(appDir) {
 const server = http.createServer((req, res) => {
   // CORS Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
@@ -4904,6 +4911,9 @@ const server = http.createServer((req, res) => {
   }
 
   // API routing
+  if (releaseManager.handleRequest(req, res)) return;
+  if (packageInstaller.handleRequest(req, res)) return;
+
   if (req.url.startsWith('/api/status') && req.method === 'GET') {
     const urlObj = new URL(req.url, `http://${req.headers.host}`);
     const username = urlObj.searchParams.get('username') || '';
@@ -4928,7 +4938,9 @@ const server = http.createServer((req, res) => {
       backupPath,
       platform: process.platform,
       defaultUsername: getHostUsername(),
-      currentVersion: CURRENT_VERSION
+      currentVersion: CURRENT_VERSION,
+      installedPackageVersion: isInstalled ? readAsarPackageVersion(asarPath) : null,
+      isLocalized: isInstalled && isLocalizedAsar(asarPath)
     }));
   } 
   else if (req.url === '/api/localize' && req.method === 'POST') {

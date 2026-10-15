@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Antigravity 2.0 一键汉化控制中心</title>
+  <title>Antigravity 汉化</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -804,6 +804,8 @@
       color: var(--text-muted);
       line-height: 1.6;
       margin-bottom: 25px;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
     }
 
     .modal-btns {
@@ -838,6 +840,184 @@
       color: var(--text-main);
       border-color: var(--accent);
     }
+
+    /* Release downloads stay separate from deployment actions. */
+    .release-panel {
+      margin-bottom: 28px;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      background: var(--card-bg);
+    }
+    .release-panel [hidden], .release-panel[hidden] { display: none; }
+    .release-heading, .release-toolbar, .release-download-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .release-heading { margin-bottom: 12px; }
+    .release-heading h2 { font-size: 1.15rem; }
+    .release-hint, .release-meta, .release-result {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+    .release-hint { margin-bottom: 16px; }
+    .release-toolbar { margin: 12px 0; }
+    .release-toolbar-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+    .release-panel .sec-btn { padding: 9px 14px; font-size: 0.85rem; }
+    .release-select {
+      width: 100%;
+      min-width: 0;
+      padding: 12px 14px;
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      background: var(--input-bg);
+      color: var(--text-main);
+      font: inherit;
+    }
+    .release-select option { background: var(--modal-bg); color: var(--text-main); }
+    .release-select:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .release-notes {
+      max-height: 180px;
+      overflow: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin: 12px 0 16px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+    .release-download-actions .primary-btn {
+      width: auto;
+      padding: 12px 22px;
+      font-size: 0.95rem;
+      border-radius: 12px;
+    }
+    .release-link { color: var(--accent); font-size: 0.85rem; }
+    .release-error { color: var(--error); font-size: 0.85rem; line-height: 1.65; margin: 10px 0; overflow-wrap: anywhere; }
+    .release-progress { margin-top: 18px; border-top: 1px solid var(--border-color); padding-top: 16px; }
+    .release-progress progress { width: 100%; height: 10px; accent-color: var(--accent); margin: 10px 0; }
+    .release-path { display: block; margin-top: 5px; color: var(--text-main); overflow-wrap: anywhere; user-select: all; }
+    .release-result.success { color: var(--success); }
+    .release-cache { margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 16px; }
+    .release-cache h3 { font-size: 1rem; }
+    .release-cache-item { margin-top: 12px; padding: 14px; border: 1px solid var(--card-border); border-radius: 12px; min-width: 0; }
+    .release-cache-title { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .release-cache-badge { color: var(--success); font-size: 0.75rem; padding: 2px 7px; border: 1px solid var(--border-color); border-radius: 6px; }
+    @media (max-width: 600px) {
+      body { padding: 14px; }
+      .main-container { padding: 22px 16px; }
+      .top-bar { align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+      .top-bar-actions { flex-wrap: wrap; }
+      .input-row { grid-template-columns: 1fr; }
+      .release-panel { padding: 16px; }
+      .release-download-actions .primary-btn { width: 100%; }
+    }
+
+    /* Keep the everyday install flow visible; reveal maintenance on demand. */
+    body { padding: 28px 20px; align-items: flex-start; }
+    body::before, body::after { display: none; }
+    .main-container { max-width: 760px; padding: 28px 32px; border-radius: 20px; animation: none; }
+    .top-bar { margin-bottom: 20px; padding-bottom: 0; border: 0; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand .logo-area { width: 38px; height: 38px; margin: 0; border-radius: 12px; animation: none; box-shadow: none; flex-shrink: 0; }
+    .brand .logo-area svg { width: 22px; height: 22px; }
+    .brand h1 { font-size: 1.25rem; margin: 0; letter-spacing: 0; background: none; -webkit-text-fill-color: var(--text-main); }
+    .brand .subtitle { font-size: 0.8rem; margin-top: 4px; }
+    .repo-badge { padding: 0; background: none; border: 0; font-size: 0.75rem; font-weight: 400; }
+    .top-bar-actions { gap: 12px; }
+    .icon-tool-btn { padding: 8px 10px; font-size: 0.8rem; border-radius: 9px; }
+    .release-panel { margin-bottom: 20px; padding: 22px; border-radius: 16px; background: var(--card-bg); }
+    .installed-summary { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+    .eyebrow { font-size: 0.78rem; color: var(--text-muted); }
+    .installed-version { font-size: 1.7rem; font-weight: 600; margin-top: 6px; line-height: 1.2; letter-spacing: -0.5px; }
+    .installed-state { display: flex; align-items: flex-end; flex-direction: column; gap: 7px; }
+    .status-pill { font-size: 0.78rem; border-radius: 7px; padding: 5px 9px; color: var(--text-muted); background: var(--card-hover-bg); }
+    .status-pill[data-state="localized"] { color: var(--success); background: color-mix(in srgb, var(--success) 10%, transparent); }
+    .target-strip { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 14px 0 18px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+    .target-text { color: var(--text-muted); font-size: 0.78rem; min-width: 0; overflow-wrap: anywhere; }
+    .text-btn { border: 0; background: none; color: var(--text-muted); font: inherit; font-size: 0.8rem; padding: 4px 0; cursor: pointer; white-space: nowrap; }
+    .text-btn:hover:not(:disabled) { color: var(--text-main); }
+    .text-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .text-btn:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+    .release-heading { margin-bottom: 12px; }
+    .release-heading h2 { font-size: 0.98rem; font-weight: 500; }
+    .release-toolbar { margin: 0 0 8px; }
+    .release-toolbar label { font-size: 0.85rem; font-weight: 500; }
+    .release-select { font-size: 0.95rem; padding: 13px 12px; border-radius: 10px; }
+    #release-selected-meta { margin-top: 8px; font-size: 0.78rem; }
+    .release-download-actions { display: flex; gap: 10px; margin: 20px 0 10px; flex-direction: row; }
+    .release-download-actions .primary-btn { flex: 1; padding: 13px 18px; font-size: 0.94rem; border-radius: 10px; box-shadow: none; }
+    .release-download-actions .primary-btn:hover:not(:disabled) { transform: none; box-shadow: none; }
+    .release-download-actions .sec-btn { padding: 13px 18px; font-size: 0.9rem; border-radius: 10px; }
+    .release-footnote { font-size: 0.75rem; color: var(--text-muted); line-height: 1.6; }
+    .download-alternative { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .section-fold { border-top: 1px solid var(--border-color); }
+    .section-fold > summary { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px 0; cursor: pointer; list-style: none; font-size: 0.86rem; font-weight: 500; }
+    summary::-webkit-details-marker { display: none; }
+    .section-fold > summary::after { content: '+'; color: var(--text-muted); font-size: 1rem; font-weight: 400; }
+    .section-fold[open] > summary::after { content: '−'; }
+    .fold-label { flex: 1; }
+    .fold-caption { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; }
+    .fold-body { padding: 0 0 18px; }
+    .inline-fold { margin-top: 14px; }
+    .inline-fold > summary { padding-bottom: 0; }
+    .inline-fold[open] > summary { padding-bottom: 12px; }
+    .inline-fold .fold-body { padding-bottom: 0; }
+    .technical-details { margin-top: 10px; font-size: 0.78rem; color: var(--text-muted); }
+    .technical-details > summary { cursor: pointer; }
+    .technical-details p { margin-top: 8px; }
+    .release-cache { margin: 0; padding: 0; border: 0; }
+    .release-cache-item { padding: 13px 14px; margin-top: 10px; }
+    .release-cache-item .release-heading { margin-bottom: 4px; }
+    .release-cache-item .release-meta { font-size: 0.76rem; }
+    .release-cache-item .release-path { font-size: 0.76rem; }
+    .release-cache-badge { border: 0; padding: 0; font-weight: 400; }
+    .config-panel { padding: 0; margin: 0 0 18px; background: none; border: 0; box-shadow: none; }
+    .config-panel:hover { background: none; box-shadow: none; }
+    .panel-subtitle { font-size: 0.9rem; margin-bottom: 14px; }
+    .input-group label { font-size: 0.8rem; }
+    .input-group input { padding: 10px 12px; font-size: 0.85rem; border-radius: 9px; }
+    .status-grid { gap: 8px; margin: 20px 0; }
+    .status-card { padding: 10px 12px; border-radius: 9px; gap: 8px; }
+    .status-card:hover { transform: none; }
+    .status-title { margin: 0; font-size: 0.73rem; letter-spacing: 0; }
+    .status-value { font-size: 0.8rem; gap: 6px; }
+    .dot { width: 6px; height: 6px; animation: none !important; box-shadow: none !important; }
+    .maintenance-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }
+    .maintenance-actions .sec-btn { padding: 11px 12px; font-size: 0.82rem; border-radius: 9px; }
+    .maintenance-actions svg { width: 16px !important; height: 16px !important; flex-shrink: 0; }
+    .console-panel { margin-top: 12px; }
+    .console-body { max-height: 220px; }
+    .about-version { margin-top: 18px; font-size: 0.75rem; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    @media (max-width: 600px) {
+      body { padding: 14px 10px; }
+      .main-container { padding: 20px 16px; border-radius: 15px; }
+      .top-bar { flex-wrap: nowrap; gap: 8px; align-items: center; }
+      .top-bar-actions { flex-wrap: nowrap; }
+      .repo-badge { display: none; }
+      .brand h1 { font-size: 1.08rem; }
+      .brand .subtitle { font-size: 0.73rem; }
+      .release-panel { padding: 18px 15px; }
+      .installed-version { font-size: 1.45rem; }
+      .release-download-actions { gap: 8px; }
+      .release-download-actions .primary-btn { padding: 13px 10px; font-size: 0.86rem; }
+      .release-download-actions .sec-btn { padding: 13px 10px; font-size: 0.82rem; }
+      .release-cache-item .release-heading { align-items: flex-start; flex-direction: column; }
+      .status-grid { grid-template-columns: 1fr; }
+      .status-card { flex-direction: row; align-items: center; }
+      .checkbox-group { flex-wrap: wrap; padding-top: 0 !important; }
+    }
   </style>
 </head>
 <body>
@@ -864,17 +1044,12 @@
   <div class="main-container">
     <!-- Top Utility Bar: Version Badge, Theme Toggle & Online Release Check -->
     <div class="top-bar">
-      <div class="repo-badge">
-        <span class="pulse-indicator" id="repo-status-dot"></span>
-        <span id="version-display">本地词库 v2.23.1</span>
+      <div class="brand">
+        <div class="logo-area" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2 2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></div>
+        <div><h1>Antigravity 汉化</h1><p class="subtitle">选择版本，轻松安装。</p></div>
       </div>
       <div class="top-bar-actions">
-        <button class="icon-tool-btn" id="btn-check-release" onclick="checkReleaseUpdate(false)" title="在线检测 GitHub 最新汉化词库与补丁">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
-          </svg>
-          <span id="check-release-text">检测词库更新</span>
-        </button>
+        <div class="repo-badge"><span class="pulse-indicator" id="repo-status-dot" hidden></span><span id="version-display">控制中心 v2.23.1</span></div>
         <button class="icon-tool-btn" id="btn-theme-toggle" onclick="toggleTheme()" title="切换亮暗外观模式">
           <svg id="theme-icon" viewBox="0 0 24 24">
             <!-- Dynamic SVG icon -->
@@ -884,16 +1059,75 @@
       </div>
     </div>
 
-    <header>
-      <div class="logo-area">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>
-        </svg>
+    <section class="release-panel" id="release-panel" aria-labelledby="release-panel-title">
+      <div class="installed-summary">
+        <div><p class="eyebrow">当前安装 · app.asar</p><p class="installed-version" id="release-installed-version">正在检测…</p></div>
+        <div class="installed-state"><span class="status-pill" id="installed-localization">正在检测</span><span class="eyebrow" id="app-readiness" role="status">正在连接服务…</span></div>
       </div>
-      <h1>Antigravity 2.0 / 2.23.1+</h1>
-      <p class="subtitle">智能控制台 &amp; 极简一键汉化系统 (含 WSL 环境 / 沙盒隔离 / 多智能体 / 模型推理全功能深度汉化)</p>
-    </header>
+      <div class="target-strip"><p class="target-text">安装位置：<span id="install-target-summary">正在检测…</span></p><button class="text-btn" onclick="openSettings()">更改</button></div>
+      <h2 class="visually-hidden" id="release-panel-title">安装汉化包</h2>
+      <div class="release-toolbar">
+        <label for="release-select">选择要安装的版本</label>
+        <div class="release-toolbar-buttons">
+          <button class="text-btn" id="btn-check-release" onclick="checkReleaseUpdate(false)" title="刷新可安装的汉化包版本" aria-controls="release-panel"><span id="check-release-text">刷新</span></button>
+          <button class="sec-btn" id="btn-release-more" onclick="loadReleases(false)" hidden>加载更多</button>
+        </div>
+      </div>
+      <select class="release-select" id="release-select" onchange="renderSelectedRelease()" disabled>
+        <option value="">正在加载版本…</option>
+      </select>
+      <p class="visually-hidden" id="release-list-status" role="status"></p>
+      <p class="release-error" id="release-list-error" role="alert" hidden></p>
+      <p class="release-meta" id="release-selected-meta"></p>
+      <div class="release-download-actions actions-panel">
+        <button class="primary-btn" id="btn-release-download" onclick="downloadSelectedRelease(true)" disabled>下载并安装</button>
+        <button class="sec-btn" id="btn-launch" onclick="launch()">启动软件</button>
+      </div>
+      <div class="download-alternative"><p class="release-footnote">文件与备份保留，相同内容自动复用。</p><button class="text-btn" id="btn-release-download-only" onclick="downloadSelectedRelease(false)" disabled>仅下载</button></div>
+      <div class="release-progress" id="release-progress" hidden>
+        <p class="release-meta" id="release-download-status" role="status" aria-live="polite"></p>
+        <progress id="release-download-progress" max="100" value="0" aria-label="汉化包下载进度"></progress>
+        <p class="release-error" id="release-download-error" role="alert" hidden></p>
+        <details class="technical-details"><summary>下载详情</summary>
+          <p class="release-result" id="release-download-verification" hidden></p>
+          <p class="release-result" id="release-download-hash" hidden></p>
+          <p class="release-result" id="release-download-path-label" hidden>文件已保存到：<code class="release-path" id="release-download-path"></code></p>
+        </details>
+        <button class="sec-btn" id="btn-release-install-downloaded" onclick="installDownloadedRelease()" hidden>安装已下载版本</button>
+        <button class="sec-btn" id="btn-release-progress-refresh" onclick="readReleaseDownload()" hidden>刷新进度</button>
+      </div>
+      <div class="release-progress" id="release-install-result" hidden>
+        <p class="release-meta" id="release-install-status" role="status" aria-live="polite"></p>
+        <p class="release-error" id="release-install-error" role="alert" hidden></p>
+        <details class="technical-details"><summary>安装记录</summary>
+          <p class="release-result" id="release-install-path-label" hidden>安装目标：<code class="release-path" id="release-install-path"></code></p>
+          <p class="release-result" id="release-install-backup-label" hidden>安装前备份：<code class="release-path" id="release-install-backup"></code></p>
+        </details>
+      </div>
+      <details class="section-fold inline-fold" id="release-notes-details">
+        <summary><span class="fold-label">更新说明</span></summary>
+        <div class="fold-body">
+          <pre class="release-notes" id="release-notes">选择版本后查看更新说明。</pre>
+          <div class="release-heading"><a class="release-link" id="release-detail-link" target="_blank" rel="noopener noreferrer" hidden>GitHub 发布页面 ↗</a><button class="text-btn" id="btn-release-refresh" onclick="loadReleases(true)">刷新版本列表</button></div>
+        </div>
+      </details>
+      <details class="section-fold inline-fold" id="release-cache-details">
+        <summary><span class="fold-label">已下载版本</span><span class="fold-caption" id="release-cache-count">正在读取</span></summary>
+        <div class="fold-body release-cache">
+        <div class="release-heading">
+          <p class="release-meta">可安装或手动删除，下载文件会一直保留。</p>
+          <button class="text-btn" id="btn-release-cache-refresh" onclick="loadReleaseCache()">刷新</button>
+        </div>
+        <p class="visually-hidden" id="release-cache-status" role="status"></p>
+        <p class="release-error" id="release-cache-error" role="alert" hidden></p>
+        <div id="release-cache-list"></div>
+        </div>
+      </details>
+    </section>
 
+    <details class="section-fold" id="settings-details">
+      <summary><span class="fold-label">设置与维护</span><span class="fold-caption">路径 · 还原 · 日志</span></summary>
+      <div class="fold-body">
     <!-- State indicators -->
     <div class="status-grid">
       <div class="status-card">
@@ -916,7 +1150,7 @@
         <svg viewBox="0 0 24 24">
           <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
         </svg>
-        配置部署目标路径
+        安装位置
       </h3>
       
       <!-- 隐藏的诱饵输入框，用于吸引并消耗密码管理器及浏览器的自动填充动作 -->
@@ -927,16 +1161,16 @@
 
       <div class="input-row">
         <div class="input-group">
-          <label for="tgt-win-owner" id="lbl-win-owner">Windows 系统账户名 (Host Account)</label>
+          <label for="tgt-win-owner" id="lbl-win-owner">Windows 账户名</label>
           <!-- 采用 readonly 焦点激活防御 + new-password 声明 + 诱饵混淆，彻底终结任何密码管理器在失焦或鼠标移出时的强制篡改 -->
           <input type="text" id="tgt-win-owner" name="tgt-win-owner" placeholder="例如: 11215" 
                  autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" 
                  readonly onfocus="this.removeAttribute('readonly')" onblur="this.setAttribute('readonly', true)"
-                 oninput="saveSettings()">
+                 oninput="saveSettings()" onchange="saveAndTriggerStatus()">
         </div>
         <div class="checkbox-group" style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 15px; padding-top: 26px;">
           <label class="custom-checkbox-container" style="margin-bottom: 0;">
-            <input type="checkbox" id="chk-default-path" checked onchange="togglePathInput()">
+            <input type="checkbox" id="chk-default-path" checked onchange="togglePathInput(); updateStatus()">
             <span class="checkbox-checkmark"></span>
             <span id="lbl-default-path">使用 Windows 默认安装路径</span>
           </label>
@@ -944,40 +1178,33 @@
             <svg style="width:14px; height:14px; fill:currentColor; vertical-align: middle; margin-right: 4px;" viewBox="0 0 24 24">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
             </svg>
-            立即检测路径
+            检测路径
           </button>
         </div>
       </div>
 
       <div class="custom-path-wrapper" id="custom-path-wrapper">
         <div class="input-group">
-          <label for="input-custom-path">自定义程序路径 (APP_DIR)</label>
+          <label for="input-custom-path">自定义安装目录</label>
           <input type="text" id="input-custom-path" name="custom-app-dir" placeholder="C:\Users\用户名\AppData\Local\Programs\antigravity" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="saveAndTriggerStatus()">
         </div>
       </div>
     </div>
 
     <!-- Actions -->
-    <div class="actions-panel">
-      <button class="primary-btn" id="btn-localize" onclick="localize()">
+    <div class="actions-panel maintenance-actions">
+      <button class="sec-btn" id="btn-localize" onclick="localize()">
         <svg style="width:24px; height:24px; fill:currentColor" viewBox="0 0 24 24">
           <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-1.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
         </svg>
-        <span>一键汉化 (English → 简体中文)</span>
+        <span>使用本地脚本汉化</span>
       </button>
 
-      <div class="secondary-actions">
         <button class="sec-btn" id="btn-restore" onclick="restore()">
           <svg style="width:18px; height:18px; fill:currentColor" viewBox="0 0 24 24">
             <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.25 2.52.77-1.28-3.52-2.09V8z"/>
           </svg>
           还原英文原版
-        </button>
-        <button class="sec-btn" id="btn-launch" onclick="launch()">
-          <svg style="width:18px; height:18px; fill:currentColor" viewBox="0 0 24 24">
-            <path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42L16.86 11H5v2z"/>
-          </svg>
-          启动软件
         </button>
         <button class="sec-btn" id="btn-kill" onclick="killProcesses()" title="强行终止残留的 Antigravity 及后台语言服务器进程，释放文件占用">
           <svg style="width:18px; height:18px; fill:currentColor" viewBox="0 0 24 24">
@@ -991,9 +1218,9 @@
           </svg>
           清理应用缓存
         </button>
-      </div>
     </div>
 
+    <details class="section-fold inline-fold" id="logs-details"><summary><span class="fold-label">运行日志</span></summary>
     <!-- Live Console Output -->
     <div class="console-panel">
       <div class="console-header">
@@ -1001,7 +1228,7 @@
           <svg style="width:16px; height:16px; fill:currentColor" viewBox="0 0 24 24">
             <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 12H4v-2h8v2zm8-4H4V8h16v4z"/>
           </svg>
-          实时部署日志 (Real-time logs)
+          运行日志
         </span>
         <div class="console-tools">
           <button class="tool-btn" onclick="copyLogs()" title="复制全部控制台日志到剪贴板">
@@ -1022,11 +1249,17 @@
         <div class="console-line info">[系统] 等待操作... 双击 "双击运行汉化.bat" 确保服务完全启动。</div>
       </div>
     </div>
+    </details>
+    <div class="release-meta about-version"><p id="release-local-version">控制中心版本：正在读取…</p><p>安装汉化包不会更新控制中心。备份按 SHA-256 去重，历史备份保留。</p></div>
+      </div>
+    </details>
   </div>
 
   <script>
-    const API_BASE = 'http://localhost:3388';
+    const API_BASE = ['http:', 'https:'].includes(location.protocol) ? location.origin : 'http://localhost:3388';
     const consoleEl = document.getElementById('console');
+    let localScriptVersion = '';
+    let statusRevision = 0;
 
     // UI elements (Refactored to tgt-win-owner with readonly armor to block password manager autofill hooks)
     const inputUsername = document.getElementById('tgt-win-owner');
@@ -1064,6 +1297,21 @@
       localStorage.setItem('localizer_custom_path', params.customPath);
     }
 
+    function openSettings(scroll = true) {
+      document.getElementById('settings-details').open = true;
+      if (scroll) document.querySelector('.config-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function showDisconnectedStatus() {
+      document.getElementById('release-installed-version').textContent = '未连接';
+      const badge = document.getElementById('installed-localization');
+      badge.textContent = '服务未连接';
+      badge.removeAttribute('data-state');
+      document.getElementById('app-readiness').textContent = '请启动汉化控制中心';
+      document.getElementById('install-target-summary').textContent = '暂时无法检测';
+      document.getElementById('install-target-summary').removeAttribute('title');
+    }
+
     // ==========================================
     // 自定义 Toast 浮动通知与 Modal 确认弹窗
     // ==========================================
@@ -1089,7 +1337,10 @@
         iconSvg = '<svg style="width:18px;height:18px;min-width:18px;fill:var(--accent);" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>';
       }
 
-      toast.innerHTML = `${iconSvg}<span>${message}</span>`;
+      toast.innerHTML = iconSvg;
+      const toastText = document.createElement('span');
+      toastText.textContent = String(message);
+      toast.appendChild(toastText);
       toastContainer.appendChild(toast);
 
       requestAnimationFrame(() => {
@@ -1102,10 +1353,11 @@
       }, duration);
     }
 
-    function showConfirm(title, desc) {
+    function showConfirm(title, desc, confirmText = '确认') {
       return new Promise((resolve) => {
         modalTitleText.textContent = title;
         modalDescText.textContent = desc;
+        modalBtnConfirm.textContent = confirmText;
         modalOverlay.classList.add('active');
 
         function cleanup(result) {
@@ -1214,6 +1466,7 @@
     }
 
     async function updateStatus() {
+      const revision = ++statusRevision;
       const params = getParams();
       
       // 仅在取消默认路径且未填写自定义路径时等待输入
@@ -1221,6 +1474,13 @@
         document.getElementById('status-installed').innerHTML = '<span class="dot red"></span>等待输入自定义路径';
         document.getElementById('status-backup').innerHTML = '<span class="dot amber"></span>等待配置';
         document.getElementById('status-running').innerHTML = '<span class="dot amber"></span>等待配置';
+        document.getElementById('release-installed-version').textContent = '待配置';
+        document.getElementById('installed-localization').textContent = '未配置路径';
+        document.getElementById('installed-localization').removeAttribute('data-state');
+        document.getElementById('app-readiness').textContent = '请填写安装目录';
+        document.getElementById('install-target-summary').textContent = '尚未设置';
+        document.getElementById('install-target-summary').removeAttribute('title');
+        openSettings(false);
         return;
       }
 
@@ -1229,11 +1489,12 @@
         const res = await fetch(`${API_BASE}/api/status${queryStr}`);
         if (!res.ok) throw new Error();
         const data = await res.json();
+        if (revision !== statusRevision) return;
         
         const isWin = data.platform === 'win32';
         const sysLabel = isWin ? 'Windows' : (data.platform === 'linux' ? 'Linux' : data.platform);
         
-        document.getElementById('lbl-win-owner').textContent = `${sysLabel} 系统账户名 (Host Account)`;
+        document.getElementById('lbl-win-owner').textContent = `${sysLabel} 账户名`;
         document.getElementById('lbl-default-path').textContent = `使用 ${sysLabel} 默认安装路径`;
         
         if (data.defaultUsername) {
@@ -1252,11 +1513,27 @@
         
         // Dynamic Version Sync
         if (data.currentVersion) {
+          setLocalScriptVersion(data.currentVersion);
           const vEl = document.getElementById('version-display');
           if (vEl && !vEl.textContent.includes('发现新版')) {
-            vEl.textContent = `本地词库 v${data.currentVersion}`;
+            vEl.textContent = `控制中心 v${data.currentVersion}`;
           }
         }
+        const packageVersionEl = document.getElementById('release-installed-version');
+        if (Object.prototype.hasOwnProperty.call(data, 'installedPackageVersion')) {
+          packageVersionEl.textContent = data.installedPackageVersion
+            ? `v${String(data.installedPackageVersion).replace(/^[vV]/, '')}`
+            : data.isInstalled ? '版本未知' : '未检测到程序';
+        }
+        const localizationBadge = document.getElementById('installed-localization');
+        localizationBadge.textContent = data.isInstalled ? data.isLocalized ? '已汉化' : '未检测到汉化' : '未找到程序';
+        localizationBadge.dataset.state = data.isInstalled && data.isLocalized ? 'localized' : 'unknown';
+        document.getElementById('app-readiness').textContent = data.isInstalled
+          ? data.isRunning ? '运行中 · 安装时将关闭' : '已退出 · 可安装' : '请检查安装目录';
+        const targetSummary = document.getElementById('install-target-summary');
+        targetSummary.textContent = data.isInstalled ? params.useDefault ? '默认安装路径' : params.customPath : '未找到程序，请检查路径';
+        targetSummary.title = data.asarPath || '';
+        if (!data.isInstalled) openSettings(false);
         
         // Installed status
         const insEl = document.getElementById('status-installed');
@@ -1270,7 +1547,7 @@
         const bakEl = document.getElementById('status-backup');
         if (data.hasBackup) {
           bakEl.innerHTML = '<span class="dot green"></span>已备份';
-          document.getElementById('btn-restore').disabled = false;
+          document.getElementById('btn-restore').disabled = releaseInstallBusy;
         } else {
           bakEl.innerHTML = '<span class="dot amber"></span>无备份';
           document.getElementById('btn-restore').disabled = true;
@@ -1284,9 +1561,11 @@
           runEl.innerHTML = '<span class="dot green"></span>已关闭 (就绪)';
         }
       } catch (e) {
+        if (revision !== statusRevision) return;
         document.getElementById('status-installed').innerHTML = '<span class="dot red"></span>未连接服务';
         document.getElementById('status-backup').innerHTML = '<span class="dot red"></span>未连接服务';
         document.getElementById('status-running').innerHTML = '<span class="dot red"></span>未连接服务';
+        showDisconnectedStatus();
       }
     }
 
@@ -1318,6 +1597,7 @@
         document.getElementById('status-installed').innerHTML = '<span class="dot red"></span>未连接服务';
         document.getElementById('status-backup').innerHTML = '<span class="dot red"></span>未连接服务';
         document.getElementById('status-running').innerHTML = '<span class="dot red"></span>未连接服务';
+        showDisconnectedStatus();
       }
     }
 
@@ -1325,6 +1605,7 @@
       const btn = document.getElementById(btnId);
       if (!btn) return;
       if (isLoading) {
+        if (['btn-localize', 'btn-restore', 'btn-kill', 'btn-cache'].includes(btnId)) document.getElementById('logs-details').open = true;
         btn.disabled = true;
         btn.classList.add('is-loading');
         btn.dataset.originalHtml = btn.innerHTML;
@@ -1527,109 +1808,495 @@
     }
 
     // ==========================================
-    // 在线检测最新词库与补丁 Release
+    // GitHub 汉化包下载与主动安装；下载缓存保留，不结束客户端进程。
     // ==========================================
     let isCheckingRelease = false;
+    let releaseItems = [];
+    let releasePage = 0;
+    let releaseHasMore = false;
+    let releaseListLoading = false;
+    let releaseDownload = { status: 'idle' };
+    let releaseDownloadStarting = false;
+    let releaseDownloadPolling = false;
+    let releaseDownloadTimer = null;
+    let releaseDownloadRevision = 0;
+    let releaseCacheLoading = false;
+    let releaseCacheRefreshPending = false;
+    let releaseInstallBusy = false;
+    let pendingReleaseInstall = null;
+    let lastReleaseInstallation = null;
+    const releaseInstallControlStates = new Map();
+    const deletingReleaseCaches = new Set();
+    const releaseElement = (id) => document.getElementById(id);
 
-    function compareVersions(v1, v2) {
-      const parse = (v) => (v || '').replace(/^[vV]/, '').split('.').map(n => parseInt(n, 10) || 0);
-      const p1 = parse(v1);
-      const p2 = parse(v2);
-      const maxLen = Math.max(p1.length, p2.length);
-      for (let i = 0; i < maxLen; i++) {
-        const a = p1[i] || 0;
-        const b = p2[i] || 0;
-        if (a > b) return 1;
-        if (a < b) return -1;
+    function releaseError(id, message = '') {
+      const el = releaseElement(id);
+      el.textContent = message;
+      el.hidden = !message;
+    }
+
+    function setLocalScriptVersion(version) {
+      localScriptVersion = String(version).replace(/^[vV]/, '');
+      releaseElement('release-local-version').textContent = `控制中心版本：v${localScriptVersion}`;
+    }
+
+    function formatReleaseBytes(value) {
+      const bytes = Number(value);
+      if (!Number.isFinite(bytes) || bytes < 0) return '未知大小';
+      if (bytes < 1024) return `${bytes} B`;
+      const units = ['KB', 'MB', 'GB'];
+      let amount = bytes / 1024;
+      let unit = 0;
+      while (amount >= 1024 && unit < units.length - 1) { amount /= 1024; unit++; }
+      return `${amount.toFixed(1)} ${units[unit]}`;
+    }
+
+    function formatReleaseDate(value) {
+      const date = new Date(value);
+      return value && Number.isFinite(date.getTime()) ? date.toLocaleString('zh-CN') : '未提供发布时间';
+    }
+
+    async function releaseRequest(endpoint, options = {}, requireSuccess = true) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000);
+      try {
+        const response = await fetch(`${API_BASE}${endpoint}`, { ...options, signal: controller.signal });
+        let data;
+        try { data = await response.json(); }
+        catch (_) { throw new Error('本地服务未返回有效数据，请确认已启动新版控制中心服务。'); }
+        if (!response.ok || (requireSuccess && !data.success)) {
+          const error = new Error(data.error || `请求失败（HTTP ${response.status}）`);
+          error.status = response.status;
+          throw error;
+        }
+        return data;
+      } catch (error) {
+        if (error.name === 'AbortError') throw new Error('请求超时，请稍后重试。');
+        if (error instanceof TypeError) throw new Error('无法连接本地服务，请确认 localize.js 服务正在运行。');
+        throw error;
+      } finally { clearTimeout(timeout); }
+    }
+
+    function selectedRelease() {
+      return releaseItems.find(item => String(item.id) === releaseElement('release-select').value);
+    }
+
+    function releaseWriteBusy() {
+      return releaseInstallBusy || releaseDownloadStarting || releaseDownload.status === 'downloading' || Boolean(pendingReleaseInstall) || deletingReleaseCaches.size > 0;
+    }
+
+    function updateReleaseControls() {
+      releaseElement('btn-release-refresh').disabled = releaseListLoading || releaseInstallBusy;
+      releaseElement('btn-release-more').disabled = releaseListLoading || releaseInstallBusy;
+      releaseElement('btn-release-more').hidden = !releaseHasMore;
+      releaseElement('release-select').disabled = releaseListLoading || releaseInstallBusy || !releaseItems.length;
+      const busy = releaseWriteBusy();
+      const button = releaseElement('btn-release-download');
+      button.disabled = busy || releaseListLoading || !selectedRelease();
+      button.textContent = releaseInstallBusy ? '正在确认或安装…' : releaseDownloadStarting ? '正在准备…' : pendingReleaseInstall ? '下载后确认安装…' : releaseDownload.status === 'downloading' ? '正在下载…' : '下载并安装';
+      releaseElement('btn-check-release').disabled = releaseListLoading || releaseInstallBusy;
+      releaseElement('btn-release-download-only').disabled = button.disabled;
+      releaseElement('btn-release-install-downloaded').disabled = busy || releaseDownload.status !== 'completed' || !releaseDownload.cacheId;
+      releaseElement('btn-release-cache-refresh').disabled = releaseCacheLoading || releaseInstallBusy || deletingReleaseCaches.size > 0;
+      document.querySelectorAll('.release-cache-write').forEach(control => {
+        control.disabled = busy || control.dataset.invalid === 'true';
+      });
+    }
+
+    function renderSelectedRelease() {
+      const item = selectedRelease();
+      releaseElement('release-selected-meta').textContent = item
+        ? `${formatReleaseBytes(item.asset.size)} · ${new Date(item.publishedAt).toLocaleDateString('zh-CN')} 发布${item.prerelease ? ' · 预发布' : ''}` : '';
+      releaseElement('release-notes').textContent = item ? item.body || '该发布没有填写更新说明。' : '选择版本后查看更新说明。';
+      const link = releaseElement('release-detail-link');
+      // Only the expected HTTPS release pages can become external links.
+      const validLink = item && /^https:\/\/github\.com\/liominsb\/Antigravity-Chinese-Localization\/releases\//i.test(item.releaseUrl || '');
+      link.hidden = !validLink;
+      if (validLink) link.href = item.releaseUrl;
+      else link.removeAttribute('href');
+      updateReleaseControls();
+    }
+
+    async function loadReleases(reset = true) {
+      if (releaseListLoading || releaseInstallBusy) return;
+      releaseListLoading = true;
+      releaseError('release-list-error');
+      releaseElement('release-list-status').textContent = '正在读取 GitHub 发布版本…';
+      updateReleaseControls();
+      const previousSelection = releaseElement('release-select').value;
+      try {
+        let page = reset ? 1 : releasePage + 1;
+        let items = reset ? [] : [...releaseItems];
+        let more;
+        do {
+          const data = await releaseRequest(`/api/releases?page=${page}`);
+          if (!Array.isArray(data.releases)) throw new Error('服务返回的版本列表格式不正确。');
+          const byId = new Map(items.map(item => [String(item.id), item]));
+          data.releases.filter(item => item.asset).forEach(item => byId.set(String(item.id), item));
+          items = [...byId.values()].sort((a, b) => (Date.parse(b.publishedAt) || 0) - (Date.parse(a.publishedAt) || 0));
+          more = Boolean(data.hasMore);
+          // Find a stable default even if the first page contains only prereleases.
+          if (!reset || items.some(item => !item.prerelease) || !more) break;
+          page++;
+        } while (more);
+        releaseItems = items;
+        releasePage = page;
+        releaseHasMore = more;
+        const select = releaseElement('release-select');
+        select.replaceChildren();
+        const latestStable = items.find(item => !item.prerelease);
+        items.forEach(item => {
+          const option = document.createElement('option');
+          option.value = String(item.id);
+          option.textContent = `${item.tag} · ${item.prerelease ? '预发布' : item === latestStable ? '最新正式版' : '正式版'}`;
+          option.title = item.name || item.tag;
+          select.appendChild(option);
+        });
+        if (!items.length) {
+          const option = document.createElement('option');
+          option.value = '';
+          option.textContent = '没有可下载的汉化包';
+          select.appendChild(option);
+        } else {
+          select.value = !reset && items.some(item => String(item.id) === previousSelection)
+            ? previousSelection : String((latestStable || items[0]).id);
+        }
+        releaseElement('release-list-status').textContent = `已加载 ${items.length} 个带汉化包的版本${more ? '，可加载更多旧版本。' : '。'}`;
+        renderSelectedRelease();
+      } catch (error) {
+        releaseElement('release-list-status').textContent = releaseItems.length ? '保留已加载的版本，可重新刷新。' : '版本列表未加载。';
+        releaseError('release-list-error', error.message);
+      } finally {
+        releaseListLoading = false;
+        updateReleaseControls();
       }
-      return 0;
+    }
+
+    function openReleasePanel() {
+      loadReleases(true);
+      readReleaseDownload();
+      loadReleaseCache();
+    }
+
+    function renderReleaseDownload(state) {
+      releaseDownload = state || { status: 'idle' };
+      const status = releaseDownload.status;
+      releaseElement('release-progress').hidden = status === 'idle';
+      const received = formatReleaseBytes(releaseDownload.receivedBytes || 0);
+      const total = Number(releaseDownload.totalBytes);
+      const rawPercent = releaseDownload.percent == null ? total > 0 ? 100 * Number(releaseDownload.receivedBytes || 0) / total : NaN : Number(releaseDownload.percent);
+      const percent = Math.max(0, Math.min(100, rawPercent));
+      const progress = releaseElement('release-download-progress');
+      progress.hidden = status !== 'downloading';
+      if (status === 'downloading' && !Number.isFinite(percent)) progress.removeAttribute('value');
+      else progress.value = status === 'completed' ? 100 : Number.isFinite(percent) ? percent : 0;
+      const tag = releaseDownload.tag || '';
+      releaseElement('release-download-status').textContent = status === 'completed'
+        ? `${tag} 下载完成 · ${releaseDownload.filename || 'app.asar.ready'} · ${received}`
+        : status === 'failed' ? `${tag} 下载失败`
+        : `${tag} 正在下载 · ${received}${total > 0 ? ` / ${formatReleaseBytes(total)}` : ''}${Number.isFinite(percent) ? ` · ${percent.toFixed(1)}%` : ''}`;
+      releaseError('release-download-error', status === 'failed' ? releaseDownload.error || '下载未完成，请重试。' : '');
+      const complete = status === 'completed';
+      const verification = releaseElement('release-download-verification');
+      verification.hidden = !complete;
+      verification.classList.toggle('success', complete && Boolean(releaseDownload.verified));
+      verification.textContent = releaseDownload.verified ? 'SHA-256 校验通过，文件已缓存。安装状态单独显示。' : '文件已缓存；未验证发布校验值。';
+      const hash = releaseElement('release-download-hash');
+      hash.hidden = !complete || !releaseDownload.sha256;
+      hash.textContent = releaseDownload.sha256 ? `SHA-256：${releaseDownload.sha256}` : '';
+      releaseElement('release-download-path-label').hidden = !complete || !releaseDownload.path;
+      releaseElement('release-download-path').textContent = releaseDownload.path || '';
+      releaseElement('btn-release-progress-refresh').hidden = true;
+      releaseElement('btn-release-install-downloaded').hidden = !complete || !releaseDownload.cacheId;
+      if (status === 'failed') pendingReleaseInstall = null;
+      updateReleaseControls();
+    }
+
+    function scheduleReleaseDownloadPoll(delay = 1000) {
+      if (releaseDownloadTimer) clearTimeout(releaseDownloadTimer);
+      releaseDownloadTimer = releaseDownload.status === 'downloading' ? setTimeout(readReleaseDownload, delay) : null;
+    }
+
+    async function readReleaseDownload() {
+      if (releaseDownloadPolling) return;
+      releaseDownloadPolling = true;
+      const requestRevision = releaseDownloadRevision;
+      if (releaseDownloadTimer) clearTimeout(releaseDownloadTimer);
+      releaseDownloadTimer = null;
+      try {
+        const data = await releaseRequest('/api/release-download');
+        if (requestRevision !== releaseDownloadRevision) return;
+        const wasDownloading = releaseDownload.status === 'downloading';
+        renderReleaseDownload(data.download);
+        if (wasDownloading && releaseDownload.status === 'completed') {
+          showToast(`${releaseDownload.tag} 下载完成，文件已缓存。`, 'success');
+          loadReleaseCache();
+        }
+        if (wasDownloading && releaseDownload.status === 'failed') showToast(`下载失败：${releaseDownload.error || '请查看下载面板'}`, 'error');
+        maybeInstallPendingRelease();
+      } catch (error) {
+        if (requestRevision !== releaseDownloadRevision) return;
+        releaseElement('release-progress').hidden = false;
+        releaseError('release-download-error', `无法读取下载状态：${error.message} 下载可能仍在后台继续。`);
+        releaseElement('btn-release-progress-refresh').hidden = false;
+      } finally {
+        releaseDownloadPolling = false;
+        scheduleReleaseDownloadPoll(1500);
+      }
+    }
+
+    async function downloadSelectedRelease(installAfterDownload = false) {
+      const item = selectedRelease();
+      if (!item || releaseWriteBusy()) return;
+      pendingReleaseInstall = installAfterDownload ? { releaseId: item.id, tag: item.tag } : null;
+      releaseDownloadStarting = true;
+      releaseDownloadRevision++;
+      releaseError('release-download-error');
+      updateReleaseControls();
+      try {
+        const data = await releaseRequest('/api/release-download', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ releaseId: item.id })
+        });
+        renderReleaseDownload(data.download);
+        if (releaseDownload.status === 'completed') {
+          showToast(`${item.tag} 已下载并保存在缓存中。`, 'success');
+          loadReleaseCache();
+        }
+        scheduleReleaseDownloadPoll();
+      } catch (error) {
+        pendingReleaseInstall = null;
+        releaseElement('release-progress').hidden = false;
+        releaseError('release-download-error', error.message);
+        releaseElement('btn-release-progress-refresh').hidden = false;
+      } finally {
+        releaseDownloadStarting = false;
+        updateReleaseControls();
+        maybeInstallPendingRelease();
+      }
+    }
+
+    async function maybeInstallPendingRelease() {
+      if (!pendingReleaseInstall || releaseDownloadStarting || releaseInstallBusy || releaseDownload.status !== 'completed') return;
+      const intent = pendingReleaseInstall;
+      pendingReleaseInstall = null;
+      updateReleaseControls();
+      // The intent is memory-only and consumed before awaiting the confirmation.
+      // Reloads, ordinary polls and older cached downloads cannot install anything.
+      if (String(releaseDownload.releaseId) !== String(intent.releaseId)) return;
+      await installReleaseCache({ cacheId: releaseDownload.cacheId, tag: releaseDownload.tag || intent.tag, path: releaseDownload.path });
+    }
+
+    function installDownloadedRelease() {
+      if (releaseDownload.status !== 'completed') return;
+      installReleaseCache({ cacheId: releaseDownload.cacheId, tag: releaseDownload.tag, path: releaseDownload.path });
+    }
+
+    function setReleaseInstallBusy(busy) {
+      releaseInstallBusy = busy;
+      const controls = ['btn-localize', 'btn-restore', 'btn-launch', 'btn-kill', 'btn-cache', 'tgt-win-owner', 'chk-default-path', 'input-custom-path'];
+      controls.forEach(id => {
+        const control = releaseElement(id);
+        if (busy) {
+          releaseInstallControlStates.set(id, control.disabled);
+          control.disabled = true;
+        } else {
+          control.disabled = releaseInstallControlStates.get(id) || false;
+        }
+      });
+      if (!busy) releaseInstallControlStates.clear();
+      updateReleaseControls();
+    }
+
+    async function installReleaseCache(file) {
+      if (releaseWriteBusy()) return;
+      if (!file.cacheId || !file.path) {
+        showToast('没有可安装的下载缓存，请重新下载。', 'error');
+        return;
+      }
+      const params = getParams();
+      if (!params.useDefault && !params.customPath) {
+        openSettings();
+        showToast('请先填写要安装到的自定义路径。', 'warning');
+        return;
+      }
+      if (document.querySelector('.actions-panel .is-loading')) {
+        showToast('当前有其他操作正在进行，请完成后再安装所选版本。', 'warning');
+        return;
+      }
+      setReleaseInstallBusy(true);
+      releaseElement('release-install-result').hidden = false;
+      releaseElement('release-install-path-label').hidden = true;
+      releaseElement('release-install-backup-label').hidden = true;
+      releaseElement('release-install-status').textContent = `正在确认 ${file.tag} 的安装目标…`;
+      releaseError('release-install-error');
+      let confirmed = false;
+      try {
+        const target = await releaseRequest(`/api/status?${new URLSearchParams(params)}`, {}, false);
+        if (!target.asarPath) throw new Error('无法读取安装目标，请检查下方路径配置。');
+        const configuration = params.useDefault ? `默认安装路径（账户：${params.username || target.defaultUsername || '当前账户'}）` : `自定义目录：${params.customPath}`;
+        confirmed = await showConfirm(
+          '安装所选汉化版本',
+          `汉化包版本：${file.tag}\n安装目标：${target.asarPath}\n目标配置：${configuration}\n\n请先保存所有未保存的编辑。确认后，如客户端正在运行，将强制结束所有 Antigravity 实例及后台语言服务，再备份并安装。未保存的内容可能丢失。\n\n相同文件直接跳过，不会结束进程或新增备份；相同内容的备份会复用。跨版本安装可能不兼容。`,
+          target.isRunning ? '结束进程并安装' : '确认安装'
+        );
+        if (!confirmed) {
+          releaseElement('release-install-status').textContent = '已取消安装，下载缓存保留。';
+          return;
+        }
+        releaseElement('release-install-status').textContent = `正在检查进程并安装 ${file.tag}，请稍候…`;
+        const data = await releaseRequest('/api/release-install', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cacheId: file.cacheId, ...params, forceStop: true })
+        });
+        if (!data.installed || !data.installed.asarPath) throw new Error('服务未返回安装结果，请检查日志与目标文件。');
+        lastReleaseInstallation = { cacheId: file.cacheId, ...data.installed };
+        const installationSkipped = data.installed.skipped === true;
+        releaseElement('release-install-status').textContent = installationSkipped
+          ? `${data.installed.tag || file.tag} 已安装相同文件，已跳过重复安装和备份。`
+          : `${data.installed.tag || file.tag} 安装成功。${data.installed.backupReused ? '已复用相同内容的备份。' : '已保存安装前备份。'}下载缓存继续保留。`;
+        releaseElement('release-install-path-label').hidden = false;
+        releaseElement('release-install-path').textContent = data.installed.asarPath;
+        releaseElement('release-install-backup-label').hidden = !data.installed.backupPath;
+        releaseElement('release-install-backup').textContent = data.installed.backupPath || '';
+        showToast(installationSkipped ? '已安装相同文件，无需重复安装或备份。' : `${data.installed.tag || file.tag} 汉化包已安装。`, 'success');
+        loadReleaseCache();
+      } catch (error) {
+        releaseElement('release-install-status').textContent = confirmed ? '安装未完成，下载缓存保留，可稍后重试。' : '安装准备未完成，下载缓存保留。';
+        releaseError('release-install-error', error.message);
+        showToast(`安装未完成：${error.message}`, 'error');
+      } finally {
+        setReleaseInstallBusy(false);
+        updateStatus();
+      }
+    }
+
+    async function loadReleaseCache() {
+      if (releaseCacheLoading || deletingReleaseCaches.size) { releaseCacheRefreshPending = true; return; }
+      releaseCacheRefreshPending = false;
+      releaseCacheLoading = true;
+      releaseElement('btn-release-cache-refresh').disabled = true;
+      releaseElement('release-cache-status').textContent = '正在读取已下载版本…';
+      releaseError('release-cache-error');
+      try {
+        const data = await releaseRequest('/api/release-cache');
+        if (!Array.isArray(data.files)) throw new Error('服务返回的缓存列表格式不正确。');
+        const list = releaseElement('release-cache-list');
+        list.replaceChildren();
+        data.files.forEach(file => {
+          const row = document.createElement('div');
+          row.className = 'release-cache-item';
+          const heading = document.createElement('div');
+          heading.className = 'release-heading';
+          const title = document.createElement('div');
+          title.className = 'release-cache-title';
+          const version = document.createElement('strong');
+          version.textContent = file.tag || file.filename;
+          const badge = document.createElement('span');
+          badge.className = 'release-cache-badge';
+          badge.textContent = file.modified ? '缓存异常' : lastReleaseInstallation && lastReleaseInstallation.cacheId === file.cacheId ? '已缓存 · 本次已安装' : '已缓存';
+          title.append(version, badge);
+          const remove = document.createElement('button');
+          remove.className = 'sec-btn release-cache-write';
+          remove.textContent = '删除';
+          remove.setAttribute('aria-label', `删除 ${file.tag} 的下载缓存`);
+          const install = document.createElement('button');
+          install.className = 'sec-btn release-cache-write';
+          install.textContent = '安装';
+          install.setAttribute('aria-label', `安装 ${file.tag}`);
+          install.dataset.invalid = String(Boolean(file.modified));
+          install.addEventListener('click', () => installReleaseCache(file));
+          const actions = document.createElement('div');
+          actions.className = 'release-toolbar-buttons';
+          actions.append(install, remove);
+          heading.append(title, actions);
+          const metadata = document.createElement('p');
+          metadata.className = 'release-meta';
+          metadata.textContent = `${formatReleaseBytes(file.size)} · ${new Date(file.downloadedAt).toLocaleDateString('zh-CN')} 下载${file.modified ? ' · 文件大小已变化，可删除后重新下载。' : ''}`;
+          const path = document.createElement('code');
+          path.className = 'release-path';
+          path.textContent = file.path;
+          const fileDetails = document.createElement('details');
+          fileDetails.className = 'technical-details';
+          const fileSummary = document.createElement('summary');
+          fileSummary.textContent = '文件位置';
+          fileDetails.append(fileSummary, path);
+          const errorText = document.createElement('p');
+          errorText.className = 'release-error';
+          errorText.setAttribute('role', 'alert');
+          errorText.hidden = true;
+          remove.addEventListener('click', () => deleteReleaseCache(file, remove, errorText));
+          row.append(heading, metadata, fileDetails, errorText);
+          list.appendChild(row);
+        });
+        releaseElement('release-cache-status').textContent = data.files.length ? `已缓存 ${data.files.length} 个版本。` : '还没有已下载的汉化包。';
+        releaseElement('release-cache-count').textContent = `${data.files.length} 个`;
+      } catch (error) {
+        releaseElement('release-cache-status').textContent = '缓存列表未刷新。';
+        releaseError('release-cache-error', error.message);
+        releaseElement('release-cache-count').textContent = '读取失败';
+      } finally {
+        releaseCacheLoading = false;
+        updateReleaseControls();
+        if (releaseCacheRefreshPending) loadReleaseCache();
+      }
+    }
+
+    async function deleteReleaseCache(file, button, errorText) {
+      if (releaseCacheLoading || releaseWriteBusy()) return;
+      deletingReleaseCaches.add(file.cacheId);
+      button.disabled = true;
+      releaseElement('btn-release-cache-refresh').disabled = true;
+      updateReleaseControls();
+      let removed = false;
+      try {
+        const confirmed = await showConfirm('删除已下载版本', `是否删除 ${file.tag} 的下载缓存？\n${file.path}\n\n此操作仅删除下载文件，不会更改已安装的 Antigravity。`);
+        if (!confirmed) return;
+        button.textContent = '正在删除…';
+        errorText.hidden = true;
+        const result = await releaseRequest('/api/release-cache', {
+          method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cacheId: file.cacheId })
+        });
+        removed = true;
+        showToast(`已删除 ${file.tag} 的下载缓存。${result.warning || ''}`, result.warning ? 'info' : 'success');
+      } catch (error) {
+        errorText.textContent = `删除失败：${error.message}`;
+        errorText.hidden = false;
+      } finally {
+        deletingReleaseCaches.delete(file.cacheId);
+        button.disabled = false;
+        button.textContent = '删除';
+        releaseElement('btn-release-cache-refresh').disabled = deletingReleaseCaches.size > 0;
+        updateReleaseControls();
+        if (removed) {
+          if (releaseDownload.path === file.path) {
+            releaseDownloadRevision++;
+            renderReleaseDownload({ status: 'idle' });
+          }
+          loadReleaseCache();
+        } else if (releaseCacheRefreshPending) loadReleaseCache();
+      }
     }
 
     async function checkReleaseUpdate(isSilent = false) {
+      if (!isSilent) { openReleasePanel(); return; }
       if (isCheckingRelease) return;
       isCheckingRelease = true;
-
-      const btn = document.getElementById('btn-check-release');
-      const btnText = document.getElementById('check-release-text');
       const dot = document.getElementById('repo-status-dot');
       const versionDisplay = document.getElementById('version-display');
-
-      if (!isSilent && btn) {
-        btn.classList.add('rotating');
-        if (btnText) btnText.textContent = '正在检测...';
-        appendLog('[系统] 正在查询 GitHub 官方仓库最新词库与补丁 Release...');
-      }
-
       try {
-        let releaseData = null;
-        // 优先通过本地后端代理访问，避开客户端跨域与网络问题
-        try {
-          const res = await fetch(`${API_BASE}/api/check-release`);
-          if (res.ok) {
-            const json = await res.json();
-            if (json.success) releaseData = json;
-          }
-        } catch (e) {
-          // 本地服务若未连接，降级直接由前端 fetch GitHub API
-        }
-
-        if (!releaseData) {
-          const ghRes = await fetch('https://api.github.com/repos/liominsb/Antigravity-Chinese-Localization/releases/latest');
-          if (ghRes.ok) {
-            const raw = await ghRes.json();
-            const latestTag = (raw.tag_name || '').replace(/^[vV]/, '');
-            const currentVer = '2.23.1';
-            const hasUpdate = compareVersions(latestTag, currentVer) > 0;
-            releaseData = {
-              success: true,
-              currentVersion: currentVer,
-              latestVersion: latestTag,
-              hasUpdate,
-              releaseName: raw.name || latestTag,
-              releaseUrl: raw.html_url,
-              publishedAt: raw.published_at,
-              body: raw.body || ''
-            };
-          }
-        }
-
-        if (releaseData && releaseData.success) {
-          if (releaseData.hasUpdate) {
-            if (dot) dot.style.backgroundColor = 'var(--accent)';
-            if (versionDisplay) versionDisplay.textContent = `发现新版 v${releaseData.latestVersion} (当前 v${releaseData.currentVersion})`;
-            appendLog(`[系统] 发现最新 Release 词库: v${releaseData.latestVersion} (当前本地: v${releaseData.currentVersion})，发布时间: ${new Date(releaseData.publishedAt).toLocaleDateString()}`);
-            
-            showToast(`发现最新词库补丁 Release v${releaseData.latestVersion}！`, 'info', 5000);
-
-            if (!isSilent) {
-              const confirmOpen = await showConfirm(
-                `发现新版本词库: v${releaseData.latestVersion}`,
-                `本地补丁版本: v${releaseData.currentVersion}\n最新发布版本: v${releaseData.latestVersion} (${releaseData.releaseName})\n\n是否立即在浏览器中打开 GitHub Release 页面查看详情与下载？`
-              );
-              if (confirmOpen && releaseData.releaseUrl) {
-                window.open(releaseData.releaseUrl, '_blank');
-              }
-            }
-          } else {
-            if (dot) dot.style.backgroundColor = 'var(--success)';
-            if (versionDisplay) versionDisplay.textContent = `词库已是最新 v${releaseData.currentVersion}`;
-            appendLog(`[系统] 词库版本已是最新 (v${releaseData.currentVersion})，无需更新。`);
-            if (!isSilent) {
-              showToast(`当前词库已是最新版本 (v${releaseData.currentVersion})`, 'success');
-            }
-          }
+        const data = await releaseRequest('/api/check-release');
+        if (data.currentVersion) setLocalScriptVersion(data.currentVersion);
+        if (data.hasUpdate) {
+          if (dot) dot.style.backgroundColor = 'var(--accent)';
+          if (versionDisplay) versionDisplay.textContent = `发现新版 v${data.latestVersion}（控制中心 v${localScriptVersion}）`;
+          showToast(`发现新版本 v${data.latestVersion}，可在版本列表中选择安装。`, 'info', 5000);
         } else {
-          throw new Error(releaseData ? releaseData.error : '无法获取 Release 信息');
+          if (dot) dot.style.backgroundColor = 'var(--success)';
+          if (versionDisplay && localScriptVersion) versionDisplay.textContent = `控制中心 v${localScriptVersion}`;
         }
       } catch (err) {
         appendLog(`[系统] 检查词库更新未完成: ${err.message}`);
-        if (!isSilent) {
-          showToast(`检查更新失败: ${err.message}`, 'error');
-        }
       } finally {
         isCheckingRelease = false;
-        if (btn) btn.classList.remove('rotating');
-        if (btnText) btnText.textContent = '检测词库更新';
       }
     }
 
@@ -1639,6 +2306,9 @@
     togglePathInput();
     updateStatus();
     startPolling(2500);
+    loadReleases(true);
+    readReleaseDownload();
+    loadReleaseCache();
 
     // 静默检测一次 GitHub 词库版本状态
     setTimeout(() => checkReleaseUpdate(true), 1200);

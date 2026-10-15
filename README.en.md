@@ -84,6 +84,16 @@ No Node.js or build tools required:
 2. Double-click **`双击运行汉化.bat`**;
 3. The dashboard opens automatically (`http://localhost:3388`), auto-detects program status, and click "一键汉化" (One-Click Localize).
 
+The dashboard shows the installed `app.asar` version and lets you select the latest stable, historical, or prerelease localization package from GitHub Releases. Use "仅下载" (Download Only) to cache a package, or "下载并安装" (Download and Install) to verify its SHA-256 and confirm installation. Release notes, downloaded packages, and settings/maintenance tools are collapsed by default.
+
+Downloaded packages remain available until you explicitly delete them. Installation asks you to save your work before confirming: running Antigravity instances and background language services will be stopped, and their exit is verified before replacing files. Forced exit can lose unsaved edits. If stopping fails, installation stops without replacing the archive. Backups are deduplicated by SHA-256 and retained; replacement failures attempt to restore the verified backup. An identical installed file skips process termination, installation, and backup creation. The original local-script localization and restore tools remain under settings/maintenance.
+
+The version-management tests require Node.js 18 or later; this does not change the dashboard's runtime requirement:
+
+```bash
+node --test tests/release-manager.test.js tests/package-installer.test.js tests/process-check.test.js tests/asar-version.test.js
+```
+
 #### 2. Headless CLI Deployment
 In your terminal, navigate to the folder and run:
 ```bash
