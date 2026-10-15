@@ -21,10 +21,26 @@ function within(parent, child) {
   return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative));
 }
 
+async function hasSymlinkOrJunction(targetPath) {
+  let curr = path.resolve(targetPath);
+  while (true) {
+    try {
+      const stat = await fsp.lstat(curr);
+      if (stat.isSymbolicLink()) return true;
+    } catch (err) {
+      if (err.code === 'ENOENT') return false;
+      throw err;
+    }
+    const parent = path.dirname(curr);
+    if (parent === curr) break;
+    curr = parent;
+  }
+  return false;
+}
+
 async function directoryWithoutLinks(directory) {
   const stat = await fsp.lstat(directory);
-  if (!stat.isDirectory() || stat.isSymbolicLink() ||
-      comparable(await fsp.realpath(directory)) !== comparable(directory)) {
+  if (!stat.isDirectory() || await hasSymlinkOrJunction(directory)) {
     throw failure('目标安装目录不允许使用符号链接或目录联接', 400);
   }
 }

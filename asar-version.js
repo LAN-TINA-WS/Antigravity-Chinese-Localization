@@ -28,13 +28,29 @@ function packageVersion(bytes) {
   return metadata.version;
 }
 
+function hasSymlinkOrJunctionSync(targetPath) {
+  let curr = path.resolve(targetPath);
+  while (true) {
+    try {
+      const stat = fs.lstatSync(curr);
+      if (stat.isSymbolicLink()) return true;
+    } catch (err) {
+      if (err.code === 'ENOENT') return false;
+      throw err;
+    }
+    const parent = path.dirname(curr);
+    if (parent === curr) break;
+    curr = parent;
+  }
+  return false;
+}
+
 function unpackedPackage(asarPath, size) {
   // Never follow an archive entry's link/path. The only external metadata path
   // accepted is the standard, fixed <archive>.unpacked/package.json file.
   const directory = `${asarPath}.unpacked`;
   const stat = fs.lstatSync(directory);
-  if (!stat.isDirectory() || stat.isSymbolicLink() ||
-      comparable(fs.realpathSync(directory)) !== comparable(directory)) return null;
+  if (!stat.isDirectory() || hasSymlinkOrJunctionSync(directory)) return null;
   const packagePath = path.join(directory, 'package.json');
   const file = fs.lstatSync(packagePath);
   if (!file.isFile() || file.isSymbolicLink() || file.size !== size) return null;

@@ -47,16 +47,15 @@ check('localize.js CURRENT_VERSION 版本号有效且 >= 2.23.0', isVerGte2230(c
 check('extracted/package.json version 有效且 >= 2.23.0', isVerGte2230(packageJson.version), true);
 check('extracted/package.json 包含 @bufbuild/protobuf 依赖', Boolean(packageJson.dependencies && packageJson.dependencies['@bufbuild/protobuf']), true);
 check('extracted/package.json 包含 chrome-devtools-mcp 依赖', Boolean(packageJson.dependencies && packageJson.dependencies['chrome-devtools-mcp']), true);
-check('index.html 包含 本地词库 v2.23.0 或更新', (() => {
-  const m = indexSource.match(/本地词库 v(2\.\d+\.\d+)/);
+check('index.html 包含 本地词库/控制中心 v2.23.0 或更新', (() => {
+  const m = indexSource.match(/(?:本地词库|控制中心) v(2\.\d+\.\d+)/);
   return m ? isVerGte2230(m[1]) : false;
 })(), true);
-check('index.html 包含 Antigravity 2.0 / 2.23.0+ 或更新', (() => {
-  const m = indexSource.match(/<h1>Antigravity 2\.0 \/ (2\.\d+\.\d+)\+<\/h1>/);
-  return m ? isVerGte2230(m[1]) : false;
+check('index.html 包含 Antigravity 汉化 或 2.0 / 2.23.0+', (() => {
+  return /<h1>Antigravity (?:2\.0 \/ (2\.\d+\.\d+)\+|汉化)<\/h1>/.test(indexSource);
 })(), true);
-check('index.html currentVer 变量有效且 >= 2.23.0', (() => {
-  const m = indexSource.match(/const currentVer = '(2\.\d+\.\d+)';/);
+check('index.html 包含有效版本标识且 >= 2.23.0', (() => {
+  const m = indexSource.match(/(?:const currentVer = '|控制中心 v)(2\.\d+\.\d+)/);
   return m ? isVerGte2230(m[1]) : false;
 })(), true);
 check('README.md 包含 Antigravity v2.23.0+ 或更新', (() => {

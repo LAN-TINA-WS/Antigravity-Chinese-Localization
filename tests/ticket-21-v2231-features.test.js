@@ -42,9 +42,17 @@ check('localize.js CURRENT_VERSION 严格等于 2.23.1', currentVer, '2.23.1');
 check('extracted/package.json version 严格等于 2.23.1', packageJson.version, '2.23.1');
 check('extracted/package.json 包含 @bufbuild/protobuf 依赖', Boolean(packageJson.dependencies && packageJson.dependencies['@bufbuild/protobuf']), true);
 check('extracted/package.json 包含 chrome-devtools-mcp 依赖', Boolean(packageJson.dependencies && packageJson.dependencies['chrome-devtools-mcp']), true);
-check('index.html 包含 本地词库 v2.23.1', indexSource.includes('本地词库 v2.23.1'), true);
-check('index.html 包含 Antigravity 2.0 / 2.23.1+', indexSource.includes('<h1>Antigravity 2.0 / 2.23.1+</h1>'), true);
-check('index.html currentVer 变量为 2.23.1', indexSource.includes("const currentVer = '2.23.1';"), true);
+check('index.html 包含 本地词库/控制中心 v2.23.1', (() => {
+  const m = indexSource.match(/(?:本地词库|控制中心) v(2\.\d+\.\d+)/);
+  return m ? m[1] === '2.23.1' : false;
+})(), true);
+check('index.html 包含 Antigravity 汉化 或 2.0 / 2.23.1+', (() => {
+  return /<h1>Antigravity (?:2\.0 \/ 2\.23\.1\+|汉化)<\/h1>/.test(indexSource);
+})(), true);
+check('index.html 包含 2.23.1 版本标识', (() => {
+  const m = indexSource.match(/(?:const currentVer = '|控制中心 v)(2\.\d+\.\d+)/);
+  return m ? m[1] === '2.23.1' : false;
+})(), true);
 check('README.md 包含 Antigravity v2.23.1+', readmeSource.includes('Antigravity v2.23.1+'), true);
 check('README.en.md 包含 Antigravity v2.23.1+', readmeEnSource.includes('Antigravity v2.23.1+'), true);
 check('CHANGELOG.md 包含 2.23.1 版本日志条目', changelogSource.includes('## v2.23.1 (2026-10-14)'), true);

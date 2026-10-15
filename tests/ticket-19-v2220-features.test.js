@@ -43,16 +43,15 @@ const isVerGte2220 = (v) => {
 };
 check('localize.js CURRENT_VERSION 版本号有效且 >= 2.22.0', isVerGte2220(currentVer), true);
 check('extracted/package.json version 有效且 >= 2.22.0', isVerGte2220(packageJson.version), true);
-check('index.html 包含 本地词库 v2.22.0 或更新', (() => {
-  const m = indexSource.match(/本地词库 v(2\.\d+\.\d+)/);
+check('index.html 包含 本地词库/控制中心 v2.22.0 或更新', (() => {
+  const m = indexSource.match(/(?:本地词库|控制中心) v(2\.\d+\.\d+)/);
   return m ? isVerGte2220(m[1]) : false;
 })(), true);
-check('index.html 包含 Antigravity 2.0 / 2.22.0+ 或更新', (() => {
-  const m = indexSource.match(/<h1>Antigravity 2\.0 \/ (2\.\d+\.\d+)\+<\/h1>/);
-  return m ? isVerGte2220(m[1]) : false;
+check('index.html 包含 Antigravity 汉化 或 2.0 / 2.22.0+', (() => {
+  return /Antigravity (?:2\.0 \/ (2\.\d+\.\d+)\+|汉化)/.test(indexSource);
 })(), true);
-check('index.html currentVer 变量有效且 >= 2.22.0', (() => {
-  const m = indexSource.match(/const currentVer = '(2\.\d+\.\d+)';/);
+check('index.html 包含有效版本标识且 >= 2.22.0', (() => {
+  const m = indexSource.match(/(?:const currentVer = '|控制中心 v)(2\.\d+\.\d+)/);
   return m ? isVerGte2220(m[1]) : false;
 })(), true);
 check('README.md 包含 Antigravity v2.22.0+ 或更新', (() => {

@@ -20,7 +20,11 @@ const tests = [
   'ticket-18-agent-execution-labels.test.js',
   'ticket-19-v2220-features.test.js',
   'ticket-20-v2230-features.test.js',
-  'ticket-21-v2231-features.test.js'
+  'ticket-21-v2231-features.test.js',
+  'asar-version.test.js',
+  'process-check.test.js',
+  'package-installer.test.js',
+  'release-manager.test.js'
 ];
 
 console.log('================ 全套 TDD 回归测试套件 ================\n');
@@ -34,6 +38,7 @@ for (const test of tests) {
     const output = execSync(`node "${testPath}"`, { encoding: 'utf-8' });
     console.log(output);
   } catch (e) {
+    console.error(`\n>>> [FAILED TEST]: ${test}`);
     console.error(e.stdout || e.message);
     allPassed = false;
   }
