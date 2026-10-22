@@ -138,6 +138,15 @@ check('执行模式说明: Every command requires approval.', translate('Every c
 check('执行模式说明: Ask before sensitive operations.', translate('Ask before sensitive operations.'), '在执行敏感操作前询问。');
 check('执行模式说明: Run all commands without restrictions.', translate('Run all commands without restrictions.'), '无限制运行所有命令。');
 
+// 系统通知与声音偏好设置汉化校验
+check('系统通知设置 - Enable Notifications for Agent', translate('Enable Notifications for Agent'), '启用智能体通知');
+check('系统通知设置 - Show system notifications when your action is needed or the agent finishes.', translate('Show system notifications when your action is needed or the agent finishes.'), '当需要您的操作或智能体完成任务时显示系统通知。');
+check('声音设置 - Sound', translate('Sound'), '声音');
+check('声音设置 - Enable Sounds for Agent', translate('Enable Sounds for Agent'), '启用智能体提示音');
+check('声音设置 - Play a sound when your action is needed or the agent finishes.', translate('Play a sound when your action is needed or the agent finishes.'), '当需要您的操作或智能体完成任务时播放提示音。');
+check('声音设置 - Volume', translate('Volume'), '音量');
+check('声音设置 - Set the volume of agent sounds.', translate('Set the volume of agent sounds.'), '设置智能体提示音的音量。');
+
 console.log('\n======================================================');
 console.log(`Ticket-24 测试结果: ${passed}/${total} 断言全部通过！`);
 console.log('======================================================\n');
