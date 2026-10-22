@@ -407,9 +407,6 @@ electron_1.app.on('window-all-closed', async () => {
         // Triggers 'before-quit' to run graceful cleanup without confirmation.
         electron_1.app.quit();
     }
-    else {
-        electron_1.app.dock?.hide();
-    }
 });
 /** Shuts down the host bridge server, if it was started. */
 async function closeHostBridgeServer() {

@@ -36,6 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vitest_1 = require("vitest");
 const helpers_1 = require("./test/helpers");
 const constants_1 = require("./constants");
+const settingsService_1 = require("./services/settingsService");
 // Use the shared auto-mocks from __mocks__/
 vitest_1.vi.mock('electron');
 vitest_1.vi.mock('fs', async (importOriginal) => {
@@ -104,6 +105,20 @@ vitest_1.vi.mock('./tray', () => ({
 vitest_1.vi.mock('./ideInstall', () => ({
     maybeShowIdeInstallWizard: vitest_1.vi.fn().mockResolvedValue('skipped'),
 }));
+// The real default for RUN_IN_BACKGROUND depends on the platform, so tests
+// control getSetting() explicitly instead of reading app storage.
+const { mockGetSetting } = vitest_1.vi.hoisted(() => ({
+    mockGetSetting: vitest_1.vi.fn().mockResolvedValue(true),
+}));
+vitest_1.vi.mock('./services/settingsService', async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        SettingsService: vitest_1.vi.fn().mockImplementation(function () {
+            return { getSetting: mockGetSetting, onSettingChanged: vitest_1.vi.fn() };
+        }),
+    };
+});
 (0, vitest_1.describe)('main', () => {
     (0, vitest_1.beforeEach)(async () => {
         vitest_1.vi.clearAllMocks();
@@ -287,5 +302,41 @@ vitest_1.vi.mock('./ideInstall', () => ({
         onClick();
         (0, vitest_1.expect)(showOrCreateWindow).toHaveBeenCalledWith(ACTUAL_PORT);
         (0, vitest_1.expect)(app.focus).toHaveBeenCalledWith({ steal: true });
+    });
+    (0, vitest_1.describe)('window-all-closed', () => {
+        /** Starts the app successfully and returns its window-all-closed handler. */
+        async function startAndGetWindowAllClosedHandler() {
+            const { existsSync } = await Promise.resolve().then(() => __importStar(require('fs')));
+            const { startAndMonitorLanguageServer } = await Promise.resolve().then(() => __importStar(require('./languageServer')));
+            const { app } = await Promise.resolve().then(() => __importStar(require('electron')));
+            vitest_1.vi.mocked(existsSync).mockReturnValue(true);
+            vitest_1.vi.mocked(startAndMonitorLanguageServer).mockResolvedValue({
+                port: 49152,
+                process: { pid: 1234 },
+                exitPromise: new Promise(() => { }),
+            });
+            await Promise.resolve().then(() => __importStar(require('./main')));
+            const whenReadyCall = vitest_1.vi.mocked(app.whenReady).mock.results[0].value;
+            await whenReadyCall.cb();
+            const handler = vitest_1.vi.mocked(app.on).mock.calls.find(([event]) => event === 'window-all-closed')?.[1];
+            (0, vitest_1.expect)(handler).toBeDefined();
+            return { app, handler: handler };
+        }
+        (0, vitest_1.it)('keeps running and stays in the Dock when "Keep in Menu Bar" is on', async () => {
+            mockGetSetting.mockResolvedValue(true);
+            const { app, handler } = await startAndGetWindowAllClosedHandler();
+            await handler();
+            (0, vitest_1.expect)(mockGetSetting).toHaveBeenCalledWith(settingsService_1.SettingKey.RUN_IN_BACKGROUND);
+            (0, vitest_1.expect)(app.quit).not.toHaveBeenCalled();
+            // Hiding the Dock icon would make the still-running app look quit.
+            (0, vitest_1.expect)(app.dock?.hide).not.toHaveBeenCalled();
+        });
+        (0, vitest_1.it)('quits when "Keep in Menu Bar" is off', async () => {
+            mockGetSetting.mockResolvedValue(false);
+            const { app, handler } = await startAndGetWindowAllClosedHandler();
+            await handler();
+            (0, vitest_1.expect)(app.quit).toHaveBeenCalledTimes(1);
+            (0, vitest_1.expect)(app.dock?.hide).not.toHaveBeenCalled();
+        });
     });
 });

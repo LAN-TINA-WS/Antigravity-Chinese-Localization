@@ -33,6 +33,7 @@ exports.app = {
     },
     dock: {
         show: vitest_1.vi.fn(),
+        hide: vitest_1.vi.fn(),
         setIcon: vitest_1.vi.fn(),
         setMenu: vitest_1.vi.fn(),
     },

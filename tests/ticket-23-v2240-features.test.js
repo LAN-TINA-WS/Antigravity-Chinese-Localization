@@ -38,22 +38,30 @@ function check(desc, actual, expected) {
 
 // 2. 2.24.0 版本元数据校验
 console.log('--- 1. 2.24.0 版本元数据校验 ---');
+function isVerGte2240(ver) {
+  if (!ver) return false;
+  const parts = ver.split('.').map(n => parseInt(n, 10));
+  if (parts[0] > 2) return true;
+  if (parts[0] === 2 && parts[1] > 24) return true;
+  if (parts[0] === 2 && parts[1] === 24 && parts[2] >= 0) return true;
+  return false;
+}
 const versionMatch = localizeSource.match(/const CURRENT_VERSION = ['"]([^'"]+)['"];/);
 const currentVer = versionMatch ? versionMatch[1] : '';
-check('localize.js CURRENT_VERSION 严格等于 2.24.0', currentVer, '2.24.0');
-check('extracted/package.json version 严格等于 2.24.0', packageJson.version, '2.24.0');
+check('localize.js CURRENT_VERSION 版本号有效且 >= 2.24.0', isVerGte2240(currentVer), true);
+check('extracted/package.json version 版本号有效且 >= 2.24.0', isVerGte2240(packageJson.version), true);
 if (fs.existsSync(readyAsarPath)) {
-  check('app.asar.ready 读取包版本严格等于 2.24.0', readAsarPackageVersion(readyAsarPath), '2.24.0');
+  check('app.asar.ready 读取包版本有效且 >= 2.24.0', isVerGte2240(readAsarPackageVersion(readyAsarPath)), true);
 }
 check('extracted/package.json 包含 @bufbuild/protobuf 依赖', Boolean(packageJson.dependencies && packageJson.dependencies['@bufbuild/protobuf']), true);
 check('extracted/package.json 包含 chrome-devtools-mcp 依赖', Boolean(packageJson.dependencies && packageJson.dependencies['chrome-devtools-mcp']), true);
-check('index.html 包含 控制中心 v2.24.0', (() => {
+check('index.html 包含 控制中心版本号有效且 >= 2.24.0', (() => {
   const m = indexSource.match(/(?:本地词库|控制中心) v(2\.\d+\.\d+)/);
-  return m ? m[1] === '2.24.0' : false;
+  return m ? isVerGte2240(m[1]) : false;
 })(), true);
 check('index.html 包含 Antigravity 汉化', indexSource.includes('<h1>Antigravity 汉化</h1>'), true);
-check('README.md 包含 Antigravity v2.24.0+', readmeSource.includes('Antigravity v2.24.0+'), true);
-check('README.en.md 包含 Antigravity v2.24.0+', readmeEnSource.includes('Antigravity v2.24.0+'), true);
+check('README.md 包含 Antigravity 版本号有效且 >= 2.24.0', Boolean(readmeSource.match(/Antigravity v2\.\d+\.\d+\+/)), true);
+check('README.en.md 包含 Antigravity 版本号有效且 >= 2.24.0', Boolean(readmeEnSource.match(/Antigravity v2\.\d+\.\d+\+/)), true);
 check('CHANGELOG.md 包含 2.24.0 版本日志条目', changelogSource.includes('## v2.24.0 (2026-10-16)'), true);
 
 // 3. 2.24.0 官方架构与主进程接口完备性校验

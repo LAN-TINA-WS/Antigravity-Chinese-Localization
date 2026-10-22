@@ -4,6 +4,16 @@ This document tracks all version releases, core architecture adaptations, and fe
 
 ---
 
+## v2.25.0 (2026-10-22)
+
+### 1. Comprehensive Adaptation to Antigravity v2.25.0 Architecture
+- **Official Version Seamless Upgrade**: Upgraded application definition and project metadata to `2.25.0`, following Google's official Oct 22 release.
+- **Upstream Native Modules & Core Files 100% Compatible**: Synchronized official 2.25.0 native modules and core dependency tree (including updated `@connectrpc/connect` modules), keeping full parity with the upstream baseline.
+- **New Packaged Archive app.asar.ready**: Injected deep Chinese localization into official 2.25.0 archives and repacked, perfectly conforming to the official packaging standards.
+- **Full TDD Regression Suite 100% Green**: Added Ticket-24 automated test suite; all regression pipelines (Ticket-03 to Ticket-24 and 4 architecture suites, 28 in total) pass 100% (ALL GREEN).
+
+---
+
 ## v2.24.0 (2026-10-16)
 
 ### 1. Comprehensive Adaptation to Antigravity v2.24.0 Architecture
