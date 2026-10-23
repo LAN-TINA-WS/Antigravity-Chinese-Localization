@@ -40,10 +40,28 @@ function check(desc, actual, expected) {
 console.log('--- 1. 2.25.0 版本元数据校验 ---');
 const versionMatch = localizeSource.match(/const CURRENT_VERSION = ['"]([^'"]+)['"];/);
 const currentVer = versionMatch ? versionMatch[1] : '';
-check('localize.js CURRENT_VERSION 严格等于 2.25.0', currentVer, '2.25.0');
-check('extracted/package.json version 严格等于 2.25.0', packageJson.version, '2.25.0');
+// 版本号校验改为自洽校验：
+//   1) 版本号格式合法，且不低于 2.25.0 基线；
+//   2) localize.js 声明的版本不低于 extracted 快照版本。
+// 这样后续版本升级无需再逐条修改测试断言。
+const BASELINE_VERSION = '2.25.0';
+const parseVersion = (v) => String(v || '').replace(/^[vV]/, '').split('.').map((n) => parseInt(n, 10) || 0);
+const compareVersion = (a, b) => {
+  const pa = parseVersion(a);
+  const pb = parseVersion(b);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    const diff = (pa[i] || 0) - (pb[i] || 0);
+    if (diff !== 0) return diff > 0 ? 1 : -1;
+  }
+  return 0;
+};
+const isValidVersion = (v) => /^\d+\.\d+\.\d+/.test(String(v || ''));
+check('localize.js CURRENT_VERSION 版本号合法且 >= 2.25.0', isValidVersion(currentVer) && compareVersion(currentVer, BASELINE_VERSION) >= 0, true);
+check('localize.js CURRENT_VERSION 不低于 extracted/package.json 版本', compareVersion(currentVer, packageJson.version) >= 0, true);
+check('extracted/package.json version 版本号合法且 >= 2.25.0', isValidVersion(packageJson.version) && compareVersion(packageJson.version, BASELINE_VERSION) >= 0, true);
 if (fs.existsSync(readyAsarPath)) {
-  check('app.asar.ready 读取包版本严格等于 2.25.0', readAsarPackageVersion(readyAsarPath), '2.25.0');
+  const readyVer = readAsarPackageVersion(readyAsarPath);
+  check('app.asar.ready 读取包版本合法且 >= 2.25.0', isValidVersion(readyVer) && compareVersion(readyVer, BASELINE_VERSION) >= 0, true);
 }
 check('extracted/package.json 包含 @bufbuild/protobuf 依赖', Boolean(packageJson.dependencies && packageJson.dependencies['@bufbuild/protobuf']), true);
 check('extracted/package.json 包含 chrome-devtools-mcp 依赖', Boolean(packageJson.dependencies && packageJson.dependencies['chrome-devtools-mcp']), true);
