@@ -4306,11 +4306,12 @@ const DOM_TRANSLATOR_INJECTION = `
       return text.replace(trimmed, dictionary[normalizedSpace]);
     }
     
-    const trimmedLower = trimmed.toLowerCase();
-    for (const key in dictionary) {
-      if (key.toLowerCase() === trimmedLower) {
-        return text.replace(trimmed, dictionary[key]);
-      }
+    // 性能：大小写不敏感匹配改用预先构建的 O(1) 索引 lowerDictionary，
+    // 语义与原先遍历整本词典完全一致（取首个 toLowerCase 相同的键），
+    // 但避免了每次未命中都要线性扫描两千余条词典。
+    const caseInsensitiveHit = lowerDictionary.get(trimmed.toLowerCase());
+    if (caseInsensitiveHit !== undefined) {
+      return text.replace(trimmed, caseInsensitiveHit);
     }
 
     // 2. Intelligent Punctuation Stripping & Reconstruction
@@ -4666,7 +4667,11 @@ const DOM_TRANSLATOR_INJECTION = `
     const key = fullText.trim();
     if (!key || !/[A-Za-z]/.test(key)) return false;
 
-    const translated = translateString(key);
+    // 快速路径：整句已在词典中时直接取译文，避免为一个已收录的整句
+    // 跑完整的动态正则链 + 大小写索引查找。
+    let translated = dictionary[key];
+    if (!translated) translated = lowerDictionary.get(key.toLowerCase());
+    if (!translated) translated = translateString(key);
     if (!translated || translated === key) return false;
 
     // 所有锚点必须原样出现在译文中，否则无法安全切分
