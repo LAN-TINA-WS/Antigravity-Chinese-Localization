@@ -4273,8 +4273,8 @@ const DOM_TRANSLATOR_INJECTION = `
     // 服务端下发的模型分组标签：文本节点包含动态模型列表（如
     // "Models within this group: Claude Opus, Claude Sonnet, GPT-OS"），
     // 精确词典条目无法命中，必须用前缀动态匹配；模型名列表保持英文原样。
-    if (/^Models within this group:\s*(.*)$/i.test(trimmed)) {
-      dynamicMatch = trimmed.replace(/^Models within this group:\s*(.*)$/i,
+    if (/^Models within this group:\\s*(.*)$/i.test(trimmed)) {
+      dynamicMatch = trimmed.replace(/^Models within this group:\\s*(.*)$/i,
         (_m, list) => '本组内的模型：' + list.trim());
       isDynamic = true;
     }
