@@ -10,7 +10,8 @@ if (!match) {
   process.exit(1);
 }
 
-const injectionCode = match[1]; // match[1] 本身就是模板字符串内的内容！
+// 必须通过模板字符串求值，模拟运行时真实注入到 preload.js 的代码
+const injectionCode = eval('`' + match[1] + '`');
 
 console.log('injectionCode 长度:', injectionCode.length);
 try {
@@ -18,4 +19,5 @@ try {
   console.log('✅ injectionCode 语法完全合法 (Valid JavaScript)');
 } catch (e) {
   console.error('❌ injectionCode 存在语法错误:', e.message);
+  process.exit(1);
 }
