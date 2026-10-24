@@ -442,7 +442,6 @@ function registerIpcHandlers(storageManager) {
 }
 
 
-
 const contextMenuTranslationMap = {
   'Cut': '剪切',
   'Copy': '复制',
@@ -475,7 +474,9 @@ const contextMenuTranslationMap = {
   'Clear': '清除',
   'Clear History': '清除历史',
   'Automations': '自动化',
-  'Automation': '自动化'
+  'Automation': '自动化',
+  'Give Feedback': '提供反馈',
+  'Provide Feedback': '提供反馈'
 };
 function translateContextLabel(lbl) {
   if (!lbl) return '';

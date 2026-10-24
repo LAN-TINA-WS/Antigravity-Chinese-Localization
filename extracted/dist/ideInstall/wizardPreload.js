@@ -23,7 +23,6 @@ const wizardAPI = {
 electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
 
 
-
 // Antigravity 2.0 Chinese Localization Engine Enhanced
 (function() {
   const dictionary = {
@@ -599,7 +598,15 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     "Reset Zoom": "重置缩放",
 
     // Feedback
+    "Give Feedback": "提供反馈",
+    "Give feedback": "提供反馈",
+    "give feedback": "提供反馈",
+    "Send Feedback": "发送反馈",
+    "Send feedback": "发送反馈",
+    "Share Feedback": "分享反馈",
+    "Share feedback": "分享反馈",
     "Provide Feedback": "提供反馈",
+    "Provide feedback": "提供反馈",
     "Feedback Type": "反馈类型",
     "Bug Report": "Bug 报告",
     "Feature Request": "功能请求",

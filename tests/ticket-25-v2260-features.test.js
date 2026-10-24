@@ -161,6 +161,12 @@ check('声音设置 - Play a sound when your action is needed or the agent finis
 check('声音设置 - Volume', translate('Volume'), '音量');
 check('声音设置 - Set the volume of agent sounds.', translate('Set the volume of agent sounds.'), '设置智能体提示音的音量。');
 
+// 设置中心与反馈汉化校验
+check('设置菜单 - Give Feedback', translate('Give Feedback'), '提供反馈');
+check('设置菜单 - Give feedback', translate('Give feedback'), '提供反馈');
+check('反馈 - Provide Feedback', translate('Provide Feedback'), '提供反馈');
+check('反馈 - Send Feedback', translate('Send Feedback'), '发送反馈');
+
 console.log('\n======================================================');
 console.log(`Ticket-25 测试结果: ${passed}/${total} 断言全部通过！`);
 console.log('======================================================\n');

@@ -766,7 +766,15 @@ const DOM_TRANSLATOR_INJECTION = `
     "Reset Zoom": "重置缩放",
 
     // Feedback
+    "Give Feedback": "提供反馈",
+    "Give feedback": "提供反馈",
+    "give feedback": "提供反馈",
+    "Send Feedback": "发送反馈",
+    "Send feedback": "发送反馈",
+    "Share Feedback": "分享反馈",
+    "Share feedback": "分享反馈",
     "Provide Feedback": "提供反馈",
+    "Provide feedback": "提供反馈",
     "Feedback Type": "反馈类型",
     "Bug Report": "Bug 报告",
     "Feature Request": "功能请求",
@@ -4549,7 +4557,9 @@ const menuTranslationMap = {
   'Connect to WSL': '连接到 WSL',
   'Reopen Locally': '本地重新打开',
   'Automations': '自动化',
-  'Automation': '自动化'
+  'Automation': '自动化',
+  'Give Feedback': '提供反馈',
+  'Provide Feedback': '提供反馈'
 };
 function translateMenu(menuItem) {
   if (menuItem.label && menuTranslationMap[menuItem.label]) {
@@ -4675,7 +4685,9 @@ const contextMenuTranslationMap = {
   'Clear': '清除',
   'Clear History': '清除历史',
   'Automations': '自动化',
-  'Automation': '自动化'
+  'Automation': '自动化',
+  'Give Feedback': '提供反馈',
+  'Provide Feedback': '提供反馈'
 };
 function translateContextLabel(lbl) {
   if (!lbl) return '';
