@@ -167,6 +167,17 @@ check('设置菜单 - Give feedback', translate('Give feedback'), '提供反馈'
 check('反馈 - Provide Feedback', translate('Provide Feedback'), '提供反馈');
 check('反馈 - Send Feedback', translate('Send Feedback'), '发送反馈');
 
+// PR #39 贡献吸收：动态模型组、带当前值的选择器与大小写 O(1) 索引校验
+check('动态正则 - Models within this group', translate('Models within this group: Claude Opus, Claude Sonnet'), '本组内的模型：Claude Opus, Claude Sonnet');
+check('动态正则 - Select project, current:', translate('Select project, current: Antigravity-Chinese'), '选择项目，当前：Antigravity-Chinese');
+check('动态正则 - Agent permissions preset selector, current:', translate('Agent permissions preset selector, current: Turbo'), '智能体权限预设选择器，当前：极速模式');
+check('新版补充词条 - Select Environment', translate('Select Environment'), '选择环境');
+check('新版补充词条 - Open in Critique', translate('Open in Critique'), '在 Critique 中打开');
+check('新版补充词条 - Collapse queued messages', translate('Collapse queued messages'), '折叠排队消息');
+check('新版补充词条 - Archive project', translate('Archive project'), '归档项目');
+check('大小写 O(1) 索引命中 - select environment', translate('select environment'), '选择环境');
+check('大小写 O(1) 索引命中 - open in critique', translate('open in critique'), '在 Critique 中打开');
+
 console.log('\n======================================================');
 console.log(`Ticket-25 测试结果: ${passed}/${total} 断言全部通过！`);
 console.log('======================================================\n');
