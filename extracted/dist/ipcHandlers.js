@@ -406,7 +406,41 @@ function registerIpcHandlers(storageManager) {
     electron_1.ipcMain.handle('wsl:connect', (_event, distro) => {
         (0, menu_1.relaunchWithWslDistro)(distro || '');
     });
+    // Execute JavaScript inside an Electron <webview> guest's isolated world.
+    // Only the renderer that hosts the <webview> may target it, and worldId is
+    // bounded to [MIN, MAX] so it can never hit the main (0) or preload worlds
+    // and stays well below Chromium's fatal ISOLATED_WORLD_ID_MAX CHECK.
+    const MIN_ISOLATED_WORLD_ID = 1000;
+    const MAX_ISOLATED_WORLD_ID = 100000;
+    electron_1.ipcMain.handle('webview:execute-js-isolated-world', async (event, webContentsId, worldId, code) => {
+        if (typeof webContentsId !== 'number' ||
+            !Number.isInteger(webContentsId) ||
+            webContentsId <= 0) {
+            throw new Error(`Invalid webContentsId: ${String(webContentsId)}`);
+        }
+        if (typeof worldId !== 'number' ||
+            !Number.isInteger(worldId) ||
+            worldId < MIN_ISOLATED_WORLD_ID ||
+            worldId > MAX_ISOLATED_WORLD_ID) {
+            throw new Error(`Invalid isolated worldId: ${String(worldId)} (must be in [${MIN_ISOLATED_WORLD_ID}, ${MAX_ISOLATED_WORLD_ID}])`);
+        }
+        if (typeof code !== 'string') {
+            throw new Error('code must be a string');
+        }
+        const wc = electron_1.webContents.fromId(webContentsId);
+        if (!wc || wc.isDestroyed() || wc.getType() !== 'webview') {
+            throw new Error(`Invalid or non-webview webContents id: ${webContentsId}`);
+        }
+        const sender = event?.sender;
+        if (!sender ||
+            sender.isDestroyed() ||
+            wc.hostWebContents?.id !== sender.id) {
+            throw new Error(`WebContents ${webContentsId} is not owned by the calling renderer`);
+        }
+        return wc.executeJavaScriptInIsolatedWorld(worldId, [{ code }], false);
+    });
 }
+
 
 
 const contextMenuTranslationMap = {

@@ -50,6 +50,7 @@ const fs = __importStar(require("fs"));
 const paths_1 = require("./paths");
 const loadingOverlay_1 = require("./loadingOverlay");
 const wsl_1 = require("./wsl");
+const debugConsole_1 = require("./debugConsole");
 exports.showQuitConfirmation = false;
 function setShowQuitConfirmation(value) {
     exports.showQuitConfirmation = value;
@@ -132,7 +133,7 @@ function createWindow(url, storageManager) {
             nodeIntegration: false,
             contextIsolation: true,
             preload: path_1.default.join(__dirname, 'preload.js'),
-            devTools: !electron_1.app.isPackaged,
+            devTools: (0, debugConsole_1.isDebugConsoleEnabled)(),
             // Required for the built-in browser aux pane, which renders web pages
             // in an Electron <webview> guest inside the embedded Agent UI Toolkit.
             webviewTag: true,

@@ -72,7 +72,14 @@ check('main.js 包含 AutomationControlled 命令行参数',
 
 const jsYamlPackage = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'extracted', 'node_modules', 'js-yaml', 'package.json'), 'utf-8'));
 check('js-yaml 内部依赖版本升级为 4.3.2 (上游安全加固)', jsYamlPackage.version, '4.3.2');
-check('loadingOverlay.test.js 官方单元测试存在', fs.existsSync(path.join(distDir, 'loadingOverlay.test.js')), true);
+const isVerLt2260 = (() => {
+  const [maj, min] = parseVer(packageJson.version);
+  return maj < 2 || (maj === 2 && min < 26);
+})();
+check('loadingOverlay.test.js 官方单元测试存在 (v2.26.0 前) 或随上游生产打包安全剥离 (v2.26.0+)', 
+  isVerLt2260 ? fs.existsSync(path.join(distDir, 'loadingOverlay.test.js')) : !fs.existsSync(path.join(distDir, 'loadingOverlay.test.js')), 
+  true
+);
 
 // 3. 核心注入文件完备性
 console.log('\n--- 核心注入与架构文件完备性测试 ---');
