@@ -80,7 +80,7 @@ No Node.js or build tools required:
 ### Method 1: Windows Users (Scripts & Dashboard)
 
 #### 1. Web Dashboard (Recommended)
-1. Download `default.zip` from Releases or clone repository, then extract;
+1. Download `default.zip` from Releases, or clone the repository / grab the GitHub source archive and extract it (the repo ships `app.asar.ready`, so no separate patch file is needed);
 2. Double-click **`双击运行汉化.bat`**;
 3. The dashboard opens automatically (`http://localhost:3388`), auto-detects program status, and highlights automatic recovery if official updates have overwritten the localization.
 
