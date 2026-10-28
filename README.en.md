@@ -12,7 +12,7 @@ Deep Localization & High-Performance Chinese Patch for Google Antigravity
 [![Node Runtime](https://img.shields.io/badge/Node.js-%3E%3D%2014.0.0-informational)](https://nodejs.org/)
 [![license](https://img.shields.io/github/license/liominsb/Antigravity-Chinese-Localization)](LICENSE)
 
-A high-performance, non-destructive deep Chinese localization patch designed for Google Antigravity. Fully adapted to the latest architecture of **Antigravity v2.26.0+**, featuring fundamental computational refactoring and DOM micro-batch scheduling that delivers 1.68 million queries/sec throughput. It provides comprehensive translation for Planning Mode, System Settings, Security Sandbox, and Google Plugin Ecosystem, strictly follows the official 4.53 MB slim packaging standard, and guarantees absolute physical immunity for code editors and user input fields.
+A high-performance, non-destructive deep Chinese localization patch designed for Google Antigravity. Fully adapted to the latest architecture of **Antigravity v2.27.0+**, featuring fundamental computational refactoring and DOM micro-batch scheduling that delivers 1.68 million queries/sec throughput. It provides comprehensive translation for Planning Mode, System Settings, Security Sandbox, and Google Plugin Ecosystem, strictly follows the official 4.53 MB slim packaging standard, and guarantees absolute physical immunity for code editors and user input fields.
 
 > [Download Latest Release](https://github.com/liominsb/Antigravity-Chinese-Localization/releases/latest) · [Issues & Feedback](https://github.com/liominsb/Antigravity-Chinese-Localization/issues)
 
@@ -37,7 +37,7 @@ A high-performance, non-destructive deep Chinese localization patch designed for
 | :--- | :--- | :--- |
 | **Native Model & Thinking Display** | 100% Native English Retained | Strictly adheres to developer ergonomics: Model selector dropdowns (Gemini 3.8 / Claude 3.7) and Thinking/Thought processes strictly retain native English, eliminating confusion caused by machine translation. |
 | **Physical Code & Input Immunity** | Shadow DOM Penetration | Actively protects `INPUT`, `TEXTAREA`, rich text editors, Monaco Code Editor, Diff views, and user message bubbles with absolute physical isolation, guaranteeing zero tampering with prompts and source code. |
-| **Lossless Backup & Self-Healing** | Instant Bidirectional Switch | Automatically creates `app.asar.bak` on first run, enabling instant one-click rollback to pristine English via UI or `node localize.js --restore` at any time. |
+| **Lossless Backup & Self-Healing** | Instant Bidirectional Switch | Automatically creates `app.asar.bak` on first run, enabling instant one-click rollback to pristine English via the dashboard's "Restore English" action, or by copying the backup over `app.asar`, at any time. |
 
 ### 3. High-Performance Engine & Engineering Standards
 
@@ -148,15 +148,17 @@ node localize.js --now
 # Execute localization immediately and exit
 node localize.js --now
 
-# Restore to pristine official English (using app.asar.bak)
-node localize.js --restore
+# Re-check and re-apply after an official update (exits 2 on version mismatch)
+node localize.js --auto-restore
 
-# Extract app.asar to extracted/ folder only
-node localize.js --extract-only
+# Show install path, client version, localization state and available patches
+node localize.js --check-status
 
-# Repack from extracted/ folder to app.asar only
-node localize.js --pack-only
+# Inject translations into an already-extracted extracted/ folder only (developer debugging)
+node localize.js --apply-only
 ```
+
+> **Argument whitelist**: `localize.js` accepts only the four flags above. Any other argument — including `--restore`, `--extract-only` and `--pack-only`, which older docs listed but were never implemented — now fails immediately with exit code `1` instead of silently starting the web dashboard.
 
 ---
 
@@ -230,11 +232,9 @@ node localize.js --now
 The script will back up the new official file and inject the latest patch, or simply replace `app.asar` with the latest Release asset.
 
 ### Q3: How to cleanly uninstall and restore official English?
-Click "还原英文原版" in the dashboard, or run:
-```bash
-node localize.js --restore
-```
-The script will restore the original file from `app.asar.bak`.
+Click "还原英文原版" in the dashboard; alternatively, copy the previously created official backup over the current file — `app.asar.bak` sits in the same `Resources` directory as `app.asar`, so renaming a copy of it to `app.asar` restores the original.
+
+> Make sure Antigravity is fully closed before copying, otherwise the file may be locked. Keeping a copy of `app.asar.bak` also lets you re-localize later.
 
 ---
 

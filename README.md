@@ -12,7 +12,7 @@ Antigravity 深度汉化与高性能本地化补丁程序
 [![Node Runtime](https://img.shields.io/badge/Node.js-%3E%3D%2014.0.0-informational)](https://nodejs.org/)
 [![license](https://img.shields.io/github/license/liominsb/Antigravity-Chinese-Localization)](LICENSE)
 
-专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁。全面适配 **Antigravity v2.26.0+** 最新架构，深度重构基础算力层与 DOM 调度层，带来百万级吞吐量的极致流畅体验。全量汉化规划模式、系统设置、权限沙盒、官方插件生态等上千条核心界面文案，严格遵循官方 4.53 MB 轻量级打包规格，并对用户打字与代码编辑区实施绝对物理免疫。
+专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁。全面适配 **Antigravity v2.27.0+** 最新架构，深度重构基础算力层与 DOM 调度层，带来百万级吞吐量的极致流畅体验。全量汉化规划模式、系统设置、权限沙盒、官方插件生态等上千条核心界面文案，严格遵循官方 4.53 MB 轻量级打包规格，并对用户打字与代码编辑区实施绝对物理免疫。
 
 > [最新 Release 下载](https://github.com/liominsb/Antigravity-Chinese-Localization/releases/latest) · [问题反馈与建议](https://github.com/liominsb/Antigravity-Chinese-Localization/issues)
 
@@ -37,7 +37,7 @@ Antigravity 深度汉化与高性能本地化补丁程序
 | :--- | :--- | :--- |
 | **模型与思考链原生保留** | 100% 保持官方英文原生 | 严格遵循专业开发习惯，模型下拉框（Gemini 3.8 / Claude 3.7 等）及思考链（Thinking / Thought 过程）保留原生英文，杜绝机器硬翻引起的认知歧义。 |
 | **编辑器与输入物理免疫** | Shadow DOM 穿透隔离 | 智能免疫 `INPUT`、`TEXTAREA`、富文本输入框、Monaco 代码编辑器、Diff 比对器与用户对话气泡，绝对物理隔离，严禁篡改用户编写的代码与 Prompt。 |
-| **无损备份与一键自愈** | 双向无损瞬时切换 | 首次部署自动生成官方原版 `app.asar.bak`，支持随时通过控制面板或命令行 `node localize.js --restore` 毫秒级无损还原至官方纯英文状态。 |
+| **无损备份与一键自愈** | 双向无损瞬时切换 | 首次部署自动生成官方原版 `app.asar.bak`，支持随时通过控制面板「还原英文原版」或直接用备份覆盖 `app.asar`，毫秒级无损还原至官方纯英文状态。 |
 
 ### 3. 工业级底层算力与工程工艺 (High-Performance Engine & Engineering)
 
@@ -151,15 +151,17 @@ node localize.js --now
 # 立即执行汉化并静默退出（不启动 Web 界面）
 node localize.js --now
 
-# 立即恢复到官方原版英文（使用 app.asar.bak 还原）
-node localize.js --restore
+# 官方更新后自动检查并恢复汉化（版本不兼容时自动拦截，退出码 2）
+node localize.js --auto-restore
 
-# 仅解包 app.asar 到 extracted 目录（用于开发与分析）
-node localize.js --extract-only
+# 查看安装路径、客户端版本、汉化状态与可用补丁
+node localize.js --check-status
 
-# 仅从 extracted 目录重新打包为 app.asar
-node localize.js --pack-only
+# 仅对已解包的 extracted 目录注入汉化文本（开发者调试用）
+node localize.js --apply-only
 ```
+
+> **参数白名单**：`localize.js` 只接受上述四个参数。传入其它参数（包括旧版文档里曾出现、但从未实现的 `--restore`、`--extract-only`、`--pack-only`）会立即报错并以退出码 `1` 结束，不会再静默启动 Web 面板。
 
 ---
 
@@ -233,11 +235,9 @@ node localize.js --now
 脚本会自动备份新的官方 `app.asar` 并重新注入最新的深度汉化补丁。或者直接下载最新 Release 预制的 `app.asar` 进行覆盖。
 
 ### Q3: 如何完全卸载汉化、恢复官方原版？
-在控制中心点击“还原英文原版”，或者直接运行：
-```bash
-node localize.js --restore
-```
-程序将自动从此前备份的 `app.asar.bak` 中无损还原原始文件。
+在控制中心点击“还原英文原版”；也可以直接用此前备份的官方原版覆盖当前文件——`app.asar.bak` 与 `app.asar` 位于同一个 `Resources` 目录，把 `.bak` 复制过去改名为 `app.asar` 即可。
+
+> 覆盖前请确认 Antigravity 已完全退出，否则文件可能被占用而复制失败；同时建议保留一份 `app.asar.bak`，以便下次重新汉化。
 
 ---
 

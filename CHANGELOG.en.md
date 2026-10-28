@@ -4,6 +4,19 @@ This document tracks all version releases, core architecture adaptations, and fe
 
 ---
 
+## v2.27.0 (2026-10-28)
+
+### 1. Comprehensive Adaptation to Antigravity v2.27.0 Architecture
+- **Official Version Seamless Upgrade**: Upgraded the application definition and project metadata to `2.27.0`, following Google's latest official 2.27.0 release.
+- **Upstream Native Layer 100% Compatible**: Synchronized official 2.27.0 native modules; 49 of 50 exact-match native string replacement targets resolve and apply. The remaining one (`Loading Antigravity` in `loadingOverlay.js`) was already absent from the official 2.26.0 package, so it is a historical dead patch. Six new native modules were added (`webauthn.js`, `cablev2.js`, `qrEncoder.js`, `webviewBrowser.js`, `webviewWebAuthnPreload.js`, `__mocks__/electron-log`); `package.json` dependencies are unchanged.
+- **New Passkey / WebAuthn UI Localization**: Covers the new native passkey account chooser (`Choose a Passkey` / `Sign in to` / `Select a passkey account to continue:`), the caBLEv2 QR dialog (`Passkeys` / `Use your phone or tablet` / scan prompt), and its live connect/verify status strings.
+- **413 New Web UI Entries**: Covers browser actuation permissions and authorization panels, ABFS / CitC / Cog / Fig / JJ remote workspaces, SSO and enterprise account sign-in, MCP servers and plugins, conversations and automations, hooks and terminal permissions. Candidate coverage rose from 0% to 57%.
+- **Fixed a Template-String Regex Escaping Defect**: The dynamic rule `/^Models within this group:\s*(.*)$/i` lost its backslash inside a template literal and degraded to `s*`, silently disabling the rule. Corrected to a double backslash and added an "evaluate-then-match" verification that closes the syntax-only blind spot of upstream `check-injection-syntax.js`.
+- **Fixed CLI Documentation / Implementation Mismatch (issue #40)**: The long-documented `--restore`, `--extract-only` and `--pack-only` flags never existed in `localize.js`; passing them was silently ignored, falling through to starting the web dashboard and holding its port, so the command looked successful while doing nothing. The docs now describe the four real flags (`--now` / `--auto-restore` / `--check-status` / `--apply-only`) plus the actual way to restore the official build, and an argument whitelist rejects unknown flags immediately with exit code `1`.
+- **Version-Decoupled Test Assertions**: Ticket-25 version metadata assertions were upgraded from "strictly equals 2.26.0" to self-consistent checks (valid version, not below baseline, and equal to `CURRENT_VERSION`) so future releases do not produce false failures.
+
+---
+
 ## v2.26.0 (2026-10-24)
 
 ### 1. Comprehensive Adaptation to Antigravity v2.26.0 Architecture

@@ -39,6 +39,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SleepBlocker = exports.showOrCreateWindow = exports.showQuitConfirmation = void 0;
 exports.setShowQuitConfirmation = setShowQuitConfirmation;
 exports.isMacOS = isMacOS;
+exports.markWebviewPopupWindow = markWebviewPopupWindow;
+exports.getHubWindows = getHubWindows;
 exports.createWindow = createWindow;
 exports.getNodeWrapperPaths = getNodeWrapperPaths;
 exports.setupNodeWrapper = setupNodeWrapper;
@@ -98,6 +100,26 @@ function ensureAppIsInDock() {
 // ---------------------------------------------------------------------------
 // Window Management
 // ---------------------------------------------------------------------------
+const hubWindows = new WeakSet();
+/**
+ * Marks a child `BrowserWindow` created by a `<webview>` `window.open()` call
+ * so Hub window queries (`getHubWindows()`) never mistake it for a main Hub
+ * window.
+ */
+function markWebviewPopupWindow(win) {
+    if (win && typeof win === 'object') {
+        win.__isWebviewPopupWindow = true;
+    }
+}
+/**
+ * Returns all open top-level Hub `BrowserWindow` instances, excluding child
+ * popup windows spawned by `<webview>` guests.
+ */
+function getHubWindows() {
+    return electron_1.BrowserWindow.getAllWindows().filter((win) => hubWindows.has(win) ||
+        !win
+            .__isWebviewPopupWindow);
+}
 /**
  * Creates and returns a new BrowserWindow pointed at `url`.
  * Uses a hidden title bar with native traffic lights on macOS.
@@ -194,13 +216,14 @@ function createWindow(url, storageManager) {
         });
     }
     void win.loadURL(url);
+    hubWindows.add(win);
     return win;
 }
 /**
  * Focuses a window if it exists, or creates a new one.
  */
 const showOrCreateWindow = (port) => {
-    const wins = electron_1.BrowserWindow.getAllWindows();
+    const wins = getHubWindows();
     if (wins.length > 0) {
         if (wins[0].isMinimized()) {
             wins[0].restore();
