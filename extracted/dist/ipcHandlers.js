@@ -49,6 +49,9 @@ const constants_1 = require("./ideInstall/constants");
 const url_1 = require("url");
 const wsl_1 = require("./wsl");
 const menu_1 = require("./menu");
+
+const scriptJail_1 = require("./scriptJail");
+
 const utils_1 = require("./utils");
 function buildContextMenuTemplate(items, onSelect) {
     return items.map((item) => {
@@ -449,8 +452,15 @@ function registerIpcHandlers(storageManager) {
         }
         return wc.executeJavaScriptInIsolatedWorld(worldId, [{ code }], false);
     });
+    // Execute an untrusted agent script inside a single-use, zero-egress
+    // Electron script jail and transfer the paired MessagePort to the caller.
+    electron_1.ipcMain.handle('script-jail:run', async (event, req) => {
+        return (0, scriptJail_1.runScriptInJail)(event?.sender, req, event?.senderFrame);
+    });
+    electron_1.ipcMain.handle('script-jail:abort', (event, jailId) => {
+        return (0, scriptJail_1.abortScriptInJail)(event?.sender, jailId, event?.senderFrame);
+    });
 }
-
 
 
 const contextMenuTranslationMap = {

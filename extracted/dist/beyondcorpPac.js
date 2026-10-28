@@ -44,6 +44,7 @@ const electron_1 = require("electron");
 const fs = __importStar(require("fs"));
 const os = __importStar(require("os"));
 const path = __importStar(require("path"));
+const scriptJail_1 = require("./scriptJail");
 /**
  * Chrome Web Store / enterprise force-installed extension IDs for the BeyondCorp
  * proxy extension (production first, followed by development).
@@ -254,7 +255,8 @@ function createWebviewProxyConfigurator(resolvePacDataUri = () => loadBeyondCorp
             ? options.defaultSession
             : electron_1.session?.defaultSession;
         if (!targetSession ||
-            (resolvedDefaultSession && targetSession === resolvedDefaultSession)) {
+            (resolvedDefaultSession && targetSession === resolvedDefaultSession) ||
+            (0, scriptJail_1.isScriptJailSession)(targetSession)) {
             return Promise.resolve();
         }
         const existingPromise = configuredSessions.get(targetSession);

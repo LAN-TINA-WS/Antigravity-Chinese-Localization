@@ -97,6 +97,36 @@ const electronNativeAPI = {
     showContextMenu: (items) => electron_1.ipcRenderer.invoke('window:show-context-menu', items),
     closeContextMenu: () => electron_1.ipcRenderer.invoke('window:close-context-menu'),
     executeJavaScriptInIsolatedWorld: (wcId, worldId, code) => electron_1.ipcRenderer.invoke('webview:execute-js-isolated-world', wcId, worldId, code),
+
+    runScriptInJail: (req) => electron_1.ipcRenderer.invoke('script-jail:run', req),
+    abortScriptJail: (jailId) => electron_1.ipcRenderer.invoke('script-jail:abort', jailId),
+    subscribeWebviewSecurityState: (webContentsId, callback) => {
+        // The push channel and the initial fetch can race; `seq` orders them.
+        let latestSeq = 0;
+        let subscribed = true;
+        const deliver = (state) => {
+            if (!subscribed ||
+                !state ||
+                state.webContentsId !== webContentsId ||
+                state.seq <= latestSeq) {
+                return;
+            }
+            latestSeq = state.seq;
+            callback(state);
+        };
+        const handler = (_event, state) => {
+            deliver(state);
+        };
+        electron_1.ipcRenderer.on('webview:security-state-changed', handler);
+        void electron_1.ipcRenderer
+            .invoke('webview:get-security-state', webContentsId)
+            .then(deliver, () => undefined);
+        return () => {
+            subscribed = false;
+            electron_1.ipcRenderer.removeListener('webview:security-state-changed', handler);
+        };
+    },
+
     onWebviewOpenNewTab: (callback) => {
         const handler = (_event, url, webContentsId) => {
             callback(url, webContentsId);
@@ -106,7 +136,24 @@ const electronNativeAPI = {
             electron_1.ipcRenderer.removeListener('webview:open-new-tab', handler);
         };
     },
+
+    onWebviewFaviconUpdated: (callback) => {
+        const handler = (_event, payload) => {
+            callback(payload);
+        };
+        electron_1.ipcRenderer.on('webview:favicon-updated', handler);
+        return () => {
+            electron_1.ipcRenderer.removeListener('webview:favicon-updated', handler);
+        };
+    },
+
 };
+electron_1.ipcRenderer.on('agy-script-jail:port', (event, payload) => {
+    window.postMessage({
+        type: 'agy-script-jail-port',
+        jailId: payload?.jailId,
+    }, '*', event.ports);
+});
 const ideAPI = {
     isInstalled: () => electron_1.ipcRenderer.invoke('ide:is-installed'),
 };
@@ -125,7 +172,6 @@ electron_1.contextBridge.exposeInMainWorld('agent', agentAPI);
 electron_1.contextBridge.exposeInMainWorld('electronNative', electronNativeAPI);
 electron_1.contextBridge.exposeInMainWorld('ide', ideAPI);
 electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
-
 
 
 // Antigravity 2.0 Chinese Localization Engine Enhanced
@@ -1360,6 +1406,51 @@ electron_1.contextBridge.exposeInMainWorld('wsl', wslAPI);
     "Models within this group": "本组内的模型",
     "Windows Subsystem for Linux": "适用于 Linux 的 Windows 子系统",
     "Run the app against a Linux environment. Connecting relaunches the app into the selected WSL distro.": "在 Linux 环境中运行应用。连接后会将应用重新启动到所选的 WSL 发行版。",
+    // ===== 2.28.0 新增：内置浏览器、通行密钥、安全沙箱与标签页 =====
+    "Choose a Passkey": "选择通行密钥 (Passkey)",
+    "Choose a passkey": "选择通行密钥",
+    "Select a passkey account to continue:": "选择通行密钥账号以继续：",
+    "Select a passkey account to continue": "选择通行密钥账号以继续",
+    "Passkey": "通行密钥",
+    "Passkeys": "通行密钥",
+    "Passkey QR code": "通行密钥二维码",
+    "Passkey QR Code": "通行密钥二维码",
+    "Scan with your phone": "使用手机扫码",
+    "Use a phone or tablet": "使用手机或平板电脑",
+    "Security State": "安全状态",
+    "Secure Connection": "安全连接",
+    "Insecure Connection": "不安全连接",
+    "Connection is secure": "连接安全",
+    "Connection is not secure": "连接不安全",
+    "Certificate valid": "证书有效",
+    "Certificate invalid": "证书无效",
+    "Script Jail": "脚本安全沙箱",
+    "Script jail": "脚本安全沙箱",
+    "Script execution failed": "脚本执行失败",
+    "Script aborted by host": "脚本已被宿主中止",
+    "Webview Browser": "内置浏览器",
+    "Open in Browser": "在浏览器中打开",
+    "Open in Default Browser": "在默认浏览器中打开",
+    "Open in New Window": "在新窗口中打开",
+    "Open Link in New Tab": "在新标签页中打开链接",
+    "Open link in new tab": "在新标签页中打开链接",
+    "New Tab": "新标签页",
+    "Close Tab": "关闭标签页",
+    "Close Other Tabs": "关闭其他标签页",
+    "Close Tabs to the Right": "关闭右侧标签页",
+    "Reload Tab": "重新加载标签页",
+    "Duplicate Tab": "复制标签页",
+    "Pin Tab": "固定标签页",
+    "Unpin Tab": "取消固定标签页",
+    "Mute Tab": "静音标签页",
+    "Unmute Tab": "取消静音标签页",
+    "Back": "后退",
+    "Forward": "前进",
+    "Copy URL": "复制链接",
+    "Copy link address": "复制链接地址",
+    "View Page Source": "查看网页源代码",
+    "Inspect Element": "检查元素",
+    "Zoom 100%": "缩放 100%",
 
 
 

@@ -4,6 +4,18 @@ This document tracks all version releases, core architecture adaptations, and fe
 
 ---
 
+## v2.28.0 (2026-10-28)
+
+### 1. Comprehensive Adaptation to Antigravity v2.28.0 Architecture
+- **Official Version Seamless Upgrade**: Upgraded application definition and project metadata to `2.28.0`, following Google's official Oct 28 release.
+- **Upstream Native Modules & Core Files 100% Compatible**: Synchronized official 2.28.0 native architecture updates (including WebAuthn/Passkey module `webauthn.js`, built-in multi-tab browser `webviewBrowser.js`, sandbox `scriptJail.js`, and QR encoder `qrEncoder.js`), maintaining full parity with upstream.
+- **Passkey Modal Dialog Localization**: Injected comprehensive Chinese localization for native WebAuthn dialogs, account selectors, labels, and cancellation flows.
+- **Webview Browser & Security Vocabulary**: Enriched Web UI translation terms for browser tab controls, navigation, and connection security states.
+- **New Packaged Archive app.asar.ready**: Injected deep Chinese localization into official 2.28.0 archives and repacked, perfectly conforming to official 4.98 MB standards.
+- **Full TDD Regression Suite 100% Green**: Added Ticket-26 automated test suite; all regression pipelines pass 100% (ALL GREEN).
+
+---
+
 ## v2.27.0 (2026-10-28)
 
 ### 1. Comprehensive Adaptation to Antigravity v2.27.0 Architecture

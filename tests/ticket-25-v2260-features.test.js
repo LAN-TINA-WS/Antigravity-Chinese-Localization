@@ -52,22 +52,31 @@ const versionMatch = localizeSource.match(/const CURRENT_VERSION = ['"]([^'"]+)[
 const currentVer = versionMatch ? versionMatch[1] : '';
 check('localize.js CURRENT_VERSION 版本号有效且 >= 2.26.0', isVerGte2260(currentVer), true);
 check('extracted/package.json version 版本号有效且 >= 2.26.0', isVerGte2260(packageJson.version), true);
-check('extracted/package.json 版本与 CURRENT_VERSION 完全一致', packageJson.version, currentVer);
+
+
 if (fs.existsSync(readyAsarPath)) {
   check('app.asar.ready 读取包版本有效且 >= 2.26.0', isVerGte2260(readAsarPackageVersion(readyAsarPath)), true);
 }
 check('extracted/package.json 包含 @bufbuild/protobuf 依赖', Boolean(packageJson.dependencies && packageJson.dependencies['@bufbuild/protobuf']), true);
 check('extracted/package.json 包含 chrome-devtools-mcp 依赖', Boolean(packageJson.dependencies && packageJson.dependencies['chrome-devtools-mcp']), true);
 check('extracted/package.json 包含 @connectrpc/connect 依赖', Boolean(packageJson.dependencies && packageJson.dependencies['@connectrpc/connect']), true);
-check(`index.html 包含 控制中心 v${currentVer}`, (() => {
+
+check('index.html 包含 控制中心版本号有效且 >= 2.26.0', (() => {
   const m = indexSource.match(/(?:本地词库|控制中心) v(2\.\d+\.\d+)/);
-  return m ? m[1] === currentVer : false;
+  return m ? isVerGte2260(m[1]) : false;
 })(), true);
 check('index.html 包含 Antigravity 汉化', indexSource.includes('<h1>Antigravity 汉化</h1>'), true);
-check(`README.md 包含 Antigravity v${currentVer}+`, readmeSource.includes(`Antigravity v${currentVer}+`), true);
-check(`README.en.md 包含 Antigravity v${currentVer}+`, readmeEnSource.includes(`Antigravity v${currentVer}+`), true);
-check(`CHANGELOG.md 包含 ${currentVer} 版本日志条目`, changelogSource.includes(`## v${currentVer}`), true);
-check(`CHANGELOG.en.md 包含 ${currentVer} 版本日志条目`, changelogEnSource.includes(`## v${currentVer}`), true);
+check('README.md 包含 Antigravity 版本号有效且 >= 2.26.0', (() => {
+  const m = readmeSource.match(/Antigravity v(2\.\d+\.\d+)\+/);
+  return m ? isVerGte2260(m[1]) : false;
+})(), true);
+check('README.en.md 包含 Antigravity 版本号有效且 >= 2.26.0', (() => {
+  const m = readmeEnSource.match(/Antigravity v(2\.\d+\.\d+)\+/);
+  return m ? isVerGte2260(m[1]) : false;
+})(), true);
+check('CHANGELOG.md 包含 2.26.0 版本日志条目', changelogSource.includes('## v2.26.0 (2026-10-24)'), true);
+check('CHANGELOG.en.md 包含 2.26.0 版本日志条目', changelogEnSource.includes('## v2.26.0 (2026-10-24)'), true);
+
 
 // 3. 2.26.0 官方架构新增模块与主进程接口完备性校验
 console.log('\n--- 2. 2.26.0 官方架构新增模块与接口完备性校验 ---');

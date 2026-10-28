@@ -3,7 +3,7 @@ const path = require('path');
 const assert = require('assert');
 const { spawnSync } = require('child_process');
 
-console.log('=== 开始 Ticket-26 命令行参数白名单与文档一致性专项测试 (issue #40) ===\n');
+console.log('=== 开始 Ticket-27 命令行参数白名单与文档一致性专项测试 (issue #40) ===\n');
 
 const root = path.join(__dirname, '..');
 const localizeSource = fs.readFileSync(path.join(root, 'localize.js'), 'utf-8');
@@ -94,7 +94,7 @@ check('README.en.md 声明了参数白名单约束', /argument whitelist/i.test(
 check('CHANGELOG.md 记录了 issue #40 的修复', changelogSource.includes('issue #40'), true);
 
 console.log('\n======================================================');
-console.log(`Ticket-26 测试结果: ${passed}/${total} 断言全部通过！`);
+console.log(`Ticket-27 测试结果: ${passed}/${total} 断言全部通过！`);
 console.log('======================================================\n');
 
 if (passed !== total) {

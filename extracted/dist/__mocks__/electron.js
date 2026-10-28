@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.webFrame = exports.webContents = exports.session = exports.ipcRenderer = exports.contextBridge = exports.shell = exports.Notification = exports.Menu = exports.MenuItem = exports.Tray = exports.nativeImage = exports.protocol = exports.ipcMain = exports.dialog = exports.WebContentsView = exports.BrowserWindow = exports.app = void 0;
+
+exports.webUtils = exports.webFrame = exports.webContents = exports.session = exports.ipcRenderer = exports.contextBridge = exports.shell = exports.Notification = exports.Menu = exports.MenuItem = exports.Tray = exports.nativeImage = exports.protocol = exports.ipcMain = exports.dialog = exports.MessageChannelMain = exports.WebContentsView = exports.BrowserWindow = exports.app = void 0;
+
 /**
  * Shared Electron mock for all test files.
  *
@@ -42,6 +44,7 @@ exports.app = {
     setAsDefaultProtocolClient: vitest_1.vi.fn().mockReturnValue(true),
     isReady: vitest_1.vi.fn().mockReturnValue(true),
     focus: vitest_1.vi.fn(),
+    getAppMetrics: vitest_1.vi.fn().mockReturnValue([]),
 };
 const _mockBrowserWindowInstance = {
     loadURL: vitest_1.vi.fn(),
@@ -60,9 +63,14 @@ const _mockBrowserWindowInstance = {
         removeChildView: vitest_1.vi.fn(),
     },
     webContents: {
+        id: 1,
+        isDestroyed: vitest_1.vi.fn().mockReturnValue(false),
+        getType: vitest_1.vi.fn().mockReturnValue('window'),
         send: vitest_1.vi.fn(),
+        postMessage: vitest_1.vi.fn(),
         on: vitest_1.vi.fn(),
         once: vitest_1.vi.fn(),
+        removeListener: vitest_1.vi.fn(),
         setWindowOpenHandler: vitest_1.vi.fn(),
     },
 };
@@ -75,9 +83,38 @@ exports.BrowserWindow = Object.assign(vitest_1.vi.fn().mockImplementation(functi
 exports.WebContentsView = vitest_1.vi.fn().mockImplementation(function () {
     return {
         webContents: {
-            loadURL: vitest_1.vi.fn(),
+            loadURL: vitest_1.vi.fn().mockResolvedValue(undefined),
+            executeJavaScript: vitest_1.vi.fn().mockResolvedValue({ ok: true }),
+            postMessage: vitest_1.vi.fn(),
+            on: vitest_1.vi.fn(),
+            once: vitest_1.vi.fn(),
+            removeListener: vitest_1.vi.fn(),
+            setWebRTCIPHandlingPolicy: vitest_1.vi.fn(),
+            setWindowOpenHandler: vitest_1.vi.fn(),
+            getOSProcessId: vitest_1.vi.fn().mockReturnValue(12345),
+            isDestroyed: vitest_1.vi.fn().mockReturnValue(false),
+            close: vitest_1.vi.fn(),
+            destroy: vitest_1.vi.fn(),
         },
         setBounds: vitest_1.vi.fn(),
+    };
+});
+exports.MessageChannelMain = vitest_1.vi.fn().mockImplementation(function () {
+    return {
+        port1: {
+            postMessage: vitest_1.vi.fn(),
+            close: vitest_1.vi.fn(),
+            on: vitest_1.vi.fn(),
+            once: vitest_1.vi.fn(),
+            start: vitest_1.vi.fn(),
+        },
+        port2: {
+            postMessage: vitest_1.vi.fn(),
+            close: vitest_1.vi.fn(),
+            on: vitest_1.vi.fn(),
+            once: vitest_1.vi.fn(),
+            start: vitest_1.vi.fn(),
+        },
     };
 });
 exports.dialog = {
@@ -161,10 +198,38 @@ exports.session = {
         closeAllConnections: vitest_1.vi.fn().mockResolvedValue(undefined),
         setCertificateVerifyProc: vitest_1.vi.fn(),
     },
-    fromPartition: vitest_1.vi.fn().mockImplementation(() => ({
-        on: vitest_1.vi.fn(),
-        setProxy: vitest_1.vi.fn().mockResolvedValue(undefined),
-    })),
+
+    fromPartition: vitest_1.vi.fn().mockImplementation(() => {
+        let preloadScripts = [];
+        let legacyPreloads = [];
+        return {
+            on: vitest_1.vi.fn(),
+            setProxy: vitest_1.vi.fn().mockResolvedValue(undefined),
+            getPreloadScripts: vitest_1.vi.fn(() => [...preloadScripts]),
+            registerPreloadScript: vitest_1.vi.fn((script) => {
+                const id = script.id ?? `preload-${preloadScripts.length + 1}`;
+                preloadScripts.push({
+                    id,
+                    filePath: script.filePath,
+                    type: script.type,
+                });
+                return id;
+            }),
+            unregisterPreloadScript: vitest_1.vi.fn((id) => {
+                preloadScripts = preloadScripts.filter((s) => s.id !== id);
+            }),
+            getPreloads: vitest_1.vi.fn(() => [...legacyPreloads]),
+            setPreloads: vitest_1.vi.fn((preloads) => {
+                legacyPreloads = [...preloads];
+            }),
+            setPermissionRequestHandler: vitest_1.vi.fn(),
+            setPermissionCheckHandler: vitest_1.vi.fn(),
+            webRequest: {
+                onBeforeRequest: vitest_1.vi.fn(),
+            },
+        };
+    }),
+
 };
 exports.webContents = {
     fromId: vitest_1.vi.fn(),
@@ -173,3 +238,8 @@ exports.webFrame = {
     executeJavaScript: vitest_1.vi.fn().mockResolvedValue(undefined),
     getZoomFactor: vitest_1.vi.fn().mockReturnValue(1),
 };
+
+exports.webUtils = {
+    getPathForFile: vitest_1.vi.fn().mockReturnValue('/mock/file/path'),
+};
+
