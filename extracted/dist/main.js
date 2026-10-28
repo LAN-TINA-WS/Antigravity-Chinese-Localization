@@ -58,6 +58,8 @@ const provisionSplash_1 = require("./provisionSplash");
 const path = __importStar(require("path"));
 const wsl_1 = require("./wsl");
 const beyondcorpPac_1 = require("./beyondcorpPac");
+const webauthn_1 = require("./webauthn");
+const webviewBrowser_1 = require("./webviewBrowser");
 const gotTheLock = electron_1.app.requestSingleInstanceLock();
 if (!gotTheLock) {
     electron_1.app.quit();
@@ -121,7 +123,7 @@ electron_1.app.commandLine.appendSwitch('disable-blink-features', 'AutomationCon
 // ---------------------------------------------------------------------------
 let pendingDeepLink = null;
 function handleDeepLink(url) {
-    const wins = electron_1.BrowserWindow.getAllWindows();
+    const wins = (0, utils_1.getHubWindows)();
     // This block handles deep links when windows are already open.
     if (wins.length > 0) {
         if (wins[0].isMinimized()) {
@@ -159,10 +161,16 @@ electron_1.app.on('open-url', (event, url) => {
     event.preventDefault();
     handleDeepLink(url);
 });
+electron_1.app.on('session-created', (targetSession) => {
+    (0, webauthn_1.configureSessionWebAuthn)(targetSession);
+});
 electron_1.app.on('web-contents-created', (_event, contents) => {
+    (0, webauthn_1.configureSessionWebAuthn)(contents.session);
     if (contents.getType() !== 'webview') {
         return;
     }
+    (0, webauthn_1.attachWebviewWebAuthnUserActivationTracking)(contents);
+    (0, webviewBrowser_1.configureWebviewBrowserContents)(contents);
     void (0, beyondcorpPac_1.configureWebviewSessionProxy)(contents.session);
 });
 /**
@@ -209,6 +217,11 @@ electron_1.app
     // before any BrowserWindow or <webview> is created so the first shortlink
     // navigation never races an in-flight setProxy call.
     await (0, beyondcorpPac_1.preconfigureWebviewPartitionProxies)();
+    // Configure macOS caBLEv2 WebAuthn IPC handlers and attach the WebAuthn
+    // account chooser to the default session before any BrowserWindow or
+    // <webview> is created.
+    (0, webauthn_1.configurePlatformWebAuthn)();
+    (0, webauthn_1.configureSessionWebAuthn)(electron_1.session.defaultSession);
     if (DEV_URL) {
         console.log('Starting in dev mode with URL:', DEV_URL);
         (0, utils_1.createWindow)(DEV_URL, storageManager);
@@ -305,7 +318,7 @@ electron_1.app
                 // Apply cert trust
                 (0, languageServer_1.setupLocalCertTrust)();
                 if (!HEADLESS) {
-                    const windows = electron_1.BrowserWindow.getAllWindows();
+                    const windows = (0, utils_1.getHubWindows)();
                     for (const win of windows) {
                         void win.loadURL(newUrl);
                     }
@@ -465,7 +478,11 @@ electron_1.app.on('before-quit', async (event) => {
     }
     // Show a confirmation dialog before quitting
     event.preventDefault();
-    const win = electron_1.BrowserWindow.getFocusedWindow() || electron_1.BrowserWindow.getAllWindows()[0];
+    const hubWindows = (0, utils_1.getHubWindows)();
+    const focusedWindow = electron_1.BrowserWindow.getFocusedWindow();
+    const win = (focusedWindow && hubWindows.includes(focusedWindow)
+        ? focusedWindow
+        : undefined) || hubWindows[0];
     const options = {
         type: 'question',
         buttons: ['取消', '退出'],
@@ -492,7 +509,7 @@ electron_1.app.on('before-quit', async (event) => {
 electron_1.app.on('activate', () => {
     // On Mac, re-open a window when the user clicks the dock
     // icon and no windows are open.
-    if (!HEADLESS && electron_1.BrowserWindow.getAllWindows().length === 0) {
+    if (!HEADLESS && (0, utils_1.getHubWindows)().length === 0) {
         const url = DEV_URL ?? `${constants_1.WINDOW_ORIGIN}:${(0, languageServer_1.getLsPort)()}/`;
         (0, utils_1.createWindow)(url, storageManager);
     }

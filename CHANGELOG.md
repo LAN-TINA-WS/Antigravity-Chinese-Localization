@@ -4,6 +4,19 @@
 
 ---
 
+## v2.27.0 (2026-10-28)
+
+### 1. 全面深度适配 Antigravity v2.27.0 官方最新架构
+- **官方版本无缝平滑升级**：深度跟进官方最新推送的 2.27.0 版本，同步升级应用版本定义与全工程元数据至 `2.27.0`。
+- **上游原生层 100% 兼容**：解包同步 2.27.0 官方原生模块，50 处原生层精确字符串替换目标中 49 处命中并已生效；剩余 1 处（`loadingOverlay.js` 的 `Loading Antigravity`）在 2.26.0 官方包中即已不存在，属历史遗留死补丁。新增 6 个原生模块（`webauthn.js`、`cablev2.js`、`qrEncoder.js`、`webviewBrowser.js`、`webviewWebAuthnPreload.js`、`__mocks__/electron-log`），`package.json` 依赖声明零变化。
+- **新增通行密钥（Passkey / WebAuthn）界面汉化**：覆盖 2.27.0 原生层新增的通行密钥账户选择对话框（`Choose a Passkey` / `Sign in to` / `Select a passkey account to continue:`）与 caBLEv2 二维码弹窗（`Passkeys` / `Use your phone or tablet` / 扫码提示 / 连接与验证状态串）。
+- **新增 Web UI 词条 413 条**：覆盖浏览器操作权限与授权面板、ABFS / CitC / Cog / Fig / JJ 远程工作区、SSO 与企业账号登录、MCP 服务器与插件技能、会话与自动化、Hook 与终端权限等 2.27.0 新增界面，候选清单覆盖率由 0% 提升至 57%。
+- **修复模板字符串正则转义缺陷**：动态规则 `/^Models within this group:\s*(.*)$/i` 的 `\s` 在模板字符串中被吞掉反斜杠而退化为 `s*`，导致该规则永久失效；已修正为双反斜杠，并新增「注入代码求值后实测匹配」校验，补齐上游 `check-injection-syntax.js` 仅校验语法的盲区。
+- **修复命令行参数文档与实际实现不一致（issue #40）**：README 中长期记载的 `--restore` / `--extract-only` / `--pack-only` 三个参数在 `localize.js` 中并不存在，传入后会被静默忽略并转而启动 Web 面板占用端口，命令看起来“执行成功”实则什么都没做。现已补齐真实的四个参数（`--now` / `--auto-restore` / `--check-status` / `--apply-only`）说明与还原官方原版的实际操作方式，并新增参数白名单校验：传入未知参数立即报错并以退出码 `1` 结束。
+- **测试断言去版本绑定**：Ticket-25 的版本元数据断言由「严格等于 2.26.0」升级为自洽校验（版本号有效且不低于基线 + 与 `CURRENT_VERSION` 一致），避免后续版本迭代产生误报。
+
+---
+
 ## v2.26.0 (2026-10-24)
 
 ### 1. 全面深度适配 Antigravity v2.26.0 官方最新架构

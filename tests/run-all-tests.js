@@ -25,6 +25,7 @@ const tests = [
   'ticket-23-v2240-features.test.js',
   'ticket-24-v2250-features.test.js',
   'ticket-25-v2260-features.test.js',
+  'ticket-26-v2270-cli.test.js',
   'asar-version.test.js',
   'process-check.test.js',
   'package-installer.test.js',
