@@ -1,6 +1,9 @@
 app.asar*
 *.temp*
 *.unpacked*
+# 上面排除的是构建中间产物；就绪包要入库，否则 git clone / Download ZIP
+# 拿到的源码里没有它，一键更新汉化.bat 会提示缺少补丁。
+!app.asar.ready
 .DS_Store
 Thumbs.db
 *.log
@@ -9,3 +12,6 @@ release-assets/
 # Local downloads and generated working files
 /downloads/
 /work/
+
+# AI 助手工作区数据（记忆、会话记录），不属于项目源码
+.workbuddy/
