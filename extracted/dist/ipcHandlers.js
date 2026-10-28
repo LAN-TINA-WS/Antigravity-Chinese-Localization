@@ -49,9 +49,7 @@ const constants_1 = require("./ideInstall/constants");
 const url_1 = require("url");
 const wsl_1 = require("./wsl");
 const menu_1 = require("./menu");
-
 const scriptJail_1 = require("./scriptJail");
-
 const utils_1 = require("./utils");
 function buildContextMenuTemplate(items, onSelect) {
     return items.map((item) => {

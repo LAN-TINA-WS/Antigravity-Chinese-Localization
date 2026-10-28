@@ -50,18 +50,19 @@ function isVerGte2280(ver) {
 }
 const versionMatch = localizeSource.match(/const CURRENT_VERSION = ['"]([^'"]+)['"];/);
 const currentVer = versionMatch ? versionMatch[1] : '';
-check('localize.js CURRENT_VERSION 严格等于 2.28.0', currentVer, '2.28.0');
-check('extracted/package.json version 严格等于 2.28.0', packageJson.version, '2.28.0');
+check('localize.js CURRENT_VERSION 版本号有效且 >= 2.28.0', isVerGte2280(currentVer), true);
+check('extracted/package.json 版本与 CURRENT_VERSION 完全一致', packageJson.version, currentVer);
+
 if (fs.existsSync(readyAsarPath)) {
-  check('app.asar.ready 读取包版本严格等于 2.28.0', readAsarPackageVersion(readyAsarPath), '2.28.0');
+  check('app.asar.ready 读取包版本有效且 >= 2.28.0', isVerGte2280(readAsarPackageVersion(readyAsarPath)), true);
 }
 check('index.html 包含 控制中心 v2.28.0', (() => {
   const m = indexSource.match(/(?:本地词库|控制中心) v(2\.\d+\.\d+)/);
-  return m ? m[1] === '2.28.0' : false;
+  return m ? isVerGte2280(m[1]) : false;
 })(), true);
 check('index.html 包含 Antigravity 汉化', indexSource.includes('<h1>Antigravity 汉化</h1>'), true);
-check('README.md 包含 Antigravity v2.28.0+', readmeSource.includes('Antigravity v2.28.0+'), true);
-check('README.en.md 包含 Antigravity v2.28.0+', readmeEnSource.includes('Antigravity v2.28.0+'), true);
+check('README.md 包含 Antigravity v2.28.0+', readmeSource.includes('Antigravity v' + currentVer + '+'), true);
+check('README.en.md 包含 Antigravity v2.28.0+', readmeEnSource.includes('Antigravity v' + currentVer + '+'), true);
 check('CHANGELOG.md 包含 2.28.0 版本日志条目', changelogSource.includes('## v2.28.0 (2026-10-28)'), true);
 check('CHANGELOG.en.md 包含 2.28.0 版本日志条目', changelogEnSource.includes('## v2.28.0 (2026-10-28)'), true);
 

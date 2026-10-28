@@ -58,9 +58,7 @@ const provisionSplash_1 = require("./provisionSplash");
 const path = __importStar(require("path"));
 const wsl_1 = require("./wsl");
 const beyondcorpPac_1 = require("./beyondcorpPac");
-
 const scriptJail_1 = require("./scriptJail");
-
 const webauthn_1 = require("./webauthn");
 const webviewBrowser_1 = require("./webviewBrowser");
 const gotTheLock = electron_1.app.requestSingleInstanceLock();
@@ -165,7 +163,6 @@ electron_1.app.on('open-url', (event, url) => {
     handleDeepLink(url);
 });
 electron_1.app.on('session-created', (targetSession) => {
-
     if ((0, scriptJail_1.isScriptJailSession)(targetSession)) {
         return;
     }
@@ -175,7 +172,6 @@ electron_1.app.on('web-contents-created', (_event, contents) => {
     if ((0, scriptJail_1.isScriptJailSession)(contents.session)) {
         return;
     }
-
     (0, webauthn_1.configureSessionWebAuthn)(contents.session);
     if (contents.getType() !== 'webview') {
         return;
