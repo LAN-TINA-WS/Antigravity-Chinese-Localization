@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-
 exports.webUtils = exports.webFrame = exports.webContents = exports.session = exports.ipcRenderer = exports.contextBridge = exports.shell = exports.Notification = exports.Menu = exports.MenuItem = exports.Tray = exports.nativeImage = exports.protocol = exports.ipcMain = exports.dialog = exports.MessageChannelMain = exports.WebContentsView = exports.BrowserWindow = exports.app = void 0;
-
 /**
  * Shared Electron mock for all test files.
  *
@@ -198,7 +196,6 @@ exports.session = {
         closeAllConnections: vitest_1.vi.fn().mockResolvedValue(undefined),
         setCertificateVerifyProc: vitest_1.vi.fn(),
     },
-
     fromPartition: vitest_1.vi.fn().mockImplementation(() => {
         let preloadScripts = [];
         let legacyPreloads = [];
@@ -229,7 +226,6 @@ exports.session = {
             },
         };
     }),
-
 };
 exports.webContents = {
     fromId: vitest_1.vi.fn(),
@@ -238,8 +234,6 @@ exports.webFrame = {
     executeJavaScript: vitest_1.vi.fn().mockResolvedValue(undefined),
     getZoomFactor: vitest_1.vi.fn().mockReturnValue(1),
 };
-
 exports.webUtils = {
     getPathForFile: vitest_1.vi.fn().mockReturnValue('/mock/file/path'),
 };
-
