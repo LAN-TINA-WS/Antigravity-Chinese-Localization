@@ -28,6 +28,7 @@ const tests = [
   'ticket-26-v2280-features.test.js',
   'ticket-27-cli-flags.test.js',
   'ticket-28-v2280-coverage.test.js',
+  'ticket-29-v2281-features.test.js',
   'check-injection-syntax.js',
   'asar-version.test.js',
   'process-check.test.js',

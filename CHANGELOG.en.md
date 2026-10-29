@@ -4,6 +4,17 @@ This document tracks all version releases, core architecture adaptations, and fe
 
 ---
 
+## v2.28.1 (2026-10-29)
+
+### 1. Comprehensive Adaptation for Antigravity v2.28.1
+- **Seamless Official Version Update**: Synchronized with the latest official 2.28.1 release on October 29; upgraded application version and project metadata to `2.28.1`.
+- **Integrated PR #44 Contributions**: Fully absorbed 465 UI text entries (Chief of Staff dashboard & canvas, built-in browser CDP/toolbar, CitC/ABFS/Cog remote workspaces, Autonomous Mode, Best-of-N, AI credits, etc.).
+- **Native Patch Verification**: Verified that all native injection points hit with 100% stability against 2.28.1 official unpacked files.
+- **Bundled app.asar.ready Pre-compiled Patch**: Packaged a ready-to-use 2.28.1 patch artifact (5.1 MB) for one-click installation and deployment.
+- **Automated Regression Test Suite**: All TDD test suites 100% passed (ALL GREEN).
+
+---
+
 ## v2.28.0 (2026-10-28)
 
 ### 1. Comprehensive Adaptation to Antigravity v2.28.0 Architecture
