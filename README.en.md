@@ -236,6 +236,13 @@ Click "还原英文原版" in the dashboard; alternatively, copy the previously 
 
 > Make sure Antigravity is fully closed before copying, otherwise the file may be locked. Keeping a copy of `app.asar.bak` also lets you re-localize later.
 
+### Q4: Will tracking app.asar.ready bloat the repository over time?
+No for end users. Release assets and GitHub "Download ZIP" archives are clean snapshots (constant ~5 MB) with zero Git history. Developers cloning the repository can use shallow clones to avoid downloading past binary history:
+```bash
+git clone --depth=1 https://github.com/liominsb/Antigravity-Chinese-Localization.git
+```
+For complete architectural details on binary trade-offs, history pruning, and dynamic CDN streaming, see [Architecture: Binary Assets & Maintenance Strategy](docs/architecture.en.md#7-binary-assets--repository-maintenance-strategy).
+
 ---
 
 ## Contributors & Open Source Collaboration

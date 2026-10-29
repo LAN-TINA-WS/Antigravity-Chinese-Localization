@@ -239,6 +239,13 @@ node localize.js --now
 
 > 覆盖前请确认 Antigravity 已完全退出，否则文件可能被占用而复制失败；同时建议保留一份 `app.asar.bak`，以便下次重新汉化。
 
+### Q4: 源码包中自带的 app.asar.ready 会导致仓库体积无限膨胀吗？
+不会。终端用户下载的 Release 资产包或网页 "Download ZIP" 仅包含单版本快照（恒定约 5 MB），零历史冗余包。对于通过 `git clone` 参与贡献的开发者，推荐使用浅克隆（Shallow Clone）：
+```bash
+git clone --depth=1 https://github.com/liominsb/Antigravity-Chinese-Localization.git
+```
+更多关于工程权衡、历史修剪与云端动态按需拉取的架构演进设计，请参阅 [架构与工程文档：二进制资产维护策略](docs/architecture.md#七版本分发与二进制资产维护策略-binary-assets--repository-maintenance-strategy)。
+
 ---
 
 ## 贡献者与开源协作

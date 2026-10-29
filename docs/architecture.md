@@ -153,3 +153,54 @@ if (markerIndex !== -1) {
 }
 ```
 确保用户无论是全新安装还是跨版本热升级，均能无损刷入最新的核心引擎与词库规则。
+
+---
+
+## 七、版本分发与二进制资产维护策略 (Binary Assets & Repository Maintenance Strategy)
+
+### 1. 架构权衡背景 (Trade-off: 体验 vs 仓库体积)
+为了让非技术用户享受“解压即用、零环境依赖”的极致体验，工程在 PR #42 中将预编译补丁包 `app.asar.ready` 纳入了 Git 版本追踪。
+- **核心收益**：用户从 GitHub 点击 "Download ZIP" 下载源码包或克隆后，目录内直接包含预制补丁镜像，双击批处理无需安装 Node.js/asar 编译工具链即可一键无缝替换。
+- **物理代价**：Git 作为内容寻址数据库，无法对二进制打包文件（.asar）进行有效的行级差分压缩（Delta Compression）。每次发版更新 `app.asar.ready` 时，Git 会向 `.git/objects` 历史树中写入一个约 4.8 MB ~ 5.1 MB 的完整独立 Blob 对象，使 Git 提交历史呈现线性膨胀。
+
+### 2. 影响范围清晰界定
+- **终端用户（完全不受影响）**：
+  1. 通过 GitHub Releases 页面下载 `app.asar` 或 `default.zip` 的用户：仅包含当前版本纯净文件，不含 Git 历史，体积恒定为 4.5 MB ~ 5.1 MB；
+  2. 通过 GitHub 网页点击 "Download ZIP" 下载源码的用户：GitHub 动态打包当前分支的快照（Snapshot），不含 `.git` 目录，体积恒定为约 5 MB；
+  3. 本地安装与更新目录：工作区始终只保留最新一份物理文件，不产生历史冗余。
+- **开发者与源码克隆者（受历史累加影响）**：
+  使用完整 `git clone` 拉取全部提交历史时，下载体积会随迭代版本数量逐渐累加（每次迭代增加约 5 MB 历史包）。
+
+### 3. 三大治理与演进方案 (Maintenance Solutions)
+
+针对 Git 二进制历史膨胀问题，工程制定了“即时防护 - 中期修剪 - 长期解耦”三阶治理策略：
+
+#### 方案一：开发者浅克隆规范（即时生效，零维护成本）
+面向通过源码参与贡献或拉取工程的开发者，推荐使用浅克隆（Shallow Clone），直接忽略历史所有大文件 commit：
+```bash
+# 只克隆最新一次提交，历史体积归零，拉取体积恒定为 ~5 MB
+git clone --depth=1 https://github.com/liominsb/Antigravity-Chinese-Localization.git
+```
+若后续需要提交 PR，可通过 `git fetch --unshallow` 按需拉取历史，或直接在浅克隆分支上提交改动。
+
+#### 方案二：Git 历史修剪与大文件剥离（中长期维护）
+当版本经过几十上百次频繁迭代，若 `.git` 文件夹体积累积接近 200 MB ~ 500 MB 警戒线时，仓库管理员可执行一次性历史瘦身操作，剥离过往已被废弃的历史版本 asar blob，使仓库瞬间瘦身回初始几十 MB：
+```bash
+# 使用官方推荐的 git-filter-repo 工具剥离历史旧包（保留最新 HEAD 的文件）
+# 1. 安装 git-filter-repo
+pip install git-filter-repo
+
+# 2. 从历史提交中剥离大文件，仅保留当前最新版本的跟踪
+git filter-repo --path app.asar.ready --invert-paths --refs <old-release-tags>
+
+# 3. 强力回收与压缩无引用对象
+git reflog expire --expire=now --all
+git gc --prune=now --aggressive
+```
+*注：该操作会重写 Git 提交哈希，仅建议在跨大版本架构重构时统一执行。*
+
+#### 方案三：架构演进——基于 Release CDN 的按需动态拉取（终极解耦）
+随着项目规模扩大，若需彻底消除 Git 仓库中包含二进制文件的负担，可将分发架构演进为“云端按需拉取”：
+1. **主分支纯文本化**：从 Git 版本管理中移除 `app.asar.ready`，重新恢复 `.gitignore` 规则，保持仓库历史为 100% 极轻量纯代码（仅几百 KB）；
+2. **脚本智能按需下载**：升级 `一键更新汉化.bat` 与 `auto-restore.js`，在本地未检测到补丁包时，自动根据客户端版本从 GitHub Releases CDN（或国内高速镜像）静默流式下载对应的预编译 `app.asar.ready` 缓存至 `downloads/` 目录；
+3. **优势**：兼顾“源码仓库极致轻盈”与“小白用户开箱即用”的双重优势，彻底终结二进制膨胀隐患。

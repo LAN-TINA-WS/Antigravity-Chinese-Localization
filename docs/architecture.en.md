@@ -143,3 +143,50 @@ This restores package size strictly to **4.53 MB**.
 
 ### 2. `injectOrUpdate` Seamless Upgrades
 Truncates legacy injection blocks cleanly and writes the updated engine payload, ensuring smooth upgrades without manual cleanups.
+
+---
+
+## 7. Binary Assets & Repository Maintenance Strategy
+
+### 1. Architectural Trade-off (UX vs Repository Size)
+To give end users a seamless out-of-the-box experience without build toolchain prerequisites, PR #42 tracked the pre-compiled patch `app.asar.ready` directly in Git.
+- **Core Benefit**: Users downloading the source archive (via GitHub "Download ZIP" or clone) get the pre-built patch ready for instant execution. Running the one-click batch script requires zero local Node.js/asar dependencies.
+- **Physical Cost**: As a content-addressable storage engine, Git cannot perform efficient line-by-line delta compression on monolithic binary archives (`.asar`). Each version bump writes a ~5.0 MB standalone Blob object into `.git/objects`, causing linear history growth over time.
+
+### 2. Scope of Impact
+- **End Users (Completely Unaffected)**:
+  1. Users downloading release assets (`app.asar` / `default.zip`) receive clean snapshots with zero Git history (constant ~5 MB);
+  2. Users clicking "Download ZIP" on GitHub download branch snapshots with no `.git` metadata (~5 MB);
+  3. Local installation directories maintain only the single active file.
+- **Developers & Full Clones (Historical Accumulation)**:
+  Running a full `git clone` pulls the entire commit history, which accumulates ~5 MB per release.
+
+### 3. Three-Tier Maintenance & Evolution Strategy
+
+#### Solution 1: Developer Shallow Clone (Zero Cost, Immediate)
+Developers contributing or working on source code should use shallow clones to skip large historical blobs:
+```bash
+# Clone only the latest commit; historical payload drops to zero (~5 MB download)
+git clone --depth=1 https://github.com/liominsb/Antigravity-Chinese-Localization.git
+```
+Unshallow can be performed on demand (`git fetch --unshallow`) if full history is ever required.
+
+#### Solution 2: Git History Pruning & Blob Decoupling (Mid-term Maintenance)
+When cumulative history approaches the 200 MB+ threshold after dozens of releases, maintainers can run standard historical pruning using `git-filter-repo` to strip obsolete intermediate blobs:
+```bash
+# 1. Install git-filter-repo
+pip install git-filter-repo
+
+# 2. Strip obsolete historical asar blobs (retaining only current tracking)
+git filter-repo --path app.asar.ready --invert-paths --refs <old-release-tags>
+
+# 3. Aggressive GC and repack
+git reflog expire --expire=now --all
+git gc --prune=now --aggressive
+```
+
+#### Solution 3: Release CDN Dynamic Streaming (Long-term Evolution)
+If release frequency increases significantly, distribution can evolve into on-demand cloud retrieval:
+1. **Pure Text Mainline**: Remove `app.asar.ready` from Git tracking and restore `.gitignore` ignore rules, returning the repository to pure source code (~hundreds of KB);
+2. **Intelligent On-demand Streaming**: Upgrade `auto-restore.js` and batch scripts to automatically stream and cache the matching `app.asar.ready` from GitHub Releases CDN if absent locally;
+3. **Outcome**: Achieves an ultralight codebase and hassle-free end-user execution simultaneously.
