@@ -23,7 +23,6 @@ const wizardAPI = {
 electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
 
 
-
 // Antigravity 2.0 Chinese Localization Engine Enhanced
 (function() {
   const dictionary = {
@@ -4086,16 +4085,22 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     "Browser CDP Port": "浏览器 CDP 端口",
     "Browser Subagent": "浏览器子智能体",
     "Browser tools (browser_.*)": "浏览器工具（browser_.*）",
+    "Built-in Browser": "内置浏览器",
+    "Built-in Browser Preferences": "内置浏览器偏好设置",
     "Capture Console Logs": "捕获控制台日志",
     "Capture Screenshot": "捕获屏幕截图",
     "Choose where links open by default when clicked.": "选择点击链接时默认打开的位置。",
+    "Choose where links open by default when clicked": "选择点击链接时默认打开的位置",
     "Chrome Binary Path": "Chrome 可执行文件路径",
     "Chromium": "Chromium",
     "Click to copy URL": "点击复制 URL",
+    "Configure link opening and built-in browser preferences.": "配置链接打开方式与内置浏览器偏好设置。",
+    "Configure link opening and built-in browser preferences": "配置链接打开方式与内置浏览器偏好设置",
     "Couldn't load Google Drive link title": "无法加载 Google Drive 链接标题",
     "Custom path for the browser user profile directory. Leave empty for default (~/.gemini/antigravity-browser-profile).": "浏览器用户配置文件目录的自定义路径。留空则使用默认路径（~/.gemini/antigravity-browser-profile）。",
     "Embedded web preview": "内嵌网页预览",
     "Execute URLs": "执行 URL",
+    "External Browser": "外部浏览器",
     "Git-on-Borg repository used when creating a new Cog workspace from your initial prompt (e.g., chromium/src or android/platform/superproject).": "从初始提示词创建新的 Cog 工作区时所用的 Git-on-Borg 仓库（例如 chromium/src 或 android/platform/superproject）。",
     "Hook will only trigger if the tool name starts with browser_.": "仅当工具名称以 browser_ 开头时才会触发 Hook。",
     "Inline PDF preview is not available in this environment.": "当前环境不支持内嵌 PDF 预览。",
