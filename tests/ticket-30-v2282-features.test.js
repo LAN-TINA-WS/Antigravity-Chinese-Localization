@@ -86,6 +86,9 @@ const webauthnSource = fs.readFileSync(path.join(distDir, 'webauthn.js'), 'utf-8
 check('preload.js 包含 DOM 实时汉化注入引擎', preloadSource.includes('// Antigravity 2.0 Chinese Localization Engine'), true);
 check('preload.js 包含 幕僚长 (Chief of Staff) 汉化', preloadSource.includes('幕僚长'), true);
 check('preload.js 包含 内置浏览器 (Built-in Browser) 汉化', preloadSource.includes('内置浏览器'), true);
+check('preload.js 包含 5h limit 限额汉化', preloadSource.includes('5h limit') && preloadSource.includes('5 小时限额'), true);
+check('preload.js 包含 Resets in 配额重置时间动态规则', preloadSource.includes('Resets?') && preloadSource.includes('后重置'), true);
+check('preload.js 包含 % left 配额剩余动态规则', preloadSource.includes('left') && preloadSource.includes('剩余'), true);
 check('menu.js 包含 原生菜单翻译映射', menuSource.includes('const menuTranslationMap = {'), true);
 check('cablev2.js 包含 通行密钥 汉化', cableSource.includes('通行密钥'), true);
 check('webauthn.js 包含 选择通行密钥 汉化', webauthnSource.includes('选择通行密钥'), true);

@@ -1627,6 +1627,10 @@ const DOM_TRANSLATOR_INJECTION = `
     "Weekly Limit": "每周限额",
     "5-hour limit": "5 小时限额",
     "5-Hour Limit": "5 小时限额",
+    "5h limit": "5 小时限额",
+    "5h Limit": "5 小时限额",
+    "5 hour limit": "5 小时限额",
+    "5 Hour Limit": "5 小时限额",
     "Claude and GPT models": "Claude 与 GPT 模型",
     "Claude and GPT Models": "Claude 与 GPT 模型",
     "Claude and GPT 模型": "Claude 与 GPT 模型",
@@ -5557,9 +5561,27 @@ const DOM_TRANSLATOR_INJECTION = `
       isDynamic = true;
     }
 
-    // 模型配额剩余动态匹配 (例如 "100% Remaining", "85.4% remaining")
-    if (/^(\\d+(?:\\.\\d+)?%?)\\s+remaining$/i.test(trimmed)) {
-      dynamicMatch = dynamicMatch.replace(/^(\\d+(?:\\.\\d+)?%?)\\s+remaining$/i, '$1 剩余');
+    // 模型配额剩余动态匹配 (例如 "70% left", "100% Remaining", "85.4% remaining")
+    if (/^(\\d+(?:\\.\\d+)?%?)\\s+(?:remaining|left)$/i.test(trimmed)) {
+      dynamicMatch = dynamicMatch.replace(/^(\\d+(?:\\.\\d+)?%?)\\s+(?:remaining|left)$/i, '$1 剩余');
+      isDynamic = true;
+    }
+    // 限额周期动态匹配 (例如 "5h limit", "5h Limit", "24h limit", "1h limit")
+    if (/^(\\d+)h\\s+limit$/i.test(trimmed)) {
+      dynamicMatch = dynamicMatch.replace(/^(\\d+)h\\s+limit$/i, '$1 小时限额');
+      isDynamic = true;
+    }
+    // 配额重置时间动态匹配 (例如 "Resets in 15h 14m", "Resets in 4h 50m", "Resets in 4d 15h", "Resets in 28m")
+    if (/^Resets?\\s+in\\s+(.+)$/i.test(trimmed)) {
+      const timePart = trimmed.replace(/^Resets?\\s+in\\s+/i, '');
+      const formattedTime = timePart
+        .replace(/(\\d+)\\s*d(?:ays?)?/gi, '$1 天 ')
+        .replace(/(\\d+)\\s*h(?:(?:ou)?rs?)?/gi, '$1 小时 ')
+        .replace(/(\\d+)\\s*m(?:in(?:ute)?s?)?/gi, '$1 分钟 ')
+        .replace(/(\\d+)\\s*s(?:ec(?:ond)?s?)?/gi, '$1 秒 ')
+        .replace(/\\s+/g, ' ')
+        .trim();
+      dynamicMatch = formattedTime + '后重置';
       isDynamic = true;
     }
     // 剩余时间刷新动态匹配 (例如 "15 minutes", "1 hour 26 minutes", "2 hours", "1 day")
