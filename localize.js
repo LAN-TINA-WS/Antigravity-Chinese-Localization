@@ -14,7 +14,7 @@ const {
   findAvailablePatch
 } = require('./auto-restore');
 
-const CURRENT_VERSION = '2.28.1';
+const CURRENT_VERSION = '2.28.2';
 
 function compareVersions(v1, v2) {
   const parse = (v) => (v || '').replace(/^[vV]/, '').split('.').map(n => parseInt(n, 10) || 0);

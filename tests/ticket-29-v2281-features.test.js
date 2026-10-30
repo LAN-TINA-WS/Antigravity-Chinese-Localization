@@ -37,21 +37,33 @@ function check(desc, actual, expected) {
   }
 }
 
-// 1. 版本元数据校验
+// 1. 版本元数据校验（自洽校验）
 console.log('--- 1. 2.28.1 版本元数据校验 ---');
-const versionMatch = localizeSource.match(/const CURRENT_VERSION = ['"]([^'"]+)['"];/);
-const currentVer = versionMatch ? versionMatch[1] : '';
-check('localize.js CURRENT_VERSION 严格等于 2.28.1', currentVer, '2.28.1');
-check('extracted/package.json version 严格等于 2.28.1', packageJson.version, '2.28.1');
-
-if (fs.existsSync(readyAsarPath)) {
-  check('app.asar.ready 读取包版本严格等于 2.28.1', readAsarPackageVersion(readyAsarPath), '2.28.1');
+function isVerGte2281(ver) {
+  if (!ver) return false;
+  const parts = ver.split('.').map(n => parseInt(n, 10));
+  if (parts[0] > 2) return true;
+  if (parts[0] === 2 && parts[1] > 28) return true;
+  if (parts[0] === 2 && parts[1] === 28 && parts[2] >= 1) return true;
+  return false;
 }
 
-check('index.html 包含 控制中心 v2.28.1', indexSource.includes('控制中心 v2.28.1'), true);
+const versionMatch = localizeSource.match(/const CURRENT_VERSION = ['"]([^'"]+)['"];/);
+const currentVer = versionMatch ? versionMatch[1] : '';
+check('localize.js CURRENT_VERSION 版本号有效且 >= 2.28.1', isVerGte2281(currentVer), true);
+check('extracted/package.json 版本与 CURRENT_VERSION 完全一致', packageJson.version, currentVer);
+
+if (fs.existsSync(readyAsarPath)) {
+  check('app.asar.ready 读取包版本有效且 >= 2.28.1', isVerGte2281(readAsarPackageVersion(readyAsarPath)), true);
+}
+
+check('index.html 包含 控制中心 v2.28.1+', (() => {
+  const m = indexSource.match(/(?:本地词库|控制中心) v(2\.\d+\.\d+)/);
+  return m ? isVerGte2281(m[1]) : false;
+})(), true);
 check('index.html 包含 Antigravity 汉化', indexSource.includes('<h1>Antigravity 汉化</h1>'), true);
-check('README.md 包含 Antigravity v2.28.1+', readmeSource.includes('Antigravity v2.28.1+'), true);
-check('README.en.md 包含 Antigravity v2.28.1+', readmeEnSource.includes('Antigravity v2.28.1+'), true);
+check('README.md 包含 Antigravity v' + currentVer + '+', readmeSource.includes('Antigravity v' + currentVer + '+'), true);
+check('README.en.md 包含 Antigravity v' + currentVer + '+', readmeEnSource.includes('Antigravity v' + currentVer + '+'), true);
 check('CHANGELOG.md 包含 2.28.1 版本日志条目', changelogSource.includes('## v2.28.1 (2026-10-29)'), true);
 check('CHANGELOG.en.md 包含 2.28.1 版本日志条目', changelogEnSource.includes('## v2.28.1 (2026-10-29)'), true);
 

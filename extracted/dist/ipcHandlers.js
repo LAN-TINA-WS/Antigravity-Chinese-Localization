@@ -461,6 +461,7 @@ function registerIpcHandlers(storageManager) {
 }
 
 
+
 const contextMenuTranslationMap = {
   'Cut': '剪切',
   'Copy': '复制',
