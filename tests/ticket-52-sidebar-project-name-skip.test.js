@@ -263,4 +263,168 @@ assert.equal(userFolderRemote.txt.nodeValue, 'Remote');
 assert.equal(userFolderBlocked.txt.nodeValue, 'Blocked');
 assert.equal(userConvGroupRemote.txt.nodeValue, 'Remote');
 
-console.log('PASS: 左侧项目栏项目标题卡片隔离与系统内置分组放行回归测试全部通过');
+// 9. 对话悬浮卡片（I2c + b6）：带 data-project-glyph 的项目名行保持原样，后续时间/状态/类型行正常汉化
+const hoverProjectText = createText('Developer');
+const hoverProjectSpan = createElement('span', { class: 'truncate' }, [hoverProjectText]);
+const hoverProjectRow = createElement('div', { class: 'flex items-center gap-1 text-sm text-muted-foreground' }, [
+  createElement('span', { class: 'shrink-0 flex items-center' }, [
+    createElement('svg', { 'data-project-glyph': 'folder' }, []),
+  ]),
+  hoverProjectSpan,
+]);
+
+const hoverRunProjectText = createText('Run');
+const hoverRunProjectRow = createElement('div', { class: 'flex items-center gap-1 text-sm text-muted-foreground' }, [
+  createElement('span', { class: 'shrink-0 flex items-center' }, [
+    createElement('svg', { 'data-project-glyph': 'cloud' }, []),
+  ]),
+  createElement('span', { class: 'truncate' }, [hoverRunProjectText]),
+]);
+
+const hoverUpdatedText = createText('Updated 10:59');
+const hoverUpdatedRow = createElement('div', { class: 'flex items-center gap-1 text-sm text-muted-foreground' }, [
+  createElement('span', { class: 'shrink-0 flex items-center' }, [createElement('svg', {}, [])]),
+  createElement('span', { class: 'truncate' }, [hoverUpdatedText]),
+]);
+
+const hoverWorkingText = createText('Working');
+const hoverWorkingRow = createElement('div', { class: 'flex items-center gap-1 text-sm text-muted-foreground' }, [
+  createElement('span', { class: 'shrink-0 flex items-center' }, [createElement('svg', {}, [])]),
+  createElement('span', { class: 'truncate' }, [hoverWorkingText]),
+]);
+
+const hoverCard = createElement('div', { class: 'flex flex-col gap-1.5' }, [
+  hoverProjectRow,
+  hoverUpdatedRow,
+  hoverWorkingRow,
+  hoverRunProjectRow,
+]);
+body.childNodes.push(hoverCard);
+hoverCard.parentElement = body;
+translateNode(hoverCard);
+
+assert.equal(shouldSkipNode(hoverProjectText), true, '悬浮卡片项目名 Developer 必须跳过');
+assert.equal(shouldSkipNode(hoverRunProjectText), true, '悬浮卡片命中 isActionPill 的项目名 Run 必须跳过');
+assert.equal(shouldSkipNode(hoverUpdatedText), false, '悬浮卡片紧随项目行后的 Updated 时间戳必须放行');
+assert.equal(shouldSkipNode(hoverWorkingText), false, '悬浮卡片状态行 Working 必须放行');
+assert.equal(hoverProjectText.nodeValue, 'Developer');
+assert.equal(hoverRunProjectText.nodeValue, 'Run');
+assert.equal(hoverUpdatedText.nodeValue, '更新于 10:59');
+assert.equal(hoverWorkingText.nodeValue, '正在工作');
+
+// 10. 侧边栏对话副标题 / 搜索结果（直连 <svg data-project-glyph> + <span>项目名</span>）
+const subtitleDevText = createText('Developer');
+const subtitleUnknownText = createText('Unknown Project');
+const subtitleRow = createElement('span', { class: 'flex items-center gap-1' }, [
+  createElement('svg', { 'data-project-glyph': 'folder' }, []),
+  createElement('span', { class: 'truncate' }, [subtitleDevText]),
+  createElement('svg', { 'data-project-glyph': 'folder' }, []),
+  createElement('span', { class: 'truncate' }, [subtitleUnknownText]),
+]);
+body.childNodes.push(subtitleRow);
+subtitleRow.parentElement = body;
+translateNode(subtitleRow);
+
+assert.equal(shouldSkipNode(subtitleDevText), true, '直连 data-project-glyph 后的项目名 Developer 必须跳过');
+assert.equal(subtitleDevText.nodeValue, 'Developer');
+assert.equal(subtitleUnknownText.nodeValue, '未知项目');
+
+// 11. 设置页左侧边栏（settings-sidebar）：仅跳过 Projects/Workspaces 分组下的用户项目项，放行官方 Developer 设置项、Show All 与 Not in Project
+function makeSettingsNavItem(name) {
+  const txt = createText(name);
+  const btn = createElement('button', {
+    type: 'button',
+    'data-testid': `settings-nav-item-${name}`,
+  }, [createElement('span', {}, [txt])]);
+  const wrapper = createElement('div', { class: 'relative group/nav-item mx-2' }, [btn]);
+  return { wrapper, btn, txt };
+}
+
+const settingsOfficialDev = makeSettingsNavItem('Developer');
+const settingsProjectDev = makeSettingsNavItem('Developer');
+const settingsProjectRun = makeSettingsNavItem('Run');
+const settingsShowAllText = createText('Show All');
+const settingsShowAllBtn = createElement('button', { type: 'button' }, [settingsShowAllText]);
+const settingsWorkspaceTools = makeSettingsNavItem('Tools');
+const settingsNotInProjectConv = makeSettingsNavItem('Conversations');
+const settingsProjectsH2Text = createText('Projects');
+
+const settingsSidebar = createElement('div', { 'data-testid': 'settings-sidebar' }, [
+  createElement('div', { class: 'flex-1 flex flex-col gap-1 py-3 overflow-y-auto' }, [
+    createElement('div', { class: 'px-4' }, [createElement('h1', {}, [createText('Settings')])]),
+    createElement('div', { class: 'flex flex-col gap-0.5' }, [settingsOfficialDev.wrapper]),
+    createElement('div', { class: 'px-4 mt-2' }, [createElement('h2', {}, [createText('Workspaces')])]),
+    createElement('div', { class: 'flex flex-col gap-0.5' }, [settingsWorkspaceTools.wrapper]),
+    createElement('div', { class: 'px-4 mt-2' }, [createElement('h2', {}, [settingsProjectsH2Text])]),
+    createElement('div', { class: 'flex flex-col gap-0.5' }, [
+      settingsProjectDev.wrapper,
+      settingsProjectRun.wrapper,
+      settingsShowAllBtn,
+    ]),
+    createElement('div', { class: 'px-4 mt-2' }, [createElement('h2', {}, [createText('Not in Project')])]),
+    createElement('div', { class: 'flex flex-col gap-0.5' }, [settingsNotInProjectConv.wrapper]),
+  ]),
+]);
+body.childNodes.push(settingsSidebar);
+settingsSidebar.parentElement = body;
+translateNode(settingsSidebar);
+
+assert.equal(settingsProjectsH2Text.nodeValue, '项目', '设置页 Projects 分组标题本身应正常汉化');
+assert.equal(settingsOfficialDev.txt.nodeValue, '开发者', '设置页顶部 Settings 分组下的官方 Developer 开发者模式项必须正常汉化');
+assert.equal(settingsProjectDev.txt.nodeValue, 'Developer', '设置页 Projects 分组下的项目名 Developer 必须跳过');
+assert.equal(settingsProjectRun.txt.nodeValue, 'Run', '设置页 Projects 分组下撞 isActionPill 的项目名 Run 必须跳过');
+assert.equal(settingsShowAllText.nodeValue, '显示全部', '设置页 Projects 分组下的 Show All 按钮必须正常汉化');
+assert.equal(settingsWorkspaceTools.txt.nodeValue, 'Tools', '设置页 Workspaces 分组下的工作区名 Tools 必须跳过');
+assert.equal(settingsNotInProjectConv.txt.nodeValue, '对话', '设置页 Not in Project 分组下的 Conversations 必须正常汉化');
+
+// 验证分组标题已被汉化为「项目」后，增量新增/修改项目名依然保持保护
+settingsProjectDev.txt.nodeValue = 'Docs';
+notifyObserver([{ type: 'characterData', target: settingsProjectDev.txt }]);
+assert.equal(settingsProjectDev.txt.nodeValue, 'Docs');
+
+// 12. 设置页右侧项目详情大标题（紧邻 Edit project name 编辑按钮）
+const settingsTitleText = createText('Developer');
+const settingsTitleSpan = createElement('span', { class: 'text-xl font-medium truncate' }, [settingsTitleText]);
+const settingsEditBtn = createElement('button', { 'aria-label': 'Edit project name' }, [createElement('svg', {}, [])]);
+const settingsFoldersText = createText('Folders');
+const settingsDetailPanel = createElement('div', {}, [
+  createElement('div', { class: 'flex items-center gap-2 h-7' }, [settingsTitleSpan, settingsEditBtn]),
+  createElement('h2', {}, [settingsFoldersText]),
+]);
+body.childNodes.push(settingsDetailPanel);
+settingsDetailPanel.parentElement = body;
+translateNode(settingsDetailPanel);
+
+assert.equal(settingsTitleText.nodeValue, 'Developer', '设置页右侧项目大标题 Developer 必须跳过');
+assert.equal(settingsFoldersText.nodeValue, '文件夹', '设置页右侧 Folders 分区标题应正常汉化');
+
+// 验证编辑按钮 aria-label 变为中文后，切换项目名依旧跳过
+settingsEditBtn.setAttribute('aria-label', '编辑项目名称');
+settingsTitleText.nodeValue = 'Tools';
+notifyObserver([{ type: 'characterData', target: settingsTitleText }]);
+assert.equal(settingsTitleText.nodeValue, 'Tools');
+
+// 13. 对话顶部面包屑中的项目名（[data-testid="breadcrumb-segment"] + aria-label="Project: ..."）
+const breadcrumbDevText = createText('Developer');
+const breadcrumbDevLink = createElement('a', {
+  'data-testid': 'breadcrumb-segment',
+  'aria-label': 'Project: Developer',
+}, [createElement('span', {}, [breadcrumbDevText])]);
+const breadcrumbNewProjectText = createText('New Project');
+const breadcrumbNewProjectLink = createElement('a', {
+  'data-testid': 'breadcrumb-segment',
+  'aria-label': 'Project: New Project',
+}, [createElement('span', {}, [breadcrumbNewProjectText])]);
+const breadcrumbNav = createElement('nav', { 'aria-label': 'Breadcrumb' }, [
+  breadcrumbDevLink,
+  breadcrumbNewProjectLink,
+]);
+body.childNodes.push(breadcrumbNav);
+breadcrumbNav.parentElement = body;
+translateNode(breadcrumbNav);
+
+assert.equal(breadcrumbDevText.nodeValue, 'Developer', '顶部面包屑项目名 Developer 必须跳过');
+assert.equal(breadcrumbDevLink.getAttribute('aria-label'), 'Project: Developer');
+assert.equal(breadcrumbNewProjectText.nodeValue, '新建项目', '顶部面包屑 New Project 占位应正常汉化');
+
+console.log('PASS: 左侧项目栏及悬浮卡片/设置页/面包屑项目名隔离与系统内置分组放行回归测试全部通过');

@@ -2742,6 +2742,190 @@
     return isProjectHeaderElement(el) && !isSystemGroupProjectHeader(el);
   }
 
+  const SETTINGS_PROJECT_SECTION_HEADERS = new Set([
+    'projects', '项目',
+    'workspaces', '工作区'
+  ]);
+  const EDIT_PROJECT_NAME_ARIA_RE = /^(?:Edit\s+(?:project|workspace)\s+name|编辑\s*(?:项目|工作区)\s*名称)$/i;
+  const PROJECT_BREADCRUMB_ARIA_RE = /^(?:(?:Project|Workspace)\s*:\s*|(?:项目|工作区)\s*[:：]\s*)/i;
+
+  function getPreviousElementSibling(el) {
+    if (!el) return null;
+    if (el.previousElementSibling !== undefined) return el.previousElementSibling;
+    const parent = el.parentElement;
+    if (!parent || !parent.childNodes) return null;
+    const idx = Array.prototype.indexOf.call(parent.childNodes, el);
+    for (let i = idx - 1; i >= 0; i--) {
+      if (parent.childNodes[i] && parent.childNodes[i].nodeType === Node.ELEMENT_NODE) {
+        return parent.childNodes[i];
+      }
+    }
+    return null;
+  }
+
+  function getNextElementSibling(el) {
+    if (!el) return null;
+    if (el.nextElementSibling !== undefined) return el.nextElementSibling;
+    const parent = el.parentElement;
+    if (!parent || !parent.childNodes) return null;
+    const idx = Array.prototype.indexOf.call(parent.childNodes, el);
+    if (idx < 0) return null;
+    for (let i = idx + 1; i < parent.childNodes.length; i++) {
+      if (parent.childNodes[i] && parent.childNodes[i].nodeType === Node.ELEMENT_NODE) {
+        return parent.childNodes[i];
+      }
+    }
+    return null;
+  }
+
+  function isProjectGlyphIconNode(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
+    if (el.getAttribute && el.getAttribute('data-project-glyph') !== null) {
+      return true;
+    }
+    // 对话悬浮卡片（b6 组件）：<span class="shrink-0 flex items-center"><svg data-project-glyph="folder|cloud"/></span>
+    if ((el.tagName || '').toUpperCase() === 'SPAN' && !(el.textContent || '').trim()) {
+      if (typeof el.querySelector === 'function') {
+        return Boolean(el.querySelector('[data-project-glyph]'));
+      }
+      if (el.childNodes) {
+        for (let i = 0; i < el.childNodes.length; i++) {
+          const ch = el.childNodes[i];
+          if (ch && ch.nodeType === Node.ELEMENT_NODE && ch.getAttribute && ch.getAttribute('data-project-glyph') !== null) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  // 对话悬浮卡片 / 侧边栏对话副标题 / 搜索结果中紧随 [data-project-glyph] 的项目名 <span>
+  function isProjectGlyphLabelElement(el) {
+    let cur = el;
+    let depth = 0;
+    while (cur && cur !== document.body && depth < 3) {
+      if (cur.nodeType === Node.ELEMENT_NODE && (cur.tagName || '').toUpperCase() === 'SPAN') {
+        const prev = getPreviousElementSibling(cur);
+        if (isProjectGlyphIconNode(prev)) {
+          const rawLabel = (cur.innerText || cur.textContent || '').trim().toLowerCase();
+          return rawLabel !== 'unknown project' && rawLabel !== '未知项目';
+        }
+      }
+      cur = cur.parentElement;
+      depth++;
+    }
+    return false;
+  }
+
+  function isSettingsSectionHeading(el, allowedTitles) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
+    let headingEl = null;
+    if ((el.tagName || '').toUpperCase() === 'H2') {
+      headingEl = el;
+    } else if (typeof el.querySelector === 'function') {
+      headingEl = el.querySelector('h2');
+    } else if (el.childNodes) {
+      for (let i = 0; i < el.childNodes.length; i++) {
+        const ch = el.childNodes[i];
+        if (ch && ch.nodeType === Node.ELEMENT_NODE && (ch.tagName || '').toUpperCase() === 'H2') {
+          headingEl = ch;
+          break;
+        }
+      }
+    }
+    if (!headingEl) return false;
+    const text = (headingEl.innerText || headingEl.textContent || '').trim().toLowerCase();
+    return allowedTitles.has(text);
+  }
+
+  // 设置页左侧边栏 Projects / Workspaces 分组下的用户项目导航项（不影响顶部 Settings 分组下的官方 Developer 开发者模式项，也不影响 Show All / Not in Project）
+  function isSettingsProjectNavItem(el) {
+    let navBtn = null;
+    let sidebar = null;
+    let cur = el;
+    while (cur && cur !== document.body) {
+      if (cur.nodeType === Node.ELEMENT_NODE && cur.getAttribute) {
+        if (!navBtn && (cur.tagName || '').toUpperCase() === 'BUTTON') {
+          const testId = cur.getAttribute('data-testid') || '';
+          if (testId.startsWith('settings-nav-item-')) {
+            navBtn = cur;
+          }
+        }
+        if (cur.getAttribute('data-testid') === 'settings-sidebar') {
+          sidebar = cur;
+          break;
+        }
+      }
+      cur = cur.parentElement;
+    }
+    if (!navBtn || !sidebar) return false;
+    const rawLabel = (navBtn.innerText || navBtn.textContent || '').trim().toLowerCase();
+    if (rawLabel === 'unknown project' || rawLabel === '未知项目') return false;
+
+    let listNode = navBtn.parentElement;
+    while (listNode && listNode !== sidebar) {
+      const prev = getPreviousElementSibling(listNode);
+      if (isSettingsSectionHeading(prev, SETTINGS_PROJECT_SECTION_HEADERS)) {
+        return true;
+      }
+      listNode = listNode.parentElement;
+    }
+    return false;
+  }
+
+  // 设置页右侧项目详情大标题（紧邻 aria-label="Edit project name" / "Edit workspace name" 编辑按钮）
+  function isSettingsProjectTitleElement(el) {
+    let cur = el;
+    let depth = 0;
+    while (cur && cur !== document.body && depth < 3) {
+      if (cur.nodeType === Node.ELEMENT_NODE && (cur.tagName || '').toUpperCase() === 'SPAN') {
+        const next = getNextElementSibling(cur);
+        if (next && (next.tagName || '').toUpperCase() === 'BUTTON' && next.getAttribute) {
+          const aria = (next.getAttribute('aria-label') || '').trim();
+          if (EDIT_PROJECT_NAME_ARIA_RE.test(aria)) {
+            const rawLabel = (cur.innerText || cur.textContent || '').trim().toLowerCase();
+            return rawLabel !== 'unknown project' && rawLabel !== '未知项目';
+          }
+        }
+      }
+      cur = cur.parentElement;
+      depth++;
+    }
+    return false;
+  }
+
+  // 对话顶部面包屑中的项目名段（[data-testid="breadcrumb-segment"] 且 aria-label="Project: ..." / "Workspace: ..."）
+  function isProjectBreadcrumbSegment(el) {
+    let cur = el;
+    while (cur && cur !== document.body) {
+      if (cur.nodeType === Node.ELEMENT_NODE && cur.getAttribute && cur.getAttribute('data-testid') === 'breadcrumb-segment') {
+        const aria = (cur.getAttribute('aria-label') || '').trim();
+        if (PROJECT_BREADCRUMB_ARIA_RE.test(aria)) {
+          const rawLabel = (cur.innerText || cur.textContent || '').trim().toLowerCase();
+          return (
+            rawLabel !== 'unknown project' &&
+            rawLabel !== '未知项目' &&
+            rawLabel !== 'new project' &&
+            rawLabel !== '新建项目'
+          );
+        }
+        return false;
+      }
+      cur = cur.parentElement;
+    }
+    return false;
+  }
+
+  function isProtectedProjectNameElement(el) {
+    return (
+      isProjectGlyphLabelElement(el) ||
+      isSettingsProjectNavItem(el) ||
+      isSettingsProjectTitleElement(el) ||
+      isProjectBreadcrumbSegment(el)
+    );
+  }
+
   function shouldSkipNode(node) {
     if (!node) return true;
 
@@ -2772,6 +2956,12 @@
       ? element.closest('[data-testid="project-header"], button[data-project-card="true"]')
       : findProjectHeaderElement(element);
     if (projectHeader && !isSystemGroupProjectHeader(projectHeader)) {
+      return true;
+    }
+
+    // 其他项目名展示位（对话悬浮卡片/副标题/搜索结果的 data-project-glyph 紧邻标签、设置页侧栏项目列表与详情大标题、顶部项目面包屑）：
+    // 同样在 isActionPill 与 skipCache 之前瞬时拦截，防止 Developer/Run/Done 等项目名被误译
+    if (isProtectedProjectNameElement(element)) {
       return true;
     }
 
@@ -3126,7 +3316,7 @@
     if (curTag === 'PRE' || curTag === 'CODE' || curTag === 'SVG' || curTag === 'MATH' || curTag === 'MJX-CONTAINER' || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT' || isSwarmProtectedElement(cur)) {
       return true;
     }
-    if (isUserProjectHeader(cur)) {
+    if (isUserProjectHeader(cur) || isProtectedProjectNameElement(cur)) {
       return true;
     }
     if (cur.getAttribute && (
