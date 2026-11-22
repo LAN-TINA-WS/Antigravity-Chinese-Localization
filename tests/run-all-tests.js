@@ -57,6 +57,7 @@ const tests = [
   'ticket-49-v2340-remaining-gaps.test.js',
   'ticket-50-issue68-and-tier-fixes.test.js',
   'ticket-51-home-and-accessibility.test.js',
+  'ticket-52-sidebar-project-name-skip.test.js',
   'check-injection-syntax.js',
   'verify-ready-asar.js',
   'asar-version.test.js',
