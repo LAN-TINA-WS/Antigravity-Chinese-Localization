@@ -119,9 +119,57 @@ const projectRowWrapper = createElement('div', {
   'data-index': '1',
 }, [devHeader, siblingActionBtn]);
 
+// 7. 复用同一 project-header 组件的系统内置分组标题（按状态 / 按环境 / 独立 / Unknown Project）：应正常汉化
+function makeGroupRow(dropId, label, icon = 'custom') {
+  const txt = createText(label);
+  const span = createElement('span', {}, [txt]);
+  const btn = createElement('button', {
+    'data-project-card': 'true',
+    'data-testid': 'project-header',
+    'data-project-label': label,
+    'data-project-icon': icon,
+  }, [span]);
+  const row = dropId
+    ? createElement('div', { 'data-sidebar-section-drop-id': dropId }, [btn])
+    : btn;
+  return { row, btn, txt };
+}
+
+const sysBlocked = makeGroupRow('status-blocked', 'Blocked');
+const sysInProgress = makeGroupRow('status-in-progress', 'In Progress');
+const sysIdle = makeGroupRow('status-idle', 'Idle');
+const sysLocal = makeGroupRow('location-local', 'This Computer');
+const sysRemote = makeGroupRow('location-cloud', 'Remote');
+const sysStandalone = makeGroupRow('standalone', 'Standalone', 'folder');
+const sysUnknown = makeGroupRow('proj-unknown-id', 'Unknown Project', 'folder');
+const sysDetachedCustom = makeGroupRow(null, 'This Computer', 'custom');
+
+// 8. 与系统分组同名撞词的真实用户项目目录 & 用户自定义对话分组（convgroup:*）：必须严格跳过保护
+const userFolderRemote = makeGroupRow('file:///Users/demo/Remote', 'Remote', 'folder');
+const userFolderBlocked = makeGroupRow('file:///Users/demo/Blocked', 'Blocked', 'folder');
+const userConvGroupRemote = makeGroupRow('convgroup:custom-1', 'Remote', 'custom');
+
 const sidebarContainer = createElement('div', {
   'data-sidebar-scroll-container': 'true',
-}, [sectionHeading, projectRowWrapper, runHeader, cardOnlyHeader, headerOnlyDiv, headerWithAria]);
+}, [
+  sectionHeading,
+  projectRowWrapper,
+  runHeader,
+  cardOnlyHeader,
+  headerOnlyDiv,
+  headerWithAria,
+  sysBlocked.row,
+  sysInProgress.row,
+  sysIdle.row,
+  sysLocal.row,
+  sysRemote.row,
+  sysStandalone.row,
+  sysUnknown.row,
+  sysDetachedCustom.row,
+  userFolderRemote.row,
+  userFolderBlocked.row,
+  userConvGroupRemote.row,
+]);
 
 const body = createElement('body', {}, [sidebarContainer]);
 
@@ -189,4 +237,30 @@ translateNode(dynamicHeader);
 assert.equal(dynamicNameText.nodeValue, 'Docs');
 assert.equal(dynamicHeader.getAttribute('title'), 'Tools');
 
-console.log('PASS: 左侧项目栏项目标题卡片隔离与侧边栏 UI 正常汉化回归测试全部通过');
+// 验证系统内置分组标题放行汉化，且不误伤同名用户目录或自定义对话分组
+assert.equal(shouldSkipNode(sysBlocked.txt), false, 'status-blocked 系统分组应放行汉化');
+assert.equal(shouldSkipNode(sysInProgress.txt), false, 'status-in-progress 系统分组应放行汉化');
+assert.equal(shouldSkipNode(sysIdle.txt), false, 'status-idle 系统分组应放行汉化');
+assert.equal(shouldSkipNode(sysLocal.txt), false, 'location-local 系统分组应放行汉化');
+assert.equal(shouldSkipNode(sysRemote.txt), false, 'location-cloud 系统分组应放行汉化');
+assert.equal(shouldSkipNode(sysStandalone.txt), false, 'standalone 系统分组应放行汉化');
+assert.equal(shouldSkipNode(sysUnknown.txt), false, 'Unknown Project 占位应放行汉化');
+assert.equal(shouldSkipNode(sysDetachedCustom.txt), false, '无外层 drop-id 时 custom 图标系统分组兜底应放行');
+
+assert.equal(sysBlocked.txt.nodeValue, '已阻止');
+assert.equal(sysInProgress.txt.nodeValue, '进行中');
+assert.equal(sysIdle.txt.nodeValue, '空闲');
+assert.equal(sysLocal.txt.nodeValue, '本机');
+assert.equal(sysRemote.txt.nodeValue, '远程');
+assert.equal(sysStandalone.txt.nodeValue, '独立');
+assert.equal(sysUnknown.txt.nodeValue, '未知项目');
+assert.equal(sysDetachedCustom.txt.nodeValue, '本机');
+
+assert.equal(shouldSkipNode(userFolderRemote.txt), true, '名为 Remote 的真实用户项目目录必须跳过');
+assert.equal(shouldSkipNode(userFolderBlocked.txt), true, '名为 Blocked 的真实用户项目目录必须跳过');
+assert.equal(shouldSkipNode(userConvGroupRemote.txt), true, '名为 Remote 的用户自定义分组(convgroup:*)必须跳过');
+assert.equal(userFolderRemote.txt.nodeValue, 'Remote');
+assert.equal(userFolderBlocked.txt.nodeValue, 'Blocked');
+assert.equal(userConvGroupRemote.txt.nodeValue, 'Remote');
+
+console.log('PASS: 左侧项目栏项目标题卡片隔离与系统内置分组放行回归测试全部通过');

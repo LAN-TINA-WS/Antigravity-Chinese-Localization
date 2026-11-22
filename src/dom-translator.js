@@ -2423,6 +2423,85 @@
 
   const skipCache = new WeakMap();
 
+  // 左侧项目栏系统内置分组白名单：官方 B3c 组件（project-header / button[data-project-card="true"]）
+  // 除渲染真实用户项目外，还会复用于按状态（status-*）、按环境（location-*）、独立对话（standalone）及 Unknown Project；
+  // 放行这些系统分组标题正常汉化，真实用户项目卡片与用户自定义分组（convgroup:*）则严格跳过。
+  const SYSTEM_SIDEBAR_DROP_IDS = new Set([
+    'all',
+    'main-section-header',
+    'pinned',
+    'section-coordinator',
+    'standalone'
+  ]);
+  const SYSTEM_PROJECT_HEADER_LABELS = new Set([
+    'this computer', '本机',
+    'remote', '远程',
+    'blocked', '已阻止',
+    'in progress', '进行中',
+    'idle', '空闲',
+    'standalone', '独立',
+    'unknown project', '未知项目'
+  ]);
+
+  function isProjectHeaderElement(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE || !el.getAttribute) return false;
+    return (
+      el.getAttribute('data-testid') === 'project-header' ||
+      ((el.tagName || '').toUpperCase() === 'BUTTON' && el.getAttribute('data-project-card') === 'true')
+    );
+  }
+
+  function findProjectHeaderElement(node) {
+    let cur = node;
+    while (cur && cur !== document.body) {
+      if (isProjectHeaderElement(cur)) return cur;
+      cur = cur.parentElement;
+    }
+    return null;
+  }
+
+  function isSystemGroupProjectHeader(headerEl) {
+    if (!headerEl || headerEl.nodeType !== Node.ELEMENT_NODE || !headerEl.getAttribute) return false;
+    let hasExplicitDropId = false;
+    let cur = headerEl;
+    while (cur && cur !== document.body) {
+      const dropId = cur.getAttribute && cur.getAttribute('data-sidebar-section-drop-id');
+      if (dropId) {
+        if (
+          SYSTEM_SIDEBAR_DROP_IDS.has(dropId) ||
+          dropId.startsWith('status-') ||
+          dropId.startsWith('location-')
+        ) {
+          return true;
+        }
+        hasExplicitDropId = true;
+        break;
+      }
+      cur = cur.parentElement;
+    }
+    const rawLabel = (
+      headerEl.getAttribute('data-project-label') ||
+      headerEl.innerText ||
+      headerEl.textContent ||
+      ''
+    ).trim().toLowerCase();
+    if (rawLabel === 'unknown project' || rawLabel === '未知项目') {
+      return true;
+    }
+    if (
+      !hasExplicitDropId &&
+      headerEl.getAttribute('data-project-icon') === 'custom' &&
+      SYSTEM_PROJECT_HEADER_LABELS.has(rawLabel)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function isUserProjectHeader(el) {
+    return isProjectHeaderElement(el) && !isSystemGroupProjectHeader(el);
+  }
+
   function shouldSkipNode(node) {
     if (!node) return true;
 
@@ -2447,8 +2526,12 @@
       return true;
     }
 
-    // 左侧项目栏项目标题卡片：保护项目名及 title/aria-label 原样展示，防止撞词或命中 isActionPill 被误翻译
-    if (element.closest && element.closest('[data-testid="project-header"], button[data-project-card="true"]')) {
+    // 左侧项目栏真实用户项目标题卡片：保护项目名及 title/aria-label 原样展示，防止撞词或命中 isActionPill 被误翻译；
+    // 复用同一 project-header 组件的系统内置分组标题（按状态/按环境/独立/Unknown Project）则放行汉化
+    const projectHeader = element.closest
+      ? element.closest('[data-testid="project-header"], button[data-project-card="true"]')
+      : findProjectHeaderElement(element);
+    if (projectHeader && !isSystemGroupProjectHeader(projectHeader)) {
       return true;
     }
 
@@ -2584,8 +2667,6 @@
 
       if (cur.getAttribute && (
         cur.getAttribute('data-testid') === 'user-message-content' ||
-        cur.getAttribute('data-testid') === 'project-header' ||
-        (curTag === 'BUTTON' && cur.getAttribute('data-project-card') === 'true') ||
         cur.getAttribute('contenteditable') === 'true' ||
         cur.getAttribute('role') === 'textbox' ||
         cur.getAttribute('data-lexical-editor') === 'true' ||
@@ -2778,10 +2859,11 @@
     if (curTag === 'PRE' || curTag === 'CODE' || curTag === 'SVG' || curTag === 'MATH' || curTag === 'MJX-CONTAINER' || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT') {
       return true;
     }
+    if (isUserProjectHeader(cur)) {
+      return true;
+    }
     if (cur.getAttribute && (
       cur.getAttribute('data-testid') === 'user-message-content' ||
-      cur.getAttribute('data-testid') === 'project-header' ||
-      (curTag === 'BUTTON' && cur.getAttribute('data-project-card') === 'true') ||
       cur.getAttribute('role') === 'code' ||
       cur.getAttribute('data-language') ||
       cur.getAttribute('data-code') ||
