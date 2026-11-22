@@ -913,6 +913,10 @@ if (!isRemoteWindow) {
 
 // Antigravity 2.0 Chinese Localization Engine Enhanced
 (function() {
+  if (typeof window !== 'undefined') {
+    if (window.__agyDomTranslatorInitialized) return;
+    window.__agyDomTranslatorInitialized = true;
+  }
   // 2.29.1 扩展市场全量插件、提示词与生态卡片汉化
   const dictionary = {
     "File": "文件",
@@ -5366,7 +5370,138 @@ if (!isRemoteWindow) {
     "No (tell the agent what to do instead)": "否（告诉智能体改为执行什么操作）",
     "(tell the agent what to do instead)": "（告诉智能体改为执行什么操作）",
     "Allow the browser agent to download a file?": "是否允许浏览器智能体下载文件？",
-    "Requires manual confirmation.": "需要人工确认。"
+    "Requires manual confirmation.": "需要人工确认。",
+    "No swarm in this conversation": "当前对话中暂无 Swarm",
+    "Watching for a swarm": "正在等待 Swarm 启动",
+    "Looking for this conversation's swarm…": "正在查找当前对话的 Swarm…",
+    "Looking for this conversation's swarm...": "正在查找当前对话的 Swarm...",
+    "Swarms started in this conversation appear here automatically, with their board, members and @mention graph. Start one with /swarm.": "当前对话中启动的 Swarm 会自动显示在此处，包含其看板、成员与 @mention 关系图。输入 /swarm 即可启动。",
+    "Open this pane from a conversation to see its swarm. Swarms started there appear here automatically; start one with /swarm.": "请从对话中打开此面板以查看其 Swarm。在对话中启动的 Swarm 会自动显示在此处；输入 /swarm 即可启动。",
+    "Untitled swarm": "未命名 Swarm",
+    "Live": "实时",
+    "Reconnecting": "正在重连",
+    "Updates automatically": "自动更新",
+    "Lost contact with the swarm sidecar; retrying": "与 Swarm 伴生服务断开连接，正在重试",
+    "Swarm views": "Swarm 视图",
+    "Board": "看板",
+    "Graph": "关系图",
+    "Raw": "原始数据",
+    "Goal": "目标",
+    "The team": "团队成员",
+    "Coordinator · Working": "协调器 · 工作中",
+    "Planned next": "后续计划",
+    "Threads": "线程",
+    "Now": "现在",
+    "Compare with now": "与当前对比",
+    "Hide compare": "隐藏对比",
+    "Open full timeline": "打开完整时间线",
+    "Nothing blocked": "暂无阻塞项",
+    "Needs you": "需要你处理",
+    "Waiting on @coordinator": "等待 @coordinator",
+    "Stuck": "卡住",
+    "Nothing waiting": "暂无等待项",
+    "Nothing stuck": "暂无卡住项",
+    "Nothing needs you": "暂无需要你处理的事项",
+    "Nothing running": "暂无运行中任务",
+    "Nothing planned": "暂无后续计划",
+    "Moving": "推进中",
+    "Resting": "休眠中",
+    "Retired": "已停用",
+    "In review": "审核中",
+    "No tasks completed yet.": "暂未完成任何任务。",
+    "System alerts": "系统提醒",
+    "overview · from the narrator’s notes": "概览 · 来自旁白笔记",
+    "overview · from the narrator's notes": "概览 · 来自旁白笔记",
+    "narrator's page · AI-generated": "旁白视图 · AI 生成",
+    "Narrator’s page": "旁白视图",
+    "Narrator's page": "旁白视图",
+    "Retry narrator's page": "重试加载旁白视图",
+    "Want this view different? Tell the coordinator.": "想调整此视图的展示方式？直接告诉协调器即可。",
+    "Open coordinator chat": "打开协调器对话",
+    "Your swarm is starting": "Swarm 正在启动",
+    "One goal": "一个目标",
+    "The coordinator splits it into tasks.": "协调器会将其拆分为多个任务。",
+    "Many workers": "多位成员",
+    "Each takes a task, and they run in parallel.": "每位成员认领各自任务并并行执行。",
+    "One board": "一块看板",
+    "Updates land here. You step in only when asked.": "所有进展都会汇总于此，仅在需要时请你介入。",
+    "Waiting for the first update": "正在等待首条进展更新",
+    "Swarm stalled — no agents working": "Swarm 已停滞 — 当前无智能体运行",
+    "stale": "待更新",
+    "Search posts": "搜索动态",
+    "Channels": "频道",
+    "Filter by poster": "按发布者筛选",
+    "Show posts by one member": "仅显示指定成员的动态",
+    "From anyone": "所有发布者",
+    "Filter by recipient": "按提及对象筛选",
+    "Show posts that call on one member": "仅显示提及指定成员的动态",
+    "To anyone": "所有接收者",
+    "Filter by channel": "按频道筛选",
+    "Show posts in one channel": "仅显示指定频道的动态",
+    "All channels": "全部频道",
+    "all channels": "全部频道",
+    "Keep the newest post in view": "始终保持最新动态在视野内",
+    "Follow": "跟随最新",
+    "Show or hide each member's posts": "显示或隐藏各成员的动态",
+    "Latest": "跳至最新",
+    "No posts match": "没有匹配的动态",
+    "No posts yet": "暂无动态",
+    "Not on the roster": "不在成员花名册中",
+    "Search members": "搜索成员",
+    "Killed": "已终止",
+    "Active: mid-turn (thinking, running a tool, or waiting on the model)": "活跃：正在执行本轮任务（思考、调用工具或等待模型响应）",
+    "Waiting: turn ended, asleep on the board until a post wakes it": "等待中：本轮已结束，正在看板休眠等待新消息唤醒",
+    "Killed: removed from the swarm": "已终止：已从当前 Swarm 中移除",
+    "All workers": "全部成员",
+    "Filter by worker": "按成员筛选",
+    "seen just now": "刚刚活跃",
+    "Replay": "回放",
+    "Jump to start": "跳至开头",
+    "Previous post (←)": "上一条动态 (←)",
+    "Previous post": "上一条动态",
+    "Play / pause replay (space)": "播放 / 暂停回放 (空格)",
+    "Play replay": "播放回放",
+    "Pause replay": "暂停回放",
+    "Next post (→)": "下一条动态 (→)",
+    "Next post": "下一条动态",
+    "Replay position": "回放进度",
+    "Scrub through board posts": "拖动查看看板历史动态",
+    "Show everything and follow live": "显示全部并实时跟随",
+    "Graph view": "图谱视图",
+    "Hive": "蜂巢",
+    "Threads as cells, with each worker where it works": "以蜂巢格展示线程及各成员工作位置",
+    "Who @mentions whom": "展示成员间的 @mention 协作关系",
+    "Hide killed and inactive members from the graph": "在图中隐藏已终止和非活跃成员",
+    "Hide inactive": "隐藏非活跃",
+    "Draw @all as an edge to every member": "将 @all 绘制为指向所有成员的连线",
+    "Expand @all": "展开 @all",
+    "Replay pacing": "回放节奏",
+    "Even pacing": "均匀节奏",
+    "Real-time gaps": "真实时间间隔",
+    "Replay speed": "回放倍速",
+    "Export graph replay as an animated GIF": "将关系图回放导出为动态 GIF",
+    "Export GIF": "导出 GIF",
+    "Exporting…": "正在导出…",
+    "Nothing to export yet.": "暂无可导出的内容。",
+    "Could not download GIF from embedded pane.": "无法在嵌入面板中直接下载 GIF。",
+    "Could not export GIF.": "导出 GIF 失败。",
+    "@mention, width = count": "@mention 连线，粗细表示次数",
+    "via @all": "通过 @all 广播",
+    "posted with no mention": "未提及他人的动态",
+    "@all posts, drawn by Expand @all": "@all 广播动态，开启“展开 @all”时绘制",
+    "Tasks done": "已完成任务",
+    "Message just sent": "刚发送的消息",
+    "Waiting on": "等待中",
+    "No one is on this thread yet.": "此线程暂时还没有成员。",
+    "Copy failed": "复制失败",
+    "Close preview": "关闭预览",
+    "Exported swarm graph replay": "已导出的 Swarm 关系图回放",
+    "Right-click image to save, or open in a new tab.": "右键图片即可保存，或在新标签页中打开。",
+    "Frames": "帧列表",
+    "That link isn't allowed here.": "此处不允许打开该链接。",
+    "Opening files needs the app.": "打开文件需要在客户端内操作。",
+    "Click a link in the view to open it.": "请点击视图中的链接来打开。",
+    "Waiting for posts": "等待看板新动态"
 };
 
   const coreWords = {
@@ -7789,6 +7924,197 @@ if (!isRemoteWindow) {
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
+
+    // ===== Swarm 多智能体协作面板动态模板 (plugin:// sidecar UI) =====
+    if (/^(\d+)\s+of\s+(\d+)\s+tasks?\s+done$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+of\s+(\d+)\s+tasks?\s+done$/i, '$1 / $2 项任务已完成');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+of\s+(\d+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+of\s+(\d+)$/i, '$1 / $2');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+threads?\s+open$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+threads?\s+open$/i, '$1 个线程进行中');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+waiting\s+on\s+@([A-Za-z0-9_.-]+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+waiting\s+on\s+@([A-Za-z0-9_.-]+)$/, '$1 项正在等待 @$2');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+(stuck|needs?\s+you|in\s+review|active)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+(stuck|needs?\s+you|in\s+review|active)$/i, (_m, n, kind) => {
+        const lk = kind.toLowerCase();
+        if (lk === 'stuck') return n + ' 项卡住';
+        if (lk.startsWith('need')) return n + ' 项需要你处理';
+        if (lk === 'in review') return n + ' 项审核中';
+        return n + ' 项活跃';
+      });
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Up\s+next\s+·\s+(\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Up\s+next\s+·\s+(\d+)$/, '接下来 · $1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^\+(\d+)\s+more$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^\+(\d+)\s+more$/i, '还有 +$1 项');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Waiting\s+on\s+@([A-Za-z0-9_.-]+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Waiting\s+on\s+@([A-Za-z0-9_.-]+)$/, '等待 @$1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Waiting\s+on\s+(\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Waiting\s+on\s+(\d+)$/, '等待 $1 位成员');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Working\s+for\s+@([A-Za-z0-9_.-]+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Working\s+for\s+@([A-Za-z0-9_.-]+)$/, '正在为 @$1 处理');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+posts?\s+over\s+(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+posts?\s+over\s+(.+)$/i, (_m, n, dur) => n + ' 条动态 · 历时 ' + formatDurationCn(dur));
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+posts?\s+since\s+the\s+view\s+was\s+updated$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+posts?\s+since\s+the\s+view\s+was\s+updated$/i, '自视图上次更新以来新增了 $1 条动态');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+posts?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+posts?$/i, '$1 条动态');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^last\s+seen\s+(\d+)([mhd])\s+ago$/i.test(trimmed)) {
+      const unitMap = { m: '分钟', h: '小时', d: '天' };
+      const fixed = trimmed.replace(/^last\s+seen\s+(\d+)([mhd])\s+ago$/i, (_m, n, u) => '最近活跃于 ' + n + ' ' + unitMap[u.toLowerCase()] + '前');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Runs\s+on\s+(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Runs\s+on\s+(.+)$/, '运行于 $1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Open\s+@([A-Za-z0-9_.-]+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Open\s+@([A-Za-z0-9_.-]+)$/, '打开 @$1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Go\s+to\s+#(\d+)\s+on\s+the\s+Board$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Go\s+to\s+#(\d+)\s+on\s+the\s+Board$/, '跳转到看板 #$1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Posted\s+in\s+#([A-Za-z0-9_.-]+);\s+click\s+to\s+show\s+only\s+#([A-Za-z0-9_.-]+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Posted\s+in\s+#([A-Za-z0-9_.-]+);\s+click\s+to\s+show\s+only\s+#([A-Za-z0-9_.-]+)$/, '发布于 #$1；点击仅查看 #$2');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Exporting\s+(\d+)%$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Exporting\s+(\d+)%$/, '正在导出 $1%');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Exported\s+(.+?)\s+\((.+)\)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Exported\s+(.+?)\s+\((.+)\)$/, '已导出 $1（$2）');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^GIF\s+ready\s+\((.+)\)\s+—\s+right-click\s+image\s+to\s+save\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^GIF\s+ready\s+\((.+)\)\s+—\s+right-click\s+image\s+to\s+save\.$/, 'GIF 已就绪（$1）— 右键图片即可保存。');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Rendering\s+(.+?)…$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Rendering\s+(.+?)…$/, '正在渲染 $1…');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Download\s+(.+\.gif)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Download\s+(.+\.gif)$/i, '下载 $1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+frames?\s+·\s+(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+frames?\s+·\s+(.+)$/i, '$1 帧 · $2');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Narrator\s+read\s+up\s+to\s+#(\d+)\s+of\s+(\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Narrator\s+read\s+up\s+to\s+#(\d+)\s+of\s+(\d+)$/, '旁白已阅读至 #$1 / $2');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^overview\s+·\s+from\s+the\s+narrator['’]s\s+notes\s+·\s+(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^overview\s+·\s+from\s+the\s+narrator['’]s\s+notes\s+·\s+(.+)$/i, '概览 · 来自旁白笔记 · $1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Opening\s+(.+?)'s\s+conversation\s+needs\s+the\s+app\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Opening\s+(.+?)'s\s+conversation\s+needs\s+the\s+app\.$/, '打开 $1 的对话需要在客户端内操作。');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(.+?)\s+runs\s+on\s+(.+?);\s+open\s+it\s+there\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^(.+?)\s+runs\s+on\s+(.+?);\s+open\s+it\s+there\.$/, '$1 运行在 $2 上，请在对应设备打开。');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Now\s+·\s+(\d+)\s+\/\s+(\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Now\s+·\s+(\d+)\s+\/\s+(\d+)$/, '现在 · $1 / $2');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Coordinator\s+·\s+(\d+)\s+of\s+(\d+)\s+done(?:\s+·\s+Needs you)?$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Coordinator\s+·\s+(\d+)\s+of\s+(\d+)\s+done(\s+·\s+Needs you)?$/,
+        (_m, d, t, needs) => '协调器 · 已完成 ' + d + ' / ' + t + (needs ? ' · 需要你处理' : '')
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
     // 5. 大小写不敏感词典查找与末尾标点剥离重拼（O(1)，命中写入 stringCache）
     const caseInsensitiveHit = lowerDictionary.get(trimmed.toLowerCase());
     if (caseInsensitiveHit !== undefined) {
@@ -7910,7 +8236,106 @@ if (!isRemoteWindow) {
     'Git Diff', 'Git 差异'
   ]);
 
+  const SWARM_PROTECTED_CLASSES = [
+    'msg-body', 'mention', 'msg-author', 'o2-mauth', 'chip-name', 'o2-wchip',
+    'hv-nm', 'ov-who', 'o2-runt', 'o2-runsum', 'o2-runnote', 'o2-donem',
+    'o2-mnow', 'o2-mrole', 'o2-rcap', 'o2-tvcap', 'o2-thg', 'o2-sttxt'
+  ];
+
+  function isSwarmProtectedElement(el) {
+    if (!el) return false;
+    if (el.classList) {
+      for (let i = 0; i < SWARM_PROTECTED_CLASSES.length; i++) {
+        if (el.classList.contains(SWARM_PROTECTED_CLASSES[i])) return true;
+      }
+    }
+    const tag = (el.tagName || '').toUpperCase();
+    if ((tag === 'B' || tag === 'P') && el.parentElement && el.parentElement.classList && el.parentElement.classList.contains('o2-goal')) {
+      return true;
+    }
+    return false;
+  }
+
   const skipCache = new WeakMap();
+
+  // 左侧项目栏系统内置分组白名单：官方 B3c 组件（project-header / button[data-project-card="true"]）
+  // 除渲染真实用户项目外，还会复用于按状态（status-*）、按环境（location-*）、独立对话（standalone）及 Unknown Project；
+  // 放行这些系统分组标题正常汉化，真实用户项目卡片与用户自定义分组（convgroup:*）则严格跳过。
+  const SYSTEM_SIDEBAR_DROP_IDS = new Set([
+    'all',
+    'main-section-header',
+    'pinned',
+    'section-coordinator',
+    'standalone'
+  ]);
+  const SYSTEM_PROJECT_HEADER_LABELS = new Set([
+    'this computer', '本机',
+    'remote', '远程',
+    'blocked', '已阻止',
+    'in progress', '进行中',
+    'idle', '空闲',
+    'standalone', '独立',
+    'unknown project', '未知项目'
+  ]);
+
+  function isProjectHeaderElement(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE || !el.getAttribute) return false;
+    return (
+      el.getAttribute('data-testid') === 'project-header' ||
+      ((el.tagName || '').toUpperCase() === 'BUTTON' && el.getAttribute('data-project-card') === 'true')
+    );
+  }
+
+  function findProjectHeaderElement(node) {
+    let cur = node;
+    while (cur && cur !== document.body) {
+      if (isProjectHeaderElement(cur)) return cur;
+      cur = cur.parentElement;
+    }
+    return null;
+  }
+
+  function isSystemGroupProjectHeader(headerEl) {
+    if (!headerEl || headerEl.nodeType !== Node.ELEMENT_NODE || !headerEl.getAttribute) return false;
+    let hasExplicitDropId = false;
+    let cur = headerEl;
+    while (cur && cur !== document.body) {
+      const dropId = cur.getAttribute && cur.getAttribute('data-sidebar-section-drop-id');
+      if (dropId) {
+        if (
+          SYSTEM_SIDEBAR_DROP_IDS.has(dropId) ||
+          dropId.startsWith('status-') ||
+          dropId.startsWith('location-')
+        ) {
+          return true;
+        }
+        hasExplicitDropId = true;
+        break;
+      }
+      cur = cur.parentElement;
+    }
+    const rawLabel = (
+      headerEl.getAttribute('data-project-label') ||
+      headerEl.innerText ||
+      headerEl.textContent ||
+      ''
+    ).trim().toLowerCase();
+    if (rawLabel === 'unknown project' || rawLabel === '未知项目') {
+      return true;
+    }
+    if (
+      !hasExplicitDropId &&
+      headerEl.getAttribute('data-project-icon') === 'custom' &&
+      SYSTEM_PROJECT_HEADER_LABELS.has(rawLabel)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function isUserProjectHeader(el) {
+    return isProjectHeaderElement(el) && !isSystemGroupProjectHeader(el);
+  }
 
   function shouldSkipNode(node) {
     if (!node) return true;
@@ -7933,6 +8358,15 @@ if (!isRemoteWindow) {
     const skipTags = ['SCRIPT', 'STYLE', 'NOSCRIPT', 'KBD', 'SAMP', 'VAR', 'SVG', 'MATH', 'CODE', 'PRE', 'INPUT', 'TEXTAREA'];
     if (skipTags.includes(upperTag)) {
       skipCache.set(element, true);
+      return true;
+    }
+
+    // 左侧项目栏真实用户项目标题卡片：保护项目名及 title/aria-label 原样展示，防止撞词或命中 isActionPill 被误翻译；
+    // 复用同一 project-header 组件的系统内置分组标题（按状态/按环境/独立/Unknown Project）则放行汉化
+    const projectHeader = element.closest
+      ? element.closest('[data-testid="project-header"], button[data-project-card="true"]')
+      : findProjectHeaderElement(element);
+    if (projectHeader && !isSystemGroupProjectHeader(projectHeader)) {
       return true;
     }
 
@@ -7970,7 +8404,7 @@ if (!isRemoteWindow) {
       let checkCur = element;
       while (checkCur && checkCur !== document.body) {
         const curTag = (checkCur.tagName || '').toUpperCase();
-        if (curTag === 'CODE' || curTag === 'PRE' || curTag === 'SVG' || curTag === 'MATH') {
+        if (curTag === 'CODE' || curTag === 'PRE' || curTag === 'SVG' || curTag === 'MATH' || isSwarmProtectedElement(checkCur)) {
           inProtectedAncestor = true;
           break;
         }
@@ -8081,7 +8515,7 @@ if (!isRemoteWindow) {
         break;
       }
 
-      if (cur.classList && (
+      if (isSwarmProtectedElement(cur) || (cur.classList && (
         cur.classList.contains('group/user-input-step') ||
         cur.classList.contains('user-message') ||
         cur.classList.contains('cursor-text') ||
@@ -8089,7 +8523,7 @@ if (!isRemoteWindow) {
         cur.classList.contains('editor-instance') ||
         cur.classList.contains('input-area') ||
         cur.classList.contains('chat-input')
-      )) {
+      ))) {
         shouldSkip = true;
         break;
       }
@@ -8257,7 +8691,10 @@ if (!isRemoteWindow) {
   function isNonComposerProtectedSelf(cur) {
     if (!cur || cur.nodeType !== Node.ELEMENT_NODE) return false;
     const curTag = (cur.tagName || '').toUpperCase();
-    if (curTag === 'PRE' || curTag === 'CODE' || curTag === 'SVG' || curTag === 'MATH' || curTag === 'MJX-CONTAINER' || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT') {
+    if (curTag === 'PRE' || curTag === 'CODE' || curTag === 'SVG' || curTag === 'MATH' || curTag === 'MJX-CONTAINER' || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT' || isSwarmProtectedElement(cur)) {
+      return true;
+    }
+    if (isUserProjectHeader(cur)) {
       return true;
     }
     if (cur.getAttribute && (

@@ -355,21 +355,33 @@ function replaceInFile(filePath, target, replacement) {
     throw new Error(`找不到要修改的文件: ${filePath}`);
   }
   let content = fs.readFileSync(filePath, 'utf-8');
-  if (replacement.includes(target) && content.includes(replacement)) {
-    log(`文件 ${path.basename(filePath)} 已经应用过此汉化修改，跳过。`);
-    return;
+  let effTarget = target;
+  let effReplacement = replacement;
+  if (!content.includes(effTarget) && content.includes('\r\n') && target.includes('\n') && !target.includes('\r\n')) {
+    const crlfTarget = target.replace(/\n/g, '\r\n');
+    const crlfReplacement = replacement.replace(/\n/g, '\r\n');
+    if (content.includes(crlfTarget) || content.includes(crlfReplacement)) {
+      effTarget = crlfTarget;
+      effReplacement = crlfReplacement;
+    }
   }
-  if (!content.includes(target)) {
-    if (content.includes(replacement)) {
+  if (effReplacement.includes(effTarget) && content.includes(effReplacement)) {
+    log(`文件 ${path.basename(filePath)} 已经应用过此汉化修改，跳过。`);
+    return true;
+  }
+  if (!content.includes(effTarget)) {
+    if (content.includes(effReplacement)) {
       log(`文件 ${path.basename(filePath)} 已经应用过此汉化修改，跳过。`);
+      return true;
     } else {
       log(`提示：文件 ${path.basename(filePath)} 未找到匹配目标内容，跳过。`);
+      return false;
     }
-    return;
   }
-  content = content.split(target).join(replacement);
+  content = content.split(effTarget).join(effReplacement);
   fs.writeFileSync(filePath, content, 'utf-8');
   log(`已成功修改 ${path.basename(filePath)}`);
+  return true;
 }
 
 // Perform localization modification operations on extracted files
@@ -1865,7 +1877,7 @@ function describeSshConfigProblem(file, { what, why, fix }) {
   // 26. Patch dist/utils.js (为 Swarm 等 plugin:// 跨域侧栏子框架复用 preload DOM 汉化引擎)
   const utilsPath = path.join(targetExtractDir, 'dist', 'utils.js');
   if (fs.existsSync(utilsPath)) {
-    replaceInFile(
+    const pluginHookInjected = replaceInFile(
       utilsPath,
       `    const handleDidFailLoad = (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
         // Ignore subframes and benign aborted navigations (ERR_ABORTED = -3).
@@ -1933,18 +1945,20 @@ function describeSshConfigProblem(file, { what, why, fix }) {
         }
     };`
     );
-    replaceInFile(
-      utilsPath,
-      `        hubContents.off?.('did-fail-load', handleDidFailLoad);`,
-      `        hubContents.off?.('did-fail-load', handleDidFailLoad);
+    if (pluginHookInjected) {
+      replaceInFile(
+        utilsPath,
+        `        hubContents.off?.('did-fail-load', handleDidFailLoad);`,
+        `        hubContents.off?.('did-fail-load', handleDidFailLoad);
         hubContents.off?.('did-frame-finish-load', handlePluginSubframeLoad);`
-    );
-    replaceInFile(
-      utilsPath,
-      `    hubContents.on('did-fail-load', handleDidFailLoad);`,
-      `    hubContents.on('did-fail-load', handleDidFailLoad);
+      );
+      replaceInFile(
+        utilsPath,
+        `    hubContents.on('did-fail-load', handleDidFailLoad);`,
+        `    hubContents.on('did-fail-load', handleDidFailLoad);
     hubContents.on('did-frame-finish-load', handlePluginSubframeLoad);`
-    );
+      );
+    }
   }
 
   log('汉化修改注入完成！');

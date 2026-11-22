@@ -1203,6 +1203,57 @@ function createWindow(url, storageManager, options) {
         }
         console.warn(`[HubWindow] Main-frame load failed (${errorCode} ${errorDescription}): ${(0, authBootstrap_1.redactUrlTokens)(validatedURL)}`);
     };
+    // Antigravity 2.0 Plugin Subframe DOM Localization Hook (Swarm & plugin:// sidecars)
+    const getPluginDomI18nSource = () => {
+        if (typeof globalThis.__agyCachedPluginDomI18nSource === 'string') {
+            return globalThis.__agyCachedPluginDomI18nSource;
+        }
+        try {
+            const raw = fs.readFileSync(path_1.default.join(__dirname, 'preload.js'), 'utf-8');
+            const marker = '// Antigravity 2.0 Chinese Localization Engine';
+            const idx = raw.indexOf(marker);
+            globalThis.__agyCachedPluginDomI18nSource = idx !== -1 ? raw.slice(idx) : '';
+        }
+        catch {
+            globalThis.__agyCachedPluginDomI18nSource = '';
+        }
+        return globalThis.__agyCachedPluginDomI18nSource;
+    };
+    const injectPluginFrameLocalization = (frame) => {
+        if (!frame || frame.isDestroyed?.()) {
+            return;
+        }
+        const frameUrl = typeof frame.url === 'string' ? frame.url : '';
+        if (!/^plugin:\/\//i.test(frameUrl)) {
+            return;
+        }
+        const source = getPluginDomI18nSource();
+        if (!source || typeof frame.executeJavaScript !== 'function') {
+            return;
+        }
+        void Promise.resolve(frame.executeJavaScript(source, false)).catch(() => undefined);
+    };
+    const handlePluginSubframeLoad = (_event, isMainFrame, frameProcessId, frameRoutingId) => {
+        if (isMainFrame) {
+            return;
+        }
+        let targetFrame;
+        if (typeof frameProcessId === 'number' &&
+            typeof frameRoutingId === 'number' &&
+            typeof electron_1.webFrameMain?.fromId === 'function') {
+            targetFrame = electron_1.webFrameMain.fromId(frameProcessId, frameRoutingId);
+        }
+        if (targetFrame) {
+            injectPluginFrameLocalization(targetFrame);
+            return;
+        }
+        const subframes = hubContents.mainFrame?.framesInSubtree ?? [];
+        for (const f of subframes) {
+            if (f && f !== hubContents.mainFrame) {
+                injectPluginFrameLocalization(f);
+            }
+        }
+    };
     win.on('closed', () => {
         notifyHubFocusChange();
         for (const [id, mappedWin] of windowByWebContentsId.entries()) {
@@ -1218,6 +1269,7 @@ function createWindow(url, storageManager, options) {
         hubContents.off?.('will-navigate', guardExternalNavigation);
         hubContents.off?.('will-redirect', guardExternalNavigation);
         hubContents.off?.('did-fail-load', handleDidFailLoad);
+        hubContents.off?.('did-frame-finish-load', handlePluginSubframeLoad);
         bootstrappingWindows.delete(win);
         expectedOriginByWindow.delete(win);
         navigationSeqByWindow.delete(win);
@@ -1253,6 +1305,7 @@ function createWindow(url, storageManager, options) {
     hubContents.on('will-navigate', guardExternalNavigation);
     hubContents.on('will-redirect', guardExternalNavigation);
     hubContents.on('did-fail-load', handleDidFailLoad);
+    hubContents.on('did-frame-finish-load', handlePluginSubframeLoad);
     (0, loadingOverlay_1.attachLoadingOverlay)(win, foregroundColor, backgroundColor);
     (0, keybindings_1.registerKeybindings)(win, {
         createNewWindow: () => {

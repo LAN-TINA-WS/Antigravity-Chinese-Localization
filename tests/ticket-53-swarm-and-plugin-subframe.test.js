@@ -5,7 +5,7 @@ const path = require('path');
 const assert = require('assert');
 const { loadTranslatorSandbox } = require('./helpers/translator-loader');
 
-console.log('=== 开始 Ticket-52 Swarm 侧栏面板与 plugin:// 子框架注入专项测试 ===\n');
+console.log('=== 开始 Ticket-53 Swarm 侧栏面板与 plugin:// 子框架注入专项测试 ===\n');
 
 const ROOT = path.resolve(__dirname, '..');
 let passed = 0;
@@ -219,7 +219,7 @@ check('extracted/dist/utils.js 监听 did-frame-finish-load', utilsSrc.includes(
 check('extracted/dist/utils.js 关闭窗口时清理 did-frame-finish-load', utilsSrc.includes("hubContents.off?.('did-frame-finish-load', handlePluginSubframeLoad)"), true);
 check('extracted/dist/utils.js 仅对 plugin:// 协议放行执行', utilsSrc.includes('/^plugin:\\/\\//i.test(frameUrl)'), true);
 
-console.log(`\n=== Ticket-52 测试总结: ${passed}/${total} 通过 ===`);
+console.log(`\n=== Ticket-53 测试总结: ${passed}/${total} 通过 ===`);
 if (passed !== total) {
   process.exit(1);
 }
