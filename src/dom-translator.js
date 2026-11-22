@@ -1165,6 +1165,24 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
+    if (/^Sign-ins to (.+) are kept in the cloud with your account\.?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Sign-ins to (.+) are kept in the cloud with your account\.?$/i,
+        (_m, providers) => '登录到 ' + providers + ' 的凭据将随您的账户保存在云端。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Could not clear site data for (.+?)\.?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Could not clear site data for (.+?)\.?$/i,
+        (_m, host) => '无法清除 ' + host + ' 的站点数据。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
     if (/^Send feedback as\s+(.+)$/i.test(trimmed)) {
       const fixed = trimmed.replace(/^Send feedback as\s+(.+)$/i, (_m, u) => '以 ' + u + ' 身份发送反馈');
       cacheSet(trimmed, fixed);
