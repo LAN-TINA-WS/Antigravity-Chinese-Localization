@@ -2447,6 +2447,11 @@
       return true;
     }
 
+    // 左侧项目栏项目标题卡片：保护项目名及 title/aria-label 原样展示，防止撞词或命中 isActionPill 被误翻译
+    if (element.closest && element.closest('[data-testid="project-header"], button[data-project-card="true"]')) {
+      return true;
+    }
+
     // 斜杠命令与提及建议菜单触发词标签（动态复用节点，绝不写入 skipCache 防止缓存毒化）
     const isMenuOptionLabel = element.closest && element.closest('[data-testid="menu-option-label"]');
     if (isMenuOptionLabel) {
@@ -2579,6 +2584,8 @@
 
       if (cur.getAttribute && (
         cur.getAttribute('data-testid') === 'user-message-content' ||
+        cur.getAttribute('data-testid') === 'project-header' ||
+        (curTag === 'BUTTON' && cur.getAttribute('data-project-card') === 'true') ||
         cur.getAttribute('contenteditable') === 'true' ||
         cur.getAttribute('role') === 'textbox' ||
         cur.getAttribute('data-lexical-editor') === 'true' ||
@@ -2773,6 +2780,8 @@
     }
     if (cur.getAttribute && (
       cur.getAttribute('data-testid') === 'user-message-content' ||
+      cur.getAttribute('data-testid') === 'project-header' ||
+      (curTag === 'BUTTON' && cur.getAttribute('data-project-card') === 'true') ||
       cur.getAttribute('role') === 'code' ||
       cur.getAttribute('data-language') ||
       cur.getAttribute('data-code') ||
