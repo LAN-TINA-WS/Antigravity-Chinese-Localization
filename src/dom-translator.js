@@ -1,5 +1,9 @@
 // Antigravity 2.0 Chinese Localization Engine Enhanced
 (function() {
+  if (typeof window !== 'undefined') {
+    if (window.__agyDomTranslatorInitialized) return;
+    window.__agyDomTranslatorInitialized = true;
+  }
   // 2.29.1 扩展市场全量插件、提示词与生态卡片汉化
   const dictionary = /* __AGY_DICTIONARY__ */ {};
 
@@ -2300,6 +2304,197 @@
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
+
+    // ===== Swarm 多智能体协作面板动态模板 (plugin:// sidecar UI) =====
+    if (/^(\d+)\s+of\s+(\d+)\s+tasks?\s+done$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+of\s+(\d+)\s+tasks?\s+done$/i, '$1 / $2 项任务已完成');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+of\s+(\d+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+of\s+(\d+)$/i, '$1 / $2');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+threads?\s+open$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+threads?\s+open$/i, '$1 个线程进行中');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+waiting\s+on\s+@([A-Za-z0-9_.-]+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+waiting\s+on\s+@([A-Za-z0-9_.-]+)$/, '$1 项正在等待 @$2');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+(stuck|needs?\s+you|in\s+review|active)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+(stuck|needs?\s+you|in\s+review|active)$/i, (_m, n, kind) => {
+        const lk = kind.toLowerCase();
+        if (lk === 'stuck') return n + ' 项卡住';
+        if (lk.startsWith('need')) return n + ' 项需要你处理';
+        if (lk === 'in review') return n + ' 项审核中';
+        return n + ' 项活跃';
+      });
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Up\s+next\s+·\s+(\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Up\s+next\s+·\s+(\d+)$/, '接下来 · $1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^\+(\d+)\s+more$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^\+(\d+)\s+more$/i, '还有 +$1 项');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Waiting\s+on\s+@([A-Za-z0-9_.-]+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Waiting\s+on\s+@([A-Za-z0-9_.-]+)$/, '等待 @$1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Waiting\s+on\s+(\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Waiting\s+on\s+(\d+)$/, '等待 $1 位成员');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Working\s+for\s+@([A-Za-z0-9_.-]+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Working\s+for\s+@([A-Za-z0-9_.-]+)$/, '正在为 @$1 处理');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+posts?\s+over\s+(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+posts?\s+over\s+(.+)$/i, (_m, n, dur) => n + ' 条动态 · 历时 ' + formatDurationCn(dur));
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+posts?\s+since\s+the\s+view\s+was\s+updated$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+posts?\s+since\s+the\s+view\s+was\s+updated$/i, '自视图上次更新以来新增了 $1 条动态');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+posts?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+posts?$/i, '$1 条动态');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^last\s+seen\s+(\d+)([mhd])\s+ago$/i.test(trimmed)) {
+      const unitMap = { m: '分钟', h: '小时', d: '天' };
+      const fixed = trimmed.replace(/^last\s+seen\s+(\d+)([mhd])\s+ago$/i, (_m, n, u) => '最近活跃于 ' + n + ' ' + unitMap[u.toLowerCase()] + '前');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Runs\s+on\s+(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Runs\s+on\s+(.+)$/, '运行于 $1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Open\s+@([A-Za-z0-9_.-]+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Open\s+@([A-Za-z0-9_.-]+)$/, '打开 @$1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Go\s+to\s+#(\d+)\s+on\s+the\s+Board$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Go\s+to\s+#(\d+)\s+on\s+the\s+Board$/, '跳转到看板 #$1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Posted\s+in\s+#([A-Za-z0-9_.-]+);\s+click\s+to\s+show\s+only\s+#([A-Za-z0-9_.-]+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Posted\s+in\s+#([A-Za-z0-9_.-]+);\s+click\s+to\s+show\s+only\s+#([A-Za-z0-9_.-]+)$/, '发布于 #$1；点击仅查看 #$2');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Exporting\s+(\d+)%$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Exporting\s+(\d+)%$/, '正在导出 $1%');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Exported\s+(.+?)\s+\((.+)\)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Exported\s+(.+?)\s+\((.+)\)$/, '已导出 $1（$2）');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^GIF\s+ready\s+\((.+)\)\s+—\s+right-click\s+image\s+to\s+save\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^GIF\s+ready\s+\((.+)\)\s+—\s+right-click\s+image\s+to\s+save\.$/, 'GIF 已就绪（$1）— 右键图片即可保存。');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Rendering\s+(.+?)…$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Rendering\s+(.+?)…$/, '正在渲染 $1…');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Download\s+(.+\.gif)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^Download\s+(.+\.gif)$/i, '下载 $1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+frames?\s+·\s+(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+)\s+frames?\s+·\s+(.+)$/i, '$1 帧 · $2');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Narrator\s+read\s+up\s+to\s+#(\d+)\s+of\s+(\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Narrator\s+read\s+up\s+to\s+#(\d+)\s+of\s+(\d+)$/, '旁白已阅读至 #$1 / $2');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^overview\s+·\s+from\s+the\s+narrator['’]s\s+notes\s+·\s+(.+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^overview\s+·\s+from\s+the\s+narrator['’]s\s+notes\s+·\s+(.+)$/i, '概览 · 来自旁白笔记 · $1');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Opening\s+(.+?)'s\s+conversation\s+needs\s+the\s+app\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Opening\s+(.+?)'s\s+conversation\s+needs\s+the\s+app\.$/, '打开 $1 的对话需要在客户端内操作。');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(.+?)\s+runs\s+on\s+(.+?);\s+open\s+it\s+there\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^(.+?)\s+runs\s+on\s+(.+?);\s+open\s+it\s+there\.$/, '$1 运行在 $2 上，请在对应设备打开。');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Now\s+·\s+(\d+)\s+\/\s+(\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Now\s+·\s+(\d+)\s+\/\s+(\d+)$/, '现在 · $1 / $2');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Coordinator\s+·\s+(\d+)\s+of\s+(\d+)\s+done(?:\s+·\s+Needs you)?$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Coordinator\s+·\s+(\d+)\s+of\s+(\d+)\s+done(\s+·\s+Needs you)?$/,
+        (_m, d, t, needs) => '协调器 · 已完成 ' + d + ' / ' + t + (needs ? ' · 需要你处理' : '')
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
     // 5. 大小写不敏感词典查找与末尾标点剥离重拼（O(1)，命中写入 stringCache）
     const caseInsensitiveHit = lowerDictionary.get(trimmed.toLowerCase());
     if (caseInsensitiveHit !== undefined) {
@@ -2421,6 +2616,26 @@
     'Git Diff', 'Git 差异'
   ]);
 
+  const SWARM_PROTECTED_CLASSES = [
+    'msg-body', 'mention', 'msg-author', 'o2-mauth', 'chip-name', 'o2-wchip',
+    'hv-nm', 'ov-who', 'o2-runt', 'o2-runsum', 'o2-runnote', 'o2-donem',
+    'o2-mnow', 'o2-mrole', 'o2-rcap', 'o2-tvcap', 'o2-thg', 'o2-sttxt'
+  ];
+
+  function isSwarmProtectedElement(el) {
+    if (!el) return false;
+    if (el.classList) {
+      for (let i = 0; i < SWARM_PROTECTED_CLASSES.length; i++) {
+        if (el.classList.contains(SWARM_PROTECTED_CLASSES[i])) return true;
+      }
+    }
+    const tag = (el.tagName || '').toUpperCase();
+    if ((tag === 'B' || tag === 'P') && el.parentElement && el.parentElement.classList && el.parentElement.classList.contains('o2-goal')) {
+      return true;
+    }
+    return false;
+  }
+
   const skipCache = new WeakMap();
 
   function shouldSkipNode(node) {
@@ -2481,7 +2696,7 @@
       let checkCur = element;
       while (checkCur && checkCur !== document.body) {
         const curTag = (checkCur.tagName || '').toUpperCase();
-        if (curTag === 'CODE' || curTag === 'PRE' || curTag === 'SVG' || curTag === 'MATH') {
+        if (curTag === 'CODE' || curTag === 'PRE' || curTag === 'SVG' || curTag === 'MATH' || isSwarmProtectedElement(checkCur)) {
           inProtectedAncestor = true;
           break;
         }
@@ -2592,7 +2807,7 @@
         break;
       }
 
-      if (cur.classList && (
+      if (isSwarmProtectedElement(cur) || (cur.classList && (
         cur.classList.contains('group/user-input-step') ||
         cur.classList.contains('user-message') ||
         cur.classList.contains('cursor-text') ||
@@ -2600,7 +2815,7 @@
         cur.classList.contains('editor-instance') ||
         cur.classList.contains('input-area') ||
         cur.classList.contains('chat-input')
-      )) {
+      ))) {
         shouldSkip = true;
         break;
       }
@@ -2768,7 +2983,7 @@
   function isNonComposerProtectedSelf(cur) {
     if (!cur || cur.nodeType !== Node.ELEMENT_NODE) return false;
     const curTag = (cur.tagName || '').toUpperCase();
-    if (curTag === 'PRE' || curTag === 'CODE' || curTag === 'SVG' || curTag === 'MATH' || curTag === 'MJX-CONTAINER' || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT') {
+    if (curTag === 'PRE' || curTag === 'CODE' || curTag === 'SVG' || curTag === 'MATH' || curTag === 'MJX-CONTAINER' || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT' || isSwarmProtectedElement(cur)) {
       return true;
     }
     if (cur.getAttribute && (
