@@ -4624,13 +4624,18 @@ const dictionary = {
     "Enable the plugin to sign in.": "请先启用此插件再登录。",
     "Business Account Sign In": "企业账户登录",
     "Use Advanced SSO Config": "使用高级 SSO 配置",
-    "Credentials stay on this machine and are only sent to the domains listed.": "凭据仅保存在本机，且只会发送到上方列出的域名。",
+    "Credentials stay on this machine and are only sent to the domains listed.": "凭据仅保存在本机，且只会发送到下方列出的域名。",
     "Other credentials stay on this machine.": "其他凭据仅保存在本机。",
-    "Credentials are only sent to the domains listed.": "凭据只会发送到上方列出的域名。",
+    "Credentials are only sent to the domains listed.": "凭据只会发送到下方列出的域名。",
+    "Services this plugin connects to on your behalf.": "此插件将代表你连接以下服务。",
+    "If you add multiple accounts, MCP servers use the one marked Default.": "如果你添加了多个账户，MCP 服务器将使用标有“默认”的账户。",
+    "Enable this plugin to manage its accounts.": "启用此插件以管理其账户。",
     "API key": "API 密钥",
     "Basic auth": "基本认证",
     "A bash script run in your cloud environment after cloning repositories (or configure interactively in chat with /env-setup).": "在云端环境克隆代码仓库后自动运行的 Bash 脚本（也可在对话中使用 /env-setup 进行交互式配置）。",
     "A new version is available.": "有新版本可用。",
+    "To update:": "更新步骤：",
+    "Go to the machine you are controlling and quit Antigravity. It installs pending updates the next time it starts.": "前往你正在控制的设备并退出 Antigravity。下次启动时它会自动安装待处理的更新。",
     "Snooze for 24 Hours": "24 小时后提醒",
     "Code Change Summary": "代码变更摘要",
     "File Diff Comments": "文件差异评论",
@@ -4654,10 +4659,12 @@ const dictionary = {
     "Open URL": "打开链接",
     "Multi-select": "多选",
     "Full output written to": "完整输出已写入",
+    "Whether it never connects or is intermittent/flaky": "是一直无法连接，还是间歇性断开/不稳定",
     "Did restarting the desktop app help?": "重启桌面应用是否解决了问题？",
     "Allow again": "重新允许",
-    "You took over — agent stopped": "您已接管 — 智能体已停止",
-    "Could not clear site data for": "无法清除以下站点的浏览数据："
+    "You took over — agent stopped": "你已接管 — 智能体已停止",
+    "Site data cleared for": "已清除以下站点数据：",
+    "Could not clear site data for": "无法清除以下站点数据："
 };
 
 const coreWords = {

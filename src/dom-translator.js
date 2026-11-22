@@ -1165,20 +1165,27 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^Sign-ins to (.+) are kept in the cloud with your account\.?$/i.test(trimmed)) {
-      const fixed = trimmed.replace(
-        /^Sign-ins to (.+) are kept in the cloud with your account\.?$/i,
-        (_m, providers) => '登录到 ' + providers + ' 的凭据将随您的账户保存在云端。'
-      );
+    const cloudSignInsMatch = trimmed.match(
+      /^Sign-ins to (.+?) are kept in the cloud with your account\.?(?:\s+(Other credentials stay on this machine\.?))?(?:\s+(Credentials are only sent to the domains listed\.?))?$/i
+    );
+    if (cloudSignInsMatch) {
+      let fixed = '登录到 ' + cloudSignInsMatch[1] + ' 的凭据将随你的账户保存在云端。';
+      if (cloudSignInsMatch[2]) fixed += '其他凭据仅保存在本机。';
+      if (cloudSignInsMatch[3]) fixed += '凭据只会发送到下方列出的域名。';
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^Could not clear site data for (.+?)\.?$/i.test(trimmed)) {
-      const fixed = trimmed.replace(
-        /^Could not clear site data for (.+?)\.?$/i,
-        (_m, host) => '无法清除 ' + host + ' 的站点数据。'
-      );
+    const siteDataClearedMatch = trimmed.match(/^Site data cleared for (.+?)\.?$/i);
+    if (siteDataClearedMatch) {
+      const fixed = '已清除 ' + siteDataClearedMatch[1] + ' 的站点数据。';
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    const clearSiteDataFailedMatch = trimmed.match(/^Could not clear site data for (.+?)\.?$/i);
+    if (clearSiteDataFailedMatch) {
+      const fixed = '无法清除 ' + clearSiteDataFailedMatch[1] + ' 的站点数据。';
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
@@ -2973,7 +2980,34 @@
     }
 
     const anchors = slots.filter(s => s.type === 'anchor');
-    if (!anchors.length) return false;
+    if (!anchors.length) {
+      // 兼容 React 连续三段文本节点（如 {"Site data cleared for "}{host}{"."} / {"Could not clear site data for "}{host}{"."}）
+      // 严格保留中间动态 host 文本节点引用不动，仅改写前后固定文本节点，兼容 React 后续局部更新
+      if (children.length === 3 && children.every(c => c.nodeType === Node.TEXT_NODE)) {
+        const pre = (children[0].nodeValue || '').trim();
+        const mid = (children[1].nodeValue || '').trim();
+        const post = (children[2].nodeValue || '').trim();
+        if (mid && (post === '.' || post === '。' || post === '')) {
+          if (/^Site data cleared for$/i.test(pre)) {
+            children[0].nodeValue = '已清除 ';
+            children[2].nodeValue = ' 的站点数据。';
+            translatedNodes.set(children[0], '已清除 ');
+            translatedNodes.set(children[1], children[1].nodeValue);
+            translatedNodes.set(children[2], ' 的站点数据。');
+            return true;
+          }
+          if (/^Could not clear site data for$/i.test(pre)) {
+            children[0].nodeValue = '无法清除 ';
+            children[2].nodeValue = ' 的站点数据。';
+            translatedNodes.set(children[0], '无法清除 ');
+            translatedNodes.set(children[1], children[1].nodeValue);
+            translatedNodes.set(children[2], ' 的站点数据。');
+            return true;
+          }
+        }
+      }
+      return false;
+    }
 
     let fullText = '';
     for (const child of children) {
