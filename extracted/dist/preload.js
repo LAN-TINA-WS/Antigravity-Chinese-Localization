@@ -5501,7 +5501,68 @@ if (!isRemoteWindow) {
     "That link isn't allowed here.": "此处不允许打开该链接。",
     "Opening files needs the app.": "打开文件需要在客户端内操作。",
     "Click a link in the view to open it.": "请点击视图中的链接来打开。",
-    "Waiting for posts": "等待看板新动态"
+    "Waiting for posts": "等待看板新动态",
+    "See more": "展开更多",
+    "Loading...": "加载中...",
+    "Loading…": "加载中…",
+    "Loading logs...": "正在加载日志...",
+    "Loading Browser recording...": "正在加载浏览器录制...",
+    "Error loading Browser recording": "加载浏览器录制出错",
+    "Launching the browser...": "正在启动浏览器...",
+    "Resolving permissions...": "正在解析权限...",
+    "This may take a few minutes": "这可能需要几分钟",
+    "Your sign-in needs an update.": "你的登录状态需要更新。",
+    "to use Voice.": "以使用语音功能。",
+    "Microphone blocked. Allow in": "麦克风已被阻止，请前往",
+    "Microphone blocked. Allow in Privacy Settings.": "麦克风已被阻止。请在隐私设置中允许访问。",
+    "Microphone blocked. Allow in System Settings.": "麦克风已被阻止。请在系统设置中允许访问。",
+    "Authentication Required": "需要身份验证",
+    "Other sign-in options": "其他登录选项",
+    "Finish signing in in your browser.": "请在浏览器中完成登录。",
+    "Enable the plugin to sign in.": "请先启用此插件再登录。",
+    "Business Account Sign In": "企业账户登录",
+    "Use Advanced SSO Config": "使用高级 SSO 配置",
+    "Credentials stay on this machine and are only sent to the domains listed.": "凭据仅保存在本机，且只会发送到下方列出的域名。",
+    "Other credentials stay on this machine.": "其他凭据仅保存在本机。",
+    "Credentials are only sent to the domains listed.": "凭据只会发送到下方列出的域名。",
+    "Services this plugin connects to on your behalf.": "此插件将代表你连接以下服务。",
+    "If you add multiple accounts, MCP servers use the one marked Default.": "如果你添加了多个账户，MCP 服务器将使用标有“默认”的账户。",
+    "Enable this plugin to manage its accounts.": "启用此插件以管理其账户。",
+    "API key": "API 密钥",
+    "Basic auth": "基本认证",
+    "A bash script run in your cloud environment after cloning repositories (or configure interactively in chat with /env-setup).": "在云端环境克隆代码仓库后自动运行的 Bash 脚本（也可在对话中使用 /env-setup 进行交互式配置）。",
+    "A new version is available.": "有新版本可用。",
+    "To update:": "更新步骤：",
+    "Go to the machine you are controlling and quit Antigravity. It installs pending updates the next time it starts.": "前往你正在控制的设备并退出 Antigravity。下次启动时它会自动安装待处理的更新。",
+    "Snooze for 24 Hours": "24 小时后提醒",
+    "Code Change Summary": "代码变更摘要",
+    "File Diff Comments": "文件差异评论",
+    "Switch IDE Workspace": "切换 IDE 工作区",
+    "This chat's environment is paused": "此对话的环境已暂停",
+    "Start it again.": "重新启动。",
+    "A project with this name already exists.": "已存在同名项目。",
+    "Missing a repository? Configure on GitHub": "找不到代码仓库？前往 GitHub 配置",
+    "Only Automations": "仅自动化任务",
+    "Empty directory": "空目录",
+    "Empty log": "空日志",
+    "Failed to load image": "图片加载失败",
+    "Failed to load shared conversation": "加载共享对话失败",
+    "No content available for this resource": "此资源暂无可用内容",
+    "No instances yet.": "暂无实例。",
+    "Rendering playback": "正在渲染回放",
+    "Playback available": "回放可用",
+    "Error rendering playback": "渲染回放出错",
+    "Read URL rejected": "读取 URL 被拒绝",
+    "Page contents": "页面内容",
+    "Open URL": "打开链接",
+    "Multi-select": "多选",
+    "Full output written to": "完整输出已写入",
+    "Whether it never connects or is intermittent/flaky": "是一直无法连接，还是间歇性断开/不稳定",
+    "Did restarting the desktop app help?": "重启桌面应用是否解决了问题？",
+    "Allow again": "重新允许",
+    "You took over — agent stopped": "你已接管 — 智能体已停止",
+    "Site data cleared for": "已清除以下站点数据：",
+    "Could not clear site data for": "无法清除以下站点数据："
 };
 
   const coreWords = {
@@ -6781,6 +6842,31 @@ if (!isRemoteWindow) {
 
     if (/^Opens external link:\s*(.+)$/i.test(trimmed)) {
       const fixed = trimmed.replace(/^Opens external link:\s*(.+)$/i, (_m, u) => '打开外部链接: ' + u);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    const cloudSignInsMatch = trimmed.match(
+      /^Sign-ins to (.+?) are kept in the cloud with your account\.?(?:\s+(Other credentials stay on this machine\.?))?(?:\s+(Credentials are only sent to the domains listed\.?))?$/i
+    );
+    if (cloudSignInsMatch) {
+      let fixed = '登录到 ' + cloudSignInsMatch[1] + ' 的凭据将随你的账户保存在云端。';
+      if (cloudSignInsMatch[2]) fixed += '其他凭据仅保存在本机。';
+      if (cloudSignInsMatch[3]) fixed += '凭据只会发送到下方列出的域名。';
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    const siteDataClearedMatch = trimmed.match(/^Site data cleared for (.+?)\.?$/i);
+    if (siteDataClearedMatch) {
+      const fixed = '已清除 ' + siteDataClearedMatch[1] + ' 的站点数据。';
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    const clearSiteDataFailedMatch = trimmed.match(/^Could not clear site data for (.+?)\.?$/i);
+    if (clearSiteDataFailedMatch) {
+      const fixed = '无法清除 ' + clearSiteDataFailedMatch[1] + ' 的站点数据。';
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
@@ -8575,7 +8661,34 @@ if (!isRemoteWindow) {
     }
 
     const anchors = slots.filter(s => s.type === 'anchor');
-    if (!anchors.length) return false;
+    if (!anchors.length) {
+      // 兼容 React 连续三段文本节点（如 {"Site data cleared for "}{host}{"."} / {"Could not clear site data for "}{host}{"."}）
+      // 严格保留中间动态 host 文本节点引用不动，仅改写前后固定文本节点，兼容 React 后续局部更新
+      if (children.length === 3 && children.every(c => c.nodeType === Node.TEXT_NODE)) {
+        const pre = (children[0].nodeValue || '').trim();
+        const mid = (children[1].nodeValue || '').trim();
+        const post = (children[2].nodeValue || '').trim();
+        if (mid && (post === '.' || post === '。' || post === '')) {
+          if (/^Site data cleared for$/i.test(pre)) {
+            children[0].nodeValue = '已清除 ';
+            children[2].nodeValue = ' 的站点数据。';
+            translatedNodes.set(children[0], '已清除 ');
+            translatedNodes.set(children[1], children[1].nodeValue);
+            translatedNodes.set(children[2], ' 的站点数据。');
+            return true;
+          }
+          if (/^Could not clear site data for$/i.test(pre)) {
+            children[0].nodeValue = '无法清除 ';
+            children[2].nodeValue = ' 的站点数据。';
+            translatedNodes.set(children[0], '无法清除 ');
+            translatedNodes.set(children[1], children[1].nodeValue);
+            translatedNodes.set(children[2], ' 的站点数据。');
+            return true;
+          }
+        }
+      }
+      return false;
+    }
 
     let fullText = '';
     for (const child of children) {

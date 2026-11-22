@@ -597,6 +597,17 @@ const menuTranslationMap = {
   'Delete Hook': '删除钩子',
   'Add Hook Card': '添加钩子卡片',
   'Delete Handler': '删除处理程序',
+  // 2.34.0 右侧预览栏、插件侧栏、消息气泡与发送按钮原生右键菜单补齐
+  'Add to Chat': '添加到对话',
+  'Copy File Path': '复制文件路径',
+  'Copy File Name': '复制文件名',
+  'Copy Content': '复制内容',
+  'Hide': '隐藏',
+  'Reply': '回复',
+  'Manual Order': '手动排序',
+  'Send Message': '发送消息',
+  'Queue Message': '排队发送消息',
+  'Send Immediately': '立即发送',
 };
 function translateMenu(menuItem) {
   if (menuItem.label && menuTranslationMap[menuItem.label]) {
@@ -895,6 +906,16 @@ const contextMenuTranslationMap = {
   'Delete Hook': '删除钩子',
   'Add Hook Card': '添加钩子卡片',
   'Delete Handler': '删除处理程序',
+  // 2.34.0 右侧预览栏、插件侧栏、消息气泡与发送按钮原生右键菜单补齐
+  'Copy File Path': '复制文件路径',
+  'Copy File Name': '复制文件名',
+  'Copy Content': '复制内容',
+  'Hide': '隐藏',
+  'Reply': '回复',
+  'Manual Order': '手动排序',
+  'Send Message': '发送消息',
+  'Queue Message': '排队发送消息',
+  'Send Immediately': '立即发送',
 };
 function translateContextLabel(lbl) {
   if (!lbl) return '';

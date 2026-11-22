@@ -60,6 +60,7 @@ const tests = [
   'ticket-52-sidebar-project-name-skip.test.js',
   'ticket-53-swarm-and-plugin-subframe.test.js',
   'ticket-54-v2340-ui-gaps.test.js',
+  'ticket-55-preview-context-menu.test.js',
   'check-injection-syntax.js',
   'verify-ready-asar.js',
   'asar-version.test.js',
