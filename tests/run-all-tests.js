@@ -58,6 +58,7 @@ const tests = [
   'ticket-50-issue68-and-tier-fixes.test.js',
   'ticket-51-home-and-accessibility.test.js',
   'ticket-52-sidebar-project-name-skip.test.js',
+  'ticket-53-swarm-and-plugin-subframe.test.js',
   'check-injection-syntax.js',
   'verify-ready-asar.js',
   'asar-version.test.js',

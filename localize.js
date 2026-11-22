@@ -1862,6 +1862,91 @@ function describeSshConfigProblem(file, { what, why, fix }) {
     );
   }
 
+  // 26. Patch dist/utils.js (为 Swarm 等 plugin:// 跨域侧栏子框架复用 preload DOM 汉化引擎)
+  const utilsPath = path.join(targetExtractDir, 'dist', 'utils.js');
+  if (fs.existsSync(utilsPath)) {
+    replaceInFile(
+      utilsPath,
+      `    const handleDidFailLoad = (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+        // Ignore subframes and benign aborted navigations (ERR_ABORTED = -3).
+        if (!isMainFrame || errorCode === -3) {
+            return;
+        }
+        console.warn(\`[HubWindow] Main-frame load failed (\${errorCode} \${errorDescription}): \${(0, authBootstrap_1.redactUrlTokens)(validatedURL)}\`);
+    };`,
+      `    const handleDidFailLoad = (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+        // Ignore subframes and benign aborted navigations (ERR_ABORTED = -3).
+        if (!isMainFrame || errorCode === -3) {
+            return;
+        }
+        console.warn(\`[HubWindow] Main-frame load failed (\${errorCode} \${errorDescription}): \${(0, authBootstrap_1.redactUrlTokens)(validatedURL)}\`);
+    };
+    // Antigravity 2.0 Plugin Subframe DOM Localization Hook (Swarm & plugin:// sidecars)
+    const getPluginDomI18nSource = () => {
+        if (typeof globalThis.__agyCachedPluginDomI18nSource === 'string') {
+            return globalThis.__agyCachedPluginDomI18nSource;
+        }
+        try {
+            const raw = fs.readFileSync(path_1.default.join(__dirname, 'preload.js'), 'utf-8');
+            const marker = '// Antigravity 2.0 Chinese Localization Engine';
+            const idx = raw.indexOf(marker);
+            globalThis.__agyCachedPluginDomI18nSource = idx !== -1 ? raw.slice(idx) : '';
+        }
+        catch {
+            globalThis.__agyCachedPluginDomI18nSource = '';
+        }
+        return globalThis.__agyCachedPluginDomI18nSource;
+    };
+    const injectPluginFrameLocalization = (frame) => {
+        if (!frame || frame.isDestroyed?.()) {
+            return;
+        }
+        const frameUrl = typeof frame.url === 'string' ? frame.url : '';
+        if (!/^plugin:\\/\\//i.test(frameUrl)) {
+            return;
+        }
+        const source = getPluginDomI18nSource();
+        if (!source || typeof frame.executeJavaScript !== 'function') {
+            return;
+        }
+        void Promise.resolve(frame.executeJavaScript(source, false)).catch(() => undefined);
+    };
+    const handlePluginSubframeLoad = (_event, isMainFrame, frameProcessId, frameRoutingId) => {
+        if (isMainFrame) {
+            return;
+        }
+        let targetFrame;
+        if (typeof frameProcessId === 'number' &&
+            typeof frameRoutingId === 'number' &&
+            typeof electron_1.webFrameMain?.fromId === 'function') {
+            targetFrame = electron_1.webFrameMain.fromId(frameProcessId, frameRoutingId);
+        }
+        if (targetFrame) {
+            injectPluginFrameLocalization(targetFrame);
+            return;
+        }
+        const subframes = hubContents.mainFrame?.framesInSubtree ?? [];
+        for (const f of subframes) {
+            if (f && f !== hubContents.mainFrame) {
+                injectPluginFrameLocalization(f);
+            }
+        }
+    };`
+    );
+    replaceInFile(
+      utilsPath,
+      `        hubContents.off?.('did-fail-load', handleDidFailLoad);`,
+      `        hubContents.off?.('did-fail-load', handleDidFailLoad);
+        hubContents.off?.('did-frame-finish-load', handlePluginSubframeLoad);`
+    );
+    replaceInFile(
+      utilsPath,
+      `    hubContents.on('did-fail-load', handleDidFailLoad);`,
+      `    hubContents.on('did-fail-load', handleDidFailLoad);
+    hubContents.on('did-frame-finish-load', handlePluginSubframeLoad);`
+    );
+  }
+
   log('汉化修改注入完成！');
 }
 
