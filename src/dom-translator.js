@@ -394,6 +394,19 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
+    // ===== 输入框发送按钮快捷键悬浮提示（Send Message / Queue Message / Send Immediately + Enter/Ctrl+Enter/⌘⏎/⌥⏎） =====
+    const sendTooltipMatch = trimmed.match(/^(Send Message|Queue Message|Send Immediately)\s+(\(?(?:(?:Ctrl|Cmd|Alt|Shift|Option|Meta)\+)*Enter\)?|\(?[⌘⌥⌃⇧]*[⏎↵]\)?)$/i);
+    if (sendTooltipMatch) {
+      const sendActionMap = {
+        'send message': '发送消息',
+        'queue message': '排队发送消息',
+        'send immediately': '立即发送',
+      };
+      const fixed = sendActionMap[sendTooltipMatch[1].toLowerCase()] + ' ' + sendTooltipMatch[2];
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
     // ===== 置顶对话排序菜单动态双重保障 =====
     if (/^Sort By$/i.test(trimmed)) {
       const fixed = '排序方式';

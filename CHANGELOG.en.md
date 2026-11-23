@@ -4,6 +4,28 @@ This document tracks all version releases, core architecture adaptations, and fe
 
 ---
 
+## v2.34.0.1 (2026-11-23) — Swarm & `plugin://` Subframe Localization, Scoped Sidebar Project Protection, High-Frequency UI & Native Context Menu Upgrades
+
+### 1. Swarm Multi-Agent Panel & `plugin://` Subframe Hook (Ticket-53)
+- **`plugin://` Subframe DOM Injection Hook (`dist/utils.js`)**: Attaches a `did-frame-finish-load` listener on `hubContents` strictly scoped to `/^plugin:\/\//i` subframes (reusing the cached DOM engine slice from `preload.js` with a `window.__agyDomTranslatorInitialized` idempotency guard and window-close cleanup).
+- **Swarm Chrome Coverage & Dynamic Content Isolation**: Keeps the `Swarm` brand name in native English (consistent with `Orchestrator`), adds **+131** dictionary entries and **+30** dynamic templates (`Overview`, `Board`, `Members`, `Graph`, `Raw`, `Hive`, `Mentions`, `Live`, `Coordinator`, progress/playback/GIF export), keeps leading digits intact for `hive.js` slider replacement, and isolates AI post bodies, task titles, and `@mention`/member badges.
+- **Cross-Platform CRLF Patching (`localize.js`)**: Added CRLF/LF auto-adaptation to `replaceInFile` and atomic pre-check gating for the `utils.js` hook.
+
+### 2. Community PR Integrations & Source-Level Refinements (PR #69 / #70 / #71)
+- **Home Suggestions, Shortcuts & Input Accessibility (PR #69 by `@12cjn`, Ticket-51)**: Localized home suggestions, shortcut labels, and composer accessibility labels, alongside composer container penetration, O(1) draft pruning, and shortcut regex boundary fixes.
+- **Scoped Sidebar Project Name Protection (PR #70 by `@omsd512-W`, Ticket-52)**: Protects real user project cards and custom conversation groups (`convgroup:*`) from accidental translation, while allowing built-in system group headers reusing `project-header` (`status-*`, `location-*`, `standalone`, `Unknown Project`) to translate normally.
+- **v2.34.0 High-Frequency UI Gaps & Credentials/Site-Data Rules (PR #71 by `@dsasanim4-source`, Ticket-54)**: Added **+61** high-frequency UI entries across loading states, Voice sign-in, mic permissions, cloud setup, remote update guides, feedback lists, and browser tools; extended `JXb` cloud-credential dynamic matching to handle multi-sentence `.join(" ")` output and corrected "domains listed" directionality; added `Site data cleared for` and React 3-TextNode in-place stitching preserving the middle `host` node reference.
+
+### 3. Preview Pane Native Context Menus, Send Shortcut Tooltips & Cloud Disclosure Modal (Ticket-55)
+- **Full Native Context Menu Audit (`dist/ipcHandlers.js`, `dist/menu.js`)**: Added `Copy File Path`, `Copy File Name`, `Copy Content`, `Hide`, `Reply`, `Manual Order`, `Send Message`, `Queue Message`, `Send Immediately`, and top-bar `Add to Chat`.
+- **Send Button Shortcut Tooltips**: Added dynamic rules covering `Send Message` / `Queue Message` / `Send Immediately` with `Enter`, `Ctrl+Enter`, `⏎`, `⌘⏎`, `(Alt+Enter)`, and `(⌥⏎)`.
+- **Cloud Workspace Files & Resources Modal**: Localized the modal subtitle, inline banner, project/workspace settings subtitle, and the 4-link disclaimer paragraph via in-place anchor stitching preserving all four `<a>` hyperlinks.
+
+### 4. End-to-End Verification & Gate
+- Zero-duplicate dictionary expanded to **`4,653` entries**; slim `app.asar.ready` at `7,838,954` bytes (`7.48 MiB`, base client version strictly pinned to `2.34.0`); **62/62 TDD test suites 100% ALL GREEN**.
+
+---
+
 ## v2.34.0 (2026-11-21) — Full Official v2.34.0 Support: Input Box Shortcuts, Orchestrator Settings & Thinking Effort, Inline Approval/Question Cards, Sidebar Filter & Sort, and Computer Use HUD Upgrade
 
 ### 1. Official v2.34.0 Main-Process Patch Alignment & Compatibility

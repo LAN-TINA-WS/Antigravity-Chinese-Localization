@@ -4,6 +4,28 @@
 
 ---
 
+## v2.34.0.1 (2026-11-23) — Swarm 多智能体面板与 `plugin://` 子框架汉化、左侧项目名保护收窄、高频 UI 补漏及原生右键菜单全量升级
+
+### 1. Swarm 多智能体协作面板与 `plugin://` 子框架注入（Ticket-53）
+- **`plugin://` 子框架实时 DOM 汉化钩子 (`dist/utils.js`)**：在主进程监听 `hubContents` 的 `did-frame-finish-load` 事件，严格限定仅对 `/^plugin:\/\//i` 协议子框架执行（复用同目录 `preload.js` 缓存引擎切片并配置 `window.__agyDomTranslatorInitialized` 幂等守卫，窗口关闭时清理监听）。
+- **Swarm 侧栏全量汉化与动态内容隔离**：遵循与 `Orchestrator` 一致的品牌名策略保留 `Swarm` 原生英文，新增 **+131 条**静态词典与 **+30 组**动态模板（`Overview`、`Board`、`Members`、`Graph`、`Raw`、`Hive`、`Mentions`、`Live`、`Coordinator`、进度计数、回放与 GIF 导出等），并严格隔离 AI 生成的帖子正文、任务标题与 `@mention` / 成员徽章；进度译文保持数字前置以兼容原生 `hive.js` 滑块替换。
+- **跨平台 CRLF 注入修复 (`localize.js`)**：为 `replaceInFile` 增加 CRLF/LF 自适应匹配，并为 `utils.js` 子框架钩子补充原子前置判断，消除 Windows 检出环境下跨行模板匹配落空风险。
+
+### 2. 社区 PR 协同整合与源码级精修（PR #69 / #70 / #71）
+- **首页任务建议、快捷键与输入区无障碍标签（PR #69，感谢 `@12cjn`，Ticket-51）**：补齐首页建议卡片、快捷键与无障碍辅助标签；同步修复输入区 `.chat-input` / `.input-area` 穿透隔离、编辑区草稿 O(1) 剪枝及快捷键正则边界。
+- **左侧项目栏项目名保护与系统分组精准放行（PR #70，感谢 `@omsd512-W`，Ticket-52）**：在 `shouldSkipNode` 与 `isNonComposerProtectedSelf` 中严格保护真实用户项目标题卡片及用户自定义对话分组（`convgroup:*`）不被词典或 `isActionPill` 误翻，同时精准放行复用同一 `project-header` 组件的系统内置分组标题（按状态 `status-*`、按环境 `location-*`、独立对话 `standalone` 与 `Unknown Project`）。
+- **v2.34.0 高频遗漏界面文案与凭据/站点数据规则（PR #71，感谢 `@dsasanim4-source`，Ticket-54）**：补齐加载态、语音重登、麦克风权限、认证登录、云端初始化说明、远程更新弹窗、反馈指引与浏览器工具等 **+61 条**文案；修复插件凭据 `JXb` 多句 `.join(" ")` 拼接动态正则与「下方列出的域名」方位，补充成功态 `Site data cleared for` 并在 `tryCombinedSentenceTranslation` 中实现 React 三文本节点原位合句（保持中间 `host` 节点引用不变）。
+
+### 3. 右侧预览栏原生右键菜单、发送快捷键提示与云工作区免责声明（Ticket-55）
+- **全端 16 处原生右键菜单扫漏补齐 (`dist/ipcHandlers.js`、`dist/menu.js`)**：补齐右侧文件/图片预览栏漏译的 `Copy File Path`（`复制文件路径`）、`Copy File Name`（`复制文件名`）、`Copy Content`（`复制内容`），以及插件侧栏 `Hide`（`隐藏`）、智能体气泡 `Reply`（`回复`）、分组排序 `Manual Order`（`手动排序`）、发送按钮右键 `Send Message` / `Queue Message` / `Send Immediately` 与顶栏菜单 `Add to Chat`。
+- **发送按钮快捷键悬浮提示**：新增动态规则覆盖 `Send Message` / `Queue Message` / `Send Immediately` 搭配 `Enter`、`Ctrl+Enter`、`⏎`、`⌘⏎`、`(Alt+Enter)`、`(⌥⏎)` 的全套组合。
+- **云工作区文件与资源弹窗全量补齐**：覆盖弹窗副标题、同屏横幅、项目/工作区设置副标题，以及底部含 4 个蓝色超链接（`necessary rights`、`Prohibited Use Policy`、`Google Antigravity Terms of Service`、`Google Privacy Policy`）的免责声明整段原位翻译，100% 保留全部 `<a>` 点击跳转。
+
+### 4. 全链路验证与测试门禁
+- 词典扩充至 **`4,653` 键 `0` 重复**，轻量版 `app.asar.ready` 为 `7,838,954` 字节（`7.48 MiB`，客户端基线严格保持 `2.34.0` 防跨版本白屏）；新增 `Ticket-51` ~ `Ticket-55` 专项套件，全工程 **62/62 组 TDD 自动化测试套件 100% ALL GREEN**。
+
+---
+
 ## v2.34.0 (2026-11-21) — 全面适配官方 2.34.0 版本：输入框发送快捷键与消息队列改版、Orchestrator 设置与思考深度校准、内联审批提问卡片、侧边栏自定义/筛选排序及 Computer Use 锁屏/HUD 升级
 
 ### 1. 官方 v2.34.0 主进程补丁点精确校准与兼容升级

@@ -4664,7 +4664,17 @@ const dictionary = {
     "Allow again": "重新允许",
     "You took over — agent stopped": "你已接管 — 智能体已停止",
     "Site data cleared for": "已清除以下站点数据：",
-    "Could not clear site data for": "无法清除以下站点数据："
+    "Could not clear site data for": "无法清除以下站点数据：",
+    // ===== Ticket-55: 云工作区资源披露弹窗、底部多链接免责声明与项目设置副标题 =====
+    "Here's how uploaded files, attachments, and connected resources work in your cloud environment": "以下介绍上传的文件、附件以及已连接的资源在你的云环境中的工作方式",
+    "Uploaded files and connected resources are mounted in your cloud environment.": "上传的文件和已连接的资源将挂载到你的云环境中。",
+    "Manage project resources and settings": "管理项目资源和设置",
+    "Manage workspace resources and settings": "管理工作区资源和设置",
+    "necessary rights": "必要权利",
+    "Prohibited Use Policy": "禁止使用政策",
+    "Google Antigravity Terms of Service": "Google Antigravity 服务条款",
+    "Google Privacy Policy": "Google 隐私权政策",
+    "Avoid uploading highly sensitive data and verify actions taken by your agent. Make sure you have the necessary rights to any content or files that you upload, including content of minors. Don't generate content that infringes on others' rights, including content that deceives, harasses, or harms. When using Antigravity, you must comply with Google's Prohibited Use Policy. Your use is subject to the Google Antigravity Terms of Service and Google Privacy Policy.": "请勿上传高度敏感的数据，并核实你的智能体所执行的操作。请确保你对你上传的任何内容或文件（包括涉及未成年人的内容）拥有必要权利。请勿生成侵犯他人权利的内容，包括具有欺骗性、骚扰性或危害性的内容。使用 Antigravity 时，你必须遵守 Google 的禁止使用政策。你的使用行为须遵守 Google Antigravity 服务条款和 Google 隐私权政策。"
 };
 
 const coreWords = {

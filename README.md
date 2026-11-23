@@ -9,11 +9,11 @@ Antigravity 深度汉化与高性能本地化补丁程序
 [![GitHub stars](https://img.shields.io/github/stars/antigravity-cn-community/Antigravity-Chinese-Localization?style=flat&color=gold)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/stargazers)
 [![GitHub Discussions](https://img.shields.io/github/discussions/antigravity-cn-community/Antigravity-Chinese-Localization?style=flat&color=purple)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
-[![Package Size](https://img.shields.io/badge/ASAR%20Size-~7.40%20MiB%20(Official%20Slim)-success)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
+[![Package Size](https://img.shields.io/badge/ASAR%20Size-~7.48%20MiB%20(Official%20Slim)-success)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
 [![Node Runtime](https://img.shields.io/badge/Node.js-%3E%3D%2018.18.0-informational)](https://nodejs.org/)
 [![license](https://img.shields.io/github/license/antigravity-cn-community/Antigravity-Chinese-Localization)](LICENSE)
 
-专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁，现由开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合维护。全面适配 **Antigravity v2.34.0+** 最新架构，完成 `src/` 模块化引擎解耦与 DOM 微任务调度重构，带来百万级吞吐量的极致流畅体验。全量汉化规划模式、系统设置、安全沙盒、Remote SSH 远程开发、Computer Use 桌面操控与锁屏预览、内联审批/提问卡片、`Orchestrator` 模式设置与 `4,440+` 条零重复核心界面文案，严格对齐官方原生轻量级打包规格（v2.34.0 约 7.40 MiB），并对用户打字与代码编辑区实施绝对物理免疫。
+专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁，现由开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合维护。全面适配 **Antigravity v2.34.0+** 最新架构，完成 `src/` 模块化引擎解耦与 DOM 微任务调度重构，带来百万级吞吐量的极致流畅体验。全量汉化规划模式、系统设置、安全沙盒、Remote SSH 远程开发、Computer Use 桌面操控与锁屏预览、内联审批/提问卡片、`Swarm` 多智能体侧栏与 `plugin://` 子框架、`Orchestrator` 模式设置与 `4,650+` 条零重复核心界面文案，严格对齐官方原生轻量级打包规格（v2.34.0.1 约 7.48 MiB），并对用户打字与代码编辑区实施绝对物理免疫。
 
 > [最新 Release 下载](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [社区讨论与千星里程碑 (Discussions)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [问题反馈与建议](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
 
@@ -223,6 +223,7 @@ node localize.js --apply-only
 
 各版本的详细更新记录、新特性适配细节与底层技术架构演进，请参阅独立的 [CHANGELOG.md](CHANGELOG.md)（英文版请参阅 [CHANGELOG.en.md](CHANGELOG.en.md)）：
 
+- **[v2.34.0.1](CHANGELOG.md#v23401-2026-11-23)** (2026-11-23)：重磅新增 `Swarm` 多智能体协作面板与 `plugin://` 子框架实时 DOM 注入钩子（`dist/utils.js`，保留 `Swarm` 品牌名原生英文并严格隔离 AI 帖子与成员徽章）；整合社区 PR #69（首页任务建议、快捷键与输入区无障碍标签）、PR #70（左侧用户项目名与自定义分组防误翻，同时精准放行按状态/按环境/独立等系统内置分组）与 PR #71（60+ 条高频遗漏文案、修复云端凭据多句拼接/方位与 React 三文本节点原位合句）；补齐右侧预览栏等全端原生右键菜单、发送按钮快捷键悬浮提示（`Send Message Enter` 等）与云工作区 4 链接免责声明（词典扩充至 `4,653` 键零重复、62 组自动化测试门禁 100% ALL GREEN）。
 - **[v2.34.0](CHANGELOG.md#v2340-2026-11-21)** (2026-11-21)：全面同步适配官方 `v2.34.0` 版本更新！精准校准并升级 `dist/updater.js`、`dist/computer/hud.js`（`Allow again` ➔ `重新允许`）与 `hudState.js`（`user_takeover` 接管区分）；新增 `Input Box` 发送快捷键、消息即时发送提示、`Orchestrator Settings`（保留模式名 `Orchestrator` 原生）与 `Extra High` ➔ `极高` 校准、全套内联提问与运行时/终端高危权限审批卡片（Issue #68）、技能卡与快捷键录制规则（PR #67）、`Customize Sidebar` 与 `Filter and Sort`、Computer Use 锁屏/实时预览/macOS 权限引导、`UI Plugin (SidePanel)` 与遥测/更早消息分页文案（词典扩充至 `4,444` 键零重复、57 组自动化测试门禁 100% ALL GREEN）。
 - **[v2.33.0](CHANGELOG.md#v2330-2026-11-18)** (2026-11-18)：全面同步适配官方 `v2.33.0` 大版本架构更新！重磅覆盖 `Computer Use` 桌面操控 HUD 悬浮条与 `Agents Live` 实时桌面预览窗格、Remote SSH 服务端重启/共享目录接管/远程麦克风授权与配置诊断、新版 9 款 Gemini Live 音色与实时语音听写、内置浏览器按站点 Cookie 管理、VS Code / AGY 双模快捷键方案以及扩展市场 `Bundles` 插件组合包与安装前源码审查；同步完成 `src/` 模块化引擎解耦、回环安全鉴权与词库去重瘦身（共 `4,250+` 条零重复词条、51 组自动化测试门禁 100% ALL GREEN）。
 - **[v2.32.2.1](CHANGELOG.md#v23221-2026-11-17)** (2026-11-17)：深度补齐对话页排队发送按钮（`Send all (N)` ➔ `全部发送 (N)`）及排队消息卡片（`Sends after agent finishes working`、`Empty message`）、补全模型思考档位 `Extra` / `Max`（`极高` / `最高` 及 `· 上下文窗口` 组合标签）、撤销确认弹窗、过长对话历史提示与 Best of N 回复偏好问卷（共 +44 条词典与 +8 组动态正则），并在放行排队/操作装饰栏的同时保持用户正文与时间标签（如 `2m ago`）原样不变。
@@ -257,7 +258,7 @@ node localize.js --now
 > 覆盖前请确认 Antigravity 已完全退出，否则文件可能被占用而复制失败；同时建议保留一份 `app.asar.bak`，以便下次重新汉化。
 
 ### Q4: 源码包中自带的 app.asar.ready 会导致仓库体积无限膨胀吗？
-不会。终端用户下载的 Release 资产包或网页 "Download ZIP" 仅包含单版本快照（当前约 7.40 MiB），零历史冗余包。对于通过 `git clone` 参与贡献的开发者，推荐使用浅克隆（Shallow Clone）：
+不会。终端用户下载的 Release 资产包或网页 "Download ZIP" 仅包含单版本快照（当前约 7.48 MiB），零历史冗余包。对于通过 `git clone` 参与贡献的开发者，推荐使用浅克隆（Shallow Clone）：
 ```bash
 git clone --depth=1 https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization.git
 ```
