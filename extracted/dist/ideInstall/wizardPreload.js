@@ -7556,6 +7556,264 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     return isProjectHeaderElement(el) && !isSystemGroupProjectHeader(el);
   }
 
+  const SETTINGS_PROJECT_SECTION_HEADERS = new Set([
+    'projects', '项目',
+    'workspaces', '工作区'
+  ]);
+  const PROJECT_PLACEHOLDER_LABELS = new Set([
+    'unknown project', '未知项目',
+    'unknown workspace', '未知工作区'
+  ]);
+  const BREADCRUMB_PLACEHOLDER_LABELS = new Set([
+    'unknown project', '未知项目',
+    'unknown workspace', '未知工作区',
+    'new project', '新建项目',
+    'new workspace', '新建工作区'
+  ]);
+  const EDIT_PROJECT_NAME_ARIA_RE = /^(?:Edit\s+(?:project|workspace)\s+name|编辑\s*(?:项目|工作区)\s*名称?)$/i;
+  const PROJECT_BREADCRUMB_ARIA_RE = /^(?:(?:Project|Workspace)\s*:\s*|(?:项目|工作区)\s*[:：]\s*)/i;
+
+  function getPreviousElementSibling(el) {
+    if (!el) return null;
+    if (el.previousElementSibling !== undefined) return el.previousElementSibling;
+    const parent = el.parentElement;
+    if (!parent || !parent.childNodes) return null;
+    const idx = Array.prototype.indexOf.call(parent.childNodes, el);
+    for (let i = idx - 1; i >= 0; i--) {
+      if (parent.childNodes[i] && parent.childNodes[i].nodeType === Node.ELEMENT_NODE) {
+        return parent.childNodes[i];
+      }
+    }
+    return null;
+  }
+
+  function getNextElementSibling(el) {
+    if (!el) return null;
+    if (el.nextElementSibling !== undefined) return el.nextElementSibling;
+    const parent = el.parentElement;
+    if (!parent || !parent.childNodes) return null;
+    const idx = Array.prototype.indexOf.call(parent.childNodes, el);
+    if (idx < 0) return null;
+    for (let i = idx + 1; i < parent.childNodes.length; i++) {
+      if (parent.childNodes[i] && parent.childNodes[i].nodeType === Node.ELEMENT_NODE) {
+        return parent.childNodes[i];
+      }
+    }
+    return null;
+  }
+
+  function isProjectGlyphIconNode(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
+    if (el.getAttribute && el.getAttribute('data-project-glyph') !== null) {
+      return true;
+    }
+    // 对话悬浮卡片（b6 组件）：<span class="shrink-0 flex items-center"><svg|span.google-symbols data-project-glyph="folder|cloud"/></span>
+    // 不依赖 textContent 为空，兼容 Ew 图标回退为 google-symbols 字体 ligature（如 "folder"/"cloud"）
+    if ((el.tagName || '').toUpperCase() === 'SPAN' && el.childNodes && el.childNodes.length > 0) {
+      let hasGlyphChild = false;
+      for (let i = 0; i < el.childNodes.length; i++) {
+        const ch = el.childNodes[i];
+        if (!ch) continue;
+        if (ch.nodeType === Node.TEXT_NODE) {
+          if ((ch.nodeValue || '').trim()) return false;
+        } else if (ch.nodeType === Node.ELEMENT_NODE) {
+          if (ch.getAttribute && ch.getAttribute('data-project-glyph') !== null) {
+            hasGlyphChild = true;
+          } else {
+            return false;
+          }
+        }
+      }
+      if (hasGlyphChild) return true;
+    }
+    return false;
+  }
+
+  function isProjectGlyphLabelSelf(cur) {
+    if (!cur || cur.nodeType !== Node.ELEMENT_NODE) return false;
+    // 保护回退为 google-symbols 字体图标的 [data-project-glyph] 节点自身（避免 ligature 如 "folder"/"cloud" 被译为汉字破坏图标）
+    if (cur.getAttribute && cur.getAttribute('data-project-glyph') !== null) {
+      return true;
+    }
+    if ((cur.tagName || '').toUpperCase() !== 'SPAN') {
+      return false;
+    }
+    const prev = getPreviousElementSibling(cur);
+    if (!isProjectGlyphIconNode(prev)) return false;
+    const rawLabel = (cur.innerText || cur.textContent || '').trim().toLowerCase();
+    return !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
+  }
+
+  // 对话悬浮卡片 / 侧边栏对话副标题 / 搜索结果中紧随 [data-project-glyph] 的项目名 <span>
+  function isProjectGlyphLabelElement(el) {
+    let cur = el;
+    let depth = 0;
+    while (cur && cur !== document.body && depth < 3) {
+      if (isProjectGlyphLabelSelf(cur)) return true;
+      cur = cur.parentElement;
+      depth++;
+    }
+    return false;
+  }
+
+  function isSettingsSectionHeading(el, allowedTitles) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
+    let headingEl = null;
+    if ((el.tagName || '').toUpperCase() === 'H2') {
+      headingEl = el;
+    } else if (el.childNodes) {
+      // 仅检查直接子节点 <h2>，避免 querySelector 误穿透任意无关大容器内部
+      for (let i = 0; i < el.childNodes.length; i++) {
+        const ch = el.childNodes[i];
+        if (ch && ch.nodeType === Node.ELEMENT_NODE && (ch.tagName || '').toUpperCase() === 'H2') {
+          headingEl = ch;
+          break;
+        }
+      }
+    }
+    if (!headingEl) return false;
+    const text = (headingEl.innerText || headingEl.textContent || '').trim().toLowerCase();
+    return allowedTitles.has(text);
+  }
+
+  function isSettingsNavButton(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE || !el.getAttribute) return false;
+    if ((el.tagName || '').toUpperCase() !== 'BUTTON') return false;
+    return (el.getAttribute('data-testid') || '').startsWith('settings-nav-item-');
+  }
+
+  // 判定单个 settings-nav-item-* 按钮是否属于 Projects / Workspaces 分组：
+  // 1) 兼容窄屏设置列表（sXb）：无 settings-sidebar 容器，<h2>Workspaces</h2> 与多个 settings-nav-item-* 同级平铺
+  // 2) 兼容桌面设置侧栏（settings-sidebar）：保留顶部 Settings 下官方 Developer、Show All、Not in Project 及底部 Provide Feedback 正常汉化
+  function isSettingsProjectNavButton(navBtn) {
+    if (!isSettingsNavButton(navBtn)) return false;
+    const rawLabel = (navBtn.innerText || navBtn.textContent || '').trim().toLowerCase();
+    if (PROJECT_PLACEHOLDER_LABELS.has(rawLabel)) return false;
+
+    // 窄屏平铺模式：向前仅跨越同类 settings-nav-item-* 按钮，遇到 <h2> 容器即判定，遇其他隔断元素立即停止
+    let flatPrev = getPreviousElementSibling(navBtn);
+    while (flatPrev && isSettingsNavButton(flatPrev)) {
+      flatPrev = getPreviousElementSibling(flatPrev);
+    }
+    if (isSettingsSectionHeading(flatPrev, SETTINGS_PROJECT_SECTION_HEADERS)) {
+      return true;
+    }
+
+    // 桌面端侧边栏模式：先定位外层 settings-sidebar（优先原生 closest），再最多上溯 4 层检查紧邻前兄弟是否为 Projects/Workspaces 标题
+    const sidebar = navBtn.closest
+      ? navBtn.closest('[data-testid="settings-sidebar"]')
+      : (function findSettingsSidebar(node) {
+          let c = node;
+          while (c && c !== document.body) {
+            if (c.nodeType === Node.ELEMENT_NODE && c.getAttribute && c.getAttribute('data-testid') === 'settings-sidebar') {
+              return c;
+            }
+            c = c.parentElement;
+          }
+          return null;
+        })(navBtn);
+    if (!sidebar) return false;
+
+    let listNode = navBtn.parentElement;
+    let depth = 0;
+    while (listNode && listNode !== sidebar && depth < 4) {
+      const prev = getPreviousElementSibling(listNode);
+      if (isSettingsSectionHeading(prev, SETTINGS_PROJECT_SECTION_HEADERS)) {
+        return true;
+      }
+      listNode = listNode.parentElement;
+      depth++;
+    }
+    return false;
+  }
+
+  // O(1) 常数深度查找最近 settings-nav-item-* 按钮（最多 4 层），彻底避免全页面节点爬树到 document.body
+  function isSettingsProjectNavItem(el) {
+    let cur = el;
+    let depth = 0;
+    while (cur && cur !== document.body && depth < 4) {
+      if (isSettingsNavButton(cur)) {
+        return isSettingsProjectNavButton(cur);
+      }
+      cur = cur.parentElement;
+      depth++;
+    }
+    return false;
+  }
+
+  function isSettingsProjectTitleSelf(cur) {
+    if (!cur || cur.nodeType !== Node.ELEMENT_NODE || (cur.tagName || '').toUpperCase() !== 'SPAN') {
+      return false;
+    }
+    const next = getNextElementSibling(cur);
+    if (!next || (next.tagName || '').toUpperCase() !== 'BUTTON' || !next.getAttribute) {
+      return false;
+    }
+    const aria = (next.getAttribute('aria-label') || '').trim();
+    if (!EDIT_PROJECT_NAME_ARIA_RE.test(aria)) return false;
+    const rawLabel = (cur.innerText || cur.textContent || '').trim().toLowerCase();
+    return !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
+  }
+
+  // 设置页右侧项目详情大标题（紧邻 aria-label="Edit project name" / "Edit workspace name" 编辑按钮）
+  function isSettingsProjectTitleElement(el) {
+    let cur = el;
+    let depth = 0;
+    while (cur && cur !== document.body && depth < 3) {
+      if (isSettingsProjectTitleSelf(cur)) return true;
+      cur = cur.parentElement;
+      depth++;
+    }
+    return false;
+  }
+
+  function isProjectBreadcrumbSegmentSelf(seg) {
+    if (!seg || seg.nodeType !== Node.ELEMENT_NODE || !seg.getAttribute) return false;
+    if (seg.getAttribute('data-testid') !== 'breadcrumb-segment') return false;
+    const aria = (seg.getAttribute('aria-label') || '').trim();
+    if (!PROJECT_BREADCRUMB_ARIA_RE.test(aria)) return false;
+    const rawLabel = (seg.innerText || seg.textContent || '').trim().toLowerCase();
+    return !BREADCRUMB_PLACEHOLDER_LABELS.has(rawLabel);
+  }
+
+  // 对话顶部面包屑中的项目名段（优先原生 closest 快速剪枝，兼容无 closest 环境最多上溯 5 层）
+  function isProjectBreadcrumbSegment(el) {
+    if (!el) return false;
+    if (el.closest) {
+      const seg = el.closest('[data-testid="breadcrumb-segment"]');
+      return seg ? isProjectBreadcrumbSegmentSelf(seg) : false;
+    }
+    let cur = el;
+    let depth = 0;
+    while (cur && cur !== document.body && depth < 5) {
+      if (cur.nodeType === Node.ELEMENT_NODE && cur.getAttribute && cur.getAttribute('data-testid') === 'breadcrumb-segment') {
+        return isProjectBreadcrumbSegmentSelf(cur);
+      }
+      cur = cur.parentElement;
+      depth++;
+    }
+    return false;
+  }
+
+  // 仅判断当前元素自身（供 isNonComposerProtectedSelf 在外层祖先遍历中 O(1) 调用，避免 O(D^2) 嵌套爬树）
+  function isProtectedProjectNameSelf(el) {
+    return (
+      isProjectGlyphLabelSelf(el) ||
+      isSettingsProjectNavButton(el) ||
+      isSettingsProjectTitleSelf(el) ||
+      isProjectBreadcrumbSegmentSelf(el)
+    );
+  }
+
+  function isProtectedProjectNameElement(el) {
+    return (
+      isProjectGlyphLabelElement(el) ||
+      isSettingsProjectNavItem(el) ||
+      isSettingsProjectTitleElement(el) ||
+      isProjectBreadcrumbSegment(el)
+    );
+  }
+
   function shouldSkipNode(node) {
     if (!node) return true;
 
@@ -7586,6 +7844,12 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
       ? element.closest('[data-testid="project-header"], button[data-project-card="true"]')
       : findProjectHeaderElement(element);
     if (projectHeader && !isSystemGroupProjectHeader(projectHeader)) {
+      return true;
+    }
+
+    // 其他项目名展示位（对话悬浮卡片/副标题/搜索结果的 data-project-glyph 紧邻标签、设置页侧栏项目列表与详情大标题、顶部项目面包屑）：
+    // 同样在 isActionPill 与 skipCache 之前瞬时拦截，防止 Developer/Run/Done 等项目名被误译
+    if (isProtectedProjectNameElement(element)) {
       return true;
     }
 
@@ -7784,7 +8048,7 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
         }
         slots.push({ type: 'text', node: child });
       } else if (child.nodeType === Node.ELEMENT_NODE) {
-        if (!child.childNodes || child.childNodes.length !== 1 || child.firstChild.nodeType !== Node.TEXT_NODE) {
+        if (!child.childNodes || child.childNodes.length !== 1 || !child.firstChild || child.firstChild.nodeType !== Node.TEXT_NODE) {
           return false;
         }
         slots.push({ type: 'anchor', node: child, anchorText: child.firstChild.nodeValue.trim() });
@@ -7940,7 +8204,7 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     if (curTag === 'PRE' || curTag === 'CODE' || curTag === 'SVG' || curTag === 'MATH' || curTag === 'MJX-CONTAINER' || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT' || isSwarmProtectedElement(cur)) {
       return true;
     }
-    if (isUserProjectHeader(cur)) {
+    if (isUserProjectHeader(cur) || isProtectedProjectNameSelf(cur)) {
       return true;
     }
     if (cur.getAttribute && (

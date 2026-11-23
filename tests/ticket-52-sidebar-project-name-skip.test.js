@@ -427,4 +427,96 @@ assert.equal(breadcrumbDevText.nodeValue, 'Developer', '顶部面包屑项目名
 assert.equal(breadcrumbDevLink.getAttribute('aria-label'), 'Project: Developer');
 assert.equal(breadcrumbNewProjectText.nodeValue, '新建项目', '顶部面包屑 New Project 占位应正常汉化');
 
-console.log('PASS: 左侧项目栏及悬浮卡片/设置页/面包屑项目名隔离与系统内置分组放行回归测试全部通过');
+// 14. 补充精修回归：窄屏平铺设置页（sXb 无 settings-sidebar 容器）、桌面端无 Not in Project 时底部 Provide Feedback 防误伤、Workspace 占位词放行
+const narrowSettingsDev = makeSettingsNavItem('Developer');
+const narrowWs1 = makeSettingsNavItem('Developer');
+const narrowWs2 = makeSettingsNavItem('Tools');
+const narrowWs3 = makeSettingsNavItem('Run');
+const narrowFeedback = makeSettingsNavItem('Provide Feedback');
+const narrowSettingsList = createElement('div', { class: 'relative h-full w-full overflow-hidden' }, [
+  createElement('div', { class: 'px-4 pt-3 pb-1' }, [createElement('h2', {}, [createText('Settings')])]),
+  narrowSettingsDev.btn,
+  narrowFeedback.btn,
+  createElement('div', { class: 'px-4 pt-3 pb-1' }, [createElement('h2', {}, [createText('Workspaces')])]),
+  narrowWs1.btn,
+  narrowWs2.btn,
+  narrowWs3.btn,
+]);
+// 调整平铺节点的 parentElement（makeSettingsNavItem 原本包了一层 wrapper）
+for (const item of [narrowSettingsDev, narrowFeedback, narrowWs1, narrowWs2, narrowWs3]) {
+  item.btn.parentElement = narrowSettingsList;
+}
+body.childNodes.push(narrowSettingsList);
+narrowSettingsList.parentElement = body;
+translateNode(narrowSettingsList);
+
+assert.equal(narrowSettingsDev.txt.nodeValue, '开发者', '窄屏 Settings 分组下官方 Developer 必须正常汉化');
+assert.equal(narrowFeedback.txt.nodeValue, '提供反馈', '窄屏 Settings 分组下 Provide Feedback 必须正常汉化');
+assert.equal(narrowWs1.txt.nodeValue, 'Developer', '窄屏 Workspaces 分组下第 1 个工作区 Developer 必须跳过');
+assert.equal(narrowWs2.txt.nodeValue, 'Tools', '窄屏 Workspaces 分组下第 2 个工作区 Tools 必须跳过');
+assert.equal(narrowWs3.txt.nodeValue, 'Run', '窄屏 Workspaces 分组下第 3 个工作区 Run 必须跳过');
+
+// 桌面端 settings-sidebar 隐藏 Not in Project 时，底部 Provide Feedback 经 flex-1 隔断不可误判为 Projects 分组项
+const desktopProjOnly = makeSettingsNavItem('Developer');
+const desktopBottomFeedback = makeSettingsNavItem('Provide Feedback');
+const desktopSidebarNoStandalone = createElement('div', { 'data-testid': 'settings-sidebar' }, [
+  createElement('div', { class: 'flex-1 flex flex-col gap-1 py-3 overflow-y-auto' }, [
+    createElement('div', { class: 'px-4 mt-2' }, [createElement('h2', {}, [createText('Projects')])]),
+    createElement('div', { class: 'flex flex-col gap-0.5' }, [desktopProjOnly.wrapper]),
+    createElement('div', { class: 'flex-1' }, []),
+    desktopBottomFeedback.wrapper,
+  ]),
+]);
+body.childNodes.push(desktopSidebarNoStandalone);
+desktopSidebarNoStandalone.parentElement = body;
+translateNode(desktopSidebarNoStandalone);
+
+assert.equal(desktopProjOnly.txt.nodeValue, 'Developer', '桌面端 Projects 下项目名 Developer 必须跳过');
+assert.equal(desktopBottomFeedback.txt.nodeValue, '提供反馈', '桌面端无 Not in Project 时底部 Provide Feedback 不可被误跳过');
+
+// 顶部面包屑 Workspace 占位词（New Workspace / Unknown Workspace）应正常放行汉化，真实工作区名应跳过
+const breadcrumbWsDevText = createText('Developer');
+const breadcrumbWsDevLink = createElement('a', {
+  'data-testid': 'breadcrumb-segment',
+  'aria-label': 'Workspace: Developer',
+}, [createElement('span', {}, [breadcrumbWsDevText])]);
+const breadcrumbNewWsText = createText('New Workspace');
+const breadcrumbNewWsLink = createElement('a', {
+  'data-testid': 'breadcrumb-segment',
+  'aria-label': 'Workspace: New Workspace',
+}, [createElement('span', {}, [breadcrumbNewWsText])]);
+const breadcrumbUnknownWsText = createText('Unknown Workspace');
+const breadcrumbUnknownWsLink = createElement('a', {
+  'data-testid': 'breadcrumb-segment',
+  'aria-label': 'Workspace: Unknown Workspace',
+}, [createElement('span', {}, [breadcrumbUnknownWsText])]);
+const breadcrumbWsNav = createElement('nav', { 'aria-label': 'Breadcrumb' }, [
+  breadcrumbWsDevLink,
+  breadcrumbNewWsLink,
+  breadcrumbUnknownWsLink,
+]);
+body.childNodes.push(breadcrumbWsNav);
+breadcrumbWsNav.parentElement = body;
+translateNode(breadcrumbWsNav);
+
+assert.equal(breadcrumbWsDevText.nodeValue, 'Developer', '顶部面包屑真实工作区名 Developer 必须跳过');
+assert.equal(breadcrumbNewWsText.nodeValue, '新建工作区', '顶部面包屑 New Workspace 占位应正常汉化');
+assert.equal(breadcrumbUnknownWsText.nodeValue, '未知工作区', '顶部面包屑 Unknown Workspace 占位应正常汉化');
+
+// 15. Ew 图标回退为 google-symbols 字体 ligature（非空 textContent 如 "cloud"）时，图标与紧邻项目名均须受保护
+const ligatureGlyphText = createText('cloud');
+const ligatureProjectText = createText('Developer');
+const ligatureHoverRow = createElement('div', { class: 'flex items-center gap-1 text-sm text-muted-foreground' }, [
+  createElement('span', { class: 'shrink-0 flex items-center' }, [
+    createElement('span', { class: 'google-symbols', 'data-project-glyph': 'cloud' }, [ligatureGlyphText]),
+  ]),
+  createElement('span', { class: 'truncate' }, [ligatureProjectText]),
+]);
+body.childNodes.push(ligatureHoverRow);
+ligatureHoverRow.parentElement = body;
+translateNode(ligatureHoverRow);
+
+assert.equal(ligatureGlyphText.nodeValue, 'cloud', 'google-symbols 字体图标 ligature 不得被误译为汉字');
+assert.equal(ligatureProjectText.nodeValue, 'Developer', '字体图标包裹下的悬浮卡片项目名 Developer 同样必须跳过');
+
+console.log('PASS: 左侧项目栏及悬浮卡片/设置页(桌面+窄屏)/面包屑项目名隔离与系统内置分组放行回归测试全部通过');
