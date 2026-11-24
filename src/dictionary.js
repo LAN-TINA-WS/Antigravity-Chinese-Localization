@@ -4460,6 +4460,8 @@ const dictionary = {
     // ===== Extra High 思考档位防重复叠加 & Issue #68 终端/工具权限审批静态项 =====
     "Extra High": "极高",
     "Extra high": "极高",
+    "Allow read access to this path?": "是否允许读取此路径？",
+    "Allow write access to this path?": "是否允许写入此路径？",
     "Yes, allow this time": "是，仅本次允许",
     "Yes, allow this download": "是，允许本次下载",
     "Yes, save rule in this conversation": "是，在当前对话中保存规则",
