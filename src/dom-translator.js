@@ -56,6 +56,13 @@
       .trim();
   }
 
+  function formatEnglishDateCn(rawDate) {
+    const months = { january: 1, jan: 1, february: 2, feb: 2, march: 3, mar: 3, april: 4, apr: 4, may: 5, june: 6, jun: 6, july: 7, jul: 7, august: 8, aug: 8, september: 9, sep: 9, october: 10, oct: 10, november: 11, nov: 11, december: 12, dec: 12 };
+    return String(rawDate).replace(/^([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})?$/i, (_m, mon, day, year) => {
+      const month = months[mon.toLowerCase()];
+      return month ? (year ? year + ' 年 ' : '') + month + ' 月 ' + day + ' 日' : rawDate;
+    });
+  }
   // 历史半中半英残片自愈映射表（保持 dictionary 100% 纯净英文键的同时兼容旧版残片自愈）
   const SELF_HEAL_MAP = {
     'Replace With 新建': '替换为新建',
@@ -329,6 +336,29 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
+    // ===== Hydrogen 模型推荐提示（兼容动态下线日期） =====
+    const hydrogenTooltipMatch = trimmed.match(/^Use Hydrogen for better quality with lower quota usage\.(?:\s+(.+))?$/i);
+    if (hydrogenTooltipMatch) {
+      const [, trailingText = ''] = hydrogenTooltipMatch;
+      const leavingMatch = trailingText.match(/^(?:(.+?)\s+)?(?:is\s+)?leaving on\s+(.+?)\.?$/i);
+      let fixed = '使用 Hydrogen 可获得更好的质量，同时消耗更少配额。';
+      if (leavingMatch) {
+        const [, model, rawDate] = leavingMatch;
+        const dateCn = formatEnglishDateCn(rawDate);
+        fixed += (model ? model.trim() : '此模型') + '将于 ' + dateCn + ' 下线。';
+      } else if (trailingText) {
+        fixed += ' ' + translateString(trailingText);
+      }
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+    const modelLeavingMatch = trimmed.match(/^(?:(.+?)\s+)?(?:is\s+)?leaving on\s+(.+?)\.?$/i);
+    if (modelLeavingMatch) {
+      const [, model, rawDate] = modelLeavingMatch;
+      const fixed = (model ? model.trim() : '此模型') + '将于 ' + formatEnglishDateCn(rawDate) + ' 下线。';
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
     if (/^Available AI Credits:\s*(.+)$/i.test(trimmed)) {
       const fixed = trimmed.replace(/^Available AI Credits:\s*(.+)$/i, (_m, n) => '可用 AI 点数：' + n);
       cacheSet(trimmed, fixed);

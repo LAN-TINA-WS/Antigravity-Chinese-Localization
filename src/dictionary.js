@@ -1838,6 +1838,7 @@ const dictionary = {
     "Data storage path": "数据存储路径",
     "AI Credits": "AI 点数",
     "Use AI credits": "使用个人 AI 点数",
+    "Use Hydrogen for better quality with lower quota usage.": "使用 Hydrogen 可获得更好的质量，同时消耗更少配额。",
     "Consume personal tier credits for faster inference and higher rate limits.": "使用个人等级点数以获得更快的推理速度和更高的调用限额。",
     "Account & Profile": "账号与个人中心",
     "Manage subscription": "管理订阅计划",
