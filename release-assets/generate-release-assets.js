@@ -276,7 +276,7 @@ function buildReleaseNotes({ currentVer, baseClientVer, changelogText, asarInfo,
 
   return `# Antigravity-Chinese-Localization v${currentVer} 发布说明
 
-专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁。全面深度适配 **Antigravity v${baseClientVer}** 官方版本，保持与官方原生架构 100% 同步兼容。
+本汉化补丁适配 **Antigravity v${baseClientVer}**。安装前请确认客户端版本完全一致，版本不同或无法确认时请勿覆盖。
 ${subtitleLine}
 ---
 
@@ -292,7 +292,7 @@ ${extracted.body}
 
 | 资产文件 | 文件大小 | SHA256 校验和 | 说明与用途 |
 | :--- | :--- | :--- | :--- |
-| **\`app.asar\`** | ${asarInfo.sizeMB} (${asarInfo.size.toLocaleString()} 字节) | \`${asarInfo.sha256}\` | 官方标准轻量规格免解包即用核心包。直接替换客户端 \`resources/app.asar\` 即可 |
+| **\`app.asar\`** | ${asarInfo.sizeMB} (${asarInfo.size.toLocaleString()} 字节) | \`${asarInfo.sha256}\` | 预制汉化核心包，适用客户端版本见上方 |
 | **\`app.asar.ready\`** | ${asarInfo.sizeMB} (${asarInfo.size.toLocaleString()} 字节) | \`${asarInfo.sha256}\` | 预制就绪镜像，供 \`一键更新汉化.bat\` 及 macOS \`一键更新汉化.command\` 自动版本校验与原子替换使用 |
 | **\`default.zip\`** | ${zipInfo.sizeMB} (${zipInfo.size.toLocaleString()} 字节) | \`${zipInfo.sha256}\` | 开箱即用发行包（内置 \`app.asar.ready\`、Web 控制中心与全平台启动器，支持 UTF-8 文件名与 macOS/Linux 可执行权限） |
 | **\`SHA256SUMS.txt\`** | ${shaSumsSize} 字节 | - | 标准 SHA-256 校验清单，供命令行及自动化脚本比对校验 |
@@ -302,9 +302,9 @@ ${extracted.body}
 ## 快速使用
 
 - **Windows 一键恢复 / 安装**：解压 \`default.zip\`（或将 \`app.asar.ready\` 与 \`一键更新汉化.bat\` 放在同一目录），双击运行 \`一键更新汉化.bat\`。
-- **macOS 一键恢复 / 安装**：解压 \`default.zip\`，双击运行 \`一键更新汉化.command\`。若 Apple Silicon (\`arm64\`) 系统提示“已损坏 / 无法打开”，请在终端执行 \`xattr -cr "/Applications/Antigravity.app"\`（必要时执行 \`codesign --force --deep --sign - "/Applications/Antigravity.app"\`）。
+- **macOS 一键恢复 / 安装**：替换 \`app.asar\` 会使 Google 原始代码签名失效，即使版本匹配也可能提示“已损坏”。需要保留官方签名时，请保留原版。了解影响后，可解压 \`default.zip\` 并运行 \`一键更新汉化.command\`（需要 Node.js 18.18.0 或更高版本）。若替换后无法启动，请用 Google 官方完整安装包覆盖安装。
 - **可视化控制中心**：双击运行 \`双击运行汉化.bat\`（Windows）或执行 \`./运行汉化.sh\`（macOS / Linux），在浏览器 \`http://127.0.0.1:3388\` 中管理汉化与版本更新。
-- **手动直接替换**：下载 \`app.asar\`，备份原版后覆盖到客户端 \`resources/app.asar\`（macOS 为 \`/Applications/Antigravity.app/Contents/Resources/app.asar\`）并重启 Antigravity。
+- **Windows 手动替换**：确认客户端与本补丁版本完全匹配。退出客户端并备份原始 \`app.asar\` 后，再将下载的文件覆盖到 \`resources/app.asar\` 并重启 Antigravity。
 `;
 }
 

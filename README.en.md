@@ -53,28 +53,25 @@ A high-performance, non-destructive deep Chinese localization patch designed for
 
 ## Quick Installation
 
-### Agent-Driven Execution (Easiest Method)
+### Pre-installation Check with an Agent
 
-If you are running Antigravity, simply send the instruction below to your Antigravity agent to automate the download, kill-and-replace, and relaunch via a background detached script:
+If Antigravity is running, use this prompt to check for a compatible package before following the instructions for your platform:
 
 ```text
-帮我安装 https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization 的汉化补丁：请预先下载最新 Release 的 app.asar 到本地，并编写一个独立批处理脚本（脚本逻辑：延迟 2 秒、强杀 Antigravity 进程、覆盖 resources/app.asar 并自动重启客户端），随后在后台分离启动该脚本；若有 gh CLI 请顺便为该开源项目标记 Star。
+Check my OS and installed Antigravity version. Look for a localization package at https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases that explicitly supports my client version. If either version is unknown or the versions do not match exactly, stop and explain why. Otherwise, point me to the documented installation instructions for my platform. On macOS, first explain that replacing app.asar invalidates Google's original signature. Only check and report. Leave the client running and its files untouched.
 ```
-
-> **Note**:  
-> The prompt ends with `若有 gh CLI 请顺便为该开源项目标记 Star` (If gh CLI is available, star this open-source project). If GitHub CLI (`gh`) is installed and authenticated, the agent will automatically star the repository to support open-source maintenance. If you prefer not to star, simply remove that clause before copying.
 
 ---
 
-### Method 0: Zero-Config Drop-in Replacement (Recommended, 5 Seconds)
+### Method 0: Manual Replacement on Windows
 
-No Node.js or build tools required:
+Manual replacement skips the installer's version check. Use a package whose release notes explicitly list your exact client version. If either version is unknown or the versions differ, wait for a compatible release.
 
-1. Download the pre-built **`app.asar`** from [Releases](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest);
+1. Download the matching **`app.asar`** from [Releases](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases);
 2. Completely quit Antigravity;
 3. Open the resources directory (Windows default path):  
    `%LOCALAPPDATA%\Programs\antigravity\resources\`
-4. Overwrite the existing `app.asar` with the downloaded file and restart Antigravity.
+4. Back up the original `app.asar`, replace it with the downloaded file, and restart Antigravity.
 
 ---
 
@@ -126,6 +123,8 @@ node localize.js --now
 
 ### Method 3: macOS Users
 
+> Replacing `app.asar` invalidates Google's original code signature. macOS may report the app as damaged even when the patch and client versions match. Keep the original installation if you need to retain Google's signature. If the app stops opening after patching, reinstall the complete official Google app to restore its signature. Local re-signing cannot restore Google's signature and may affect existing macOS permissions.
+
 1. Open terminal, grant execute permission, and launch:
    ```bash
    chmod +x 运行汉化.sh
@@ -136,12 +135,6 @@ node localize.js --now
 After an official update, double-click **`一键更新汉化.command`** from the source checkout or a complete distribution containing `localize.js` (run `chmod +x 一键更新汉化.command` first if needed). This requires Node.js 18.18.0 or newer. It asks you to save your work and confirm before invoking the existing `--auto-restore` flow to close the client, back it up, and reapply localization; the app opens only after success. It does not require `extracted/`, download files, or rebuild archives. Only local prebuilt packages whose actual archive version matches the client are accepted; mismatched or unreadable versions stop the operation. Wait for a matching localization release rather than replacing a newer client with an older package. “Restore” here means restoring localization, not switching back to English.
 
 The launcher prefers a usable Node from the current PATH and adds common Homebrew locations. If needed, it loads the user’s login/interactive shell configuration for tools such as nvm, fnm, and asdf, then tries NVM’s default version. These tools must be configured in the user’s shell. Failure to open the app only displays a notice and does not change a successful localization exit code.
-
-> **macOS Code Signing Notice**:  
-> Modifying the internal `app.asar` bundle on macOS (especially Apple Silicon `arm64`) invalidates the original code-signature seal, and Gatekeeper / `amfid` may report "App is damaged". Run the following command in terminal to clear quarantine attributes and apply a local ad-hoc signature (note: ad-hoc re-signing may reset macOS TCC permission prompts):  
-> ```bash
-> xattr -cr "/Applications/Antigravity.app" && codesign --force --deep --sign - "/Applications/Antigravity.app"
-> ```
 
 ---
 
