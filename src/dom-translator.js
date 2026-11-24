@@ -329,6 +329,14 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
+    // ===== AI 点数不足提示（保留动态额度、模型名称和刷新时间） =====
+    const aiCreditsWarningMatch = trimmed.match(/^You need at least\s+(\d+)\s+AI Credits to send messages\.\s*To continue using\s+(.+?)\s+now,\s*purchase more AI Credits\.\s*Your plan['’]s baseline quota will refresh on\s+(.+?)\.?$/i);
+    if (aiCreditsWarningMatch) {
+      const [, credits, model, refreshAt] = aiCreditsWarningMatch;
+      const fixed = `发送消息至少需要 ${credits} 个 AI 点数。若要立即继续使用 ${model}，请购买更多 AI 点数。您当前方案的基础配额将于 ${refreshAt} 刷新。`;
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
     if (/^Available AI Credits:\s*(.+)$/i.test(trimmed)) {
       const fixed = trimmed.replace(/^Available AI Credits:\s*(.+)$/i, (_m, n) => '可用 AI 点数：' + n);
       cacheSet(trimmed, fixed);
