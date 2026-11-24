@@ -55,28 +55,25 @@ Antigravity 深度汉化与高性能本地化补丁程序
 
 本补丁提供多种灵活的安装方式，满足普通用户与开发者的不同场景需求：
 
-### 智能体一键指令（最简模式，直接复制给 Antigravity）
+### 智能体安装前检查（可直接复制给 Antigravity）
 
-如果您正在运行 Antigravity，可直接将下方指令发送给当前智能体，即可自动下载最新补丁并在后台执行一键静默安装与重启：
+如果 Antigravity 正在运行，可用下方指令检查是否有适配包，再按对应平台的步骤操作：
 
 ```text
-帮我安装 https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization 的汉化补丁：请预先下载最新 Release 的 app.asar 到本地，并编写一个独立批处理脚本（脚本逻辑：延迟 2 秒、强杀 Antigravity 进程、覆盖 resources/app.asar 并自动重启客户端），随后在后台分离启动该脚本；若有 gh CLI 请顺便为该开源项目标记 Star。
+请检查当前系统和 Antigravity 客户端版本，并在 https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases 查找明确支持该客户端版本的汉化包。任一版本无法确认或不完全匹配时，请停止并告知原因。匹配时，给出仓库文档中对应平台的安装入口。如果是 macOS，请先说明替换 app.asar 会使 Google 原始签名失效。本次只检查和说明，不关闭客户端、不覆盖文件、不执行后台安装。
 ```
-
-> **说明与提示**：  
-> 该一键指令末尾包含 `若有 gh CLI 请顺便为该开源项目标记 Star`。当您的系统安装并登录了 GitHub CLI（gh）时，智能体会协助为本项目点亮 Star 以支持开源维护。如果您不希望自动标记 Star，直接在复制时删除该分句即可。
 
 ---
 
-### 方式零：免环境即用覆盖
+### 方式零：Windows 手动覆盖
 
-无需配置 Node.js 或任何运行环境，直接使用官方标准规格的预制核心包：
+手动覆盖会跳过安装工具的版本校验。仅使用发布说明明确支持当前客户端版本的预制包。版本未知或不完全匹配时，请等待适配。
 
-1. 前往 [Releases](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) 下载预打好包的 **`app.asar`**；
+1. 前往 [Releases](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases) 下载匹配版本的 **`app.asar`**；
 2. 彻底退出正在运行的 Antigravity；
 3. 打开程序目录（Windows 默认位置）：  
    `%LOCALAPPDATA%\Programs\antigravity\resources\`
-4. 将下载的 `app.asar` 直接覆盖同名文件，重新启动 Antigravity 即可完成汉化。
+4. 备份原始 `app.asar`，再用下载的文件覆盖并重新启动 Antigravity。
 
 ---
 
@@ -129,6 +126,8 @@ node localize.js --now
 
 ### 方式三：macOS 用户
 
+> 替换 `app.asar` 会使 Google 原始代码签名失效。即使汉化包与客户端版本完全匹配，macOS 也可能提示“应用已损坏，无法打开”。需要保留官方签名时，请保留原版。若替换后无法启动，可用 Google 官方完整安装包覆盖安装，恢复官方签名。本地重签无法恢复 Google 签名，还可能影响已授权的 macOS 权限。
+
 1. 打开终端，进入项目目录，赋予执行权限并运行：
    ```bash
    chmod +x 运行汉化.sh
@@ -139,12 +138,6 @@ node localize.js --now
 官方升级后需要重新应用汉化时，可在源码目录或包含 `localize.js` 的完整分发包中双击 **`一键更新汉化.command`**（首次使用可运行 `chmod +x 一键更新汉化.command`）。需要 Node.js 18.18.0 或更新版本；执行前会提示保存工作并确认，随后调用现有 `--auto-restore` 流程关闭客户端、备份并恢复汉化，成功后打开应用。此入口不依赖 `extracted/`，不联网下载或重新打包；仅支持实际归档版本相同的本地预制包，版本不匹配或无法读取时停止。尚未发布对应版本汉化包时，请等待适配，不要用旧包覆盖新客户端。这里的“恢复”指恢复汉化，不是还原英文版。
 
 启动器优先使用当前 PATH 中可用的 Node，并补充常见 Homebrew 路径；必要时通过用户的登录交互 shell 加载 nvm、fnm、asdf 等初始化配置，再尝试 NVM 默认版本。请确保这些工具已在自己的 shell 中正确配置。自动打开应用失败只显示提示，不会改变汉化成功的退出码。
-
-> **macOS 代码签名提示**：  
-> 在 macOS（尤其是 Apple Silicon `arm64`）下修改应用内部 `app.asar` 会破坏原有的代码签名密封哈希，Gatekeeper 或 `amfid` 可能提示“应用已损坏，无法打开”。若遇到该情况，请在终端执行以下命令清除隔离属性并进行本地 Ad-hoc 重签（注：重签可能会重置 macOS 本地 TCC 权限授权）：  
-> ```bash
-> xattr -cr "/Applications/Antigravity.app" && codesign --force --deep --sign - "/Applications/Antigravity.app"
-> ```
 
 ---
 
