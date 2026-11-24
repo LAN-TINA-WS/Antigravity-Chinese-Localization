@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const main_1 = __importDefault(require("electron-log/main"));
 const ipcHandlers_1 = require("./ipcHandlers");
+const appChannel_1 = require("./appChannel");
 const cablev2_1 = require("./cablev2");
 const wcvBrowserRegistry_1 = require("./wcvBrowserRegistry");
 const fs = __importStar(require("fs"));
@@ -110,7 +111,7 @@ let sshWindows;
 const HEADLESS = process.env.ELECTRON_OZONE_PLATFORM_HINT === 'headless';
 // When set, skip LS startup and load this URL directly (for dev iteration).
 const DEV_URL = process.env.DEV_URL;
-const IS_INSIDERS = electron_1.app.getName().toLowerCase().includes('insiders');
+const IS_INSIDERS = (0, appChannel_1.isInsidersBuild)();
 // WSL distro to provision and launch the LS in (Windows only, '' = local).
 // Precedence: --wsl-distro switch (empty value forces local) >
 // ANTIGRAVITY_WSL_DISTRO env var > distro persisted from the last session.
@@ -155,9 +156,10 @@ electron_1.app.commandLine.appendSwitch('disable-features', 'FedCm');
 const disabledFeatures = electron_1.app.commandLine.getSwitchValue('disable-features');
 electron_1.app.commandLine.appendSwitch('disable-features', [disabledFeatures, 'CalculateNativeWinOcclusion'].filter(Boolean).join(','));
 electron_1.app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
-// Computer use (macOS): only with the `enable-agy-hub-cua-macos` override, or
-// AGY_ENABLE_CUA=1 in an unpackaged build (src/computer/gate.ts). Off, the Hub
-// sets no loopback WebRTC switch, registers no actuator and starts no helper.
+// Computer use (macOS 14+): the `enable-agy-hub-cua-macos` override, else that
+// Mendel flag as cached by mendelFlagSync last run, or AGY_ENABLE_CUA=1 in an
+// unpackaged build (src/computer/gate.ts). Off, the Hub sets no loopback WebRTC
+// switch, registers no actuator and starts no helper.
 const computerUseOn = (0, computer_1.computerUseEnabledAtStartup)();
 if (computerUseOn) {
     // The computer pane's loopback-only WebRTC preview (P3-1); before ready.
@@ -573,7 +575,7 @@ electron_1.app
                 // Main-process ActuatorService streams follow the LS to its new port.
                 (0, mainClient_1.mainActuatorClientPortChanged)(newPort);
                 if (!HEADLESS) {
-                    // Hub windows only: the desktop HUD and SSH windows keep their own pages.
+                    // Hub windows only: aux windows and SSH windows keep their own pages.
                     const windows = (0, utils_1.getLocalHubWindows)();
                     if (windows.length === 0 && pendingDeepLink !== null) {
                         (0, utils_1.createWindow)(`${newBaseUrl}/`, storageManager);
@@ -643,7 +645,7 @@ electron_1.app
     // Main-process ActuatorClient (actuator types hosted by the main process
     // register on it); it dials the LS's ActuatorService from here on.
     if (computerUseOn) {
-        (0, computer_1.registerComputerUse)({ headless: HEADLESS }); // `computer` actuator
+        (0, computer_1.registerComputerUse)(); // `computer` actuator
     }
     syncBrowserViewerRegistration(false);
     (0, mainClient_1.startMainActuatorClient)(handle.port, csrf);

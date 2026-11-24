@@ -480,7 +480,11 @@ function registerIpcHandlers(storageManager, deps = {}) {
         const win = windowForSender(event?.sender);
         // Windows and Linux windows both get a native caption-button overlay
         // (see createWindow in utils.ts), so keep them in sync; macOS has none.
-        if (win && !(0, utils_1.isMacOS)()) {
+        // A window whose page draws its own buttons (Insiders by default, or
+        // --custom-window-controls) has no overlay to update (Electron would
+        // throw), so do nothing for it. Asked per window, not per app: SSH
+        // windows keep the native buttons (see createWindow), so update theirs.
+        if (win && !(0, utils_1.isMacOS)() && !(0, utils_1.hasCustomWindowControls)(win)) {
             // Omit a missing height: Electron keeps the fields it isn't given, so
             // a colors-only update must not reset a taller titlebar's buttons.
             // The key is left out rather than set to `undefined`: Electron checks
@@ -494,30 +498,34 @@ function registerIpcHandlers(storageManager, deps = {}) {
             });
         }
     });
+    // Window buttons act on the sender's own window, never the focused one: a
+    // page-drawn button can be clicked, or isMaximized() asked, in a window
+    // that isn't focused (e.g. one just opened in the background). A sender
+    // with no Hub window gets nothing.
     electron_1.ipcMain.handle('window:minimize', async (event) => {
-        const win = getTargetHubWindow(event?.sender);
+        const win = windowForSender(event?.sender);
         if (win) {
             win.minimize();
         }
     });
     electron_1.ipcMain.handle('window:maximize', async (event) => {
-        const win = getTargetHubWindow(event?.sender);
+        const win = windowForSender(event?.sender);
         if (win) {
             win.maximize();
         }
     });
     electron_1.ipcMain.handle('window:unmaximize', async (event) => {
-        const win = getTargetHubWindow(event?.sender);
+        const win = windowForSender(event?.sender);
         if (win) {
             win.unmaximize();
         }
     });
     electron_1.ipcMain.handle('window:is-maximized', async (event) => {
-        const win = getTargetHubWindow(event?.sender);
+        const win = windowForSender(event?.sender);
         return win ? win.isMaximized() : false;
     });
     electron_1.ipcMain.handle('window:close', async (event) => {
-        const win = getTargetHubWindow(event?.sender);
+        const win = windowForSender(event?.sender);
         if (win) {
             win.close();
         }
@@ -1330,6 +1338,35 @@ const contextMenuTranslationMap = {
   'Send Message': '发送消息',
   'Queue Message': '排队发送消息',
   'Send Immediately': '立即发送',
+  // 2.35.0 收件箱、对话移动、侧边提问继续、打开方式与远程智能体原生上下文菜单补齐
+  'Resolve': '标为已解决',
+  'Return to Inbox': '移回收件箱',
+  'Inbox Mode': '收件箱模式',
+  'Working Section': '“正在工作”分组',
+  'Auto-Resolve': '自动解决',
+  'Subtitle': '副标题',
+  'Move to Project': '移动到项目',
+  'Move to Workspace': '移动到工作区',
+  'New Project...': '新建项目...',
+  'New Workspace...': '新建工作区...',
+  'Remove from Project': '从项目中移除',
+  'Remove from Workspace': '从工作区中移除',
+  'Continue as a New Conversation': '作为新对话继续',
+  'Continue in Current Workspace': '在当前工作区继续',
+  'Continue in Shared Workspace': '在共享工作区继续',
+  'Continue in New Workspace': '在新工作区继续',
+  'Open with': '打开方式',
+  'Text viewer': '文本查看器',
+  'Image viewer': '图片查看器',
+  'Video player': '视频播放器',
+  'Audio player': '音频播放器',
+  'HTML viewer': 'HTML 查看器',
+  'Notebook viewer': 'Notebook 查看器',
+  'PDF viewer': 'PDF 查看器',
+  'System default app': '系统默认应用',
+  'Application Menu': '应用菜单',
+  'For Me': '仅自己使用',
+  'For My Team': '团队共享',
 };
 function translateContextLabel(lbl) {
   if (!lbl) return '';
@@ -1341,6 +1378,12 @@ function translateContextLabel(lbl) {
     if (contextMenuTranslationMap[base]) return contextMenuTranslationMap[base] + '（默认）';
     const openMatch = base.match(/^Open in\s+(.+)$/i);
     if (openMatch) return '在 ' + openMatch[1] + ' 中打开（默认）';
+  }
+  const statusSuffixMatch = trimmed.match(/^(.+?)\s+\((Not running|Sidecar disabled)\)$/);
+  if (statusSuffixMatch) {
+    const baseCn = contextMenuTranslationMap[statusSuffixMatch[1]] || statusSuffixMatch[1];
+    const reasonCn = statusSuffixMatch[2] === 'Sidecar disabled' ? 'Sidecar 已禁用' : '未运行';
+    return baseCn + '（' + reasonCn + '）';
   }
   let m = trimmed.match(/^Move to Group:\s*(.+)$/i);
   if (m) return '移动到分组：' + m[1];

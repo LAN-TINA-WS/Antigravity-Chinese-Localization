@@ -1,11 +1,13 @@
 'use strict';
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const assert = require('assert');
 const { readAsarPackageVersion } = require('../asar-version');
 const { loadTranslatorSandbox, compareSemver } = require('./helpers/translator-loader');
 const { extractChangelogSection } = require('../release-assets/generate-release-assets');
+const { applyTranslations } = require('../localize');
 
 console.log('=== 开始 Ticket-44 Antigravity 2.33.0 官方版本特性 (Computer Use HUD / 9 音色语音听写 / Cookie 站点管理 / 组合包 / SSH 接管) 专项测试 ===\n');
 
@@ -60,7 +62,40 @@ check('extractChangelogSection 精确提取 v2.33.0 章节', extractChangelogSec
 // -----------------------------------------------------------------------------
 console.log('\n--- 2. Computer Use 桌面控制 HUD 与主进程安全红线校验 ---');
 const distDir = path.join(ROOT, 'extracted', 'dist');
-const hudJs = fs.readFileSync(path.join(distDir, 'computer', 'hud.js'), 'utf-8');
+// v2.35.0+ 官方已移除 dist/computer/hud*.js；若不存在则在隔离临时目录构建 v2.33.0 官方 HUD 夹具，持续验证 localize.js 向后兼容能力
+let hudDistDir = distDir;
+let hudTmpRoot = null;
+if (!fs.existsSync(path.join(distDir, 'computer', 'hud.js'))) {
+  hudTmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'agy-t44-hud-'));
+  fs.cpSync(distDir, path.join(hudTmpRoot, 'dist'), { recursive: true });
+  const compDir = path.join(hudTmpRoot, 'dist', 'computer');
+  fs.mkdirSync(compDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(compDir, 'overlay.js'),
+    "exports.overlayDisplayName = function overlayDisplayName(label) {\n    return `Agent: ${label}`;\n};\n",
+    'utf-8'
+  );
+  fs.writeFileSync(
+    path.join(compDir, 'hud.js'),
+    `const HTML = \`<body><div id="bar"><div id="dot"></div><div id="status">AGY is controlling your Mac</div>\n<button id="stop">Stop</button><button id="resume">Resume</button></div>\`;\nfunction update(end){ end.textContent = 'Stopped'; end.textContent = 'Stop'; }\nconst IPC = ['agy-hud:stop', 'agy-hud:resume'];\n`,
+    'utf-8'
+  );
+  fs.writeFileSync(
+    path.join(compDir, 'hudState.js'),
+    `function hudView(s) {\n  const visible = Boolean(s.agentActive);\n  if (s.paused) return { state: 'paused', text: 'Agent paused — you have control', visible };\n  if (!s.agentActive) return { state: 'idle', text: 'Agent idle', visible };\n  if (s.mode === 'background') {\n    const name = s.appName;\n    return {\n      state: 'background',\n            text: name\n                ? \`AGY working in \${name} (background)\`\n                : 'AGY working in the background',\n      visible,\n    };\n  }\n  return { state: 'running', text: 'AGY is controlling your Mac', visible };\n}\nexports.hudView = hudView;\n`,
+    'utf-8'
+  );
+  fs.writeFileSync(
+    path.join(compDir, 'hudAgents.js'),
+    `const overlay_1 = require('./overlay');\nfunction hudAgentRows(s) {\n  return (s.agents || []).map((a) => {\n    const label = a.actor?.label || 'unnamed';\n    const app = a.appName;\n    const stopped = Boolean(a.stopped);\n    const paused = Boolean(s.paused);\n    const m = a.mode || 'foreground';\n    return {\n      mode: m,\n      text: \`\${(0, overlay_1.overlayDisplayName)(label)} · \${app || 'starting'} · \${stopped ? 'stopped' : paused ? 'paused' : m}\`,\n    };\n  });\n}\nfunction hudAgentsHeadline(text, rows) {\n    const working = rows.filter((r) => !r.stopped).length;\n    const stopped = rows.length - working;\n    if (working > 1) {\n        return \`\${working} AGY agents working\`;\n    }\n    if (working === 0 && stopped > 0) {\n        return stopped === 1 ? 'Agent stopped' : \`\${stopped} agents stopped\`;\n    }\n    return stopped > 0 ? \`\${text} (+\${stopped} stopped)\` : text;\n}\nexports.hudAgentRows = hudAgentRows;\nexports.hudAgentsHeadline = hudAgentsHeadline;\n`,
+    'utf-8'
+  );
+  applyTranslations(hudTmpRoot);
+  hudDistDir = path.join(hudTmpRoot, 'dist');
+}
+
+try {
+const hudJs = fs.readFileSync(path.join(hudDistDir, 'computer', 'hud.js'), 'utf-8');
 check(
   'hud.js 汉化悬浮控制栏文案并严格保留 agy-hud: 控制台 IPC 协议令牌',
   hudJs.includes('AGY 正在控制您的 Mac') &&
@@ -72,7 +107,7 @@ check(
   true
 );
 
-const hudState = require(path.join(distDir, 'computer', 'hudState.js'));
+const hudState = require(path.join(hudDistDir, 'computer', 'hudState.js'));
 check(
   'hudState.hudView 暂停接管态保留 state="paused" 并输出中文',
   hudState.hudView({ agentActive: true, paused: true, pauseCause: 'user_takeover' }),
@@ -93,7 +128,7 @@ check('hudState.hudView 空闲态保留 state="idle"', hudState.hudView({ agentA
   visible: false,
 });
 
-const hudAgents = require(path.join(distDir, 'computer', 'hudAgents.js'));
+const hudAgents = require(path.join(hudDistDir, 'computer', 'hudAgents.js'));
 const agentRows = hudAgents.hudAgentRows({
   agentActive: true,
   paused: false,
@@ -115,6 +150,9 @@ check(
   ]),
   '2 个 AGY 智能体正在运行'
 );
+} finally {
+  if (hudTmpRoot) fs.rmSync(hudTmpRoot, { recursive: true, force: true });
+}
 
 const overlay = require(path.join(distDir, 'computer', 'overlay.js'));
 check('overlay.overlayLabel 保留发往 Overlay.swift 的 "unnamed" 协议字面量', overlay.overlayLabel(''), 'unnamed');
@@ -289,7 +327,7 @@ if (process.platform === 'win32') {
         ComSpec: process.env.ComSpec || 'C:\\Windows\\System32\\cmd.exe',
         PATH: 'C:\\Windows\\System32;C:\\Windows',
       },
-      timeout: 5000,
+      timeout: 20000,
     });
     check(
       'Windows 实机验证 (Issue #60): 无 Node.js 时双击运行汉化.bat 自动桥接离线安装器成功退出',

@@ -49,9 +49,16 @@ const ONE_SHOT_PROBE_TIMEOUT_MS = 5000;
  * fresh rather than a long-lived process's cached
  * CGPreflightScreenCaptureAccess(). Read-only (it never prompts, activates
  * or takes input).
+ *
+ * `noTcc` adds `--no-tcc`: no TCC check at all, and both grants are false
+ * (`checked: false`). Even the non-prompting checks, from a fresh process,
+ * make macOS 15 add the app to the Accessibility / Screen Recording list (or
+ * re-add a deleted row) and show its alert, so frequent probes must use it
+ * (index.ts's idle probe; it never runs a plain one).
  */
-async function probeHelperOnce(binaryPath, env, run = runFile) {
-    const out = await run(binaryPath, ['probe'], {
+async function probeHelperOnce(binaryPath, env, run = runFile, opts = {}) {
+    const args = opts.noTcc ? ['probe', '--no-tcc'] : ['probe'];
+    const out = await run(binaryPath, args, {
         env,
         timeoutMs: ONE_SHOT_PROBE_TIMEOUT_MS,
     });

@@ -301,8 +301,8 @@ ${extracted.body}
 
 ## 快速使用
 
-- **Windows 一键恢复 / 安装**：解压 \`default.zip\`（或将 \`app.asar.ready\` 与 \`一键更新汉化.bat\` 放在同一目录），双击运行 \`一键更新汉化.bat\`。
-- **macOS 一键恢复 / 安装**：替换 \`app.asar\` 会使 Google 原始代码签名失效，即使版本匹配也可能提示“已损坏”。需要保留官方签名时，请保留原版。了解影响后，可解压 \`default.zip\` 并运行 \`一键更新汉化.command\`（需要 Node.js 18.18.0 或更高版本）。若替换后无法启动，请用 Google 官方完整安装包覆盖安装。
+- **Windows 一键恢复 / 安装（含无 Node.js 离线还原）**：解压 \`default.zip\`（或将 \`app.asar.ready\` 与 \`一键更新汉化.bat\` 放在同一目录），双击运行 \`一键更新汉化.bat\`（若已汉化且未安装 Node.js，可按提示输入 \`R\` 离线安全还原官方英文版）。
+- **macOS 一键恢复 / 安装**：替换 \`app.asar\` 会使 Google 原始代码签名失效，即使版本匹配也可能提示“已损坏”。需要保留官方签名时，请保留原版。了解影响后，可解压 \`default.zip\` 并运行 \`一键更新汉化.command\`（需要 Node.js 18.18.0 或更高版本）。若替换后无法启动，如需恢复官方签名请用 Google 官方完整安装包覆盖安装；若知情并仍希望本地启动汉化版，可尝试在终端执行 \`xattr -cr "/Applications/Antigravity.app" && codesign --force --deep --sign - "/Applications/Antigravity.app"\`（本地重签无法恢复官方签名且可能重置 TCC 权限）。
 - **可视化控制中心**：双击运行 \`双击运行汉化.bat\`（Windows）或执行 \`./运行汉化.sh\`（macOS / Linux），在浏览器 \`http://127.0.0.1:3388\` 中管理汉化与版本更新。
 - **Windows 手动替换**：确认客户端与本补丁版本完全匹配。退出客户端并备份原始 \`app.asar\` 后，再将下载的文件覆盖到 \`resources/app.asar\` 并重启 Antigravity。
 `;

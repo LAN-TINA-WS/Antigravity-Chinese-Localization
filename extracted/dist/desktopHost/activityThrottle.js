@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Caps how fast one agent's typing activity reaches the overlay and viewers
+ * Caps how fast one agent's typing activity reaches the viewers
  * (#1459: per-chunk typing activities): at most one per
  * {@link ACTIVITY_MIN_INTERVAL_MS} per actor for a run of the same typing
  * kind, always keeping the latest (a trailing flush), so the caret ends where

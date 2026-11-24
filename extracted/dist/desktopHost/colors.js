@@ -7,9 +7,9 @@
  * at most as many agents as palette entries, and deterministic. A slot is
  * released when its agent leaves.
  *
- * Every surface takes the color from here: the overlay ops (color_index), the
- * HUD rows and the viewer's agents / activity / streams / frame_meta
- * (colorIndex). Surfaces fall back to the hash only when no index is sent.
+ * Every surface takes the color from here: the viewer's agents / activity /
+ * streams / frame_meta (colorIndex). Surfaces fall back to the hash only
+ * when no index is sent.
  *
  * Node-only, no Electron.
  */

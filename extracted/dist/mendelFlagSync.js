@@ -212,7 +212,10 @@ function fetchMendelFlags(port, csrfToken, requestImpl, setAbort) {
 /**
  * Polls the local Language Server's `GetMendelFlags` endpoint on startup, port
  * transitions, explicit refreshes, and a background interval, persisting changes
- * to `WCV_THREE_LAYER_STACK_FLAG` in `storageManager`.
+ * to `WCV_THREE_LAYER_STACK_FLAG`, `RC_BROWSER_STREAM_FLAG` and `CUA_MACOS_FLAG`
+ * in `storageManager`. The default-off flags (RC, CUA) are written `'true'`
+ * when on, and `'false'` only over an earlier value, so a user who never had
+ * them on gets no new key.
  */
 function startMendelFlagSync(options) {
     const { csrfToken, storageManager, requestImpl = https.request } = options;
@@ -251,7 +254,11 @@ function startMendelFlagSync(options) {
         }
         const wcvEnabled = parseMendelBoolFlag(body, constants_1.WCV_THREE_LAYER_STACK_FLAG);
         const rcEnabled = parseMendelBoolFlag(body, constants_1.RC_BROWSER_STREAM_FLAG);
-        if (wcvEnabled === undefined || rcEnabled === undefined) {
+        // Same snapshot, so undefined exactly when wcv / rc are.
+        const cuaEnabled = parseMendelBoolFlag(body, constants_1.CUA_MACOS_FLAG);
+        if (wcvEnabled === undefined ||
+            rcEnabled === undefined ||
+            cuaEnabled === undefined) {
             if (retryOnEmpty && retryTimer === undefined && activePort > 0) {
                 retryTimer = setTimeout(() => {
                     retryTimer = undefined;
@@ -278,6 +285,14 @@ function startMendelFlagSync(options) {
                 : currentItems[constants_1.RC_BROWSER_STREAM_FLAG] !== undefined &&
                     currentItems[constants_1.RC_BROWSER_STREAM_FLAG] !== nextRcVal) {
                 updates[constants_1.RC_BROWSER_STREAM_FLAG] = nextRcVal;
+            }
+            // Read at the next launch by src/computer/gate.ts (computer use is
+            // decided before app ready, so it cannot wait for this poll).
+            const savedCua = currentItems[constants_1.CUA_MACOS_FLAG];
+            if (cuaEnabled
+                ? savedCua !== 'true'
+                : savedCua !== undefined && savedCua !== 'false') {
+                updates[constants_1.CUA_MACOS_FLAG] = cuaEnabled ? 'true' : 'false';
             }
             if (Object.keys(updates).length === 0) {
                 return;

@@ -1,11 +1,45 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PERMISSIONS_CHANNELS = void 0;
+exports.defaultPermissionGuide = defaultPermissionGuide;
 exports.registerComputerPermissionsIpc = registerComputerPermissionsIpc;
 /**
  * @fileoverview IPC for the Hub UI's macOS permission onboarding card
- * (preload `window.agyComputerPreview.getPermissions`, `openPermissionSettings`
- * and `relaunchApp`). Registered with the computer preview IPC, so only while
+ * (preload `window.agyComputerPreview.getPermissions`, `openPermissionSettings`,
+ * `closePermissionGuide` and `relaunchApp`). Registered with the computer preview IPC, so only while
  * computer use is on.
  *
  * Only the top frame of a Hub UI window may call it (not popups, webview
@@ -16,18 +50,41 @@ exports.registerComputerPermissionsIpc = registerComputerPermissionsIpc;
  *
  * Open never asks macOS for a permission (no prompting TCC call, so no
  * "would like to control this computer" alert): it opens the named pane and
- * reports whether that pane is already granted, read passively.
+ * reports whether that pane is already granted, read passively. Unless the
+ * pane is granted, it then shows the permission guide (permissionGuide.ts)
+ * beside System Settings, always starting with the drag tile; a grant read
+ * that sees the pane flip on closes it.
  */
+const fs = __importStar(require("fs"));
 const electron_1 = require("electron");
 const utils_1 = require("../utils");
+const gate_1 = require("./gate");
 const index_1 = require("./index");
+const permissionGuide_1 = require("./permissionGuide");
 const permissions_1 = require("./permissions");
 const previewViewers_1 = require("./previewViewers");
 exports.PERMISSIONS_CHANNELS = Object.freeze({
     get: 'computer-permissions:get',
     openSettings: 'computer-permissions:open-settings',
     relaunch: 'computer-permissions:relaunch',
+    closeGuide: 'computer-permissions:close-guide',
 });
+function existingHelperPath() {
+    const p = (0, index_1.desktopHelperPath)();
+    return fs.existsSync(p) ? p : undefined;
+}
+/** The guide with the real helper, app bundle and Hub quit. */
+function defaultPermissionGuide() {
+    return new permissionGuide_1.PermissionGuide({
+        helperPath: existingHelperPath,
+        app: () => (0, permissionGuide_1.resolveGuideApp)(process.execPath, electron_1.app.isPackaged),
+        fallbackName: () => electron_1.app.getName(),
+        env: () => (0, gate_1.helperEnv)(process.env, electron_1.app.isPackaged),
+        // The confirmed quit only (not 'before-quit', which runs before the
+        // Cmd+Q confirmation, so Cancel would close the guide too).
+        onQuit: (cb) => (0, index_1.onComputerUseTeardown)(cb),
+    });
+}
 const defaultReadGrants = () => ({
     accessibility: electron_1.systemPreferences.isTrustedAccessibilityClient(false),
     screenRecording: electron_1.systemPreferences.getMediaAccessStatus('screen') === 'granted',
@@ -57,6 +114,14 @@ function registerComputerPermissionsIpc(deps = {}) {
     const relaunch = deps.relaunch ?? defaultRelaunch;
     const refreshHello = deps.refreshHello ?? index_1.refreshComputerHello;
     const readGrants = deps.readGrants ?? defaultReadGrants;
+    const guide = deps.guide ?? defaultPermissionGuide();
+    /**
+     * Bumped by every Open and close-guide: an Open whose
+     * `await openExternal` was overtaken (a close or a newer Open meanwhile)
+     * shows no guide, so no guide outlives a close and only the newest Open's
+     * pane gets one.
+     */
+    let generation = 0;
     /** What an Open reports: the pane's grant, read passively; never asks. */
     const paneState = (pane) => {
         let granted = false;
@@ -86,6 +151,13 @@ function registerComputerPermissionsIpc(deps = {}) {
         const now = tracker.sample();
         const flipped = now.accessibility !== last.accessibility ||
             now.screenRecording !== last.screenRecording;
+        // A pane granted since the last read: its guide is done (Screen
+        // Recording's only close path; the guide sees Accessibility itself).
+        for (const pane of ['accessibility', 'screenRecording']) {
+            if (now[pane] && !last[pane]) {
+                guide.setGranted(pane);
+            }
+        }
         last = now;
         // Every check re-reads the helper's grants (the ones the LS gates on),
         // which can change without the Hub's own read flipping. On a flip the
@@ -104,9 +176,34 @@ function registerComputerPermissionsIpc(deps = {}) {
         check(e);
         // Validated before anything runs: only the two named panes.
         const url = (0, permissions_1.permissionPaneUrl)(pane);
-        const result = paneState(pane);
+        const p = pane;
+        const mine = ++generation;
+        let result = paneState(p);
         await openExternal(url);
-        return result;
+        if (mine !== generation) {
+            // Overtaken while System Settings opened: the close or the newer
+            // Open decides about the guide; this one leaves it alone.
+            return { ...result, guide: 'unavailable', appName: guide.appName() };
+        }
+        // Granted while System Settings opened: report the fresh read
+        // (already-granted, as if it had been granted before) and show no guide.
+        if (result.registered !== 'already-granted') {
+            result = paneState(p);
+        }
+        if (result.registered === 'already-granted') {
+            // Nothing to add or turn on: no guide over System Settings (nor the
+            // other pane's, beside this one).
+            guide.close();
+            return { ...result, guide: 'unavailable', appName: guide.appName() };
+        }
+        // Nothing asked macOS to list the app, so the guide starts with the
+        // drag tile (its text also covers an app that is already listed).
+        return { ...result, ...guide.show(p, 'add') };
+    });
+    electron_1.ipcMain.handle(exports.PERMISSIONS_CHANNELS.closeGuide, (e) => {
+        check(e);
+        generation++;
+        guide.close();
     });
     let relaunching = false;
     electron_1.ipcMain.handle(exports.PERMISSIONS_CHANNELS.relaunch, (e) => {

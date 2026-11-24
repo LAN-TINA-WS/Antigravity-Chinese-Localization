@@ -9,11 +9,11 @@ Antigravity 深度汉化与高性能本地化补丁程序
 [![GitHub stars](https://img.shields.io/github/stars/antigravity-cn-community/Antigravity-Chinese-Localization?style=flat&color=gold)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/stargazers)
 [![GitHub Discussions](https://img.shields.io/github/discussions/antigravity-cn-community/Antigravity-Chinese-Localization?style=flat&color=purple)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
-[![Package Size](https://img.shields.io/badge/ASAR%20Size-~7.48%20MiB%20(Official%20Slim)-success)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
+[![Package Size](https://img.shields.io/badge/ASAR%20Size-~7.56%20MiB%20(Official%20Slim)-success)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
 [![Node Runtime](https://img.shields.io/badge/Node.js-%3E%3D%2018.18.0-informational)](https://nodejs.org/)
 [![license](https://img.shields.io/github/license/antigravity-cn-community/Antigravity-Chinese-Localization)](LICENSE)
 
-专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁，现由开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合维护。全面适配 **Antigravity v2.34.0+** 最新架构，完成 `src/` 模块化引擎解耦与 DOM 微任务调度重构，带来百万级吞吐量的极致流畅体验。全量汉化规划模式、系统设置、安全沙盒、Remote SSH 远程开发、Computer Use 桌面操控与锁屏预览、内联审批/提问卡片、`Swarm` 多智能体侧栏与 `plugin://` 子框架、`Orchestrator` 模式设置与 `4,650+` 条零重复核心界面文案，严格对齐官方原生轻量级打包规格（v2.34.0.1 约 7.48 MiB），并对用户打字与代码编辑区实施绝对物理免疫。
+专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁，现由开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合维护。全面适配 **Antigravity v2.35.0+** 最新架构，完成 `src/` 模块化引擎解耦与 DOM 微任务调度重构，带来百万级吞吐量的极致流畅体验。全量汉化收件箱模式 (`Inbox Mode`)、插件权限管理、语音听写多语言选择、规划模式、系统设置、安全沙盒、Remote SSH 远程开发、Computer Use 桌面操控与预览、内联审批/提问卡片、`Swarm` 多智能体侧栏与 `plugin://` 子框架、`Orchestrator` 模式设置与 `4,830+` 条零重复核心界面文案，严格对齐官方原生轻量级打包规格（v2.35.0 约 7.56 MiB），并对用户打字与代码编辑区实施绝对物理免疫。
 
 > [最新 Release 下载](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [社区讨论与千星里程碑 (Discussions)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [问题反馈与建议](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
 
@@ -46,8 +46,8 @@ Antigravity 深度汉化与高性能本地化补丁程序
 | :--- | :--- | :--- |
 | **极致吞吐与防夹生守卫** | 吞吐量突破 168 万次/秒 | 模块化拆分为 `src/dictionary.js` 与 `src/dom-translator.js`，前置 `O(1)` 哈希精确查找、ASCII 纯中文短路、DOM 祖先剪枝、`queueMicrotask` 帧聚合及 `coreWords` 100% 实词命中防夹生守卫。 |
 | **本机回环安全装甲** | `127.0.0.1` + CSRF 强鉴权 | 控制中心强制绑定 `127.0.0.1`，全接口实施 `Host`/`Origin` 回环校验、单进程一次性 CSRF Token 鉴权、JSON 请求体大小限制与显式 TLS 证书校验。 |
-| **轻量打包与标准规格** | 严格对齐官方原生规格（约 7.40 MiB） | 使用 `--unpack-dir` 排除外部解包依赖，彻底消除历史版本体积膨胀问题，与官方原生分发包规格保持一致。 |
-| **全套 TDD 自动化测试门禁** | 57 组测试套件 ALL GREEN | 覆盖模块化翻译引擎、词典零重复基线、主进程功能沙盒、AST 语法门禁、回环安全鉴权、无 Node.js 实机批处理离线桥接及流式发布下载防护。 |
+| **轻量打包与标准规格** | 严格对齐官方原生规格（约 7.56 MiB） | 使用 `--unpack-dir` 排除外部解包依赖，彻底消除历史版本体积膨胀问题，与官方原生分发包规格保持一致。 |
+| **全套 TDD 自动化测试门禁** | 63 组测试套件 ALL GREEN | 覆盖模块化翻译引擎、词典零重复基线、主进程功能沙盒、AST 语法门禁、回环安全鉴权、无 Node.js 实机批处理离线桥接及流式发布下载防护。 |
 
 ---
 
@@ -55,13 +55,17 @@ Antigravity 深度汉化与高性能本地化补丁程序
 
 本补丁提供多种灵活的安装方式，满足普通用户与开发者的不同场景需求：
 
-### 智能体安装前检查（可直接复制给 Antigravity）
+### 智能体安全安装指令（最简模式，带版本与签名门禁）
 
-如果 Antigravity 正在运行，可用下方指令检查是否有适配包，再按对应平台的步骤操作：
+如果 Antigravity 正在运行，可直接将下方指令发送给当前智能体；它会**先严格核对系统与本地客户端版本**，确认匹配并备份原版后再执行安全安装（版本不匹配立即停止，绝不盲目覆盖）：
 
 ```text
-请检查当前系统和 Antigravity 客户端版本，并在 https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases 查找明确支持该客户端版本的汉化包。任一版本无法确认或不完全匹配时，请停止并告知原因。匹配时，给出仓库文档中对应平台的安装入口。如果是 macOS，请先说明替换 app.asar 会使 Google 原始签名失效。本次只检查和说明，不关闭客户端、不覆盖文件、不执行后台安装。
+帮我安装 https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization 的汉化补丁：请先检查当前操作系统和本机 Antigravity 的实际客户端版本，并在 Releases 查找明确支持该客户端版本的汉化包；若任一版本无法确认或不完全匹配，请立即停止并告知原因，不要关闭客户端或覆盖文件。如果是 macOS，请先向我说明替换 app.asar 会使 Google 原始代码签名失效及恢复方式，等我明确确认后再继续。确认版本完全匹配后，先为原版 resources/app.asar 创建纯净备份 app.asar.bak，再预先下载匹配版本的 app.asar 并编写独立后台脚本（延迟 2 秒、结束 Antigravity 进程、校验后覆盖 resources/app.asar 并重启客户端）分离执行；若有 gh CLI 请顺便为该开源项目标记 Star。
 ```
+
+> **说明与提示**：  
+> - 若只想先检查适配状态、暂不安装，可把后半段删掉，只让智能体汇报系统、本地版本与 Releases 匹配结果即可。  
+> - 指令末尾包含 `若有 gh CLI 请顺便为该开源项目标记 Star`，已登录 GitHub CLI（gh）时会自动为本项目点 Star 支持维护；如不希望自动点 Star，复制时删掉该分句即可。
 
 ---
 
@@ -83,7 +87,7 @@ Antigravity 深度汉化与高性能本地化补丁程序
 1. 下载 Release 发布的 **`default.zip`**（或直接 clone 仓库 / 下载源码包），**先完整解压到本地文件夹**（请勿直接在压缩包预览窗口内双击运行；压缩包内已自带 `app.asar.ready`）；
 2. 双击运行目录下的 **`双击运行汉化.bat`**：
    - **已安装 Node.js 环境**：自动启动本地管理服务并在默认浏览器打开可视化控制中心（`http://127.0.0.1:3388`），支持状态检测、在线拉取历史/最新 Release 补丁、备份去重与一键还原；
-   - **未安装 Node.js 环境（开箱即用）**：自动识别同目录下的 `app.asar.ready`，**无缝切换至【离线安全模式】**直接校验客户端版本并完成安全备份与汉化部署，无需手动折腾运行环境！
+   - **未安装 Node.js 环境（开箱即用）**：自动识别同目录下的 `app.asar.ready`，**无缝切换至【离线安全模式】**直接校验客户端版本并完成安全备份与汉化部署；若客户端已汉化，脚本会停留在交互提示中并支持**直接输入 `R` 离线安全还原官方英文原版**，无需手动折腾运行环境！
 
 控制中心首页显示实际已安装的 `app.asar` 版本，可以直接读取 GitHub Releases，选择最新正式版或历史版本。“仅下载”将文件缓存到本项目的 `downloads/` 目录；“下载并安装”在下载和 SHA-256 校验后，确认安装到配置的目标路径。更新说明和已下载版本默认折叠；路径配置、本地脚本汉化、还原及日志可在“设置与维护”中展开。
 
@@ -138,6 +142,13 @@ node localize.js --now
 官方升级后需要重新应用汉化时，可在源码目录或包含 `localize.js` 的完整分发包中双击 **`一键更新汉化.command`**（首次使用可运行 `chmod +x 一键更新汉化.command`）。需要 Node.js 18.18.0 或更新版本；执行前会提示保存工作并确认，随后调用现有 `--auto-restore` 流程关闭客户端、备份并恢复汉化，成功后打开应用。此入口不依赖 `extracted/`，不联网下载或重新打包；仅支持实际归档版本相同的本地预制包，版本不匹配或无法读取时停止。尚未发布对应版本汉化包时，请等待适配，不要用旧包覆盖新客户端。这里的“恢复”指恢复汉化，不是还原英文版。
 
 启动器优先使用当前 PATH 中可用的 Node，并补充常见 Homebrew 路径；必要时通过用户的登录交互 shell 加载 nvm、fnm、asdf 等初始化配置，再尝试 NVM 默认版本。请确保这些工具已在自己的 shell 中正确配置。自动打开应用失败只显示提示，不会改变汉化成功的退出码。
+
+> **macOS 本地运行排错（可选，了解风险后使用）**：  
+> 若您已了解上述签名失效影响（本地 Ad-hoc 重签无法恢复 Google 官方签名，且可能重置 macOS TCC 权限授权）并仍希望在 Apple Silicon (`arm64`) 上启动已汉化版本，当系统提示“应用已损坏，无法打开”时，可在终端执行：  
+> ```bash
+> xattr -cr "/Applications/Antigravity.app" && codesign --force --deep --sign - "/Applications/Antigravity.app"
+> ```
+> 如需恢复官方原版签名，直接重新下载并覆盖安装 Google 官方完整安装包即可。
 
 ---
 
@@ -216,6 +227,7 @@ node localize.js --apply-only
 
 各版本的详细更新记录、新特性适配细节与底层技术架构演进，请参阅独立的 [CHANGELOG.md](CHANGELOG.md)（英文版请参阅 [CHANGELOG.en.md](CHANGELOG.en.md)）：
 
+- **[v2.35.0](CHANGELOG.md#v2350-2026-11-24)** (2026-11-24)：全面同步适配官方 `v2.35.0` 版本更新！同步 4 个新增主进程模块（`appChannel`、`customWindowControls`、`idleProbe`、`permissionGuide`）并清理官方已移除的旧版 `hud*.js`（保留向后兼容守卫），补齐 28 项原生右键/应用菜单；重磅覆盖 `Inbox Mode` 收件箱模式与自动解决、`Plugin permissions` 插件权限管理页、`Dictation languages` 多语言听写选择器、侧边提问继续为新对话、`Move Conversation` 弹窗、`Open with` 查看器、新版 Onboarding 与 WIF/授权码登录流、远程智能体个人/团队创建菜单及 MCP 表单校验；整合社区 PR #74（路径/URL 权限标题全家族 18 种组合根治）、PR #76（版本强校验门禁与 macOS 签名风险前置指引）、PR #77（AI 点数不足/基础配额刷新/超额使用全变体提示）、PR #79（Hydrogen 配额推荐与模型下线日期防误伤校验）并修复 Issue #73（无 Node.js 批处理防闪退与离线安全一键还原英文原版）（词典扩充至 `4,837` 键零重复、63 组自动化测试门禁 100% ALL GREEN）。
 - **[v2.34.0.1](CHANGELOG.md#v23401-2026-11-23)** (2026-11-23)：重磅新增 `Swarm` 多智能体协作面板与 `plugin://` 子框架实时 DOM 注入钩子（`dist/utils.js`，保留 `Swarm` 品牌名原生英文并严格隔离 AI 帖子与成员徽章）；整合社区 PR #69（首页任务建议、快捷键与输入区无障碍标签）、PR #70（左侧用户项目名与自定义分组防误翻，同时精准放行按状态/按环境/独立等系统内置分组）与 PR #71（60+ 条高频遗漏文案、修复云端凭据多句拼接/方位与 React 三文本节点原位合句）；补齐右侧预览栏等全端原生右键菜单、发送按钮快捷键悬浮提示（`Send Message Enter` 等）与云工作区 4 链接免责声明（词典扩充至 `4,653` 键零重复、62 组自动化测试门禁 100% ALL GREEN）。
 - **[v2.34.0](CHANGELOG.md#v2340-2026-11-21)** (2026-11-21)：全面同步适配官方 `v2.34.0` 版本更新！精准校准并升级 `dist/updater.js`、`dist/computer/hud.js`（`Allow again` ➔ `重新允许`）与 `hudState.js`（`user_takeover` 接管区分）；新增 `Input Box` 发送快捷键、消息即时发送提示、`Orchestrator Settings`（保留模式名 `Orchestrator` 原生）与 `Extra High` ➔ `极高` 校准、全套内联提问与运行时/终端高危权限审批卡片（Issue #68）、技能卡与快捷键录制规则（PR #67）、`Customize Sidebar` 与 `Filter and Sort`、Computer Use 锁屏/实时预览/macOS 权限引导、`UI Plugin (SidePanel)` 与遥测/更早消息分页文案（词典扩充至 `4,444` 键零重复、57 组自动化测试门禁 100% ALL GREEN）。
 - **[v2.33.0](CHANGELOG.md#v2330-2026-11-18)** (2026-11-18)：全面同步适配官方 `v2.33.0` 大版本架构更新！重磅覆盖 `Computer Use` 桌面操控 HUD 悬浮条与 `Agents Live` 实时桌面预览窗格、Remote SSH 服务端重启/共享目录接管/远程麦克风授权与配置诊断、新版 9 款 Gemini Live 音色与实时语音听写、内置浏览器按站点 Cookie 管理、VS Code / AGY 双模快捷键方案以及扩展市场 `Bundles` 插件组合包与安装前源码审查；同步完成 `src/` 模块化引擎解耦、回环安全鉴权与词库去重瘦身（共 `4,250+` 条零重复词条、51 组自动化测试门禁 100% ALL GREEN）。

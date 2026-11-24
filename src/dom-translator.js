@@ -56,12 +56,37 @@
       .trim();
   }
 
-  function formatEnglishDateCn(rawDate) {
-    const months = { january: 1, jan: 1, february: 2, feb: 2, march: 3, mar: 3, april: 4, apr: 4, may: 5, june: 6, jun: 6, july: 7, jul: 7, august: 8, aug: 8, september: 9, sep: 9, october: 10, oct: 10, november: 11, nov: 11, december: 12, dec: 12 };
-    return String(rawDate).replace(/^([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})?$/i, (_m, mon, day, year) => {
-      const month = months[mon.toLowerCase()];
-      return month ? (year ? year + ' 年 ' : '') + month + ' 月 ' + day + ' 日' : rawDate;
-    });
+  const ENGLISH_MONTHS = {
+    january: 1, jan: 1,
+    february: 2, feb: 2,
+    march: 3, mar: 3,
+    april: 4, apr: 4,
+    may: 5,
+    june: 6, jun: 6,
+    july: 7, jul: 7,
+    august: 8, aug: 8,
+    september: 9, sep: 9, sept: 9,
+    october: 10, oct: 10,
+    november: 11, nov: 11,
+    december: 12, dec: 12,
+  };
+
+  function parseEnglishDateCn(rawDate) {
+    const m = String(rawDate || '').trim().match(/^([A-Za-z]+)\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s*(\d{4}))?$/i);
+    if (!m) return null;
+    const month = ENGLISH_MONTHS[m[1].toLowerCase()];
+    const day = Number(m[2]);
+    if (!month || day < 1 || day > 31) return null;
+    const year = m[3];
+    return (year ? year + ' 年 ' : '') + month + ' 月 ' + day + ' 日';
+  }
+
+  const MODEL_LEAVING_SUBJECT_RE = /^(?:this model|(?:Gemini|Claude|GPT|Gemma|Veo|Imagen|Hydrogen|Helium|Lithium|Sonnet|Opus|Haiku|DeepSeek|Qwen|Llama|Mistral|o[134])(?:[\s._/-]|$))/i;
+
+  function formatLeavingSubjectCn(model) {
+    const m = String(model || '').trim();
+    if (!m || /^this model$/i.test(m)) return '此模型';
+    return m + ' ';
   }
   // 历史半中半英残片自愈映射表（保持 dictionary 100% 纯净英文键的同时兼容旧版残片自愈）
   const SELF_HEAL_MAP = {
@@ -239,8 +264,8 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^(?:(.+?)\s+)?will be removed(?:\s+from Antigravity)?\s+on\s+(.+?)\.?$/i.test(trimmed)) {
-      const fixed = trimmed.replace(/^(?:(.+?)\s+)?will be removed(\s+from Antigravity)?\s+on\s+(.+?)\.?$/i, (_m, model, fromAgy, d) => {
+    if (/^(?:((?:(?![.!?]\s).)+?)\s+)?will be removed(?:\s+from Antigravity)?\s+on\s+(.+?)\.?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(?:((?:(?![.!?]\s).)+?)\s+)?will be removed(\s+from Antigravity)?\s+on\s+(.+?)\.?$/i, (_m, model, fromAgy, d) => {
         const months = { january: 1, february: 2, march: 3, april: 4, may: 5, june: 6, july: 7, august: 8, september: 9, october: 10, november: 11, december: 12 };
         const cn = (d || '').replace(/^([A-Za-z]+)\s+(\d{1,2}),?\s*(\d{4})$/, (_mm, mon, day, year) => {
           const idx = months[mon.toLowerCase()];
@@ -336,37 +361,87 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    // ===== AI 点数不足提示（保留动态额度、模型名称和刷新时间） =====
-    const aiCreditsWarningMatch = trimmed.match(/^You need at least\s+(\d+)\s+AI Credits to send messages\.\s*To continue using\s+(.+?)\s+now,\s*purchase more AI Credits\.\s*Your plan['’]s baseline quota will refresh on\s+(.+?)\.?$/i);
-    if (aiCreditsWarningMatch) {
-      const [, credits, model, refreshAt] = aiCreditsWarningMatch;
-      const fixed = `发送消息至少需要 ${credits} 个 AI 点数。若要立即继续使用 ${model}，请购买更多 AI 点数。您当前方案的基础配额将于 ${refreshAt} 刷新。`;
+    // ===== 配额用尽 / 重置切换模型提示（覆盖官方全部变体，兼容 this model 与动态时间戳） =====
+    const modelQuotaExhaustedMatch = trimmed.match(/^Your quota for\s+(.+?)\s+(will reset on\s+(.+?)|has been reached)\.\s*Switch to another available model to continue\.?$/i);
+    if (modelQuotaExhaustedMatch) {
+      const [, rawModel, statusPart, resetAt] = modelQuotaExhaustedMatch;
+      const modelText = rawModel.trim();
+      const subj = /^this model$/i.test(modelText) ? '此模型' : (modelText + ' ');
+      const fixed = resetAt
+        ? `${subj}的配额将于 ${resetAt.trim()} 重置。请切换至其他可用模型以继续。`
+        : `${subj}的配额已用尽。请切换至其他可用模型以继续。`;
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    // ===== Hydrogen 模型推荐提示（兼容动态下线日期） =====
+    // ===== AI 点数不足 / 基础配额刷新 / 超额启用提示（覆盖官方全部 3 段动态组合，兼容 at least N / more / this model） =====
+    if (/^(?:You need (?:at least \d+(?:,\d+)*|more) AI Credits to send messages\.|Your plan['’]s baseline quota will refresh on |To continue using this model now,\s*enable AI Credit overages\.?)/i.test(trimmed)) {
+      let rest = trimmed;
+      let needPart = '';
+      let refreshPart = '';
+      let overagePart = '';
+
+      const needMatch = rest.match(/^You need (?:at least\s+(\d+(?:,\d+)*)|more)\s+AI Credits to send messages\.\s*To continue using\s+(.+?)\s+now,\s*purchase more AI Credits\.?(?:\s+|$)/i);
+      if (needMatch) {
+        const [, credits, rawModel] = needMatch;
+        const modelText = rawModel.trim();
+        const continueClause = /^this model$/i.test(modelText)
+          ? '若要立即继续使用此模型，请购买更多 AI 点数。'
+          : `若要立即继续使用 ${modelText}，请购买更多 AI 点数。`;
+        const needPrefix = credits ? `发送消息至少需要 ${credits} 个 AI 点数。` : '发送消息需要更多 AI 点数。';
+        needPart = needPrefix + continueClause;
+        rest = rest.slice(needMatch[0].length).trim();
+      }
+
+      const overageMatch = rest.match(/(?:^|\s+)To continue using this model now,\s*enable AI Credit overages\.?$/i);
+      if (overageMatch) {
+        overagePart = '若要立即继续使用此模型，请开启 AI 点数超额使用。';
+        rest = rest.slice(0, rest.length - overageMatch[0].length).trim();
+      }
+
+      if (rest) {
+        const refreshMatch = rest.match(/^Your plan['’]s baseline quota will refresh on\s+(.+?)\.?$/i);
+        if (refreshMatch) {
+          refreshPart = `您当前方案的基础配额将于 ${refreshMatch[1].trim()} 刷新。`;
+          rest = '';
+        }
+      }
+
+      const combined = needPart + refreshPart + overagePart;
+      if (combined && !rest) {
+        cacheSet(trimmed, combined);
+        return replaceTrimmed(text, trimmed, combined);
+      }
+    }
+
+    // ===== Hydrogen 模型推荐提示（兼容动态下线日期与合法英文日期强校验） =====
     const hydrogenTooltipMatch = trimmed.match(/^Use Hydrogen for better quality with lower quota usage\.(?:\s+(.+))?$/i);
     if (hydrogenTooltipMatch) {
       const [, trailingText = ''] = hydrogenTooltipMatch;
       const leavingMatch = trailingText.match(/^(?:(.+?)\s+)?(?:is\s+)?leaving on\s+(.+?)\.?$/i);
       let fixed = '使用 Hydrogen 可获得更好的质量，同时消耗更少配额。';
-      if (leavingMatch) {
-        const [, model, rawDate] = leavingMatch;
-        const dateCn = formatEnglishDateCn(rawDate);
-        fixed += (model ? model.trim() : '此模型') + '将于 ' + dateCn + ' 下线。';
+      const leavingDateCn = leavingMatch ? parseEnglishDateCn(leavingMatch[2]) : null;
+      if (leavingMatch && leavingDateCn) {
+        fixed += formatLeavingSubjectCn(leavingMatch[1]) + '将于 ' + leavingDateCn + ' 下线。';
       } else if (trailingText) {
-        fixed += ' ' + translateString(trailingText);
+        fixed += translateString(trailingText);
       }
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
+
+    // ===== 模型下线日期提示（严格要求合法英文月日日期 + 已知模型/this model 约束，杜绝误伤自然英文句子） =====
     const modelLeavingMatch = trimmed.match(/^(?:(.+?)\s+)?(?:is\s+)?leaving on\s+(.+?)\.?$/i);
     if (modelLeavingMatch) {
-      const [, model, rawDate] = modelLeavingMatch;
-      const fixed = (model ? model.trim() : '此模型') + '将于 ' + formatEnglishDateCn(rawDate) + ' 下线。';
-      cacheSet(trimmed, fixed);
-      return replaceTrimmed(text, trimmed, fixed);
+      const [, rawModel, rawDate] = modelLeavingMatch;
+      const dateCn = parseEnglishDateCn(rawDate);
+      const modelTrimmed = (rawModel || '').trim();
+      const subjectOk = !modelTrimmed || (modelTrimmed.length <= 64 && MODEL_LEAVING_SUBJECT_RE.test(modelTrimmed));
+      if (dateCn && subjectOk) {
+        const fixed = formatLeavingSubjectCn(modelTrimmed) + '将于 ' + dateCn + ' 下线。';
+        cacheSet(trimmed, fixed);
+        return replaceTrimmed(text, trimmed, fixed);
+      }
     }
     if (/^Available AI Credits:\s*(.+)$/i.test(trimmed)) {
       const fixed = trimmed.replace(/^Available AI Credits:\s*(.+)$/i, (_m, n) => '可用 AI 点数：' + n);
@@ -2326,24 +2401,13 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^Save rule to always allow (.+?)\?$/i.test(trimmed)) {
-      const actionMap = {
-        'running this command': '运行此命令',
-        'running this command outside the sandbox': '在沙盒外运行此命令',
-        'using this mcp tool': '使用此 MCP 工具',
-        'a one-time administrator (uac) elevation': '一次性管理员 (UAC) 提权',
-        'access to this resource': '访问此资源',
-      };
-      const fixed = trimmed.replace(/^Save rule to always allow (.+?)\?$/i, (_m, act) => {
-        const actCn = actionMap[act.trim().toLowerCase()] || act;
-        return '保存规则以始终允许' + actCn + '？';
-      });
-      cacheSet(trimmed, fixed);
-      return replaceTrimmed(text, trimmed, fixed);
-    }
-
-    if (/^Allow ([^?\r\n]{2,120})\?$/i.test(trimmed)) {
-      const allowActionMap = {
+    if (/^(?:Save rule to always allow|Allow)\s+([^?\r\n]{2,140})\?$/i.test(trimmed)) {
+      const permActionMap = {
+        'read access to this path': '读取此路径',
+        'write access to this path': '写入此路径',
+        'reading this url': '读取此 URL',
+        'executing actions on this url': '在此 URL 上执行操作',
+        'browser downloads from this site': '浏览器从此站点下载文件',
         'running this command': '运行此命令',
         'running this command outside the sandbox': '在沙盒外运行此命令',
         'using this mcp tool': '使用此 MCP 工具',
@@ -2351,10 +2415,16 @@
         'access to this resource': '访问此资源',
         'the browser agent to download a file': '浏览器智能体下载文件',
       };
-      const fixed = trimmed.replace(/^Allow ([^?\r\n]{2,120})\?$/i, (_m, act) => {
-        const actCn = allowActionMap[act.trim().toLowerCase()] || act;
-        return '是否允许 ' + actCn + '？';
-      }).replace(/^是否允许 (运行此命令|在沙盒外运行此命令|使用此 MCP 工具|一次性管理员 \(UAC\) 提权|访问此资源|浏览器智能体下载文件)？$/, '是否允许$1？');
+      const fixed = trimmed.replace(
+        /^(Save rule to always allow|Allow)\s+([^?\r\n]{2,140})\?$/i,
+        (_m, prefix, act) => {
+          const actCn = permActionMap[act.trim().toLowerCase()];
+          if (/^Save rule/i.test(prefix)) {
+            return actCn ? '保存规则以始终允许' + actCn + '？' : '保存规则以始终允许 ' + act + '？';
+          }
+          return actCn ? '是否允许' + actCn + '？' : '是否允许 ' + act + '？';
+        }
+      );
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
@@ -2569,6 +2639,220 @@
         /^Coordinator\s+·\s+(\d+)\s+of\s+(\d+)\s+done(\s+·\s+Needs you)?$/,
         (_m, d, t, needs) => '协调器 · 已完成 ' + d + ' / ' + t + (needs ? ' · 需要你处理' : '')
       );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    // ===== Antigravity v2.35.0 动态规则：收件箱/插件权限/听写语言/移动对话/打开方式/引导与审批/MCP 表单校验 =====
+    if (/^Resolved "(.+)"$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Resolved "(.+)"$/, (_m, title) => '已解决“' + title + '”');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Allowed in (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Allowed in (.+)$/, (_m, scope) => '已在 ' + scope + ' 中允许');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Revoke all:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Revoke all:\s*(.+)$/, (_m, target) => '全部撤销：' + target);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Revoke:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Revoke:\s*(.+)$/, (_m, target) => '撤销：' + target);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^All (\d+) will be revoked\. The plugin will ask before doing this again\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^All (\d+) will be revoked\. The plugin will ask before doing this again\.$/,
+        (_m, n) => '全部 ' + n + ' 项将被撤销。下次执行此操作前插件将重新询问。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Added ([^.\r\n]{1,80})\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Added ([^.\r\n]{1,80})\.$/, (_m, name) => '已添加 ' + name + '。');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Removed ([^.\r\n]{1,80})\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Removed ([^.\r\n]{1,80})\.$/, (_m, name) => '已移除 ' + name + '。');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Error signing in to MCP server:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Error signing in to MCP server:\s*(.+)$/, (_m, detail) => '登录 MCP 服务器出错：' + detail);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Error starting sign-in:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Error starting sign-in:\s*(.+)$/, (_m, detail) => '启动登录失败：' + detail);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^No matching languages for "(.+)"$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^No matching languages for "(.+)"$/, (_m, q) => '未找到匹配“' + q + '”的语言');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Move this conversation to "(.+)"\?$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Move this conversation to "(.+)"\?$/, (_m, target) => '确定将此对话移动到“' + target + '”吗？');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Remove this conversation from its (workspace|project)\?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Remove this conversation from its (workspace|project)\?$/i,
+        (_m, kind) => '确定将此对话从所属' + (/^workspace$/i.test(kind) ? '工作区' : '项目') + '中移除吗？'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(.+?) \((Not running|Sidecar disabled)\)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^(.+?) \((Not running|Sidecar disabled)\)$/, (_m, prefix, reason) => {
+        const prefixCn = Object.prototype.hasOwnProperty.call(dictionary, prefix)
+          ? dictionary[prefix]
+          : (lowerDictionary.get(prefix.toLowerCase()) || prefix);
+        const reasonCn = reason === 'Sidecar disabled' ? 'Sidecar 已禁用' : '未运行';
+        return prefixCn + '（' + reasonCn + '）';
+      });
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+) waiting on you$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+) waiting on you$/, (_m, n) => n + ' 项正在等待你处理');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Sorry, this account is ineligible to use (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Sorry, this account is ineligible to use (.+)$/, (_m, prod) => '抱歉，此账户无权使用 ' + prod);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Further action is required to use (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Further action is required to use (.+)$/, (_m, prod) => '需要完成进一步操作才能使用 ' + prod);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Waiting for approval to (access|execute|run|read|write|edit|modify|delete|use|download)(?::\s*(.+))?$/i.test(trimmed)) {
+      const verbMap235 = {
+        access: '访问', execute: '执行', run: '运行', read: '读取',
+        write: '写入', edit: '编辑', modify: '修改', delete: '删除',
+        use: '使用', download: '下载',
+      };
+      const fixed = trimmed.replace(
+        /^Waiting for approval to (access|execute|run|read|write|edit|modify|delete|use|download)(?::\s*(.+))?$/i,
+        (_m, verb, target) => '正在等待批准' + (verbMap235[verb.toLowerCase()] || verb) + (target ? '：' + target : '')
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Wants to run:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Wants to run:\s*(.+)$/, (_m, target) => '请求运行：' + target);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Minimum length is (\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Minimum length is (\d+)$/, (_m, n) => '最少需要 ' + n + ' 个字符');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Maximum length is (\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Maximum length is (\d+)$/, (_m, n) => '最多允许 ' + n + ' 个字符');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Minimum value is (-?\d+(?:\.\d+)?)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Minimum value is (-?\d+(?:\.\d+)?)$/, (_m, n) => '最小值为 ' + n);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Maximum value is (-?\d+(?:\.\d+)?)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Maximum value is (-?\d+(?:\.\d+)?)$/, (_m, n) => '最大值为 ' + n);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Select at least (\d+) items?$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Select at least (\d+) items?$/, (_m, n) => '请至少选择 ' + n + ' 项');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Select at most (\d+) items?$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Select at most (\d+) items?$/, (_m, n) => '最多选择 ' + n + ' 项');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Input must match (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Input must match (.+)$/, (_m, pat) => '输入内容必须匹配 ' + pat);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Dismissed:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Dismissed:\s*(.+)$/, (_m, title) => '已关闭：' + title);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Dismiss:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Dismiss:\s*(.+)$/, (_m, title) => '关闭：' + title);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Forked from (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Forked from (.+)$/, (_m, src) => '分叉自 ' + src);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Open URL in system browser:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Open URL in system browser:\s*(.+)$/, (_m, url) => '在系统浏览器中打开链接：' + url);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Required to ([^:\r\n]{1,40}):\s*(.+)$/.test(trimmed)) {
+      const reqActMap = {
+        save: '保存', create: '创建', enable: '启用', run: '运行',
+        continue: '继续', submit: '提交', activate: '激活', start: '启动',
+      };
+      const fixed = trimmed.replace(/^Required to ([^:\r\n]{1,40}):\s*(.+)$/, (_m, act, items) => {
+        const actCn = reqActMap[act.trim().toLowerCase()] || act;
+        return '执行“' + actCn + '”所需的条件：' + items;
+      });
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Self \(([^)\r\n]{1,40})\)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Self \(([^)\r\n]{1,40})\)$/, (_m, field) => '自身（' + field + '）');
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }

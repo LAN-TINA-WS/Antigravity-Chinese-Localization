@@ -4,6 +4,34 @@
 
 ---
 
+## v2.35.0 (2026-11-24) — 全面适配官方 2.35.0 版本：收件箱模式与自动解决、插件权限管理页、语音听写多语言选择器、侧边提问继续新对话、引导与 WIF/授权码登录流及远程智能体升级
+
+### 1. 官方 v2.35.0 主进程架构同步与全量补丁验收
+- **主进程模块与预打包资产对齐**：同步官方 `v2.35.0` 新增的 4 个主进程模块（`dist/appChannel.js`、`dist/customWindowControls.js`、`dist/computer/idleProbe.js`、`dist/computer/permissionGuide.js`）与 24 个更新模块，同步清理官方已移除的 `dist/computer/hud.js`、`hudAgents.js`、`hudState.js`（同时在 `localize.js` 中保留向后兼容守卫以持续支持 `v2.33.0 ~ v2.34.0` 客户端）；全量 231 处主进程补丁点实现 `0` 跳过全数命中。
+- **原生菜单与上下文菜单扩充 (`dist/menu.js`、`dist/ipcHandlers.js`)**：新增 28 项 `v2.35.0` 原生菜单与右键菜单映射（`Resolve`、`Return to Inbox`、`Inbox Mode`、`Working Section`、`Auto-Resolve`、`Subtitle`、`Move to Project/Workspace`、`Remove from Project/Workspace`、`Continue as a New Conversation` / 工作区续聊、`Open with` 各类查看器、`Application Menu`、`For Me` / `For My Team`），并在 `translateContextLabel` 中补齐 `(Not running)` / `(Sidecar disabled)` 动态状态后缀翻译。
+- **轻量预打包产物 (`app.asar.ready`) 与 CRLF 幂等加固 (`localize.js`)**：严格对齐官方瘦身打包规范（`--unpack-dir "**/chrome-devtools-mcp/**"`），构建 `v2.35.0` 预编译包 `7,926,656` 字节（`7.56 MiB`），版本元数据与控制中心全面升至 `2.35.0`；同时修复 `replaceInFile` 在 Windows CRLF 文件中执行“单行目标转多行替换”时漏检替换体换行符导致二次注入重复行的隐患。
+
+### 2. Web UI v2.35.0 全量特性汉化与防夹生精修（+181 条零重复词典、+31 组 `$`-安全动态规则）
+- **收件箱模式与侧边栏管理 (`Inbox Mode` / `Auto-Resolve` / `Working Section`)**：完整汉化收件箱模式开关、“正在工作”分组、自动解决时长说明、标记已解决与移回收件箱菜单/横幅/Toast（`Resolved "<title>"`）、`All caught up`、副标题设置、按状态分组锁定提示及自动置顶说明。
+- **插件权限管理页 (`Plugin permissions`)**：覆盖“你已允许 / 插件自带 / 无法撤销”权限列表、项目作用域 `Allowed in <project>`、单项撤销 `Revoke:` 与批量撤销确认弹窗（`All N will be revoked...`）、以及插件命令预览提示与 MCP 登录错误提示。
+- **语音听写多语言选择器 (`Dictation languages`)**：覆盖多语言优先级限制说明、重置为自动、浏览器默认自动检测、搜索框占位符、多选/拖拽排序提示、`#1 Primary` 首选徽章、28 种听写语言中文对照（保留原生语言副标签不重复）与无匹配搜索提示。
+- **侧边提问继续为新对话、对话移动弹窗与“打开方式”查看器**：补齐侧边提问升级为新对话及当前/共享/新工作区选项与不可用原因提示、对话移动/移出项目确认弹窗（同时消除原先 `Remove from Project` 被拼成“移除来自项目”的问题）、远端/本机克隆菜单、`Open with` 全套文本/图片/音视频/HTML/Notebook/PDF 查看器及禁用状态后缀、`Application Menu` 应用菜单。
+- **远程智能体与 Orchestrator 模型选择**：补齐侧边栏新建智能体“仅自己使用 / 团队共享”菜单、配置中/更新中/已停滞/不再活跃状态、身份搜索框、`N waiting on you` 提醒，以及 `Orchestrator` 默认/自定义模型路由说明（继续保持 `Orchestrator`、`Swarm`、模型名与思考链原生英文）。
+- **新版 Onboarding 引导流、WIF SSO 与授权码登录**：补齐新版能力介绍标题、职业偏好提问、Google Cloud 项目详情表单、授权码登录切换/粘贴/拒绝重试、WIF 配置面板、`Last Used` 徽章以及账户无资格/待验证页面动态标题。
+- **权限决策、MCP Elicitation 表单校验、队列/分页、Google Drive 与 CEL 触发器**：精准收录 `Yes, always allow in this project` ➔ `是，在此项目中始终允许`（修复旧正则产生的半中半英夹生词）、`Yes, allow in this conversation` / `Yes, allow for this task`、管理员提权与动作审批等待提示、`Wants to run:`、全套表单长度/数值/条数/正则校验提示（全回调函数写法严格 `$`-安全）、消息排队/加载更新消息提示、Google Drive 标题获取失败 Toast 及自动化 CEL `Self-watch` 校验徽章。
+
+### 3. 社区 PR 整合与 Issue 修复（PR #74 / PR #76 / PR #77 / PR #79 / Issue #73）
+- **路径与 URL 权限审批标题全家族根治（合并 PR #74，感谢 `@angel12538`）**：合并 `Allow read/write access to this path?` 静态词条，并同步扩展 `src/dom-translator.js` 共享权限动作映射表覆盖官方 `Hzc` 全部 9 项动作（含 `read/write access to this path`、`reading this URL`、`executing actions on this URL`、`browser downloads from this site`），彻底消灭 `Allow ...?` 与 `Save rule to always allow ...?` 18 种标题组合的半中半英夹生输出。
+- **版本匹配强门禁与 macOS 签名风险指引（合并 PR #76，感谢 `@UncleLiu-0306`）**：升级中英文 README 与 Release 生成说明，将智能体安装指令加固为「先核对 OS 与客户端精确版本 + 备份纯净原版 + macOS 先告知签名影响等待确认」，并在 macOS 章节顶部前置强调原始签名失效与官方完整包恢复路径，同时保留带风险提示的可选 `xattr -cr` / `codesign` 本地启动排错命令。
+- **AI 点数不足、基础配额刷新与超额启用提示全变体覆盖（合并 PR #77，感谢 `@angel12538`）**：对照官方 `v2.35.0` 源码补全 `at least N` / `more` AI Credits、缺省 `this model -> 此模型`、本地化含点号时间戳（如 `Nov. 25, 2026, 2:30 p.m.`）、`Your plan's baseline quota will refresh on ...` 与 `enable AI Credit overages.` 全部动态组合，并同步补齐同函数的 `Your quota for <model> will reset on / has been reached. Switch to another available model to continue.` 提示。
+- **Hydrogen 模型推荐提示与下线日期防误伤加固（合并 PR #79，感谢 `@angel12538`）**：收录 `Use Hydrogen for better quality with lower quota usage.` 静态词条与动态下线日期组合，并同步修复原 `leaving on` 规则过宽可能误伤自然英文句子（如 `John is leaving on vacation.` / `Leaving on Monday`）及历史 `will be removed on` 跨句截胡问题；升级 `parseEnglishDateCn` 严格校验英文月日日期（兼容 `Sept`、`Nov.` 与序数词）并约束独立 `leaving on` 主语。
+- **修复无 Node.js 环境下双击批处理 2 秒闪退并新增离线一键还原英文原版（Issue #73，感谢 `@yeli008` 反馈）**：修复 `一键更新汉化.bat` 在客户端已汉化时命中 `:LEGACY_ALREADY_LOCALIZED` 无停顿直接关闭窗口的问题；现在无 Node.js 离线模式下会清晰提示无法打开浏览器控制中心，并支持直接输入 `R` 执行带版本匹配、防污染校验与 SHA-256 原子替换的离线安全还原英文原版。
+
+### 4. 全链路验证与测试门禁
+- 词典扩充至 **`4,837` 键 `0` 重复**；新增 `tests/ticket-56-v2350-features.test.js` 专项测试套件（含 PR #77/#79 全变体与防误伤回归用例及 Windows `cmd.exe` 实机离线还原成功/跨版本拦截/污染备份拦截验证），同步升级 `Ticket-44` / `Ticket-48` 在 `v2.35.0+` 缺失 `hud*.js` 时使用隔离夹具持续校验向后兼容；全工程 **63/63 组 TDD 自动化测试套件 100% ALL GREEN**。
+
+---
+
 ## v2.34.0.1 (2026-11-23) — Swarm 多智能体面板与 `plugin://` 子框架汉化、左侧项目名保护收窄、高频 UI 补漏及原生右键菜单全量升级
 
 ### 1. Swarm 多智能体协作面板与 `plugin://` 子框架注入（Ticket-53）

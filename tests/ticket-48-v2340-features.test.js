@@ -1,11 +1,13 @@
 'use strict';
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const assert = require('assert');
 const { readAsarPackageVersion } = require('../asar-version');
 const { loadTranslatorSandbox, compareSemver } = require('./helpers/translator-loader');
 const { extractChangelogSection } = require('../release-assets/generate-release-assets');
+const { applyTranslations } = require('../localize');
 
 console.log('=== 开始 Ticket-48 Antigravity 2.34.0 官方版本全量特性与主进程补丁专项测试 ===\n');
 
@@ -69,7 +71,30 @@ check(
   true
 );
 
-const hudJs = fs.readFileSync(path.join(distDir, 'computer', 'hud.js'), 'utf-8');
+// v2.35.0+ 官方已移除 dist/computer/hud*.js；若缺失则在隔离临时目录使用 v2.34.0 官方 HUD 夹具持续校验向后兼容补丁
+let hudDistDir48 = distDir;
+let hudTmpRoot48 = null;
+if (!fs.existsSync(path.join(distDir, 'computer', 'hud.js'))) {
+  hudTmpRoot48 = fs.mkdtempSync(path.join(os.tmpdir(), 'agy-t48-hud-'));
+  fs.cpSync(distDir, path.join(hudTmpRoot48, 'dist'), { recursive: true });
+  const compDir48 = path.join(hudTmpRoot48, 'dist', 'computer');
+  fs.mkdirSync(compDir48, { recursive: true });
+  fs.writeFileSync(
+    path.join(compDir48, 'hud.js'),
+    `const HTML = \`<body><div id="bar"><div id="dot"></div><div id="status">AGY is controlling your Mac</div>\n<button id="stop">Stop</button><button id="resume" title="Let agents use this Mac again. The stopped task does not restart.">Allow again</button></div>\`;\nconst IPC = ['agy-hud:stop', 'agy-hud:resume'];\n`,
+    'utf-8'
+  );
+  fs.writeFileSync(
+    path.join(compDir48, 'hudState.js'),
+    `function hudView(s) {\n  const visible = Boolean(s.agentActive);\n  if (s.paused) {\n        const text = s.pauseCause === 'user_takeover'\n            ? 'You took over — agent stopped'\n            : 'Agent stopped';\n        return { state: 'paused', text, visible };\n  }\n  return { state: 'running', text: 'AGY is controlling your Mac', visible };\n}\nexports.hudView = hudView;\n`,
+    'utf-8'
+  );
+  applyTranslations(hudTmpRoot48);
+  hudDistDir48 = path.join(hudTmpRoot48, 'dist');
+}
+
+try {
+const hudJs = fs.readFileSync(path.join(hudDistDir48, 'computer', 'hud.js'), 'utf-8');
 check(
   'hud.js 适配 v2.34.0 Allow again ➔ 重新允许 与中文 title 并保留 IPC 令牌',
   hudJs.includes('AGY 正在控制您的 Mac') &&
@@ -80,7 +105,7 @@ check(
   true
 );
 
-const hudState = require(path.join(distDir, 'computer', 'hudState.js'));
+const hudState = require(path.join(hudDistDir48, 'computer', 'hudState.js'));
 check(
   'hudState.hudView user_takeover 输出接管文案',
   hudState.hudView({ agentActive: true, paused: true, pauseCause: 'user_takeover' }),
@@ -91,6 +116,9 @@ check(
   hudState.hudView({ agentActive: true, paused: true, pauseCause: 'agent_stop' }),
   { state: 'paused', text: '智能体已停止', visible: true }
 );
+} finally {
+  if (hudTmpRoot48) fs.rmSync(hudTmpRoot48, { recursive: true, force: true });
+}
 
 check(
   'extracted 同步 v2.34.0 新增主进程模块且协议字面量完整保留',

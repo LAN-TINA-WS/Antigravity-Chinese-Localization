@@ -33,9 +33,10 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BUNDLED_HELPER_CONFINEMENT = exports.BUNDLED_HELPER_VERSION = exports.BUNDLED_HELPER_PROTOCOL = exports.persistedActuatorId = exports.makeActuatorId = exports.killSwitchEngaged = exports.KILL_SWITCH_FILE = exports.filePauseStore = exports.confinementCap = void 0;
+exports.BUNDLED_HELPER_CONFINEMENT = exports.BUNDLED_HELPER_VERSION = exports.BUNDLED_HELPER_PROTOCOL = exports.persistedActuatorId = exports.makeActuatorId = exports.killSwitchEngaged = exports.KILL_SWITCH_FILE = exports.confinementCap = exports.clearSavedPause = void 0;
 exports.computerUseEnabledAtStartup = computerUseEnabledAtStartup;
 exports.previewSlotsAtStartup = previewSlotsAtStartup;
+exports.hubTccGrants = hubTccGrants;
 exports.electronHelperProbe = electronHelperProbe;
 exports.idleHelperProbe = idleHelperProbe;
 exports.desktopHelperPath = desktopHelperPath;
@@ -51,6 +52,7 @@ exports.stopAllComputerAgents = stopAllComputerAgents;
 exports.stopComputerAgent = stopComputerAgent;
 exports.registerComputerUse = registerComputerUse;
 exports.refreshComputerHello = refreshComputerHello;
+exports.onComputerUseTeardown = onComputerUseTeardown;
 exports.unregisterComputerUse = unregisterComputerUse;
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
@@ -59,17 +61,15 @@ const mainClient_1 = require("../actuator/mainClient");
 const config_1 = require("../desktopHost/config");
 const paths_1 = require("../paths");
 const storage_1 = require("../storage");
-const utils_1 = require("../utils");
 const desktopHelper_1 = require("./desktopHelper");
+const idleProbe_1 = require("./idleProbe");
 const gate_1 = require("./gate");
 const host_1 = require("../desktopHost/host");
-const hud_1 = require("./hud");
-const hudAgents_1 = require("./hudAgents");
 const previewViewers_1 = require("./previewViewers");
 const screenLock_1 = require("./screenLock");
 var config_2 = require("../desktopHost/config");
+Object.defineProperty(exports, "clearSavedPause", { enumerable: true, get: function () { return config_2.clearSavedPause; } });
 Object.defineProperty(exports, "confinementCap", { enumerable: true, get: function () { return config_2.confinementCap; } });
-Object.defineProperty(exports, "filePauseStore", { enumerable: true, get: function () { return config_2.filePauseStore; } });
 Object.defineProperty(exports, "KILL_SWITCH_FILE", { enumerable: true, get: function () { return config_2.KILL_SWITCH_FILE; } });
 Object.defineProperty(exports, "killSwitchEngaged", { enumerable: true, get: function () { return config_2.killSwitchEngaged; } });
 Object.defineProperty(exports, "makeActuatorId", { enumerable: true, get: function () { return config_2.makeActuatorId; } });
@@ -80,8 +80,9 @@ function env() {
 }
 /**
  * Whether computer use starts in this run (src/computer/gate.ts): the
- * `enable-agy-hub-cua-macos` override in app storage, or AGY_ENABLE_CUA=1
- * in an unpackaged build. Synchronous, so it can gate the pre-ready WebRTC
+ * `enable-agy-hub-cua-macos` override in app storage, else the server flag
+ * value mendelFlagSync cached there last run (AGY_ENABLE_CUA=1 in an
+ * unpackaged build wins). Synchronous, so it can gate the pre-ready WebRTC
  * switch; read once per run.
  */
 function computerUseEnabledAtStartup() {
@@ -120,11 +121,22 @@ exports.BUNDLED_HELPER_PROTOCOL = 1;
 exports.BUNDLED_HELPER_VERSION = '0.2.0';
 exports.BUNDLED_HELPER_CONFINEMENT = 3;
 /**
+ * The Hub main process's TCC grants, read without prompting: what
+ * {@link idleHelperProbe} reports (the helper, the Hub's child, is charged to
+ * the same responsible process, so it has the same grants). Accessibility
+ * updates live; Electron caches the Screen Recording read for the Hub's
+ * lifetime, so a new grant shows after a relaunch.
+ */
+function hubTccGrants() {
+    return {
+        accessibility: electron_1.systemPreferences.isTrustedAccessibilityClient(false),
+        screen_recording: electron_1.systemPreferences.getMediaAccessStatus('screen') === 'granted',
+    };
+}
+/**
  * The surface info from Electron: the main display, the Hub process's TCC
- * grants and the bundled helper's versions. Only a fallback for
- * {@link idleHelperProbe}: the helper (the Hub's child, so charged to the
- * same responsible process) has the same grants, but Electron's Screen
- * Recording read is cached for the Hub's lifetime, so it goes stale.
+ * grants ({@link hubTccGrants}) and the bundled helper's versions. The
+ * fallback for {@link idleHelperProbe} when the helper's probe fails.
  */
 function electronHelperProbe() {
     const d = electron_1.screen.getPrimaryDisplay();
@@ -146,55 +158,38 @@ function electronHelperProbe() {
             height_pixels: Math.round(d.bounds.height * scale),
             scale_factor: scale,
         },
-        grants: {
-            accessibility: electron_1.systemPreferences.isTrustedAccessibilityClient(false),
-            screen_recording: electron_1.systemPreferences.getMediaAccessStatus('screen') === 'granted',
-        },
+        grants: hubTccGrants(),
     };
 }
-let idleProbeInFlight;
-let idleProbeFailing = false;
 /**
- * The actuator Hello's surface info while the helper hasn't started: a
- * one-shot `agy-desktop-helper probe`, so the grants the LS gates on (before
- * any consent card) are the actuating binary's, read fresh on every Hello
- * refresh (registerComputerActuator's timer re-advertises a change). Falls
- * back to {@link electronHelperProbe} when the probe fails. Concurrent calls
- * share one probe.
+ * The actuator Hello's surface info while the helper hasn't started
+ * (idleProbe.ts): a one-shot `agy-desktop-helper probe --no-tcc` (geometry,
+ * versions, the frontmost app) with both grants from the Hub main process. It
+ * never makes a TCC check in a fresh process, which makes macOS list the app
+ * (or re-add a deleted row) and show its alert. Screen Recording is
+ * Electron's per-process cached read: the LS sees a new grant after the Hub
+ * relaunches, as the card's "Relaunch to finish" says.
  */
-function idleHelperProbe(probeOnce = () => (0, desktopHelper_1.probeHelperOnce)(desktopHelperPath(), (0, gate_1.helperEnv)(process.env, electron_1.app.isPackaged))) {
-    idleProbeInFlight ?? (idleProbeInFlight = probeOnce()
-        .then((p) => {
-        idleProbeFailing = false;
-        return p;
-    })
-        .catch((err) => {
-        if (!idleProbeFailing) {
-            idleProbeFailing = true;
-            console.warn('[ComputerUse] helper probe failed; reporting the Hub grants:', err);
-        }
-        return electronHelperProbe();
-    })
-        .finally(() => {
-        idleProbeInFlight = undefined;
-    }));
-    return idleProbeInFlight;
+const idleProbe = new idleProbe_1.IdleHelperProbe({
+    probeOnce: () => (0, desktopHelper_1.probeHelperOnce)(desktopHelperPath(), (0, gate_1.helperEnv)(process.env, electron_1.app.isPackaged), undefined, { noTcc: true }),
+    hubGrants: () => hubTccGrants(),
+    fallback: () => electronHelperProbe(),
+});
+/** See {@link idleProbe}. Concurrent calls share one probe. */
+function idleHelperProbe() {
+    return idleProbe.probe();
 }
-/** Hub window focus for the HUD (Hub windows are BaseWindows). */
-const hubFocusSource = {
-    isHubFocused: () => !!(0, utils_1.getFocusedHubWindow)(),
-    onChange: (cb) => (0, utils_1.onHubWindowFocusChange)(cb),
-};
 /**
  * Wires computer use into the Hub main process: the desktop host
  * (src/desktopHost: helper, Mac surface, Layer 2 on the shared main-process
- * ActuatorClient, overlay cursors, kill switch, persisted pause, and the P3
- * live preview) plus what needs Electron: the HUD (and its agent list), the
- * userData paths (main.ts tears it down on a confirmed quit). macOS only; a
- * no-op elsewhere.
+ * ActuatorClient, kill switch, the Stop path, and the P3 live preview) plus
+ * what needs Electron: the screen-lock watcher and the userData paths
+ * (main.ts tears it down on a confirmed quit). There is no floating HUD and
+ * no desktop cursor overlay: Stop lives in the Agents pane and the agent UI,
+ * and the pane draws the agents' cursors on its preview. macOS only; a no-op
+ * elsewhere.
  */
 let host;
-let hud;
 let unwatchScreenLock;
 /** Path of the Swift helper next to the language server binary. */
 function desktopHelperPath() {
@@ -295,12 +290,10 @@ function registerComputerUse(opts = {}) {
     }
     try {
         const userData = electron_1.app.getPath('userData');
+        // No Stop outlives its turn: drop one an older Hub saved.
+        (0, config_1.clearSavedPause)(path.join(userData, 'desktop_pause.json'));
         // The helper denies the Hub itself by pid and bundle path.
         const bundlePath = path.resolve(process.execPath, '..', '..', '..');
-        const h = opts.headless
-            ? undefined
-            : new hud_1.DesktopHud(hubFocusSource);
-        hud = h;
         const e = env();
         const rtcPath = desktopRtcPath(e);
         // previewEnabled() alone still gates the viewer allowlist and the pane's
@@ -321,7 +314,6 @@ function registerComputerUse(opts = {}) {
             killSwitch: () => (0, config_1.killSwitchEngaged)(e),
             maxConfinementVersion: () => (0, config_1.confinementCap)(e),
             actuatorId: (0, config_1.persistedActuatorId)(path.join(userData, 'desktop_endpoint_id')),
-            pauseStore: (0, config_1.filePauseStore)(path.join(userData, 'desktop_pause.json')),
             preview: preview
                 ? { rtcPath, maxSlots: previewSlotsAtStartup() }
                 : undefined,
@@ -333,27 +325,12 @@ function registerComputerUse(opts = {}) {
                 }
                 : undefined,
             onState: (s) => {
-                h?.setState({
-                    agentActive: s.agentActive,
-                    paused: s.paused,
-                    pauseCause: s.pauseCause,
-                    mode: s.mode,
-                    appName: s.appName,
-                });
-                h?.setAgents?.((0, hudAgents_1.hudAgentRows)(s));
                 (0, previewViewers_1.setPreviewAgentsActive)(s.agentActive && !s.paused);
                 (0, previewViewers_1.setPreviewActiveAgents)(s.agents.filter((a) => !a.stopped).map((a) => a.actor.id));
             },
-            // The HUD hides behind a focused Hub only while its pane is viewing.
-            onLocalViewers: (n) => h?.setLocalViewer?.(n > 0),
             log: (m) => console.log(m),
         });
         host = started;
-        h?.onStop(() => void started.stopAll('HUD Stop button'));
-        h?.onResume(() => void started.resume());
-        h?.onStopAgent?.((actorId) => started.stopAgent(actorId));
-        // The same cover hides the desktop overlay marks around the Hub.
-        h?.onCoveredChange?.((c) => started.setOverlaySuppressed(c));
         // The Agents pane says agents wait for an unlock instead of "idle".
         unwatchScreenLock = (0, screenLock_1.watchScreenLock)(electron_1.powerMonitor, (l) => started.setScreenLocked(l));
         // main.ts's confirmed-quit path calls unregisterComputerUse() (rt P3-21):
@@ -373,13 +350,37 @@ function registerComputerUse(opts = {}) {
 async function refreshComputerHello() {
     await host?.registration.refreshHello();
 }
-/** Unsubscribes (GOING_AWAY), stops the host and closes the HUD. */
+/** Callbacks run by {@link unregisterComputerUse}. */
+const teardownHooks = new Set();
+/**
+ * Runs `cb` on computer use's teardown: main.ts's confirmed quit
+ * ({@link unregisterComputerUse}), never before the Cmd+Q confirmation (a
+ * bare 'before-quit' hook would, so Cancel would still tear it down; rt
+ * P3-21). E.g. the permission guide closes here. Returns an unsubscribe
+ * function.
+ */
+function onComputerUseTeardown(cb) {
+    teardownHooks.add(cb);
+    return () => {
+        teardownHooks.delete(cb);
+    };
+}
+/**
+ * Unsubscribes (GOING_AWAY), stops the host and runs the teardown hooks
+ * ({@link onComputerUseTeardown}).
+ */
 async function unregisterComputerUse() {
+    for (const cb of [...teardownHooks]) {
+        try {
+            cb();
+        }
+        catch (err) {
+            console.error('[ComputerUse] teardown hook failed:', err);
+        }
+    }
     const h = host;
     host = undefined;
     unwatchScreenLock?.();
     unwatchScreenLock = undefined;
     await h?.stop();
-    hud?.destroy();
-    hud = undefined;
 }

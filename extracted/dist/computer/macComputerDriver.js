@@ -330,7 +330,7 @@ class MacComputerSurfaceDriver {
         await this.input('type', { text, ...policyArgs(o.policy), ...actorArgs(o) }, typeTimeoutMs(text));
     }
     async focusApp(app, o) {
-        // With the agent: its HUD Stop fences this op like its other input.
+        // With the agent: its Stop fences this op like its other input.
         const r = await this.input('focus_app', { app, ...actorArgs(o) }, FOCUS_APP_TIMEOUT_MS);
         return { appId: String(r['resolved_bundle_id'] ?? '') };
     }

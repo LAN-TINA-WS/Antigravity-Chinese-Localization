@@ -28,8 +28,8 @@ const {
   findAvailablePatch,
 } = require('./auto-restore');
 
-const CURRENT_VERSION = '2.34.0';
-const RELEASE_VERSION = '2.34.0.1'; // 补丁发版追踪号；CURRENT_VERSION 保持与目标客户端及 app.asar.ready 一致
+const CURRENT_VERSION = '2.35.0';
+const RELEASE_VERSION = '2.35.0'; // 补丁发版追踪号；CURRENT_VERSION 保持与目标客户端及 app.asar.ready 一致
 
 function compareVersions(v1, v2) {
   const parse = (v) => {
@@ -349,7 +349,7 @@ function getResourcesDir(appDir) {
   return process.platform === 'darwin' ? upperPath : lowerPath;
 }
 
-// Helper to replace text in file cleanly (idempotent)
+// Helper to replace text in file cleanly (idempotent, CRLF/LF safe for single-to-multiline replacements)
 function replaceInFile(filePath, target, replacement) {
   if (!fs.existsSync(filePath)) {
     throw new Error(`找不到要修改的文件: ${filePath}`);
@@ -357,20 +357,26 @@ function replaceInFile(filePath, target, replacement) {
   let content = fs.readFileSync(filePath, 'utf-8');
   let effTarget = target;
   let effReplacement = replacement;
-  if (!content.includes(effTarget) && content.includes('\r\n') && target.includes('\n') && !target.includes('\r\n')) {
-    const crlfTarget = target.replace(/\n/g, '\r\n');
-    const crlfReplacement = replacement.replace(/\n/g, '\r\n');
+  if (content.includes('\r\n') && (target.includes('\n') || replacement.includes('\n'))) {
+    const crlfTarget = target.replace(/\r?\n/g, '\r\n');
+    const crlfReplacement = replacement.replace(/\r?\n/g, '\r\n');
     if (content.includes(crlfTarget) || content.includes(crlfReplacement)) {
       effTarget = crlfTarget;
       effReplacement = crlfReplacement;
     }
   }
-  if (effReplacement.includes(effTarget) && content.includes(effReplacement)) {
+  const lfReplacement = replacement.replace(/\r\n/g, '\n');
+  const crlfReplacementCheck = lfReplacement.replace(/\n/g, '\r\n');
+  const alreadyHasReplacement =
+    content.includes(effReplacement) ||
+    content.includes(lfReplacement) ||
+    content.includes(crlfReplacementCheck);
+  if (effReplacement.includes(effTarget) && alreadyHasReplacement) {
     log(`文件 ${path.basename(filePath)} 已经应用过此汉化修改，跳过。`);
     return true;
   }
   if (!content.includes(effTarget)) {
-    if (content.includes(effReplacement)) {
+    if (alreadyHasReplacement) {
       log(`文件 ${path.basename(filePath)} 已经应用过此汉化修改，跳过。`);
       return true;
     } else {
@@ -608,6 +614,35 @@ const menuTranslationMap = {
   'Send Message': '发送消息',
   'Queue Message': '排队发送消息',
   'Send Immediately': '立即发送',
+  // 2.35.0 收件箱、对话移动、侧边提问继续、打开方式与远程智能体原生菜单补齐
+  'Resolve': '标为已解决',
+  'Return to Inbox': '移回收件箱',
+  'Inbox Mode': '收件箱模式',
+  'Working Section': '“正在工作”分组',
+  'Auto-Resolve': '自动解决',
+  'Subtitle': '副标题',
+  'Move to Project': '移动到项目',
+  'Move to Workspace': '移动到工作区',
+  'New Project...': '新建项目...',
+  'New Workspace...': '新建工作区...',
+  'Remove from Project': '从项目中移除',
+  'Remove from Workspace': '从工作区中移除',
+  'Continue as a New Conversation': '作为新对话继续',
+  'Continue in Current Workspace': '在当前工作区继续',
+  'Continue in Shared Workspace': '在共享工作区继续',
+  'Continue in New Workspace': '在新工作区继续',
+  'Open with': '打开方式',
+  'Text viewer': '文本查看器',
+  'Image viewer': '图片查看器',
+  'Video player': '视频播放器',
+  'Audio player': '音频播放器',
+  'HTML viewer': 'HTML 查看器',
+  'Notebook viewer': 'Notebook 查看器',
+  'PDF viewer': 'PDF 查看器',
+  'System default app': '系统默认应用',
+  'Application Menu': '应用菜单',
+  'For Me': '仅自己使用',
+  'For My Team': '团队共享',
 };
 function translateMenu(menuItem) {
   if (menuItem.label && menuTranslationMap[menuItem.label]) {
@@ -916,6 +951,35 @@ const contextMenuTranslationMap = {
   'Send Message': '发送消息',
   'Queue Message': '排队发送消息',
   'Send Immediately': '立即发送',
+  // 2.35.0 收件箱、对话移动、侧边提问继续、打开方式与远程智能体原生上下文菜单补齐
+  'Resolve': '标为已解决',
+  'Return to Inbox': '移回收件箱',
+  'Inbox Mode': '收件箱模式',
+  'Working Section': '“正在工作”分组',
+  'Auto-Resolve': '自动解决',
+  'Subtitle': '副标题',
+  'Move to Project': '移动到项目',
+  'Move to Workspace': '移动到工作区',
+  'New Project...': '新建项目...',
+  'New Workspace...': '新建工作区...',
+  'Remove from Project': '从项目中移除',
+  'Remove from Workspace': '从工作区中移除',
+  'Continue as a New Conversation': '作为新对话继续',
+  'Continue in Current Workspace': '在当前工作区继续',
+  'Continue in Shared Workspace': '在共享工作区继续',
+  'Continue in New Workspace': '在新工作区继续',
+  'Open with': '打开方式',
+  'Text viewer': '文本查看器',
+  'Image viewer': '图片查看器',
+  'Video player': '视频播放器',
+  'Audio player': '音频播放器',
+  'HTML viewer': 'HTML 查看器',
+  'Notebook viewer': 'Notebook 查看器',
+  'PDF viewer': 'PDF 查看器',
+  'System default app': '系统默认应用',
+  'Application Menu': '应用菜单',
+  'For Me': '仅自己使用',
+  'For My Team': '团队共享',
 };
 function translateContextLabel(lbl) {
   if (!lbl) return '';
@@ -927,6 +991,12 @@ function translateContextLabel(lbl) {
     if (contextMenuTranslationMap[base]) return contextMenuTranslationMap[base] + '（默认）';
     const openMatch = base.match(/^Open in\\s+(.+)$/i);
     if (openMatch) return '在 ' + openMatch[1] + ' 中打开（默认）';
+  }
+  const statusSuffixMatch = trimmed.match(/^(.+?)\\s+\\((Not running|Sidecar disabled)\\)$/);
+  if (statusSuffixMatch) {
+    const baseCn = contextMenuTranslationMap[statusSuffixMatch[1]] || statusSuffixMatch[1];
+    const reasonCn = statusSuffixMatch[2] === 'Sidecar disabled' ? 'Sidecar 已禁用' : '未运行';
+    return baseCn + '（' + reasonCn + '）';
   }
   let m = trimmed.match(/^Move to Group:\\s*(.+)$/i);
   if (m) return '移动到分组：' + m[1];

@@ -48,7 +48,7 @@ exports.runHeadless = runHeadless;
  *   binary is there and its sandbox selftest passes);
  * - AGY_MAX_PREVIEW_SLOTS: windows the preview shows at once (1..12,
  *   default 6);
- * - AGY_DESKTOP_HOST_DIR: state (actuator id, pause; default
+ * - AGY_DESKTOP_HOST_DIR: state (actuator id; default
  *   ~/.agy-desktop-host);
  * - AGY_DESKTOP_ENDPOINT=0 or the kill-switch file: unsubscribed.
  *
@@ -97,13 +97,14 @@ async function runHeadless(cfg) {
         clientVersion: '0.0.0',
         connection: () => conn,
     });
+    // No Stop outlives its turn: drop one an older host saved.
+    (0, config_1.clearSavedPause)(path.join(cfg.stateDir, 'desktop_pause.json'));
     const host = (0, host_1.startDesktopHost)({
         client,
         clientName: 'desktop-host',
         helperPath: cfg.helperPath,
         scriptPath: fs.existsSync(cfg.scriptPath) ? cfg.scriptPath : undefined,
         actuatorId: (0, config_1.persistedActuatorId)(path.join(cfg.stateDir, 'desktop_endpoint_id')),
-        pauseStore: (0, config_1.filePauseStore)(path.join(cfg.stateDir, 'desktop_pause.json')),
         preview: cfg.preview
             ? { rtcPath: cfg.rtcPath, maxSlots: cfg.previewSlots }
             : undefined,

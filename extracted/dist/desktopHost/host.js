@@ -6,24 +6,24 @@
  * - the helper supervisor (DesktopHelper, with the fd 3 frame pipe when the
  *   preview is on) and the Mac surface (Layer 3);
  * - Layer 2 (`registerComputerActuator`) on a Layer 1 ActuatorClient;
- * - the agents' overlay cursors (helper-drawn on the controlled Mac);
- * - the kill switch and the persisted pause;
+ * - the kill switch and the user's Stop (it ends the turn; nothing is kept);
  * - the preview (P3-1): PreviewManager (helper streams for what the agents
  *   work in) feeding RtcSender (WebRTC to viewers, loopback only).
  *
- * The Hub embeds it (src/computer/index.ts adds the HUD and Electron
- * lifecycle); `main.ts` runs it headless.
+ * The Hub embeds it (src/computer/index.ts adds the Electron lifecycle);
+ * `main.ts` runs it headless.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.scriptRunnerFor = scriptRunnerFor;
 exports.stopLikePause = stopLikePause;
+exports.endsTileTakeovers = endsTileTakeovers;
+exports.endsUserStop = endsUserStop;
 exports.focusEventLine = focusEventLine;
 exports.typingActivity = typingActivity;
 exports.startDesktopHost = startDesktopHost;
 const computerActuator_1 = require("../computerActuator");
 const desktopHelper_1 = require("../computer/desktopHelper");
 const macComputerDriver_1 = require("../computer/macComputerDriver");
-const overlay_1 = require("../computer/overlay");
 const config_1 = require("./config");
 const activityThrottle_1 = require("./activityThrottle");
 const scriptSelftest_1 = require("./scriptSelftest");
@@ -60,6 +60,22 @@ function scriptRunnerFor(binaryPath, log, available) {
  */
 function stopLikePause(s) {
     return (s.paused && s.pauseCause !== undefined && s.pauseCause !== 'user_takeover');
+}
+/**
+ * A Stop or takeover (from anywhere: Stop all, the agent UI, real input)
+ * ends the tile takeovers too: the handler ends their per-agent pauses with
+ * the turn.
+ */
+function endsTileTakeovers(s) {
+    return s.paused;
+}
+/**
+ * The user's Stop ends the previews until the LS hands out new agent work
+ * (a request or an active lease). The fence lifts right after a Stop (no
+ * pause is kept), which alone must not bring the previews back.
+ */
+function endsUserStop(s) {
+    return s.agentActive && !s.paused;
 }
 /**
  * The log line for a helper focus guard event (focus_restored,
@@ -116,8 +132,6 @@ function startDesktopHost(o) {
     const driver = new macComputerDriver_1.MacComputerSurfaceDriver(helper, o.actuatorId, {
         idleProbe: o.idleProbe,
     });
-    const overlay = o.overlay === false ? undefined : new overlay_1.OverlayFeed(helper, log);
-    let overlayLive = false;
     let wasConnected = false;
     const clientName = o.clientName ?? 'desktop-host';
     let latest;
@@ -125,11 +139,10 @@ function startDesktopHost(o) {
     const colors = new colors_1.AgentColors();
     /** Typing chunks: at most ~15 activities/s per agent, the latest kept. */
     const activities = new activityThrottle_1.ActivityThrottle((a) => {
-        overlay?.activity(a);
         sender?.sendActivity(a);
         safe(() => o.onAgentActivity?.(a), log);
     });
-    /** The user pressed Stop (until Resume): previews end. */
+    /** The user pressed Stop (until new agent work): previews end. */
     let userStopped = false;
     /** The lease's agents plus the retained taken-over ones. */
     const agentsView = () => takeovers.view(latest?.agents ?? []);
@@ -161,7 +174,6 @@ function startDesktopHost(o) {
     };
     const stopAgent = (actorId) => {
         takeovers.end(actorId);
-        overlay?.clear(actorId);
         // C13b per-agent stop: that agent's batches answer AGENT_STOPPED (also
         // after its lease ends); other agents continue.
         ref.reg?.stopAgent(actorId);
@@ -203,7 +215,6 @@ function startDesktopHost(o) {
         if (!takeovers.take(actorId, agent)) {
             return;
         }
-        overlay?.clear(actorId);
         pushAgents();
         syncPreview();
     };
@@ -284,7 +295,6 @@ function startDesktopHost(o) {
             onControl,
             onDemand: (local, roots) => {
                 manager?.setDemand(local, roots);
-                safe(() => o.onLocalViewers?.(local), log);
             },
             onNeedKeyframe: () => manager?.requestKeyframes(),
             onStreamKeyframe: (id) => manager?.requestKeyframe(id),
@@ -334,8 +344,6 @@ function startDesktopHost(o) {
             ? scriptRunnerFor(scriptPath, log, () => scriptVerified)
             : undefined,
         scriptTimeoutMs: o.scriptTimeoutMs,
-        initialPaused: o.pauseStore?.load() ?? false,
-        onPausedChanged: (paused) => o.pauseStore?.save(paused),
         onAgentActivity: (raw) => activities.push(colors.recolor(raw)),
         onState: (raw) => {
             colors.sync(raw.agents.map((a) => a.actor.id));
@@ -347,6 +355,11 @@ function startDesktopHost(o) {
                 log(`[ComputerUse] subscribed actuator_type=computer actuator_id=${driver.surfaceId} client=${clientName}`);
             }
             wasConnected = s.connected;
+            if (endsTileTakeovers(s)) {
+                // The handler ended them with the turn: their timers go now, and
+                // their tiles with the rows below (as after Stop all).
+                takeovers.clear();
+            }
             // Agents that left the lease no longer get a preview.
             if (latest) {
                 const now = new Set(s.agents.map((a) => a.actor.id));
@@ -363,17 +376,10 @@ function startDesktopHost(o) {
             for (const a of raw.agents) {
                 takeovers.inLease(a.actor.id);
             }
-            // A resume from anywhere (e.g. the LS) ends the user's Stop.
-            if (!s.paused) {
+            if (endsUserStop(s)) {
                 userStopped = false;
             }
             latest = s;
-            // Stop, takeover or the end of the lease: no stale cursors or pills.
-            const live = s.agentActive && !s.paused;
-            if (overlayLive && !live) {
-                overlay?.clear();
-            }
-            overlayLive = live;
             pushAgents();
             syncPreview();
             safe(() => o.onState?.(s), log);
@@ -442,7 +448,6 @@ function startDesktopHost(o) {
         stopAll,
         resume,
         revokeViewerDevice: (id) => viewer?.revokeDevice(id) ?? false,
-        setOverlaySuppressed: (s) => overlay?.setSuppressed(s),
         setScreenLocked: (l) => sender?.setScreenLocked(l),
         stop: async () => {
             if (stopped) {

@@ -18,8 +18,6 @@ const computerActuatorHandler_1 = require("./computerActuatorHandler");
 function registerComputerActuator(o) {
     const handler = new computerActuatorHandler_1.ComputerActuatorHandler({
         driver: o.driver,
-        initialPaused: o.initialPaused,
-        onPausedChanged: o.onPausedChanged,
         onState: o.onState,
         onStreamLost: o.onStreamLost,
         onAgentActivity: o.onAgentActivity,

@@ -93,11 +93,11 @@ exports.MAX_BROWSER_PAGES = 16;
 /** Request-level texts the model reads (unchanged from the desktop Kind). */
 exports.ERR_TEXT = {
     USER_TAKEOVER: 'USER_TAKEOVER: the user took control of the Mac (real mouse/keyboard input or the Stop button). Stop now and return control to the parent agent; do not retry until the user resumes.',
-    USER_STOP: 'USER_STOP: the user pressed Stop in the AGY HUD. Stop now and return control to the parent agent; do not retry until the user resumes.',
+    USER_STOP: 'USER_STOP: the user pressed Stop in AGY. Stop now and return control to the parent agent; do not retry until the user resumes.',
     GEOMETRY_CHANGED: 'GEOMETRY_CHANGED: the display changed since your last screenshot; take a new screenshot before acting.',
     ABANDONED: 'ACTION_FAILED: the language server abandoned this request (cancelled, timed out, disconnected or superseded); remaining actions were not run.',
     TARGET_CHANGED_LOCKED: 'TARGET_CHANGED: that input would reach an app this batch does not hold (another agent may be working in it); call focus_app on the app you need first, then take a fresh screenshot.',
-    AGENT_STOPPED: 'AGENT_STOPPED: the user stopped this agent in the AGY HUD. Stop now and return control to the parent agent; other agents may continue.',
+    AGENT_STOPPED: 'AGENT_STOPPED: the user stopped this agent in AGY. Stop now and return control to the parent agent; other agents may continue.',
     AGENT_PAUSED: "AGENT_PAUSED: the user took over this agent's app in the AGY Hub. Stop now and return control to the parent agent; you can be re-invoked after the user hands it back.",
     POINTER_BUSY: 'POINTER_BUSY: another computer subagent is using the mouse and keyboard. Do this step with background actions (bind_app, ax_snapshot, ax_*) if they can do it; otherwise stop and report back to the parent agent instead of retrying.',
 };

@@ -6,7 +6,7 @@
  * from the surface's description, each ComputerRequest run through the driver
  * (geometry fence, pause and abandonment checks between actions, fail-closed
  * confinement, the page policy, PNG blob), takeover / Stop / Resume status,
- * health, and the lease state a host shows (e.g. a HUD).
+ * health, and the lease state a host shows (e.g. the Agents pane).
  *
  * Platform-free: no DOM, React, Electron or Node built-ins (deps_test.ts).
  */
@@ -84,8 +84,9 @@ const SCRIPT_SNAPSHOT_MIN_MS = 6000;
 const SCRIPT_FRAME_MIN_MS = 3000;
 /** The LS's Fulfill cap when its SubscribeAck had none (actuatorserver). */
 const MAX_FULFILL_FALLBACK_BYTES = 24 << 20;
-const STALE_ECHO_MS = 3000;
 const MAX_STOPPED_AGENTS = 64;
+/** How long a Stop waits for the runs it fenced to answer. */
+const FENCED_SETTLE_MS = 2000;
 /** Agents whose cascade id is remembered for scoped pause reports. */
 const MAX_KNOWN_CASCADES = 256;
 /** The app name a per-agent pause report carries (LS model text). */
@@ -98,7 +99,7 @@ function sleepReal(ms) {
 }
 /**
  * Serves actuator_type "computer". Register with {@link register}; the host
- * forwards the user's Stop / Resume ({@link userStop}, {@link userResume}),
+ * forwards the user's Stop and takeovers ({@link userStop}),
  * health changes ({@link reportHealth}) and re-advertisements
  * ({@link refreshHello}).
  */
@@ -136,9 +137,6 @@ class ComputerActuatorHandler {
          * queues follow the surface as it is now.
          */
         this.multi = false;
-        this.lastLocalResumeAt = 0;
-        /** A local Resume not yet seen by the LS (it is replayed after the ack). */
-        this.pendingResume = false;
         this.lastAdvert = '';
         this.lastHealth = '';
         /** Bumped by every executor exit; a probe older than it is stale. */
@@ -161,7 +159,21 @@ class ComputerActuatorHandler {
         this.lastReport = Promise.resolve();
         /** True while the SDK stream is subscribed. */
         this.connected = false;
-        /** Locally paused by takeover / Stop until the user presses Resume. */
+        /** Bumped by every subscribe and stream loss. */
+        this.streamGen = 0;
+        /** Bumped by every pause (see runStopCycle). */
+        this.pauseSeq = 0;
+        /**
+         * The Stop cycle's reports, strictly in order: each is sent and awaited
+         * on a live stream and dropped once acknowledged (the stream was the same
+         * before and after), so an acknowledged one is never sent again. Offline
+         * they are handed to the SDK (its replay set: the next Subscribe's
+         * initial pauses) and sent live again after the subscribe.
+         */
+        this.reportQueue = [];
+        this.stopDriving = false;
+        this.stopWaiters = [];
+        /** A takeover / Stop is being handled ({@link userStop}); brief. */
         this.paused = false;
         /** Some agent holds the lease (LeaseStatus.agent_active, per owner). */
         this.agentActive = false;
@@ -232,12 +244,6 @@ class ComputerActuatorHandler {
         this.pauseCause = actuator_pb_1.ActuatorStatus.USER_TAKEOVER;
         this.driver = opts.driver;
         this.actuatorId = opts.driver.surfaceId;
-        this.paused = opts.initialPaused ?? false;
-        if (this.paused) {
-            // The user's Stop, persisted by the host (reported as USER_STOP).
-            this.pauseCause = actuator_pb_1.ActuatorStatus.USER_STOP;
-            this.pauseOrigin = 'user_stop';
-        }
         this.log =
             opts.log ??
                 ((m) => {
@@ -252,22 +258,12 @@ class ComputerActuatorHandler {
         if (off) {
             this.unsubscribers.push(off);
         }
-        if (this.paused) {
-            this.driver.abort();
-        }
     }
     /** Registers with the client (call before `client.start()`). */
     register(client) {
         this.reg = client.register(this);
-        if (this.paused) {
-            // A persisted pause goes into the first Subscribe's initial_pauses.
-            void this.report({
-                status: actuator_pb_1.ActuatorStatus.USER_STOP,
-                detail: 'paused at start',
-            });
-        }
         this.pushState();
-        this.log(`[ComputerActuator] registered as ${this.actuatorId}${this.paused ? ' (paused)' : ''}`);
+        this.log(`[ComputerActuator] registered as ${this.actuatorId}`);
         return this.reg;
     }
     /**
@@ -369,44 +365,25 @@ class ComputerActuatorHandler {
             (p.status === actuator_pb_1.ActuatorStatus.USER_TAKEOVER ||
                 p.status === actuator_pb_1.ActuatorStatus.USER_STOP));
         this.log(`[ComputerActuator] subscribed${corePaused ? ' (LS fence active)' : ''}`);
-        if (corePaused) {
-            if (this.pendingResume && !this.paused) {
-                // The user resumed while we were disconnected; that USER_RESUME is
-                // replayed right after this ack, so don't re-pause on the stale fence.
-                this.pendingResume = false;
-                this.pushState();
-                return;
-            }
-            // The LS still fences this actuator (e.g. after a host restart):
-            // restore the paused state so the user can Resume.
-            if (!this.paused) {
-                const stopped = (ack?.activePauses ?? []).every((p) => p.rootConversationId || p.status !== actuator_pb_1.ActuatorStatus.USER_TAKEOVER);
-                this.setPaused(true, stopped ? actuator_pb_1.ActuatorStatus.USER_STOP : actuator_pb_1.ActuatorStatus.USER_TAKEOVER, 'ls_fence');
-                this.driver.abort();
-                this.syncArm();
-                // Keep the pause in the SDK's replay set (initial_pauses next time).
-                // A pause we already had is there (with its own detail) already.
-                void this.report({
-                    status: this.pauseCause,
-                    detail: 'paused by the language server fence',
-                });
-            }
-            this.pushState();
-            return;
+        this.streamGen++;
+        if (!this.stopCycle && corePaused) {
+            // Nothing is paused here, so the LS fence is stale (an LS that outlived
+            // an earlier Hub, or a USER_RESUME lost with the stream). It would
+            // refuse every later call with nothing to lift it: lift it now
+            // (keeping the per-agent pauses).
+            this.stopCycle = { released: [], resumed: true };
+            this.queueResume('actuator-wide fence lifted at subscribe', []);
         }
-        this.pendingResume = false;
-        // The user stopped the agent and hasn't resumed, but the LS has no fence
-        // (e.g. a fresh LS): pause the new lease too.
-        if (this.paused) {
-            void this.report({
-                status: this.pauseCause,
-                detail: 'still paused after reconnect',
-            });
+        if (this.stopCycle) {
+            // A Stop / takeover not finished on a live stream: its unacknowledged
+            // reports go (again), in order.
+            void this.driveStop();
         }
         this.pushState();
     }
     onStreamLost(reason) {
         this.connected = false;
+        this.streamGen++;
         this.log(`[ComputerActuator] stream lost: ${reason}`);
         // Runs the SDK marks abandoned (not redispatchable) are dead; a
         // redispatchable one keeps running and its Fulfill pairs with the copy.
@@ -487,18 +464,8 @@ class ComputerActuatorHandler {
                 }
             }
         }
-        // A paused_by_user=true right after a local Resume is the stale echo of
-        // the Stop; don't make the user press Resume twice.
-        const staleEcho = this.now() - this.lastLocalResumeAt < STALE_ECHO_MS;
-        if (ls.pausedByUser && !this.paused && !staleEcho) {
-            this.setPaused(true, actuator_pb_1.ActuatorStatus.USER_STOP, 'user_stop');
-            this.driver.abort();
-            // Keep the pause in the SDK's replay set (initial_pauses next time).
-            void this.report({
-                status: actuator_pb_1.ActuatorStatus.USER_STOP,
-                detail: 'paused by the language server fence',
-            });
-        }
+        // An LS-side pause is not adopted: the LS itself refuses the rest of a
+        // stopped or taken-over turn.
         this.syncArm();
         this.pushState();
     }
@@ -535,6 +502,7 @@ class ComputerActuatorHandler {
             abandoned: false,
             // A request that arrives while paused is fenced from the start.
             fenced: this.paused,
+            fenceCause: this.paused ? this.pauseCause : undefined,
             actor,
             rootConversationId: req.rootConversationId,
             deadlineMs: Number(req.deadlineUnixMs) || 0,
@@ -582,52 +550,266 @@ class ComputerActuatorHandler {
             .catch((err) => {
             this.log(`[ComputerActuator] request ${req.requestId}: ${String(err)}`);
         });
+        run.settled = next;
         this.queues.set(key, next);
     }
     // ---- host API ----
-    /** Takeover or the user's Stop: pause locally first, then tell the LS. */
+    /**
+     * Takeover or the user's Stop. The LS ends the lease and refuses the rest
+     * of the turn on both (a Stop also withdraws consent), so no pause is kept
+     * here: fence locally to cut the in-flight and queued work (each fenced run
+     * still answers `status`), report it once (unscoped), let the fenced runs
+     * answer, then lift the fence and report USER_RESUME ({@link runStopCycle}).
+     * A Stop that lands while a takeover is being handled is still reported.
+     */
     async userStop(status, detail, observedAtMs = this.now()) {
-        if (this.paused) {
-            return;
+        if (this.paused &&
+            (status === actuator_pb_1.ActuatorStatus.USER_TAKEOVER ||
+                this.pauseCause === actuator_pb_1.ActuatorStatus.USER_STOP)) {
+            return; // being handled already (a Stop during a takeover is not)
         }
+        const c = (this.stopCycle ?? (this.stopCycle = { released: [], resumed: false }));
+        c.resumed = false; // this pause needs its own resume
+        // The SDK stamps observed_at itself; keep the surface's time in the detail.
+        this.reportQueue.push({ r: { status, detail: `${detail} @${observedAtMs}` } });
+        this.fence(status, detail);
+        await this.driveStop();
+    }
+    /** The host's Resume: nothing is kept paused, so it only drives a Stop. */
+    async userResume() {
+        if (this.stopCycle) {
+            await this.driveStop();
+        }
+    }
+    /**
+     * Fences the surface for a Stop / takeover. Every agent's row goes (the
+     * lease ends with it; a new request adds it again), also those the user
+     * took over from their tile: their per-agent pause ends with the turn,
+     * not as a per-agent stop, so they run again next turn. Their per-agent
+     * fence and scoped pause are lifted after the actuator's.
+     */
+    fence(status, detail) {
         this.setPaused(true, status, status === actuator_pb_1.ActuatorStatus.USER_STOP ? 'user_stop' : 'user_takeover');
         this.agentActive = false;
         this.ownersActive.clear();
-        this.pendingResume = false;
         // Fence the surface first: it also stops a primitive that is running.
         this.driver.abort();
         this.log(`[ComputerActuator] paused: ${actuator_pb_1.ActuatorStatus[status]} (${detail})`);
         this.driver.setTakeoverArmed(false);
+        for (const [id, held] of this.pausedActors) {
+            const handBack = this.handBacks.get(id);
+            if (handBack) {
+                handBack.state = 'cancelled';
+            }
+            this.stopCycle?.released.push({
+                id,
+                scope: held || this.cascadeOf.get(id) || '',
+            });
+        }
+        this.pausedActors.clear();
+        this.leaseEndedWhilePaused.clear();
+        this.forgetAgentRows();
         this.pushState();
-        // The SDK stamps observed_at itself; keep the surface's time in the detail.
-        await this.report({ status, detail: `${detail} @${observedAtMs}` });
     }
-    /** The user's Resume. */
-    async userResume() {
-        if (!this.paused) {
+    /**
+     * Runs {@link runStopCycle}, one at a time. Resolves once the cycle is
+     * done or waits for a stream. A cycle that starts while the loop is
+     * exiting is picked up by the same loop, never left undriven.
+     */
+    driveStop() {
+        const done = new Promise((r) => this.stopWaiters.push(r));
+        if (!this.stopDriving) {
+            void this.stopLoop();
+        }
+        return done;
+    }
+    async stopLoop() {
+        this.stopDriving = true;
+        try {
+            do {
+                await this.runStopCycle();
+            } while (this.stopCycle && this.connected);
+        }
+        finally {
+            this.stopDriving = false;
+            if (!this.connected) {
+                // Reports queued after the cycle went offline (e.g. a Stop while it
+                // waited) go to the SDK too, so the next Subscribe carries them.
+                this.handOffline();
+            }
+            for (const w of this.stopWaiters.splice(0)) {
+                w();
+            }
+        }
+    }
+    /**
+     * The one Stop state machine; returns when done or without a stream (it
+     * stays fenced; {@link onSubscribed} drives it again). Each pass drains the
+     * report queue, lets the fenced runs answer (so a late Fulfill can't
+     * re-latch the LS fence after the resume), and only with the queue drained
+     * on a live stream and no new pause does it lift the fences (the handler
+     * stays paused while clearAbort runs, so batches that arrive meanwhile are
+     * fenced) and queue USER_RESUME, the released agents' scoped resumes and
+     * the per-agent pauses still held. The cycle ends once those are
+     * acknowledged. A Stop or takeover that lands at any point is queued after
+     * them and handled in a further pass.
+     */
+    async runStopCycle() {
+        for (;;) {
+            const c = this.stopCycle;
+            if (!c) {
+                return;
+            }
+            if (!(await this.drainReports()) || !this.connected) {
+                return; // stays fenced; onSubscribed drives the cycle again
+            }
+            if (c.resumed && !this.paused) {
+                this.stopCycle = undefined;
+                return;
+            }
+            await this.settleFenced();
+            if (this.reportQueue.length > 0) {
+                continue; // a new pause landed meanwhile
+            }
+            if (this.paused) {
+                const seq = this.pauseSeq;
+                const released = [];
+                await this.driver.clearAbort();
+                for (const r of this.multi ? c.released : []) {
+                    if (!this.pausedActors.has(r.id)) {
+                        // (Not one taken over again since: its own fence stays.)
+                        released.push(r.id);
+                        await this.driver.clearAbort({ actorId: r.id });
+                    }
+                }
+                if (this.pauseSeq !== seq ||
+                    this.reportQueue.length > 0 ||
+                    !this.connected) {
+                    // A newer pause, or no stream: these clears may have reached the
+                    // surface after an abort; fence it again.
+                    this.driver.abort();
+                    for (const id of released) {
+                        this.driver.abort({ actorId: id });
+                    }
+                    if (!this.connected) {
+                        return; // stays fenced; onSubscribed drives the cycle again
+                    }
+                    continue;
+                }
+                this.setPaused(false);
+                this.syncArm(); // the lease may still be active: detect takeovers
+                this.pushState();
+                this.log('[ComputerActuator] fence lifted');
+            }
+            this.queueResume('stop handled; the LS ends the turn', c.released);
+            c.released = [];
+            c.resumed = true;
+        }
+    }
+    /**
+     * Queues USER_RESUME (the LS keeps a reported pause until it), then the
+     * scoped resume of each released agent not paused again since, then the
+     * per-agent pauses still held: the unscoped resume drops every pause from
+     * the SDK's replay set, so they are reported again, separate from the
+     * actuator's.
+     */
+    queueResume(detail, released) {
+        this.reportQueue.push({ r: { status: actuator_pb_1.ActuatorStatus.USER_RESUME, detail } });
+        for (const r of released) {
+            if (r.scope && !this.pausedActors.has(r.id)) {
+                this.reportQueue.push({
+                    r: { status: actuator_pb_1.ActuatorStatus.USER_RESUME, detail: 'turn ended' },
+                    scope: r.scope,
+                    actorId: r.id,
+                });
+            }
+        }
+        for (const [id, scope] of this.pausedActors) {
+            if (scope) {
+                this.reportQueue.push({
+                    r: {
+                        status: actuator_pb_1.ActuatorStatus.USER_TAKEOVER,
+                        detail: this.takeoverDetail(id),
+                    },
+                    scope,
+                    actorId: id,
+                });
+            }
+        }
+    }
+    /**
+     * Sends the queued reports in order, each awaited; one is dropped once
+     * acknowledged (sent and answered on one live stream), else sent again.
+     * Without a stream it hands the rest to the SDK's replay set and returns
+     * false.
+     */
+    async drainReports() {
+        for (;;) {
+            const item = this.reportQueue[0];
+            if (!item) {
+                return true;
+            }
+            if (!this.connected) {
+                this.handOffline();
+                return false;
+            }
+            if (!this.stillDue(item)) {
+                this.reportQueue.shift();
+                continue;
+            }
+            const gen = this.streamGen;
+            await this.sendQueued(item);
+            if (this.connected &&
+                this.streamGen === gen &&
+                this.reportQueue[0] === item) {
+                this.reportQueue.shift();
+            }
+        }
+    }
+    /**
+     * Hands the queued reports not handed yet to the SDK's replay set (the
+     * next Subscribe's initial pauses); they are still sent live after it.
+     */
+    handOffline() {
+        for (const q of this.reportQueue) {
+            if (!q.handed && this.stillDue(q)) {
+                q.handed = true;
+                void this.sendQueued(q);
+            }
+        }
+    }
+    /**
+     * Whether a queued scoped report still matches its agent: a re-reported
+     * pause only while the agent is still taken over (a hand back since sent
+     * its own resume), a released agent's resume only while it was not taken
+     * over again (its new pause was reported).
+     */
+    stillDue(q) {
+        if (!q.actorId) {
+            return true;
+        }
+        const paused = this.pausedActors.has(q.actorId);
+        return q.r.status === actuator_pb_1.ActuatorStatus.USER_TAKEOVER ? paused : !paused;
+    }
+    sendQueued(q) {
+        return q.scope ? this.reportScoped(q.r, q.scope) : this.report(q.r);
+    }
+    /** Waits (bounded) for the runs a pause fenced to answer. */
+    async settleFenced() {
+        const fenced = [...this.runs.values()]
+            .filter((r) => r.fenced && r.settled)
+            .map((r) => r.settled);
+        if (fenced.length === 0) {
             return;
         }
-        this.setPaused(false);
-        this.lastLocalResumeAt = this.now();
-        this.pendingResume = true;
-        // Update the host first: clearAbort waits for a running primitive.
-        this.pushState();
-        await this.driver.clearAbort();
-        if (this.paused) {
-            return; // a takeover or Stop landed meanwhile: it wins
-        }
-        this.syncArm(); // the lease may still be active: detect takeovers again
-        this.log('[ComputerActuator] resumed by user');
-        const live = this.connected;
-        await this.report({
-            status: actuator_pb_1.ActuatorStatus.USER_RESUME,
-            detail: 'user Resume',
-        });
-        if (live && this.connected && !this.paused) {
-            // Delivered on a live stream: the SDK dropped it from its replay set,
-            // so a later ack's fence is a new one, not this Resume's stale echo.
-            this.pendingResume = false;
-        }
+        let timer;
+        await Promise.race([
+            Promise.all(fenced),
+            new Promise((r) => {
+                timer = setTimeout(r, FENCED_SETTLE_MS);
+            }),
+        ]);
+        clearTimeout(timer);
     }
     /**
      * The user's per-agent Stop: that agent's running action stops (only its
@@ -804,6 +986,11 @@ class ComputerActuatorHandler {
         finally {
             cancelled = entry.state === 'cancelled';
             this.handBacks.delete(actorId);
+        }
+        if (!this.multi && this.paused) {
+            // A Stop / takeover landed during the hand back's global clearAbort,
+            // which may have reached the surface after its abort: fence it again.
+            this.driver.abort();
         }
         const scope = this.pausedActors.get(actorId) || held || this.cascadeOf.get(actorId);
         // A Stop that landed during the await wins (and reported USER_STOP for
@@ -993,14 +1180,17 @@ class ComputerActuatorHandler {
     setPaused(p, cause = actuator_pb_1.ActuatorStatus.USER_TAKEOVER, origin = 'user_takeover') {
         this.paused = p;
         if (p) {
+            this.pauseSeq++;
             this.pauseCause = cause;
             this.pauseOrigin = origin;
             this.foregroundActors.clear();
             for (const run of this.runs.values()) {
-                run.fenced = true;
+                if (!run.fenced) {
+                    run.fenced = true;
+                    run.fenceCause = cause;
+                }
             }
         }
-        this.opts.onPausedChanged?.(p);
     }
     /**
      * The handler is paused, or a pause landed while `run` was in flight: a
@@ -1022,8 +1212,8 @@ class ComputerActuatorHandler {
         return false;
     }
     /** The result of a batch the pause stopped: USER_STOP after a Stop. */
-    pausedResult() {
-        return this.pauseCause === actuator_pb_1.ActuatorStatus.USER_STOP
+    pausedResult(run) {
+        return (run?.fenceCause ?? this.pauseCause) === actuator_pb_1.ActuatorStatus.USER_STOP
             ? { code: 'USER_STOP', text: computerOps_1.ERR_TEXT.USER_STOP }
             : { code: 'USER_TAKEOVER', text: computerOps_1.ERR_TEXT.USER_TAKEOVER };
     }
@@ -1108,6 +1298,10 @@ class ComputerActuatorHandler {
     /**
      * Sends a status report. Resolves once the SDK delivered it (or, while
      * disconnected, remembered it for the next Subscribe). Never rejects.
+     *
+     * TODO(b/587650851): the vendored ActuatorClient.reportStatus logs and
+     * swallows an RPC error while the stream stays up, so a report can be lost
+     * without a stream change; surface or retry it in the SDK, then here.
      */
     report(r) {
         if (!this.reg) {
@@ -1167,7 +1361,7 @@ class ComputerActuatorHandler {
             // over the failure (e.g. clearAbort or describe rejecting): the LS
             // releases a stopped agent only on AGENT_STOPPED.
             const fence = this.isPaused(run)
-                ? this.pausedResult()
+                ? this.pausedResult(run)
                 : this.isStopped(run)
                     ? this.agentFenceResult(run)
                     : { code: 'ACTION_FAILED', text: `ACTION_FAILED: ${String(err)}` };
@@ -1238,7 +1432,7 @@ class ComputerActuatorHandler {
             result.error = text;
         };
         const failPaused = () => {
-            const { code, text } = this.pausedResult();
+            const { code, text } = this.pausedResult(run);
             fail(code, text);
         };
         const stopped = () => this.isStopped(run);
@@ -1884,7 +2078,8 @@ class ComputerActuatorHandler {
             // A takeover the surface reported (not this agent's own stop).
             (result.errorCode === 'USER_TAKEOVER' && !stopped())) {
             // The pause's result wins over whatever the aborted primitive reported.
-            if (this.isPaused(run) && result.errorCode !== this.pausedResult().code) {
+            if (this.isPaused(run) &&
+                result.errorCode !== this.pausedResult(run).code) {
                 failPaused();
             }
             // No screenshot of what the user is doing now; that includes a window
@@ -1991,7 +2186,7 @@ class ComputerActuatorHandler {
         // A pause, stop or abandonment that landed during describe(): the
         // script never starts and the mode doesn't move.
         if (this.isPaused(run)) {
-            const { code, text } = this.pausedResult();
+            const { code, text } = this.pausedResult(run);
             fail(code, text);
             return out;
         }
@@ -2167,7 +2362,7 @@ class ComputerActuatorHandler {
         result.totalCompletedOps = mediator.totalOps();
         // The fence wins over whatever the killed script reported.
         if (this.isPaused(run)) {
-            const { code, text } = this.pausedResult();
+            const { code, text } = this.pausedResult(run);
             fail(code, text);
         }
         else if (this.isStopped(run)) {
@@ -2373,6 +2568,9 @@ class ComputerActuatorHandler {
      */
     activity(run, e) {
         const prev = this.agents.get(run.actor.id);
+        if (run.fenced && !prev) {
+            return; // a Stop dropped the row: a fenced run doesn't bring it back
+        }
         // The agent's own app: the one its latest successful action reached,
         // by display name once some agent bound it.
         let appName = prev?.appName ?? '';
@@ -2485,7 +2683,7 @@ function actorOf(req) {
     const id = req.cascadeId || req.rootConversationId || req.requestId;
     const actor = { id, colorIndex: (0, computerOps_1.agentColorIndex)(id) };
     // Display only: no control or format characters (bidi overrides,
-    // zero-width), so a label can't spoof other text in a host's HUD.
+    // zero-width), so a label can't spoof other text in a host's UI.
     const label = (0, computerOps_1.truncateUtf8)((req.payload.actorLabel ?? '').replace(/[\p{Cc}\p{Cf}]/gu, '').trim(), computerOps_1.MAX_ACTOR_LABEL_BYTES);
     if (label) {
         actor.label = label;

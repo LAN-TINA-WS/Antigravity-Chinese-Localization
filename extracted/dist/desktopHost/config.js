@@ -36,13 +36,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.KILL_SWITCH_POLL_MS = exports.KILL_SWITCH_FILE = void 0;
 exports.makeActuatorId = makeActuatorId;
 exports.persistedActuatorId = persistedActuatorId;
-exports.filePauseStore = filePauseStore;
+exports.clearSavedPause = clearSavedPause;
 exports.killSwitchEngaged = killSwitchEngaged;
 exports.confinementCap = confinementCap;
 /**
  * Desktop host configuration helpers (moved from src/computer/index.ts so the
  * headless host can use them without Electron): the persisted actuator id,
- * the persisted pause, the kill switch and the confinement cap.
+ * clearing a saved pause, the kill switch and the confinement cap.
  */
 const crypto = __importStar(require("crypto"));
 const fs = __importStar(require("fs"));
@@ -79,27 +79,18 @@ function persistedActuatorId(file) {
     }
     return id;
 }
-/** A JSON file store, e.g. in the Hub userData directory. */
-function filePauseStore(file) {
-    return {
-        load: () => {
-            try {
-                return (JSON.parse(fs.readFileSync(file, 'utf8'))
-                    .paused === true);
-            }
-            catch {
-                return false;
-            }
-        },
-        save: (paused) => {
-            try {
-                fs.writeFileSync(file, JSON.stringify({ paused }));
-            }
-            catch (err) {
-                console.warn(`[ComputerUse] could not persist pause: ${String(err)}`);
-            }
-        },
-    };
+/**
+ * Removes the user's Stop that older versions saved across restarts
+ * (desktop_pause.json). A Stop is no longer kept at all: the LS ends the
+ * turn and asks for consent again, and nothing starts paused.
+ */
+function clearSavedPause(file) {
+    try {
+        fs.rmSync(file, { force: true });
+    }
+    catch (err) {
+        console.warn(`[ComputerUse] could not clear the saved pause: ${String(err)}`);
+    }
 }
 /** True if the kill switch (env or file) is engaged. */
 function killSwitchEngaged(env = process.env, file = exports.KILL_SWITCH_FILE) {

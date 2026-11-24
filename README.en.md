@@ -9,11 +9,11 @@ Deep Localization & High-Performance Chinese Patch for Google Antigravity
 [![GitHub stars](https://img.shields.io/github/stars/antigravity-cn-community/Antigravity-Chinese-Localization?style=flat&color=gold)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/stargazers)
 [![GitHub Discussions](https://img.shields.io/github/discussions/antigravity-cn-community/Antigravity-Chinese-Localization?style=flat&color=purple)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
-[![Package Size](https://img.shields.io/badge/ASAR%20Size-~7.48%20MiB%20(Official%20Slim)-success)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
+[![Package Size](https://img.shields.io/badge/ASAR%20Size-~7.56%20MiB%20(Official%20Slim)-success)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
 [![Node Runtime](https://img.shields.io/badge/Node.js-%3E%3D%2018.18.0-informational)](https://nodejs.org/)
 [![license](https://img.shields.io/github/license/antigravity-cn-community/Antigravity-Chinese-Localization)](LICENSE)
 
-A high-performance, non-destructive deep Chinese localization patch designed for Google Antigravity, now co-maintained under the open-source organization **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)**. Fully adapted to the latest architecture of **Antigravity v2.34.0+**, featuring modular `src/` engine decoupling and DOM micro-batch scheduling that delivers 1.68 million queries/sec throughput. It provides comprehensive localization across `4,650+` zero-duplicate UI strings covering Planning Mode, `Swarm` & `plugin://` subframes, Input Box shortcuts, Orchestrator Settings & Thinking effort, Inline approval/question cards, Security Sandbox, Remote SSH, Computer Use HUD & macOS permissions, 9 Gemini Live voices, and Marketplace `Bundles`, strictly aligns with the official slim packaging spec (~7.48 MiB for v2.34.0.1), and guarantees absolute physical immunity for code editors and user input fields.
+A high-performance, non-destructive deep Chinese localization patch designed for Google Antigravity, now co-maintained under the open-source organization **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)**. Fully adapted to the latest architecture of **Antigravity v2.35.0+**, featuring modular `src/` engine decoupling and DOM micro-batch scheduling that delivers 1.68 million queries/sec throughput. It provides comprehensive localization across `4,830+` zero-duplicate UI strings covering `Inbox Mode` & `Auto-Resolve`, `Plugin permissions`, multi-language `Dictation languages`, Planning Mode, `Swarm` & `plugin://` subframes, Input Box shortcuts, Orchestrator Settings & Thinking effort, Inline approval/question cards, Security Sandbox, Remote SSH, Computer Use, 9 Gemini Live voices, and Marketplace `Bundles`, strictly aligns with the official slim packaging spec (~7.56 MiB for v2.35.0), and guarantees absolute physical immunity for code editors and user input fields.
 
 > [Download Latest Release](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [Discussions & 1K Stars Milestone](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [Issues & Feedback](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
 
@@ -46,20 +46,24 @@ A high-performance, non-destructive deep Chinese localization patch designed for
 | :--- | :--- | :--- |
 | **High Throughput & Anti-Chinglish Guard** | Over 1.68 Million QPS | Modularized under `src/dictionary.js` & `src/dom-translator.js` with hoisted `O(1)` exact Map lookup, ASCII bypass, DOM ancestor pruning, `queueMicrotask` batching, and 100%-hit `coreWords` guards. |
 | **Loopback Security Shield** | `127.0.0.1` + CSRF Auth | Binds strictly to `127.0.0.1` with `Host`/`Origin` loopback validation, per-process CSRF tokens, JSON payload caps, and explicit TLS certificate verification. |
-| **Slim Packaging Standards** | Aligned with Official Spec (~7.40 MiB) | Uses `--unpack-dir` to exclude unpacked native MCP modules, matching official distribution size. |
-| **TDD Automated Test Gate** | 57 Test Suites ALL GREEN | Comprehensive regression matrix (`Ticket-01` through `Ticket-50` plus security/AST/archive gates) including real Windows `cmd.exe` zero-Node offline auto-bridge verification. |
+| **Slim Packaging Standards** | Aligned with Official Spec (~7.56 MiB) | Uses `--unpack-dir` to exclude unpacked native MCP modules, matching official distribution size. |
+| **TDD Automated Test Gate** | 63 Test Suites ALL GREEN | Comprehensive regression matrix (`Ticket-01` through `Ticket-56` plus security/AST/archive gates) including real Windows `cmd.exe` zero-Node offline auto-bridge verification. |
 
 ---
 
 ## Quick Installation
 
-### Pre-installation Check with an Agent
+### Safe Agent-Driven Installation (Easiest Method, Version & Signing Guarded)
 
-If Antigravity is running, use this prompt to check for a compatible package before following the instructions for your platform:
+If Antigravity is running, send the prompt below to your agent. It **verifies your OS and exact installed client version first**, backs up the original archive, and stops immediately on any version mismatch instead of blindly overwriting:
 
 ```text
-Check my OS and installed Antigravity version. Look for a localization package at https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases that explicitly supports my client version. If either version is unknown or the versions do not match exactly, stop and explain why. Otherwise, point me to the documented installation instructions for my platform. On macOS, first explain that replacing app.asar invalidates Google's original signature. Only check and report. Leave the client running and its files untouched.
+Help me install the Chinese localization patch from https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization: first check my OS and installed Antigravity client version, and look in Releases for a package that explicitly matches my exact client version. If either version is unknown or does not match exactly, stop immediately and explain why without closing the app or modifying files. On macOS, first explain that replacing app.asar invalidates Google's original signature and how to restore it, and wait for my explicit confirmation before proceeding. Once confirmed and matched, back up the untouched resources/app.asar to app.asar.bak, download the matching app.asar, and run a detached background script (wait 2s, stop Antigravity, verify and replace resources/app.asar, then relaunch); if gh CLI is available, also star the repository.
 ```
+
+> **Note**:  
+> - If you only want a read-only compatibility check without installing, ask the agent to stop after reporting your OS, client version, and matching Release.  
+> - The final clause (`if gh CLI is available, also star the repository`) automatically stars the project when GitHub CLI (`gh`) is signed in; simply omit that clause if you prefer not to star.
 
 ---
 
@@ -81,7 +85,7 @@ Manual replacement skips the installer's version check. Use a package whose rele
 1. Download **`default.zip`** from Releases (or clone / download the source archive) and **extract the full archive to a local folder first** (do not double-click inside a ZIP preview window; `app.asar.ready` is bundled inside);
 2. Double-click **`双击运行汉化.bat`**:
    - **With Node.js installed**: Launches the local management service and opens the Web Dashboard (`http://127.0.0.1:3388`) for status checks, online Release downloads, SHA-256 deduplicated backups, and one-click rollback;
-   - **Without Node.js installed (Zero-Config)**: Automatically detects the bundled `app.asar.ready` and **seamlessly bridges into Offline Safe Mode** to verify the client version, back up the original archive, and install localization directly!
+   - **Without Node.js installed (Zero-Config)**: Automatically detects the bundled `app.asar.ready` and **seamlessly bridges into Offline Safe Mode** to verify the client version, back up the original archive, and install localization directly; when already localized, it stays open with an interactive prompt so you can **press `R` to safely restore the official English version offline**!
 
 The dashboard shows the installed `app.asar` version and lets you select the latest stable, historical, or prerelease localization package from GitHub Releases. Use "仅下载" (Download Only) to cache a package, or "下载并安装" (Download and Install) to verify its SHA-256 and confirm installation. Release notes, downloaded packages, and settings/maintenance tools are collapsed by default.
 
@@ -135,6 +139,13 @@ node localize.js --now
 After an official update, double-click **`一键更新汉化.command`** from the source checkout or a complete distribution containing `localize.js` (run `chmod +x 一键更新汉化.command` first if needed). This requires Node.js 18.18.0 or newer. It asks you to save your work and confirm before invoking the existing `--auto-restore` flow to close the client, back it up, and reapply localization; the app opens only after success. It does not require `extracted/`, download files, or rebuild archives. Only local prebuilt packages whose actual archive version matches the client are accepted; mismatched or unreadable versions stop the operation. Wait for a matching localization release rather than replacing a newer client with an older package. “Restore” here means restoring localization, not switching back to English.
 
 The launcher prefers a usable Node from the current PATH and adds common Homebrew locations. If needed, it loads the user’s login/interactive shell configuration for tools such as nvm, fnm, and asdf, then tries NVM’s default version. These tools must be configured in the user’s shell. Failure to open the app only displays a notice and does not change a successful localization exit code.
+
+> **macOS Local Launch Troubleshooting (Optional, Use After Reviewing Risks)**:  
+> If you understand the signature impact above (local ad-hoc re-signing cannot restore Google's original signature and may reset macOS TCC permissions) and still want to launch the localized build on Apple Silicon (`arm64`) when macOS reports "App is damaged", run:  
+> ```bash
+> xattr -cr "/Applications/Antigravity.app" && codesign --force --deep --sign - "/Applications/Antigravity.app"
+> ```
+> To restore Google's official signature at any time, reinstall the complete official Google installer.
 
 ---
 
@@ -213,6 +224,7 @@ Detailed architectural designs, benchmarks (1.68M qps), and engineering practice
 
 For detailed release notes, new feature adaptations, and architectural evolution history across all versions, please refer to the dedicated [CHANGELOG.en.md](CHANGELOG.en.md) (or [Chinese CHANGELOG.md](CHANGELOG.md)):
 
+- **[v2.35.0](CHANGELOG.en.md#v2350-2026-11-24)** (2026-11-24): Full zero-day adaptation to official Antigravity `v2.35.0`! Synced 4 newly added upstream main-process modules (`appChannel`, `customWindowControls`, `idleProbe`, `permissionGuide`), removed upstream-deleted `hud*.js` while keeping backward-compatible guards, and added 28 native/context menu mappings; added full Web UI coverage for `Inbox Mode` & `Auto-Resolve`, `Plugin permissions`, multi-language `Dictation languages`, Side Question promotion, `Move Conversation`, `Open with` viewers, refreshed Onboarding / WIF / Authorization Code auth, Remote Agents menus, and `$`-safe MCP form validation; integrated community PR #74 (complete 18-variant path/URL permission title family fix), PR #76 (version-match guardrails & macOS signing notices), PR #77 (complete AI Credits / baseline quota / overage notice family), PR #79 (Hydrogen quota tooltip & strict anti-false-positive model deprecation date rules), and fixed Issue #73 (zero-Node batch auto-close & offline safe restore to English) (`4,837` zero-duplicate entries, 63/63 test suites ALL GREEN).
 - **[v2.34.0.1](CHANGELOG.en.md#v23401-2026-11-23)** (2026-11-23): Added `Swarm` multi-agent panel & `plugin://` subframe DOM localization hook (`dist/utils.js`, keeping `Swarm` native while isolating AI posts and member badges); integrated community PR #69 (home suggestions, shortcuts & composer accessibility), PR #70 (scoped sidebar project-card protection preserving built-in system group translations), and PR #71 (60+ high-frequency UI gaps, multi-sentence cloud-credential & React 3-TextNode site-data fixes); completed preview-pane & app-wide native context menus, send-button shortcut tooltips (`Send Message Enter`, etc.), and the 4-link cloud workspace disclosure modal (`4,653` zero-duplicate entries, 62/62 test suites ALL GREEN).
 - **[v2.34.0](CHANGELOG.en.md#v2340-2026-11-21)** (2026-11-21): Full zero-day adaptation to official Antigravity `v2.34.0`! Re-calibrated main-process patches for `dist/updater.js`, `dist/computer/hud.js` (`Allow again` ➔ `重新允许`), and `hudState.js` (`user_takeover` pause cause); added full Web UI coverage for `Input Box` shortcuts & immediate-sending guides, `Orchestrator Settings` (keeping `Orchestrator` native) & `Extra High` ➔ `极高` fix, Inline approval & sandbox permission cards (Issue #68), built-in skill & shortcut-recording rules (PR #67), `Customize Sidebar` & `Filter and Sort`, Computer Use screen lock / live preview / macOS permission walkthroughs, `UI Plugin (SidePanel)`, telemetry notice, and older-messages pagination (`4,444` zero-duplicate entries, 57/57 test suites ALL GREEN).
 - **[v2.33.0](CHANGELOG.en.md#v2330-2026-11-18)** (2026-11-18): Full zero-day adaptation to official Antigravity `v2.33.0`! Covers the new `Computer Use` desktop HUD & `Agents Live` preview pane, expanded Remote SSH lifecycle (server restart, shared-home takeover, remote microphone access, SSH config diagnostics), all 9 Gemini Live voices & voice dictation, built-in browser Browsing Data & per-site Cookie manager, `Keybinding Scheme` (`VS Code Default` vs `Antigravity (AGY) Style`), and Marketplace `Bundles` & source-review modals, alongside modular `src/` architecture, loopback CSRF/Host hardening, and dictionary deduplication (`4,250+` zero-duplicate entries, 51/51 test suites ALL GREEN).

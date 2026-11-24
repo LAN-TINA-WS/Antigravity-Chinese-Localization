@@ -633,7 +633,7 @@ class RtcSender {
     sendMeta(stream, r) {
         const reason = r.redacted ? stream.redactReason : undefined;
         const msg = (0, protocol_1.frameMeta)(stream.appId, r, reason, this.colorOf(stream.actorId));
-        // Throttle on what matters to the overlay, not on tsMs.
+        // Throttle on what matters to the viewer's overlay, not on tsMs.
         const json = JSON.stringify({
             w: r.window ?? null,
             px: [r.widthPx, r.heightPx],

@@ -80,6 +80,8 @@ if not exist "%ASAR_FILE%" goto LEGACY_NO_CLIENT
 where powershell.exe >nul 2>&1
 if errorlevel 1 goto LEGACY_NO_POWERSHELL
 
+if /I "%ANTIGRAVITY_OFFLINE_ACTION%"=="restore" goto LEGACY_RESTORE_FLOW
+
 echo [预检] 正在只读校验客户端与本地补丁包版本及汉化指纹...
 set "SELF_BAT=%~f0"
 set "PS_ACTION=precheck"
@@ -157,8 +159,122 @@ echo =======================================================
 echo  [状态正常] 当前客户端已处于汉化状态，无需重复覆盖安装。
 echo =======================================================
 echo 已跳过备份刷新，确保原版备份 app.asar.bak 不受汉化包污染。
+echo [提示] 未安装 Node.js 时无法启动浏览器控制中心 (http://127.0.0.1:3388)。
+echo        如需还原为官方英文原版，可直接在下方输入 R 并回车执行离线安全还原；
+echo        或安装 Node.js (https://nodejs.org) 后使用图形化控制中心。
+echo.
+if /I "%ANTIGRAVITY_OFFLINE_ACTION%"=="restore" goto LEGACY_RESTORE_FLOW
+if defined ANTIGRAVITY_BATCH_NOPAUSE (
+  set "EXIT_CODE=0"
+  goto CLEANUP
+)
+set "OFFLINE_CHOICE="
+set /p "OFFLINE_CHOICE=输入 R 并回车可安全还原官方英文原版，直接按回车退出 [Enter/R]: "
+if defined OFFLINE_CHOICE if /I "%OFFLINE_CHOICE:"=%"=="R" goto LEGACY_RESTORE_FLOW
+set "EXIT_CODE=0"
+goto CLEANUP
+
+:LEGACY_RESTORE_FLOW
+echo.
+echo =======================================================
+echo  [离线还原] 正在只读校验官方原版备份与版本匹配性...
+echo =======================================================
+set "SELF_BAT=%~f0"
+set "PS_ACTION=restore_precheck"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$r=[IO.File]::ReadAllText($env:SELF_BAT,[Text.Encoding]::UTF8);$m='::#PS_'+'HELPER_BEGIN#';$i=$r.IndexOf($m);if($i -lt 0){exit 3};&([scriptblock]::Create($r.Substring($i+$m.Length)))"
+set "PS_CODE=%errorlevel%"
+
+if "%PS_CODE%"=="30" goto LEGACY_RESTORE_ALREADY_OFFICIAL
+if "%PS_CODE%"=="31" goto LEGACY_RESTORE_VERSION_MISMATCH
+if "%PS_CODE%"=="32" goto LEGACY_RESTORE_BACKUP_POLLUTED
+if "%PS_CODE%"=="33" goto LEGACY_RESTORE_NO_BACKUP
+if not "%PS_CODE%"=="0" goto LEGACY_RESTORE_FAILED
+
+echo.
+echo 注意：还原英文原版需要关闭当前运行的 Antigravity 客户端以解除文件占用。
+echo 如果您有未保存的工作，请先保存。
+echo.
+if not defined ANTIGRAVITY_BATCH_NOPAUSE pause
+echo.
+
+echo [1/2] 正在关闭 Antigravity 进程...
+if not defined ANTIGRAVITY_SKIP_TASKKILL taskkill /F /IM Antigravity.exe >nul 2>&1
+if not defined ANTIGRAVITY_SKIP_TASKKILL taskkill /F /IM language_server.exe >nul 2>&1
+if not defined ANTIGRAVITY_BATCH_NOPAUSE timeout /t 2 >nul
+
+echo [2/2] 正在校验 SHA-256 并安全还原官方英文原版 app.asar...
+set "PS_ACTION=restore"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$r=[IO.File]::ReadAllText($env:SELF_BAT,[Text.Encoding]::UTF8);$m='::#PS_'+'HELPER_BEGIN#';$i=$r.IndexOf($m);if($i -lt 0){exit 3};&([scriptblock]::Create($r.Substring($i+$m.Length)))"
+set "PS_CODE=%errorlevel%"
+
+if "%PS_CODE%"=="30" goto LEGACY_RESTORE_ALREADY_OFFICIAL
+if "%PS_CODE%"=="31" goto LEGACY_RESTORE_VERSION_MISMATCH
+if "%PS_CODE%"=="32" goto LEGACY_RESTORE_BACKUP_POLLUTED
+if "%PS_CODE%"=="33" goto LEGACY_RESTORE_NO_BACKUP
+if not "%PS_CODE%"=="0" goto LEGACY_RESTORE_FAILED
+
+echo.
+echo =======================================================
+echo  [成功] 已安全还原为官方英文原版！
+echo =======================================================
 echo.
 set "EXIT_CODE=0"
+if not defined ANTIGRAVITY_NO_START (
+  if exist "%LOCALAPPDATA%\Programs\antigravity\Antigravity.exe" echo 正在为您重新启动 Antigravity...
+  if exist "%LOCALAPPDATA%\Programs\antigravity\Antigravity.exe" start "" "%LOCALAPPDATA%\Programs\antigravity\Antigravity.exe"
+)
+if not defined ANTIGRAVITY_BATCH_NOPAUSE pause
+goto CLEANUP
+
+:LEGACY_RESTORE_ALREADY_OFFICIAL
+echo.
+echo [状态正常] 当前客户端已经是官方英文原版，无需还原。
+echo.
+if not defined ANTIGRAVITY_BATCH_NOPAUSE pause
+set "EXIT_CODE=0"
+goto CLEANUP
+
+:LEGACY_RESTORE_VERSION_MISMATCH
+echo.
+echo =======================================================
+echo  [版本警告] 本地原版备份与当前客户端版本不一致，已拦截还原！
+echo =======================================================
+echo 为避免跨版本还原导致白屏或崩溃，本次未改动任何文件。
+echo 请直接下载并覆盖安装对应版本的 Antigravity 官方安装包以恢复英文原版。
+echo.
+if not defined ANTIGRAVITY_BATCH_NOPAUSE pause
+set "EXIT_CODE=2"
+goto CLEANUP
+
+:LEGACY_RESTORE_BACKUP_POLLUTED
+echo.
+echo =======================================================
+echo  [安全拦截] 检测到备份文件本身已被汉化包污染，无法用于还原！
+echo =======================================================
+echo 请直接下载并覆盖安装 Antigravity 官方安装包以恢复官方英文原版。
+echo.
+if not defined ANTIGRAVITY_BATCH_NOPAUSE pause
+set "EXIT_CODE=1"
+goto CLEANUP
+
+:LEGACY_RESTORE_NO_BACKUP
+echo.
+echo =======================================================
+echo  [未找到备份] 客户端目录下未找到可用的官方原版备份 (app.asar.bak)
+echo =======================================================
+echo 目标目录：%TARGET_DIR%
+echo 请直接重新下载并覆盖安装 Antigravity 官方安装包以恢复官方英文原版。
+echo.
+if not defined ANTIGRAVITY_BATCH_NOPAUSE pause
+set "EXIT_CODE=1"
+goto CLEANUP
+
+:LEGACY_RESTORE_FAILED
+echo.
+echo [失败] 还原英文原版失败（状态码：%PS_CODE%），请确认客户端已完全退出或尝试以管理员身份运行。
+echo.
+if not defined ANTIGRAVITY_BATCH_NOPAUSE pause
+set "EXIT_CODE=1"
 goto CLEANUP
 
 :LEGACY_VERSION_MISMATCH
@@ -401,6 +517,92 @@ $action = $env:PS_ACTION
 
 if (-not (Test-Path -LiteralPath $asarFile -PathType Leaf)) {
   exit 1
+}
+
+function Find-MatchingOfficialBackup([string]$TargetDir, [string]$TargetNorm) {
+  $candidates = New-Object System.Collections.Generic.List[System.IO.FileInfo]
+  $primaryBak = Join-Path $TargetDir 'app.asar.bak'
+  if (Test-Path -LiteralPath $primaryBak -PathType Leaf) {
+    $candidates.Add((Get-Item -LiteralPath $primaryBak -Force))
+  }
+  $extraBaks = Get-ChildItem -LiteralPath $TargetDir -Filter 'app.asar.bak.*' -File -ErrorAction SilentlyContinue | Sort-Object LastWriteTimeUtc -Descending
+  foreach ($f in $extraBaks) {
+    if ($f.Name -notlike '*.temp.*') {
+      $candidates.Add($f)
+    }
+  }
+  $foundStale = $false
+  $foundPolluted = $false
+  foreach ($cand in $candidates) {
+    if (($cand.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0) { continue }
+    if (Test-LocalizedAsar $cand.FullName) {
+      $foundPolluted = $true
+      continue
+    }
+    $cVer = Read-AsarPackageVersion $cand.FullName
+    $cNorm = Normalize-Ver $cVer
+    if (-not [string]::IsNullOrEmpty($cNorm)) {
+      if ($cNorm -eq $TargetNorm) {
+        return @{ Status = 'MATCH'; Path = $cand.FullName; Name = $cand.Name; Version = $cVer }
+      }
+      $foundStale = $true
+    }
+  }
+  if ($foundStale) { return @{ Status = 'STALE' } }
+  if ($foundPolluted) { return @{ Status = 'POLLUTED' } }
+  return @{ Status = 'NONE' }
+}
+
+if ($action -eq 'restore_precheck' -or $action -eq 'restore') {
+  if (Has-ReparsePoint $asarFile) { exit 1 }
+  if (-not (Test-LocalizedAsar $asarFile)) {
+    Write-Host '  当前 app.asar 未检测到汉化指纹（已是官方英文原版）。'
+    exit 30
+  }
+  $curVer = Read-AsarPackageVersion $asarFile
+  $curNorm = Normalize-Ver $curVer
+  if ([string]::IsNullOrEmpty($curNorm)) {
+    Write-Host '  无法解析当前客户端 app.asar 版本，已安全中止还原。'
+    exit 31
+  }
+  $targetDir = [System.IO.Path]::GetDirectoryName([System.IO.Path]::GetFullPath($asarFile))
+  $res = Find-MatchingOfficialBackup -TargetDir $targetDir -TargetNorm $curNorm
+  if ($res.Status -eq 'STALE') {
+    Write-Host "  当前客户端版本: v$curVer，未找到同版本的纯净官方备份。"
+    exit 31
+  }
+  if ($res.Status -eq 'POLLUTED') {
+    Write-Host '  检测到已有备份包含汉化特征指纹，不能用于还原官方英文原版。'
+    exit 32
+  }
+  if ($res.Status -ne 'MATCH') {
+    exit 33
+  }
+  if ($action -eq 'restore_precheck') {
+    Write-Host "  已匹配纯净官方原版备份: $($res.Name) (v$($res.Version))"
+    exit 0
+  }
+  $token = "$PID.$([Guid]::NewGuid().ToString('N').Substring(0, 8))"
+  $restoreTemp = Join-Path $targetDir "app.asar.temp.restore.$token"
+  try {
+    [System.IO.File]::Copy($res.Path, $restoreTemp, $true)
+    if ((Get-FileSha256Hex $res.Path) -ne (Get-FileSha256Hex $restoreTemp)) {
+      throw 'Restore SHA-256 verification failed'
+    }
+    if ((Test-LocalizedAsar $restoreTemp) -or ((Normalize-Ver (Read-AsarPackageVersion $restoreTemp)) -ne $curNorm)) {
+      exit 31
+    }
+    Replace-FileSafely -TempFile $restoreTemp -DestFile $asarFile
+    Write-Host "  已从 $($res.Name) (v$($res.Version)) 安全还原官方英文原版。"
+    exit 0
+  } catch {
+    Write-Error $_.Exception.Message
+    exit 1
+  } finally {
+    if (Test-Path -LiteralPath $restoreTemp -PathType Leaf) {
+      try { [System.IO.File]::Delete($restoreTemp) } catch {}
+    }
+  }
 }
 
 if (Test-LocalizedAsar $asarFile) {

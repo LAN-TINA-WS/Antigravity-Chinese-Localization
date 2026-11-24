@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerKeybindings = registerKeybindings;
+const electron_1 = require("electron");
 const utils_1 = require("./utils");
 function registerKeybindings(win, actions) {
     const hubContents = (0, utils_1.getHubWebContents)(win) ?? win.webContents;
@@ -16,6 +17,19 @@ function registerKeybindings(win, actions) {
             }
             if (isCmdOrCtrl && input.key.toLowerCase() === 'q') {
                 actions.onQuitRequested();
+                event.preventDefault();
+            }
+            if (!electron_1.app.isPackaged &&
+                !(0, utils_1.isMacOS)() &&
+                isCmdOrCtrl &&
+                !input.alt &&
+                input.key.toLowerCase() === 'r') {
+                if (input.shift) {
+                    hubContents?.reloadIgnoringCache();
+                }
+                else {
+                    hubContents?.reload();
+                }
                 event.preventDefault();
             }
         }

@@ -43,6 +43,7 @@ exports.isLightTheme = isLightTheme;
 exports.hasAdaptiveBundleIcon = hasAdaptiveBundleIcon;
 exports.startInactive = startInactive;
 exports.onHubWindowFocusChange = onHubWindowFocusChange;
+exports.hasCustomWindowControls = hasCustomWindowControls;
 exports.isHubWindowBootstrapping = isHubWindowBootstrapping;
 exports.resolveCurrentHubUrl = resolveCurrentHubUrl;
 exports.loadHubWindowUrl = loadHubWindowUrl;
@@ -88,6 +89,7 @@ const previewViewers_1 = require("./computer/previewViewers");
 const hubWindows_1 = require("./hubWindows");
 const windowState_1 = require("./windowState");
 const windowBackends_1 = require("./remote/windowBackends");
+const customWindowControls_1 = require("./customWindowControls");
 const nodeWrapper_1 = require("./nodeWrapper");
 const captureWindow_1 = require("./browserStream/captureWindow");
 exports.showQuitConfirmation = false;
@@ -140,7 +142,7 @@ function ensureAppIsInDock() {
 /**
  * Whether this is a packaged build whose bundle ships a compiled asset catalog
  * icon (`Contents/Resources/Assets.car` + `CFBundleIconName`, added by
- * `scripts/build_mac_app_icon.js`). macOS then draws the adaptive
+ * `scripts/sign_mac.sh`). macOS then draws the adaptive
  * Dark/Clear/Tinted Dock icon itself, and `app.dock.setIcon()` must not
  * replace it with the static `icon.png`.
  */
@@ -226,6 +228,15 @@ const hubCurtainViewByWindow = new WeakMap();
 const hubCurtainColorByWindow = new WeakMap();
 const hubCurtainStateByWindow = new WeakMap();
 const hubSurfaceTransparentByWindow = new WeakMap();
+/** Windows created without the native caption-button overlay. */
+const customWindowControlsWindows = new WeakSet();
+/**
+ * Whether `win` was created for page-drawn window buttons, so it has no
+ * native caption-button overlay (decided once, at creation: see createWindow).
+ */
+function hasCustomWindowControls(win) {
+    return Boolean(win && typeof win === 'object' && customWindowControlsWindows.has(win));
+}
 const windowByWebContents = new WeakMap();
 const windowByWebContentsId = new Map();
 const windowByCatcherWebContents = new WeakMap();
@@ -680,7 +691,7 @@ function getHubWindows() {
             continue;
         }
         seen.add(win);
-        // Aux windows (the desktop HUD) are never Hub windows.
+        // Aux windows (e.g. the browser capture window) are never Hub windows.
         if ((0, hubWindows_1.isAuxWindow)(win)) {
             continue;
         }
@@ -770,7 +781,26 @@ function createWindow(url, storageManager, options) {
         : '';
     const badge = options?.titleSuffix ?? wslBadge;
     const builtInBrowser = options?.builtInBrowser ?? true;
-    const additionalArguments = options?.additionalArguments ?? [];
+    // Experimental: the page draws the window buttons, so no native overlay.
+    // The frame stays (titleBarStyle 'hidden', resizable) so Windows snapping,
+    // double-click-to-maximize and edge resizing still work.
+    //
+    // Never in SSH windows (for now): their page comes from the remote language
+    // server, which can be older than this app and lack the toolkit's
+    // WindowControls (cl/1024370653). remoteManager keeps an older server while
+    // it has conversations or terminals, after a failed replace, and never
+    // replaces a newer one. Electron can't add the native overlay back after
+    // the window is created, so an old page would leave the window with no
+    // buttons at all. Local and WSL windows are safe: their server is this
+    // app's version. TODO: allow SSH (drop `!isSshWindow`) about a month after
+    // cl/1024370653 reaches Insiders.
+    // The same signal the preload reads to tell an SSH window (isRemoteWindow).
+    const isSshWindow = (options?.additionalArguments ?? []).includes('--agy-backend=ssh');
+    const customWindowControls = (0, customWindowControls_1.isCustomWindowControlsEnabled)() && !isSshWindow;
+    const additionalArguments = [
+        ...(options?.additionalArguments ?? []),
+        ...(customWindowControls ? [customWindowControls_1.CUSTOM_WINDOW_CONTROLS_ARG] : []),
+    ];
     const windowOptions = {
         ...(initialWindowState.x !== undefined && initialWindowState.y !== undefined
             ? { x: initialWindowState.x, y: initialWindowState.y }
@@ -784,7 +814,7 @@ function createWindow(url, storageManager, options) {
         title: electron_1.app.getName() + badge,
         icon: path_1.default.join(__dirname, '..', 'icon.png'),
         titleBarStyle: 'hidden',
-        titleBarOverlay: isMacOS()
+        titleBarOverlay: isMacOS() || customWindowControls
             ? false
             : {
                 color: backgroundColor,
@@ -1134,10 +1164,14 @@ function createWindow(url, storageManager, options) {
         throw new Error('Failed to initialize Hub WebContents');
     }
     hubWindows.add(win);
+    if (customWindowControls) {
+        customWindowControlsWindows.add(win);
+    }
     win.on('focus', () => lastFocusOf.set(win, ++focusCount));
     registerWindowWebContents(win, hubContents);
     win.on('focus', notifyHubFocusChange);
     win.on('blur', notifyHubFocusChange);
+    (0, customWindowControls_1.forwardMaximizedState)(win, () => getHubWebContents(win));
     // `BaseWindow` does not mirror the Hub page title, so set it explicitly.
     // Truncation keeps the menu dropdown from being very wide.
     const handleTitleUpdate = (_event, title) => {

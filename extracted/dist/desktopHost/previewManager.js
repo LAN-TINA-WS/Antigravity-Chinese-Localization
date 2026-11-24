@@ -100,7 +100,7 @@ class PreviewManager {
         this.agents = new Map();
         /** The actuator is paused (a takeover, or Stop until the lease ends). */
         this.paused = false;
-        /** The user pressed Stop (HUD / viewer Stop all): nothing streams. */
+        /** The user pressed Stop (viewer Stop all): nothing streams. */
         this.userStopped = false;
         this.stopped = false;
         /** The helper rejected preview_user_control (an older helper). */

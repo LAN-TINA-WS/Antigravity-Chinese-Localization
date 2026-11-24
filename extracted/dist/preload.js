@@ -81,6 +81,11 @@ const agentAPI = {
 // Mirrors utils.ts's WCV_THREE_LAYER_STACK_ARG: a sandboxed preload can't
 // import it. Declared before `wcvBrowserAPI`, which reads it at load time.
 exports.WCV_THREE_LAYER_STACK_ARG = '--agy-wcv-three-layer-stack=1';
+// Repeats customWindowControls.ts (a sandboxed preload can't import it).
+const CUSTOM_WINDOW_CONTROLS_ARG = '--agy-custom-window-controls=1';
+const MAXIMIZED_CHANGED_CHANNEL = 'window:maximized-changed';
+const hasCustomWindowControls = Array.isArray(process.argv) &&
+    process.argv.includes(CUSTOM_WINDOW_CONTROLS_ARG);
 function subscribeIpcChannel(channel, callback) {
     const handler = (_event, payload) => {
         callback(payload);
@@ -148,6 +153,8 @@ const electronNativeAPI = {
     maximize: () => electron_1.ipcRenderer.invoke('window:maximize'),
     unmaximize: () => electron_1.ipcRenderer.invoke('window:unmaximize'),
     isMaximized: () => electron_1.ipcRenderer.invoke('window:is-maximized'),
+    ...(hasCustomWindowControls ? { customWindowControls: true } : {}),
+    onMaximizedChange: (callback) => subscribeIpcChannel(MAXIMIZED_CHANGED_CHANNEL, (isMaximized) => callback(isMaximized === true)),
     close: () => electron_1.ipcRenderer.invoke('window:close'),
     toggleDevTools: () => electron_1.ipcRenderer.invoke('window:toggle-devtools'),
     zoomIn: () => {
@@ -444,9 +451,12 @@ const PANE_REGISTRATIONS = [
 function openSettingsResultOf(v) {
     const o = (v && typeof v === 'object' ? v : {});
     const r = PANE_REGISTRATIONS.find((x) => x === o['registered']);
+    const name = o['appName'];
     return {
         registered: r ?? 'failed',
         promptedThisSession: o['promptedThisSession'] === true,
+        guide: o['guide'] === 'shown' ? 'shown' : 'unavailable',
+        appName: typeof name === 'string' ? name.slice(0, 256) : '',
     };
 }
 const computerPreviewAPI = {
@@ -489,6 +499,9 @@ const computerPreviewAPI = {
         }
         return openSettingsResultOf(await electron_1.ipcRenderer.invoke('computer-permissions:open-settings', pane));
     },
+    closePermissionGuide: async () => {
+        await electron_1.ipcRenderer.invoke('computer-permissions:close-guide');
+    },
     relaunchApp: async () => {
         await electron_1.ipcRenderer.invoke('computer-permissions:relaunch');
     },
@@ -520,6 +533,8 @@ if (isRemoteWindow) {
         maximize: electronNativeAPI.maximize,
         unmaximize: electronNativeAPI.unmaximize,
         isMaximized: electronNativeAPI.isMaximized,
+        ...(hasCustomWindowControls ? { customWindowControls: true } : {}),
+        onMaximizedChange: electronNativeAPI.onMaximizedChange,
         close: electronNativeAPI.close,
         toggleDevTools: electronNativeAPI.toggleDevTools,
         zoomIn: electronNativeAPI.zoomIn,
@@ -2751,6 +2766,7 @@ if (!isRemoteWindow) {
     "Data storage path": "数据存储路径",
     "AI Credits": "AI 点数",
     "Use AI credits": "使用个人 AI 点数",
+    "Use Hydrogen for better quality with lower quota usage.": "使用 Hydrogen 可获得更好的质量，同时消耗更少配额。",
     "Consume personal tier credits for faster inference and higher rate limits.": "使用个人等级点数以获得更快的推理速度和更高的调用限额。",
     "Account & Profile": "账号与个人中心",
     "Manage subscription": "管理订阅计划",
@@ -5361,6 +5377,8 @@ if (!isRemoteWindow) {
     "Unlock the power of agent swarms.": "解锁智能体集群的全部能力。",
     "Extra High": "极高",
     "Extra high": "极高",
+    "Allow read access to this path?": "是否允许读取此路径？",
+    "Allow write access to this path?": "是否允许写入此路径？",
     "Yes, allow this time": "是，仅本次允许",
     "Yes, allow this download": "是，允许本次下载",
     "Yes, save rule in this conversation": "是，在当前对话中保存规则",
@@ -5571,7 +5589,188 @@ if (!isRemoteWindow) {
     "Prohibited Use Policy": "禁止使用政策",
     "Google Antigravity Terms of Service": "Google Antigravity 服务条款",
     "Google Privacy Policy": "Google 隐私权政策",
-    "Avoid uploading highly sensitive data and verify actions taken by your agent. Make sure you have the necessary rights to any content or files that you upload, including content of minors. Don't generate content that infringes on others' rights, including content that deceives, harasses, or harms. When using Antigravity, you must comply with Google's Prohibited Use Policy. Your use is subject to the Google Antigravity Terms of Service and Google Privacy Policy.": "请勿上传高度敏感的数据，并核实你的智能体所执行的操作。请确保你对你上传的任何内容或文件（包括涉及未成年人的内容）拥有必要权利。请勿生成侵犯他人权利的内容，包括具有欺骗性、骚扰性或危害性的内容。使用 Antigravity 时，你必须遵守 Google 的禁止使用政策。你的使用行为须遵守 Google Antigravity 服务条款和 Google 隐私权政策。"
+    "Avoid uploading highly sensitive data and verify actions taken by your agent. Make sure you have the necessary rights to any content or files that you upload, including content of minors. Don't generate content that infringes on others' rights, including content that deceives, harasses, or harms. When using Antigravity, you must comply with Google's Prohibited Use Policy. Your use is subject to the Google Antigravity Terms of Service and Google Privacy Policy.": "请勿上传高度敏感的数据，并核实你的智能体所执行的操作。请确保你对你上传的任何内容或文件（包括涉及未成年人的内容）拥有必要权利。请勿生成侵犯他人权利的内容，包括具有欺骗性、骚扰性或危害性的内容。使用 Antigravity 时，你必须遵守 Google 的禁止使用政策。你的使用行为须遵守 Google Antigravity 服务条款和 Google 隐私权政策。",
+    "Inbox": "收件箱",
+    "Inbox Mode": "收件箱模式",
+    "Working Section": "“正在工作”分组",
+    "Keep running conversations in a separate Working section instead of in the Inbox.": "将正在运行的对话放在独立的“正在工作”分组中，而不是留在收件箱里。",
+    "Auto-Resolve": "自动解决",
+    "Move idle Inbox conversations to Resolved automatically after the selected time.": "在所选时间后自动将空闲的收件箱对话移至“已解决”。",
+    "Resolve": "标为已解决",
+    "Resolved": "已解决",
+    "Return to Inbox": "移回收件箱",
+    "All caught up": "已全部处理完毕",
+    "Moved to Resolved.": "已移至“已解决”。",
+    "Conversation resolved": "对话已标为已解决",
+    "Returned conversation to Inbox": "已将对话移回收件箱",
+    "Subtitle": "副标题",
+    "Locked while grouped by Status": "按状态分组时已锁定",
+    "Automatically pin conversations when you send a message. Unpin as needed to keep your Pinned list focused.": "发送消息时自动置顶对话。按需取消置顶以保持置顶列表精简聚焦。",
+    "Changes plugins can make without asking.": "插件无需询问即可执行的更改。",
+    "Allowed by you": "你已允许",
+    "Nothing is always allowed. You'll be asked before this plugin makes changes.": "当前没有任何始终允许的权限。此插件在作出更改前会向你询问。",
+    "Included with plugin": "插件自带",
+    "These come with the plugin and can't be revoked.": "这些权限随插件附带，无法撤销。",
+    "Any resource": "任意资源",
+    "Name unavailable": "名称不可用",
+    "Always allowed": "始终允许",
+    "Revoke all": "全部撤销",
+    "From a plugin": "来自插件",
+    "Applied": "已应用",
+    "Install this plugin to see the commands it adds, along with its skills, agents and MCP servers.": "安装此插件即可查看其添加的命令，以及包含的技能、智能体和 MCP 服务器。",
+    "Failed to load bundle. Please try again.": "加载组合包失败，请重试。",
+    "No MCP servers available.": "暂无可用的 MCP 服务器。",
+    "Error starting sign-in: this host can't start it": "启动登录失败：当前主机无法发起登录",
+    "Dictation languages": "听写语言",
+    "Constrain voice dictation to selected languages in priority order. Leave empty to auto-detect.": "按优先级顺序将语音听写限制为所选语言。留空则自动检测。",
+    "Reset to auto": "重置为自动",
+    "Auto-detect (browser defaults)": "自动检测（浏览器默认）",
+    "Search languages to add (e.g. English, Spanish, 中文, yue)...": "搜索要添加的语言（如 English、Spanish、中文、yue）...",
+    "Click items to multi-select · Drag or ‹/› pills to reorder": "点击条目可多选 · 拖动或点击 ‹/› 按钮调整顺序",
+    "Selected dictation languages": "已选听写语言",
+    "Available dictation languages": "可选听写语言",
+    "Dictation language options": "听写语言选项",
+    "Toggle language list": "展开/收起语言列表",
+    "#1 Primary": "#1 首选",
+    "Chinese (Mandarin)": "汉语（普通话）",
+    "Cantonese": "粤语",
+    "English": "英语",
+    "Spanish": "西班牙语",
+    "French": "法语",
+    "German": "德语",
+    "Japanese": "日语",
+    "Korean": "韩语",
+    "Portuguese": "葡萄牙语",
+    "Italian": "意大利语",
+    "Hindi": "印地语",
+    "Arabic": "阿拉伯语",
+    "Dutch": "荷兰语",
+    "Polish": "波兰语",
+    "Russian": "俄语",
+    "Vietnamese": "越南语",
+    "Thai": "泰语",
+    "Indonesian": "印度尼西亚语",
+    "Turkish": "土耳其语",
+    "Ukrainian": "乌克兰语",
+    "Swedish": "瑞典语",
+    "Hebrew": "希伯来语",
+    "Czech": "捷克语",
+    "Greek": "希腊语",
+    "Romanian": "罗马尼亚语",
+    "Danish": "丹麦语",
+    "Finnish": "芬兰语",
+    "Norwegian": "挪威语",
+    "Continue as a New Conversation": "作为新对话继续",
+    "Continue in Current Workspace": "在当前工作区继续",
+    "Continue in Shared Workspace": "在共享工作区继续",
+    "Continue in New Workspace": "在新工作区继续",
+    "Cannot continue a subagent's side question as a new conversation": "无法将子智能体的侧边提问作为新对话继续",
+    "Cannot continue as a new conversation while side question is running": "侧边提问运行期间无法作为新对话继续",
+    "Cannot continue as a new conversation during Battle Mode — end the battle first": "对决模式期间无法作为新对话继续 — 请先结束对决",
+    "Move Conversation": "移动对话",
+    "Move": "移动",
+    "Move to Project": "移动到项目",
+    "Move to Workspace": "移动到工作区",
+    "New Project...": "新建项目...",
+    "New Workspace...": "新建工作区...",
+    "Remove from Project": "从项目中移除",
+    "Clone from Remote": "从远端克隆",
+    "Clone from This Computer": "从本机克隆",
+    "Clone locally": "克隆到本地",
+    "Search Remote…": "搜索远端…",
+    "Open with": "打开方式",
+    "Text viewer": "文本查看器",
+    "Image viewer": "图片查看器",
+    "Video player": "视频播放器",
+    "Audio player": "音频播放器",
+    "HTML viewer": "HTML 查看器",
+    "Notebook viewer": "Notebook 查看器",
+    "PDF viewer": "PDF 查看器",
+    "System default app": "系统默认应用",
+    "Sidecar disabled": "Sidecar 已禁用",
+    "Not running": "未运行",
+    "Application Menu": "应用菜单",
+    "For Me": "仅自己使用",
+    "Personal agent running as you": "以你的身份运行的个人智能体",
+    "For My Team": "团队共享",
+    "Shared agent for your team": "面向团队的共享智能体",
+    "No agents": "暂无智能体",
+    "What should this agent accomplish?": "希望此智能体完成什么目标？",
+    "Couldn't create the agent. Try again.": "无法创建智能体，请重试。",
+    "Provisioning": "正在配置环境",
+    "Updating": "正在更新",
+    "Stalled": "已停滞",
+    "No longer active": "已不再活跃",
+    "Search by name or username": "按名称或用户名搜索",
+    "Search identities": "搜索身份",
+    "No matching identities": "没有匹配的身份",
+    "Default (Gemini Pro)": "默认（Gemini Pro）",
+    "Default uses server-managed routing and Orchestrator quota. Custom pins specific models for orchestration and execution.": "“默认”使用服务端托管路由与 Orchestrator 配额；“自定义”可为编排与执行固定指定具体模型。",
+    "Orchestrator model selection": "Orchestrator 模型选择",
+    "Get Anything Done with": "轻松搞定一切，尽在",
+    "Let's tailor the experience for you. What best describes your work?": "让我们为你量身定制体验。以下哪项最符合你的工作？",
+    "Plugins are packaged collections of skills and MCPs to help the Agent": "插件是技能与 MCP 的打包集合，可帮助智能体",
+    "There are currently no Build with": "当前暂无可用的 Build with",
+    "plugins available.": "插件。",
+    "Enter Google Cloud Project Details": "输入 Google Cloud 项目详情",
+    "Google Cloud Project ID": "Google Cloud 项目 ID",
+    "This Google Cloud project is not supported. Input a different project, or sign in with another account.": "不支持此 Google Cloud 项目。请输入其他项目，或使用其他账户登录。",
+    "Use Google Cloud project instead": "改用 Google Cloud 项目",
+    "Having trouble signing in?": "登录遇到问题？",
+    "Trouble signing in? Enter authorization code": "登录遇到问题？输入授权码",
+    "Authorization code": "授权码",
+    "Submit code": "提交授权码",
+    "Sign in in your browser, then paste the authorization code shown on the callback page.": "请在浏览器中登录，然后粘贴回调页面上显示的授权码。",
+    "Authorization code sign-in is unavailable in this version.": "当前版本不支持授权码登录。",
+    "Authorization code was rejected. Paste a fresh code and try again.": "授权码已被拒绝。请粘贴新的授权码后重试。",
+    "Switched to authorization code sign-in": "已切换至授权码登录",
+    "Copied sign-in link to clipboard": "已将登录链接复制到剪贴板",
+    "WIF Config": "WIF 配置",
+    "Use this if your admin gave you a WIF config. Paste it below to sign in.": "如果管理员向你提供了 WIF 配置，请将其粘贴到下方以登录。",
+    "Last Used": "上次使用",
+    "Sorry, this account is ineligible to use": "抱歉，此账户无权使用",
+    "Please verify your account, then sign in again to continue. Learn more by visiting our": "请验证你的账户，然后重新登录以继续。如需了解更多，请访问我们的",
+    "Learn more by visiting our": "如需了解更多，请访问我们的",
+    "Verify": "前往验证",
+    "There was an unexpected issue setting up your account.": "设置账户时遇到意外问题。",
+    "We apologize for the inconvenience. Please try again later.": "很抱歉带来不便，请稍后再试。",
+    "Permission decision": "权限决策",
+    "Yes, allow in this conversation": "是，在当前对话中允许",
+    "Yes, always allow in this project": "是，在此项目中始终允许",
+    "Yes, always allow": "是，始终允许",
+    "Yes, allow for this task": "是，本次任务允许",
+    "Waiting for approval to grant administrator access": "正在等待批准授予管理员权限",
+    "Needs your approval": "需要你的批准",
+    "Type your own answer": "输入你自己的回答",
+    "Answered in chat": "已在对话中回答",
+    "Dismissed": "已关闭",
+    "Chosen": "已选择",
+    "Required": "必填",
+    "Loading messages": "正在加载消息",
+    "Loading messages…": "正在加载消息…",
+    "Loading newer messages": "正在加载更新的消息",
+    "Loading newer messages…": "正在加载更新的消息…",
+    "Searching older messages": "正在搜索更早的消息",
+    "Failed to send queued message": "发送排队消息失败",
+    "Queued message sent": "排队消息已发送",
+    "Queued message loaded into editor": "排队消息已载入编辑器",
+    "Agent finished. Queued messages send after background work finishes.": "智能体已完成。排队消息将在后台任务结束后发送。",
+    "You don't have access to this Google Drive file, so its title couldn't be added. The link was kept as-is.": "你没有此 Google Drive 文件的访问权限，因此无法获取标题，已保留原链接。",
+    "Timed out fetching the Google Drive file's title. The link was kept as-is.": "获取 Google Drive 文件标题超时，已保留原链接。",
+    "Couldn't fetch the Google Drive file's title. The link was kept as-is.": "无法获取 Google Drive 文件标题，已保留原链接。",
+    "Scrollable table": "可滚动表格",
+    "Password prompt blocked to prevent a Chrome Password Alert reset.": "已拦截密码提示框，以防止触发 Chrome 密码警报重置。",
+    "Self": "自身",
+    "Self-watch target presets": "自身监听目标预设",
+    "Matches this automation's active identity.": "匹配此自动化任务的当前活动身份。",
+    "Invalid CEL": "无效的 CEL 表达式",
+    "Needs Target": "缺少目标条件",
+    "Incompatible event type": "不兼容的事件类型",
+    "Missing required field": "缺少必填字段",
+    "Include at least one positive": "至少包含一个正向条件",
+    "Indexed CEL helper functions": "已建索引的 CEL 辅助函数",
+    "Git-on-Borg repository used when creating a new Cog workspace from your initial prompt (e.g., chromium/chromium/src or android/platform/superproject).": "从初始提示词创建新的 Cog 工作区时使用的 Git-on-Borg 仓库（例如 chromium/chromium/src 或 android/platform/superproject）。",
+    "e.g., chromium/chromium/src": "例如：chromium/chromium/src"
 };
 
   const coreWords = {
@@ -5746,6 +5945,38 @@ if (!isRemoteWindow) {
       .trim();
   }
 
+  const ENGLISH_MONTHS = {
+    january: 1, jan: 1,
+    february: 2, feb: 2,
+    march: 3, mar: 3,
+    april: 4, apr: 4,
+    may: 5,
+    june: 6, jun: 6,
+    july: 7, jul: 7,
+    august: 8, aug: 8,
+    september: 9, sep: 9, sept: 9,
+    october: 10, oct: 10,
+    november: 11, nov: 11,
+    december: 12, dec: 12,
+  };
+
+  function parseEnglishDateCn(rawDate) {
+    const m = String(rawDate || '').trim().match(/^([A-Za-z]+)\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s*(\d{4}))?$/i);
+    if (!m) return null;
+    const month = ENGLISH_MONTHS[m[1].toLowerCase()];
+    const day = Number(m[2]);
+    if (!month || day < 1 || day > 31) return null;
+    const year = m[3];
+    return (year ? year + ' 年 ' : '') + month + ' 月 ' + day + ' 日';
+  }
+
+  const MODEL_LEAVING_SUBJECT_RE = /^(?:this model|(?:Gemini|Claude|GPT|Gemma|Veo|Imagen|Hydrogen|Helium|Lithium|Sonnet|Opus|Haiku|DeepSeek|Qwen|Llama|Mistral|o[134])(?:[\s._/-]|$))/i;
+
+  function formatLeavingSubjectCn(model) {
+    const m = String(model || '').trim();
+    if (!m || /^this model$/i.test(m)) return '此模型';
+    return m + ' ';
+  }
   // 历史半中半英残片自愈映射表（保持 dictionary 100% 纯净英文键的同时兼容旧版残片自愈）
   const SELF_HEAL_MAP = {
     'Replace With 新建': '替换为新建',
@@ -5922,8 +6153,8 @@ if (!isRemoteWindow) {
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^(?:(.+?)\s+)?will be removed(?:\s+from Antigravity)?\s+on\s+(.+?)\.?$/i.test(trimmed)) {
-      const fixed = trimmed.replace(/^(?:(.+?)\s+)?will be removed(\s+from Antigravity)?\s+on\s+(.+?)\.?$/i, (_m, model, fromAgy, d) => {
+    if (/^(?:((?:(?![.!?]\s).)+?)\s+)?will be removed(?:\s+from Antigravity)?\s+on\s+(.+?)\.?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(/^(?:((?:(?![.!?]\s).)+?)\s+)?will be removed(\s+from Antigravity)?\s+on\s+(.+?)\.?$/i, (_m, model, fromAgy, d) => {
         const months = { january: 1, february: 2, march: 3, april: 4, may: 5, june: 6, july: 7, august: 8, september: 9, october: 10, november: 11, december: 12 };
         const cn = (d || '').replace(/^([A-Za-z]+)\s+(\d{1,2}),?\s*(\d{4})$/, (_mm, mon, day, year) => {
           const idx = months[mon.toLowerCase()];
@@ -6019,6 +6250,88 @@ if (!isRemoteWindow) {
       return replaceTrimmed(text, trimmed, fixed);
     }
 
+    // ===== 配额用尽 / 重置切换模型提示（覆盖官方全部变体，兼容 this model 与动态时间戳） =====
+    const modelQuotaExhaustedMatch = trimmed.match(/^Your quota for\s+(.+?)\s+(will reset on\s+(.+?)|has been reached)\.\s*Switch to another available model to continue\.?$/i);
+    if (modelQuotaExhaustedMatch) {
+      const [, rawModel, statusPart, resetAt] = modelQuotaExhaustedMatch;
+      const modelText = rawModel.trim();
+      const subj = /^this model$/i.test(modelText) ? '此模型' : (modelText + ' ');
+      const fixed = resetAt
+        ? `${subj}的配额将于 ${resetAt.trim()} 重置。请切换至其他可用模型以继续。`
+        : `${subj}的配额已用尽。请切换至其他可用模型以继续。`;
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    // ===== AI 点数不足 / 基础配额刷新 / 超额启用提示（覆盖官方全部 3 段动态组合，兼容 at least N / more / this model） =====
+    if (/^(?:You need (?:at least \d+(?:,\d+)*|more) AI Credits to send messages\.|Your plan['’]s baseline quota will refresh on |To continue using this model now,\s*enable AI Credit overages\.?)/i.test(trimmed)) {
+      let rest = trimmed;
+      let needPart = '';
+      let refreshPart = '';
+      let overagePart = '';
+
+      const needMatch = rest.match(/^You need (?:at least\s+(\d+(?:,\d+)*)|more)\s+AI Credits to send messages\.\s*To continue using\s+(.+?)\s+now,\s*purchase more AI Credits\.?(?:\s+|$)/i);
+      if (needMatch) {
+        const [, credits, rawModel] = needMatch;
+        const modelText = rawModel.trim();
+        const continueClause = /^this model$/i.test(modelText)
+          ? '若要立即继续使用此模型，请购买更多 AI 点数。'
+          : `若要立即继续使用 ${modelText}，请购买更多 AI 点数。`;
+        const needPrefix = credits ? `发送消息至少需要 ${credits} 个 AI 点数。` : '发送消息需要更多 AI 点数。';
+        needPart = needPrefix + continueClause;
+        rest = rest.slice(needMatch[0].length).trim();
+      }
+
+      const overageMatch = rest.match(/(?:^|\s+)To continue using this model now,\s*enable AI Credit overages\.?$/i);
+      if (overageMatch) {
+        overagePart = '若要立即继续使用此模型，请开启 AI 点数超额使用。';
+        rest = rest.slice(0, rest.length - overageMatch[0].length).trim();
+      }
+
+      if (rest) {
+        const refreshMatch = rest.match(/^Your plan['’]s baseline quota will refresh on\s+(.+?)\.?$/i);
+        if (refreshMatch) {
+          refreshPart = `您当前方案的基础配额将于 ${refreshMatch[1].trim()} 刷新。`;
+          rest = '';
+        }
+      }
+
+      const combined = needPart + refreshPart + overagePart;
+      if (combined && !rest) {
+        cacheSet(trimmed, combined);
+        return replaceTrimmed(text, trimmed, combined);
+      }
+    }
+
+    // ===== Hydrogen 模型推荐提示（兼容动态下线日期与合法英文日期强校验） =====
+    const hydrogenTooltipMatch = trimmed.match(/^Use Hydrogen for better quality with lower quota usage\.(?:\s+(.+))?$/i);
+    if (hydrogenTooltipMatch) {
+      const [, trailingText = ''] = hydrogenTooltipMatch;
+      const leavingMatch = trailingText.match(/^(?:(.+?)\s+)?(?:is\s+)?leaving on\s+(.+?)\.?$/i);
+      let fixed = '使用 Hydrogen 可获得更好的质量，同时消耗更少配额。';
+      const leavingDateCn = leavingMatch ? parseEnglishDateCn(leavingMatch[2]) : null;
+      if (leavingMatch && leavingDateCn) {
+        fixed += formatLeavingSubjectCn(leavingMatch[1]) + '将于 ' + leavingDateCn + ' 下线。';
+      } else if (trailingText) {
+        fixed += translateString(trailingText);
+      }
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    // ===== 模型下线日期提示（严格要求合法英文月日日期 + 已知模型/this model 约束，杜绝误伤自然英文句子） =====
+    const modelLeavingMatch = trimmed.match(/^(?:(.+?)\s+)?(?:is\s+)?leaving on\s+(.+?)\.?$/i);
+    if (modelLeavingMatch) {
+      const [, rawModel, rawDate] = modelLeavingMatch;
+      const dateCn = parseEnglishDateCn(rawDate);
+      const modelTrimmed = (rawModel || '').trim();
+      const subjectOk = !modelTrimmed || (modelTrimmed.length <= 64 && MODEL_LEAVING_SUBJECT_RE.test(modelTrimmed));
+      if (dateCn && subjectOk) {
+        const fixed = formatLeavingSubjectCn(modelTrimmed) + '将于 ' + dateCn + ' 下线。';
+        cacheSet(trimmed, fixed);
+        return replaceTrimmed(text, trimmed, fixed);
+      }
+    }
     if (/^Available AI Credits:\s*(.+)$/i.test(trimmed)) {
       const fixed = trimmed.replace(/^Available AI Credits:\s*(.+)$/i, (_m, n) => '可用 AI 点数：' + n);
       cacheSet(trimmed, fixed);
@@ -7977,24 +8290,13 @@ if (!isRemoteWindow) {
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^Save rule to always allow (.+?)\?$/i.test(trimmed)) {
-      const actionMap = {
-        'running this command': '运行此命令',
-        'running this command outside the sandbox': '在沙盒外运行此命令',
-        'using this mcp tool': '使用此 MCP 工具',
-        'a one-time administrator (uac) elevation': '一次性管理员 (UAC) 提权',
-        'access to this resource': '访问此资源',
-      };
-      const fixed = trimmed.replace(/^Save rule to always allow (.+?)\?$/i, (_m, act) => {
-        const actCn = actionMap[act.trim().toLowerCase()] || act;
-        return '保存规则以始终允许' + actCn + '？';
-      });
-      cacheSet(trimmed, fixed);
-      return replaceTrimmed(text, trimmed, fixed);
-    }
-
-    if (/^Allow ([^?\r\n]{2,120})\?$/i.test(trimmed)) {
-      const allowActionMap = {
+    if (/^(?:Save rule to always allow|Allow)\s+([^?\r\n]{2,140})\?$/i.test(trimmed)) {
+      const permActionMap = {
+        'read access to this path': '读取此路径',
+        'write access to this path': '写入此路径',
+        'reading this url': '读取此 URL',
+        'executing actions on this url': '在此 URL 上执行操作',
+        'browser downloads from this site': '浏览器从此站点下载文件',
         'running this command': '运行此命令',
         'running this command outside the sandbox': '在沙盒外运行此命令',
         'using this mcp tool': '使用此 MCP 工具',
@@ -8002,10 +8304,16 @@ if (!isRemoteWindow) {
         'access to this resource': '访问此资源',
         'the browser agent to download a file': '浏览器智能体下载文件',
       };
-      const fixed = trimmed.replace(/^Allow ([^?\r\n]{2,120})\?$/i, (_m, act) => {
-        const actCn = allowActionMap[act.trim().toLowerCase()] || act;
-        return '是否允许 ' + actCn + '？';
-      }).replace(/^是否允许 (运行此命令|在沙盒外运行此命令|使用此 MCP 工具|一次性管理员 \(UAC\) 提权|访问此资源|浏览器智能体下载文件)？$/, '是否允许$1？');
+      const fixed = trimmed.replace(
+        /^(Save rule to always allow|Allow)\s+([^?\r\n]{2,140})\?$/i,
+        (_m, prefix, act) => {
+          const actCn = permActionMap[act.trim().toLowerCase()];
+          if (/^Save rule/i.test(prefix)) {
+            return actCn ? '保存规则以始终允许' + actCn + '？' : '保存规则以始终允许 ' + act + '？';
+          }
+          return actCn ? '是否允许' + actCn + '？' : '是否允许 ' + act + '？';
+        }
+      );
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
@@ -8220,6 +8528,220 @@ if (!isRemoteWindow) {
         /^Coordinator\s+·\s+(\d+)\s+of\s+(\d+)\s+done(\s+·\s+Needs you)?$/,
         (_m, d, t, needs) => '协调器 · 已完成 ' + d + ' / ' + t + (needs ? ' · 需要你处理' : '')
       );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    // ===== Antigravity v2.35.0 动态规则：收件箱/插件权限/听写语言/移动对话/打开方式/引导与审批/MCP 表单校验 =====
+    if (/^Resolved "(.+)"$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Resolved "(.+)"$/, (_m, title) => '已解决“' + title + '”');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Allowed in (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Allowed in (.+)$/, (_m, scope) => '已在 ' + scope + ' 中允许');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Revoke all:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Revoke all:\s*(.+)$/, (_m, target) => '全部撤销：' + target);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Revoke:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Revoke:\s*(.+)$/, (_m, target) => '撤销：' + target);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^All (\d+) will be revoked\. The plugin will ask before doing this again\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^All (\d+) will be revoked\. The plugin will ask before doing this again\.$/,
+        (_m, n) => '全部 ' + n + ' 项将被撤销。下次执行此操作前插件将重新询问。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Added ([^.\r\n]{1,80})\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Added ([^.\r\n]{1,80})\.$/, (_m, name) => '已添加 ' + name + '。');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Removed ([^.\r\n]{1,80})\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Removed ([^.\r\n]{1,80})\.$/, (_m, name) => '已移除 ' + name + '。');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Error signing in to MCP server:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Error signing in to MCP server:\s*(.+)$/, (_m, detail) => '登录 MCP 服务器出错：' + detail);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Error starting sign-in:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Error starting sign-in:\s*(.+)$/, (_m, detail) => '启动登录失败：' + detail);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^No matching languages for "(.+)"$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^No matching languages for "(.+)"$/, (_m, q) => '未找到匹配“' + q + '”的语言');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Move this conversation to "(.+)"\?$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Move this conversation to "(.+)"\?$/, (_m, target) => '确定将此对话移动到“' + target + '”吗？');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Remove this conversation from its (workspace|project)\?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Remove this conversation from its (workspace|project)\?$/i,
+        (_m, kind) => '确定将此对话从所属' + (/^workspace$/i.test(kind) ? '工作区' : '项目') + '中移除吗？'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(.+?) \((Not running|Sidecar disabled)\)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^(.+?) \((Not running|Sidecar disabled)\)$/, (_m, prefix, reason) => {
+        const prefixCn = Object.prototype.hasOwnProperty.call(dictionary, prefix)
+          ? dictionary[prefix]
+          : (lowerDictionary.get(prefix.toLowerCase()) || prefix);
+        const reasonCn = reason === 'Sidecar disabled' ? 'Sidecar 已禁用' : '未运行';
+        return prefixCn + '（' + reasonCn + '）';
+      });
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+) waiting on you$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^(\d+) waiting on you$/, (_m, n) => n + ' 项正在等待你处理');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Sorry, this account is ineligible to use (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Sorry, this account is ineligible to use (.+)$/, (_m, prod) => '抱歉，此账户无权使用 ' + prod);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Further action is required to use (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Further action is required to use (.+)$/, (_m, prod) => '需要完成进一步操作才能使用 ' + prod);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Waiting for approval to (access|execute|run|read|write|edit|modify|delete|use|download)(?::\s*(.+))?$/i.test(trimmed)) {
+      const verbMap235 = {
+        access: '访问', execute: '执行', run: '运行', read: '读取',
+        write: '写入', edit: '编辑', modify: '修改', delete: '删除',
+        use: '使用', download: '下载',
+      };
+      const fixed = trimmed.replace(
+        /^Waiting for approval to (access|execute|run|read|write|edit|modify|delete|use|download)(?::\s*(.+))?$/i,
+        (_m, verb, target) => '正在等待批准' + (verbMap235[verb.toLowerCase()] || verb) + (target ? '：' + target : '')
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Wants to run:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Wants to run:\s*(.+)$/, (_m, target) => '请求运行：' + target);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Minimum length is (\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Minimum length is (\d+)$/, (_m, n) => '最少需要 ' + n + ' 个字符');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Maximum length is (\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Maximum length is (\d+)$/, (_m, n) => '最多允许 ' + n + ' 个字符');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Minimum value is (-?\d+(?:\.\d+)?)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Minimum value is (-?\d+(?:\.\d+)?)$/, (_m, n) => '最小值为 ' + n);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Maximum value is (-?\d+(?:\.\d+)?)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Maximum value is (-?\d+(?:\.\d+)?)$/, (_m, n) => '最大值为 ' + n);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Select at least (\d+) items?$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Select at least (\d+) items?$/, (_m, n) => '请至少选择 ' + n + ' 项');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Select at most (\d+) items?$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Select at most (\d+) items?$/, (_m, n) => '最多选择 ' + n + ' 项');
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Input must match (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Input must match (.+)$/, (_m, pat) => '输入内容必须匹配 ' + pat);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Dismissed:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Dismissed:\s*(.+)$/, (_m, title) => '已关闭：' + title);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Dismiss:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Dismiss:\s*(.+)$/, (_m, title) => '关闭：' + title);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Forked from (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Forked from (.+)$/, (_m, src) => '分叉自 ' + src);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Open URL in system browser:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Open URL in system browser:\s*(.+)$/, (_m, url) => '在系统浏览器中打开链接：' + url);
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Required to ([^:\r\n]{1,40}):\s*(.+)$/.test(trimmed)) {
+      const reqActMap = {
+        save: '保存', create: '创建', enable: '启用', run: '运行',
+        continue: '继续', submit: '提交', activate: '激活', start: '启动',
+      };
+      const fixed = trimmed.replace(/^Required to ([^:\r\n]{1,40}):\s*(.+)$/, (_m, act, items) => {
+        const actCn = reqActMap[act.trim().toLowerCase()] || act;
+        return '执行“' + actCn + '”所需的条件：' + items;
+      });
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Self \(([^)\r\n]{1,40})\)$/.test(trimmed)) {
+      const fixed = trimmed.replace(/^Self \(([^)\r\n]{1,40})\)$/, (_m, field) => '自身（' + field + '）');
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
