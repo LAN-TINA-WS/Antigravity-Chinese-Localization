@@ -913,6 +913,8 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     "Agent stopped": "智能体已停止",
     "Agent encountered an internal error.": "智能体遇到内部错误。",
     "Agent terminated due to error": "智能体因错误而终止",
+    "You can prompt the model to try again or start a new conversation if the error persists. See our troubleshooting guide for more help.": "您可以提示模型重试，若错误持续出现，请发起新对话。更多帮助请参阅我们的故障排除指南。",
+    "See our troubleshooting guide for more help.": "更多帮助请参阅我们的故障排除指南。",
     "Agent data is not available": "智能体数据不可用",
     "Accept Step": "接受步骤",
     "Reject Step": "拒绝步骤",
