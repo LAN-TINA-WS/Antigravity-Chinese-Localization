@@ -4,6 +4,23 @@
 
 ---
 
+## v2.35.1 (2026-11-25) — 同步适配官方 2.35.1 版本并补全反馈表单、Hooks、引导条款、查看器、轨迹统计与 Git/排队动态文案
+
+### 1. 官方 v2.35.1 差异核验与版本基线对齐
+- **主进程 (`app.asar`) 逐文件比对**：对比官方 `v2.35.1` 原版 `app.asar` 全部 180 个非 `node_modules` 文件，确认主进程模块与 `v2.35.0` 保持一致（`0` 新增/删除文件），`localize.js` 全量 231 处主进程补丁点实现 `0` 跳过 100% 命中。
+- **版本门禁与预编译包升级**：将 `localize.js`（`CURRENT_VERSION` / `RELEASE_VERSION`）、`package.json`、`extracted/package.json`、`index.html` 与轻量 `app.asar.ready`（`8,088,802` 字节 / `7.71 MiB`）同步升级至 **`2.35.1`**，保障 `--auto-restore` 与无 Node.js 离线模式对 `v2.35.1` 客户端的精准版本校验放行。
+
+### 2. Web UI 增量汉化补漏（+86 条零重复静态词典、+16 组 `$`-安全动态规则）
+- **反馈弹窗与上传校验 (`XUb` / `YUb`)**：补齐账号与计费（Auth & Billing）反馈指引与 3 项具体条目、Google Chat 交流群组入口、`Screenshot must be under 10 MB`、`Attaching logs requires an email address` 及 `Submitting...`。
+- **Hooks 钩子与组织 MCP 白名单 (`c0b` / `d0b` / `e0b`)**：补齐 `Organization MCP Allowlist (Read-Only)` 及其管理员规则说明、`Pre Tool Use` / `Post Tool Use`、5 项触发时机描述、`Timeout:` / `Handler #` / `Matcher:` 以及动态工具名匹配描述（`Hook will only trigger if the tool name matches/starts with ...`）。
+- **新版引导、条款、AI 额度与账号校验**：补齐 `Terms of Service & Data Use` 安全风险提示、Onboarding 欢迎副标题、侧边栏登录与账号验证引导、`Models Tab`（消除旧分词产生的“模型制表符”误译）与 `AI Credits are used when ...`。
+- **工作流迁移、队列播报、输入占位符、PDF/图表查看器、轨迹统计与 Git/调度规则**：补齐工作流迁移横幅（`Migrate with Agent`）、等待权限批准引导、子智能体/通用输入占位符、`Trajectory Stats` 成本与分页统计表、PDF 暂停文本选择提示条、LaTeX/Mermaid 渲染失败提示、全量队列无障碍播报、`Proceed with implementation plan and N comment(s)`、`Show N earlier steps`、`Turn/Go to turn X of Y`、`N File(s) With Changes`、Git 提交/推送/发布状态以及自动化 `Every hour` / `Today HH:MM`（严格限定时间格式防误伤）规则。
+
+### 3. 全链路验证与测试门禁
+- 词典扩充至 **`4,923` 键 `0` 重复**；新增 `tests/ticket-57-v2351-features.test.js` 专项测试套件并注册至 `tests/run-all-tests.js`，同步校验 `v2.35.1` 版本元数据、`app.asar.ready` 规格与防误伤回归。
+
+---
+
 ## v2.35.0 (2026-11-24) — 全面适配官方 2.35.0 版本：收件箱模式与自动解决、插件权限管理页、语音听写多语言选择器、侧边提问继续新对话、引导与 WIF/授权码登录流及远程智能体升级
 
 ### 1. 官方 v2.35.0 主进程架构同步与全量补丁验收
