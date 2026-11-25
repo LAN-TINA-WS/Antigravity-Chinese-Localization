@@ -121,9 +121,10 @@
 
 ## 五、渲染安全与物理沙盒 (Safety & Sandbox)
 
-### 1. 代码编辑区与用户输入绝对免疫
+### 1. 代码编辑区、用户输入与 AI 正文绝对免疫
 - **穿透 Shadow DOM**：递归检测目标节点直至根级；
-- **全方位白名单过滤**：严格免疫 `INPUT`、`TEXTAREA`、`contenteditable`、Monaco Editor 容器及内部行、以及带有 `.group/user-input-step` 的用户对话气泡；
+- **全方位白名单过滤**：严格免疫 `INPUT`、`TEXTAREA`、`contenteditable`、Monaco Editor 容器及内部行、带有 `.group/user-input-step` / `[data-testid="user-message-content"]` 的用户对话气泡，以及 `CODE` / `PRE` / `KBD` / `SAMP` / `VAR` 行内代码标签；
+- **AI 对话正文 `[data-markdown-root]` 物理隔离**：基于官方前端全部 11 处 `w1` Markdown 渲染调用点审计，对 AI 回复正文、侧边提问回复、工件预览、`markdown-code-block-preview`、`automation-instructions-markdown` 与悬浮文档正文实施物理跳过，仅白名单放行 `toast-notification` 与 `nux-card` 两类系统 UI 提示组件（且其内部行内代码与组合句锚点仍严格锁定）；同时将 `Quote` / `Ask /btw` 与执行状态药丸统一纳入 `inProtectedAncestor` 祖先链校验，并通过统一 `hasAttr` 辅助函数避免极简 DOM 环境下 `undefined !== null` 误判；
 - **属性锁死**：对于输入控件的 `value` 属性，无论匹配到何种词条均绝对拒绝替换，严防篡改用户的代码与指令。
 
 ### 2. 控制中心防密码管理器篡改装甲 (Autofill Armor)
@@ -161,11 +162,11 @@ if (markerIndex !== -1) {
 ### 1. 架构权衡背景 (Trade-off: 体验 vs 仓库体积)
 为了让非技术用户享受“解压即用、零环境依赖”的极致体验，工程在 PR #42 中将预编译补丁包 `app.asar.ready` 纳入了 Git 版本追踪。
 - **核心收益**：用户从 GitHub 点击 "Download ZIP" 下载源码包或克隆后，目录内直接包含预制补丁镜像，双击批处理无需安装 Node.js/asar 编译工具链即可一键无缝替换。
-- **物理代价**：Git 作为内容寻址数据库，无法对二进制打包文件（.asar）进行有效的行级差分压缩（Delta Compression）。每次发版更新 `app.asar.ready` 时，Git 会向 `.git/objects` 历史树中写入一个约 6.35 MiB（约 6.66 MB）的完整独立 Blob 对象，使 Git 提交历史呈现线性膨胀。
+- **物理代价**：Git 作为内容寻址数据库，无法对二进制打包文件（.asar）进行有效的行级差分压缩（Delta Compression）。每次发版更新 `app.asar.ready` 时，Git 会向 `.git/objects` 历史树中写入一个约 7.60 MiB（约 7.97 MB）的完整独立 Blob 对象，使 Git 提交历史呈现线性膨胀。
 
 ### 2. 影响范围清晰界定
 - **终端用户（完全不受影响）**：
-  1. 通过 GitHub Releases 页面下载 `app.asar` 或 `default.zip` 的用户：仅包含当前版本纯净文件，不含 Git 历史，体积恒定为约 6.35 MiB（~6.66 MB）；
+  1. 通过 GitHub Releases 页面下载 `app.asar` 或 `default.zip` 的用户：仅包含当前版本纯净文件，不含 Git 历史，体积恒定为约 7.60 MiB（~7.97 MB）；
   2. 通过 GitHub 网页点击 "Download ZIP" 下载源码的用户：GitHub 动态打包当前分支的快照（Snapshot），不含 `.git` 目录，体积恒定为单版本快照大小；
   3. 本地安装与更新目录：工作区始终只保留最新一份物理文件，不产生历史冗余。
 - **开发者与源码克隆者（受历史累加影响）**：

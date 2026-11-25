@@ -119,9 +119,10 @@ The engine implements slice-level leading interceptors that match and format bot
 
 ## 5. Render Security & Password Manager Armor
 
-### 1. Code Editor & Input Physical Immunity
+### 1. Code Editor, Input & AI Chat Body Physical Immunity
 - **Shadow DOM Penetration**: Recursively verifies ancestors up to the root level;
-- **Absolute Whitelist Exclusion**: Excludes `INPUT`, `TEXTAREA`, `contenteditable`, Monaco Editor containers/lines, and `.group/user-input-step` user message bubbles;
+- **Absolute Whitelist Exclusion**: Excludes `INPUT`, `TEXTAREA`, `contenteditable`, Monaco Editor containers/lines, `.group/user-input-step` / `[data-testid="user-message-content"]` user message bubbles, and inline literal/code tags (`CODE`, `PRE`, `KBD`, `SAMP`, `VAR`);
+- **AI Chat Body `[data-markdown-root]` Physical Isolation**: Audited across all 11 upstream `w1` Markdown renderer call sites to skip AI chat replies, Side Question replies, artifact previews, `markdown-code-block-preview`, `automation-instructions-markdown`, and hover docs, whitelisting only `toast-notification` and `nux-card` system UI chrome (while keeping inner code tags and combined-sentence anchors locked); unifies `Quote` / `Ask /btw` and action pills under the `inProtectedAncestor` guard and uses a shared `hasAttr` helper to avoid `undefined !== null` edge-case false positives;
 - **Value Attribute Lockdown**: Strict refusal to translate input `value` attributes.
 
 ### 2. Dashboard Shield Against Password Managers
@@ -151,11 +152,11 @@ Truncates legacy injection blocks cleanly and writes the updated engine payload,
 ### 1. Architectural Trade-off (UX vs Repository Size)
 To give end users a seamless out-of-the-box experience without build toolchain prerequisites, PR #42 tracked the pre-compiled patch `app.asar.ready` directly in Git.
 - **Core Benefit**: Users downloading the source archive (via GitHub "Download ZIP" or clone) get the pre-built patch ready for instant execution. Running the one-click batch script requires zero local Node.js/asar dependencies.
-- **Physical Cost**: As a content-addressable storage engine, Git cannot perform efficient line-by-line delta compression on monolithic binary archives (`.asar`). Each version bump writes a ~6.35 MiB (~6.66 MB) standalone Blob object into `.git/objects`, causing linear history growth over time.
+- **Physical Cost**: As a content-addressable storage engine, Git cannot perform efficient line-by-line delta compression on monolithic binary archives (`.asar`). Each version bump writes a ~7.60 MiB (~7.97 MB) standalone Blob object into `.git/objects`, causing linear history growth over time.
 
 ### 2. Scope of Impact
 - **End Users (Completely Unaffected)**:
-  1. Users downloading release assets (`app.asar` / `default.zip`) receive clean snapshots with zero Git history (constant ~6.35 MiB / 6.66 MB);
+  1. Users downloading release assets (`app.asar` / `default.zip`) receive clean snapshots with zero Git history (constant ~7.60 MiB / 7.97 MB);
   2. Users clicking "Download ZIP" on GitHub download branch snapshots with no `.git` metadata;
   3. Local installation directories maintain only the single active file.
 - **Developers & Full Clones (Historical Accumulation)**:

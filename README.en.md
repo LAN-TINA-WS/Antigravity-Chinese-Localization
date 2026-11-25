@@ -15,7 +15,7 @@ Deep Localization & High-Performance Chinese Patch for Google Antigravity
 
 A high-performance, non-destructive deep Chinese localization patch designed for Google Antigravity, now co-maintained under the open-source organization **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)**. Fully adapted to the latest architecture of **Antigravity v2.35.1+**, featuring modular `src/` engine decoupling and DOM micro-batch scheduling that delivers 1.68 million queries/sec throughput. It provides comprehensive localization across `4,920+` zero-duplicate UI strings covering `Inbox Mode` & `Auto-Resolve`, `Plugin permissions`, multi-language `Dictation languages`, Planning Mode, `Swarm` & `plugin://` subframes, Input Box shortcuts, Orchestrator Settings & Thinking effort, Inline approval/question cards, Security Sandbox, Remote SSH, Computer Use, 9 Gemini Live voices, and Marketplace `Bundles`, strictly aligns with the official slim packaging spec (~7.60 MiB for v2.35.1), and guarantees absolute physical immunity for code editors, user input fields, and AI Markdown chat bodies.
 
-> [Download Latest Release](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [Discussions & 1K Stars Milestone](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [Issues & Feedback](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
+> [Download Latest Release](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [Discussions & 2K Stars Milestone](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [Issues & Feedback](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
 
 ---
 
@@ -47,7 +47,7 @@ A high-performance, non-destructive deep Chinese localization patch designed for
 | **High Throughput & Anti-Chinglish Guard** | Over 1.68 Million QPS | Modularized under `src/dictionary.js` & `src/dom-translator.js` with hoisted `O(1)` exact Map lookup, ASCII bypass, DOM ancestor pruning, `queueMicrotask` batching, and 100%-hit `coreWords` guards. |
 | **Loopback Security Shield** | `127.0.0.1` + CSRF Auth | Binds strictly to `127.0.0.1` with `Host`/`Origin` loopback validation, per-process CSRF tokens, JSON payload caps, and explicit TLS certificate verification. |
 | **Slim Packaging Standards** | Aligned with Official Spec (~7.60 MiB) | Uses `--unpack-dir` to exclude unpacked native MCP modules, matching official distribution size. |
-| **TDD Automated Test Gate** | 65 Test Suites Regression Gate | Comprehensive regression matrix (`Ticket-01` through `Ticket-58` plus security/AST/archive gates) covering AI Markdown/inline-code isolation and real Windows `cmd.exe` zero-Node offline auto-bridge verification. |
+| **TDD Automated Test Gate** | 66 Test Suites Regression Gate | Comprehensive regression matrix (`Ticket-01` through `Ticket-59` plus security/AST/archive gates) covering AI Markdown/inline-code isolation, agent error-card combined sentences, and real Windows `cmd.exe` zero-Node offline auto-bridge verification. |
 
 ---
 
@@ -269,11 +269,11 @@ For complete architectural details on binary trade-offs, history pruning, and dy
 
 ---
 
-## 1,000+ Stars Milestone & Growth History
+## 2,000+ Stars Milestone & Growth History
 
-> **November 16, 2026 at 13:25 CST**: This project officially crossed **1,000 Stars** (175 days after its first star on May 25, 2026) and is now co-maintained under **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)**! Join the conversation and check milestones in [GitHub Discussions](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions).
+> **November 25, 2026 at 11:03 CST**: This project officially crossed **2,000 Stars**! After reaching 1,000 Stars in 175 days (May 25 – Nov 16, 2026) and transitioning to the open-source organization **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)**, the community **doubled from 1,000 to 2,000 Stars in just 8.9 days**. Join the conversation and check milestones in [GitHub Discussions](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions).
 
-![Antigravity-Chinese-Localization 1,000+ Stars Milestone Growth Curve](docs/star_history_light.png)
+![Antigravity-Chinese-Localization 2,000+ Stars Milestone Growth Curve](docs/star_history_light.png)
 
 > Vector chart archive: [docs/star_history_light.svg](docs/star_history_light.svg) · Full timestamp dataset: [docs/stargazers.json](docs/stargazers.json)
 
@@ -284,12 +284,16 @@ For complete architectural details on binary trade-offs, history pruning, and dy
 | Contributor | Role & Contributions |
 | :--- | :--- |
 | [liominsb](https://github.com/liominsb) | Original project creator, built the initial Electron asar injection and Web dashboard architecture, and initiated the community organization transition |
-| [LAN-TINA-WS](https://github.com/LAN-TINA-WS) | Community co-maintainer, v2.12.0+ deep refactoring, 1.68M QPS engine optimization, `src/` modular security hardening, extensive Settings/Plugins dictionary expansion, and ongoing v2.34.0+ maintenance |
-| [Justin-Mai](https://github.com/Justin-Mai) | 2.0 Web dashboard architecture upgrade, multi-user/custom path support, heartbeat self-healing, code preview & diff isolation mechanisms |
+| [LAN-TINA-WS](https://github.com/LAN-TINA-WS) | Community co-maintainer, v2.12.0+ deep refactoring, 1.68M QPS engine optimization, `src/` modular security hardening, comprehensive dictionary expansion, and ongoing v2.35.1+ maintenance |
+| [Justin-Mai](https://github.com/Justin-Mai) | 2.0 Web dashboard architecture upgrade, multi-user/custom path support, heartbeat self-healing, `v2.35.1` sync, and AI Markdown chat-body isolation (PR #82) |
 | [songxitao](https://github.com/songxitao) | v2.10.0+ deep adaptation, 3-layer DOM physical isolation defense, Markdown & code area anti-pollution, and full TDD automated test suite construction |
-| [angel12538](https://github.com/angel12538) | Dynamic home greeting, third-party model notices, quota reset countdowns, settings descriptions & Ticket-37/38 test coverage |
+| [angel12538](https://github.com/angel12538) | Dynamic home greeting, model deprecation & quota notices, full path/URL permission title family, AI Credits notices, and agent error-card combined-sentence coverage (PR #74/#77/#79/#86) |
 | [mojingjing-git](https://github.com/mojingjing-git) | Comprehensive v2.26.0–v2.29.0 upstream version adaptations, missing UI copy coverage, and version assertion fixes |
+| [UncleLiu-0306](https://github.com/UncleLiu-0306) | Version-match installation guardrails, upfront macOS signing guidance, and macOS re-signing exploration (PR #76) |
 | [mutezebra](https://github.com/mutezebra) | macOS one-click `一键更新汉化.command` offline restore launcher and hardened version mismatch validation |
+| [12cjn](https://github.com/12cjn) | Home task suggestions, shortcut labels, and composer accessibility coverage (PR #69) |
+| [omsd512-W](https://github.com/omsd512-W) | Scoped sidebar user project-name and custom group protection (PR #70) |
+| [dsasanim4-source](https://github.com/dsasanim4-source) | `v2.34.0` high-frequency UI gaps, cloud credentials, and site-data rules (PR #71) |
 | [501Ranger](https://github.com/501Ranger) | Linux/Ubuntu platform adaptation and legacy Node.js compatibility support |
 | [shixiaogaoya](https://github.com/shixiaogaoya) | Early dictionary expansion and duplicate-injection crash fix |
 
