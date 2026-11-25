@@ -62,6 +62,7 @@ const tests = [
   'ticket-54-v2340-ui-gaps.test.js',
   'ticket-55-preview-context-menu.test.js',
   'ticket-56-v2350-features.test.js',
+  'ticket-57-agent-error-card.test.js',
   'check-injection-syntax.js',
   'verify-ready-asar.js',
   'asar-version.test.js',
