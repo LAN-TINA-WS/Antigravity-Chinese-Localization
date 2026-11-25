@@ -28,8 +28,8 @@ const {
   findAvailablePatch,
 } = require('./auto-restore');
 
-const CURRENT_VERSION = '2.35.0';
-const RELEASE_VERSION = '2.35.0'; // 补丁发版追踪号；CURRENT_VERSION 保持与目标客户端及 app.asar.ready 一致
+const CURRENT_VERSION = '2.35.1';
+const RELEASE_VERSION = '2.35.1'; // 补丁发版追踪号；CURRENT_VERSION 保持与目标客户端及 app.asar.ready 一致
 
 function compareVersions(v1, v2) {
   const parse = (v) => {

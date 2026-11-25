@@ -4,6 +4,23 @@ This document tracks all version releases, core architecture adaptations, and fe
 
 ---
 
+## v2.35.1 (2026-11-25) — Official v2.35.1 Sync & Web UI Coverage Expansion (Feedback, Hooks, Onboarding, Viewers, Trajectory Stats, Git & Queue Rules)
+
+### 1. Official v2.35.1 Verification & Version Baseline Alignment
+- **Main-Process (`app.asar`) Diff Audit**: Diffed all 180 non-`node_modules` files in the official `v2.35.1` `app.asar` against `v2.35.0`; confirmed zero added/removed main-process modules and `0` skips across all 231 main-process patch points in `localize.js`.
+- **Version Gate & Slim `app.asar.ready` Rebuild**: Bumped `localize.js` (`CURRENT_VERSION` / `RELEASE_VERSION`), `package.json`, `extracted/package.json`, `index.html`, and slim `app.asar.ready` (`8,088,802` bytes / `7.71 MiB`) to **`2.35.1`** for seamless `--auto-restore` and zero-Node offline compatibility.
+
+### 2. Web UI Coverage Expansion (+86 Zero-Duplicate Static Entries, +16 `$`-Safe Dynamic Rules)
+- **Feedback Dialog & Upload Validation (`XUb` / `YUb`)**: Localized Auth & Billing feedback guidance bullets, Google Chat space links, `Screenshot must be under 10 MB`, `Attaching logs requires an email address`, and `Submitting...`.
+- **Hooks & Organization MCP Allowlist (`c0b` / `d0b` / `e0b`)**: Localized `Organization MCP Allowlist (Read-Only)`, `Pre Tool Use` / `Post Tool Use`, hook trigger descriptions, `Timeout:` / `Handler #` / `Matcher:`, and dynamic `Hook will only trigger if the tool name matches/starts with ...` rules.
+- **Onboarding Terms, AI Credits & Verification**: Localized `Terms of Service & Data Use` risk notice, Onboarding subtitles, sidebar sign-in/verification prompts, and `Models Tab` (fixing the `"模型制表符"` coreWords fallback) alongside `AI Credits are used when ...`.
+- **Workflow Migration, Queue Announcements, Viewers, Trajectory Stats & Git/Schedule Rules**: Localized workflow migration banner (`Migrate with Agent`), tool-approval guidance, subagent/composer placeholders, `Trajectory Stats` table, PDF smart-text notice, LaTeX/Mermaid error prefixes, full queued-message accessibility announcements, `Proceed with implementation plan and N comment(s)`, `Show N earlier steps`, `Turn/Go to turn X of Y`, `N File(s) With Changes`, Git commit/push/publish statuses, and strict time-guarded `Every hour` / `Today HH:MM` rules.
+
+### 3. End-to-End Verification & Gate
+- Zero-duplicate dictionary expanded to **`4,923` entries**; added `tests/ticket-57-v2351-features.test.js` and registered it in `tests/run-all-tests.js` covering `v2.35.1` metadata, `app.asar.ready` verification, and anti-false-positive regressions.
+
+---
+
 ## v2.35.0 (2026-11-24) — Full Official v2.35.0 Support: Inbox Mode & Auto-Resolve, Plugin Permissions, Multi-Language Voice Dictation, Side Question Promotion, Onboarding/WIF Auth & Remote Agents
 
 ### 1. Official v2.35.0 Main-Process Sync & Patch Verification
