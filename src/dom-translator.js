@@ -2856,6 +2856,155 @@
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
+
+    // ===== Antigravity v2.35.1 动态规则：队列无障碍通知/计划评论/Git 提交流/Hook 匹配/查看器/调度时间 =====
+    if (/^Message queued\.(?:\s+(\d+)\s+messages?\s+in\s+queue\.)?\s+(Sends after background work finishes\.|Sends after agent finishes working\.)\s+Actions available:\s*Send Now,\s*Edit,\s*Delete\.$/i.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Message queued\.(?:\s+(\d+)\s+messages?\s+in\s+queue\.)?\s+(Sends after background work finishes\.|Sends after agent finishes working\.)\s+Actions available:\s*Send Now,\s*Edit,\s*Delete\.$/i,
+        (_m, n, when) => {
+          const whenCn = /background work/i.test(when) ? '将在后台工作完成后发送。' : '将在智能体完成当前工作后发送。';
+          return '消息已加入队列。' + (n ? '队列中共有 ' + n + ' 条消息。' : '') + whenCn + '可用操作：立即发送、编辑、删除。';
+        }
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Proceed with implementation plan and (\d+) comments?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Proceed with implementation plan and (\d+) comments?$/i,
+        (_m, n) => '按实施计划继续并附带 ' + n + ' 条评论'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Show (\d+) earlier steps?$/i.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Show (\d+) earlier steps?$/i,
+        (_m, n) => '显示更早的 ' + n + ' 个步骤'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Turn (\d+) of (\d+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Turn (\d+) of (\d+)$/i,
+        (_m, cur, total) => '第 ' + cur + ' / ' + total + ' 回合'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Go to turn (\d+) of (\d+)$/i.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Go to turn (\d+) of (\d+)$/i,
+        (_m, cur, total) => '跳转到第 ' + cur + ' / ' + total + ' 回合'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+) Files? With Changes$/i.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(\d+) Files? With Changes$/i,
+        (_m, n) => n + ' 个已更改文件'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^All changes since (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^All changes since (.+)$/,
+        (_m, ref) => '自 ' + ref + ' 以来的所有更改'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Push (\d+) commits? to (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Push (\d+) commits? to (.+)$/,
+        (_m, n, remote) => '推送 ' + n + ' 个提交到 ' + remote
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Pushed (\d+) commits? to (.+)\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Pushed (\d+) commits? to (.+)\.$/,
+        (_m, n, remote) => '已推送 ' + n + ' 个提交到 ' + remote + '。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Pushed to (.+)\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Pushed to (.+)\.$/,
+        (_m, remote) => '已推送到 ' + remote + '。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Publish (.+) to origin$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Publish (.+) to origin$/,
+        (_m, branch) => '将 ' + branch + ' 发布到 origin'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Published (.+) to origin\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Published (.+) to origin\.$/,
+        (_m, branch) => '已将 ' + branch + ' 发布到 origin。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Hook will only trigger if the tool name (matches|starts with) (.+)\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Hook will only trigger if the tool name (matches|starts with) (.+)\.$/,
+        (_m, op, pat) => '仅当工具名称' + (op === 'matches' ? '匹配' : '开头为') + ' ' + pat + ' 时触发 Hook。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^⚠️\s*Failed to render (LaTeX|Mermaid diagram):\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^⚠️\s*Failed to render (LaTeX|Mermaid diagram):\s*(.+)$/,
+        (_m, kind, msg) => '⚠️ 渲染 ' + (kind === 'LaTeX' ? 'LaTeX' : 'Mermaid 图表') + '失败：' + msg
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Every hour(?: at :(\d{2}))?(?:\s*·\s*(.+))?$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Every hour(?: at :(\d{2}))?(?:\s*·\s*(.+))?$/,
+        (_m, min, tz) => '每小时' + (min ? ' :' + min : '') + (tz ? ' · ' + tz : '')
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(Today|Tomorrow|Yesterday)\s+(\d{1,2}:\d{2}(?:\s*[AP]M)?)$/i.test(trimmed)) {
+      const dayWordMap = { today: '今天', tomorrow: '明天', yesterday: '昨天' };
+      const fixed = trimmed.replace(
+        /^(Today|Tomorrow|Yesterday)\s+(\d{1,2}:\d{2}(?:\s*[AP]M)?)$/i,
+        (_m, d, t) => (dayWordMap[d.toLowerCase()] || d) + ' ' + t
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
     // 5. 大小写不敏感词典查找与末尾标点剥离重拼（O(1)，命中写入 stringCache）
     const caseInsensitiveHit = lowerDictionary.get(trimmed.toLowerCase());
     if (caseInsensitiveHit !== undefined) {
