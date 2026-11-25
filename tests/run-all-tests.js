@@ -63,6 +63,7 @@ const tests = [
   'ticket-55-preview-context-menu.test.js',
   'ticket-56-v2350-features.test.js',
   'ticket-57-v2351-features.test.js',
+  'ticket-58-chat-markdown-skip.test.js',
   'check-injection-syntax.js',
   'verify-ready-asar.js',
   'asar-version.test.js',

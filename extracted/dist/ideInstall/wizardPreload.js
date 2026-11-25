@@ -8144,6 +8144,11 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
         continue;
       }
       const lw = tok.toLowerCase();
+      // 独立纯小写 "log" 避免在未识别正文容器中误译为“日志”，多词组合（如 Error Log）仍正常生效
+      if (words.length === 1 && tok === 'log') {
+        cacheSet(trimmed, trimmed);
+        return text;
+      }
       let wordCn;
       if (Object.prototype.hasOwnProperty.call(coreWords, lw)) {
         wordCn = coreWords[lw];
@@ -8213,6 +8218,43 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
     const tag = (el.tagName || '').toUpperCase();
     if ((tag === 'B' || tag === 'P') && el.parentElement && el.parentElement.classList && el.parentElement.classList.contains('o2-goal')) {
       return true;
+    }
+    return false;
+  }
+
+  const CODE_OR_LITERAL_TAGS = new Set([
+    'CODE', 'PRE', 'KBD', 'SAMP', 'VAR', 'SVG', 'MATH', 'MJX-CONTAINER'
+  ]);
+  const UI_MARKDOWN_CHROME_TESTIDS = new Set([
+    'toast-notification', 'nux-card'
+  ]);
+  const PROTECTED_MARKDOWN_TESTIDS = new Set([
+    'markdown-code-block-preview', 'automation-instructions-markdown'
+  ]);
+
+  function hasAncestorTestId(el, allowedSet) {
+    let cur = el;
+    while (cur && cur !== document.body) {
+      if (cur.nodeType === Node.ELEMENT_NODE && cur.getAttribute) {
+        const tid = cur.getAttribute('data-testid');
+        if (tid && allowedSet.has(tid)) return true;
+      }
+      cur = cur.parentElement;
+    }
+    return false;
+  }
+
+  function isProtectedMarkdownElement(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
+    const tid = el.getAttribute ? el.getAttribute('data-testid') : null;
+    if (tid && PROTECTED_MARKDOWN_TESTIDS.has(tid)) {
+      return true;
+    }
+    const hasMarkdownRoot =
+      (el.hasAttribute && el.hasAttribute('data-markdown-root')) ||
+      (el.getAttribute && el.getAttribute('data-markdown-root') !== null);
+    if (hasMarkdownRoot) {
+      return !hasAncestorTestId(el, UI_MARKDOWN_CHROME_TESTIDS);
     }
     return false;
   }
@@ -8629,7 +8671,7 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
       let checkCur = element;
       while (checkCur && checkCur !== document.body) {
         const curTag = (checkCur.tagName || '').toUpperCase();
-        if (curTag === 'CODE' || curTag === 'PRE' || curTag === 'SVG' || curTag === 'MATH' || isSwarmProtectedElement(checkCur)) {
+        if (CODE_OR_LITERAL_TAGS.has(curTag) || isSwarmProtectedElement(checkCur) || isProtectedMarkdownElement(checkCur)) {
           inProtectedAncestor = true;
           break;
         }
@@ -8698,7 +8740,7 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
       }
 
       const curTag = (cur.tagName || '').toUpperCase();
-      if (curTag === 'PRE' || curTag === 'CODE' || curTag === 'SVG' || curTag === 'MATH' || curTag === 'MJX-CONTAINER') {
+      if (CODE_OR_LITERAL_TAGS.has(curTag) || isProtectedMarkdownElement(cur)) {
         shouldSkip = true;
         break;
       }
@@ -8793,7 +8835,14 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
         if (!child.childNodes || child.childNodes.length !== 1 || !child.firstChild || child.firstChild.nodeType !== Node.TEXT_NODE) {
           return false;
         }
-        slots.push({ type: 'anchor', node: child, anchorText: child.firstChild.nodeValue.trim() });
+        const anchorTag = (child.tagName || '').toUpperCase();
+        const isProtectedAnchor = CODE_OR_LITERAL_TAGS.has(anchorTag) || shouldSkipNode(child);
+        slots.push({
+          type: 'anchor',
+          node: child,
+          anchorText: child.firstChild.nodeValue.trim(),
+          isProtectedAnchor
+        });
       } else {
         return false;
       }
@@ -8846,7 +8895,7 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
       let idx = translated.indexOf(a.anchorText, probe);
       let matchedText = a.anchorText;
       let shouldTranslateAnchor = false;
-      if (idx < 0) {
+      if (idx < 0 && !a.isProtectedAnchor) {
         const anchorCn = translateString(a.anchorText);
         if (anchorCn && anchorCn !== a.anchorText && anchorCn.length >= 2) {
           idx = translated.indexOf(anchorCn, probe);
@@ -8901,7 +8950,15 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
         }
       } else if (ch.nodeType === Node.ELEMENT_NODE) {
         const tag = (ch.tagName || '').toUpperCase();
-        if (tag === 'SVG' || tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT' || tag === 'MATH' || tag === 'CODE' || tag === 'PRE') {
+        if (
+          CODE_OR_LITERAL_TAGS.has(tag) ||
+          tag === 'SCRIPT' ||
+          tag === 'STYLE' ||
+          tag === 'NOSCRIPT' ||
+          isSwarmProtectedElement(ch) ||
+          isProtectedMarkdownElement(ch) ||
+          (ch.getAttribute && ch.getAttribute('data-testid') === 'user-message-content')
+        ) {
           continue;
         }
         collectSafeLeafTextNodes(ch, out);
@@ -8943,7 +9000,7 @@ electron_1.contextBridge.exposeInMainWorld('wizardAPI', wizardAPI);
   function isNonComposerProtectedSelf(cur) {
     if (!cur || cur.nodeType !== Node.ELEMENT_NODE) return false;
     const curTag = (cur.tagName || '').toUpperCase();
-    if (curTag === 'PRE' || curTag === 'CODE' || curTag === 'SVG' || curTag === 'MATH' || curTag === 'MJX-CONTAINER' || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT' || isSwarmProtectedElement(cur)) {
+    if (CODE_OR_LITERAL_TAGS.has(curTag) || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT' || isSwarmProtectedElement(cur) || isProtectedMarkdownElement(cur)) {
       return true;
     }
     if (isUserProjectHeader(cur) || isProtectedProjectNameSelf(cur)) {
