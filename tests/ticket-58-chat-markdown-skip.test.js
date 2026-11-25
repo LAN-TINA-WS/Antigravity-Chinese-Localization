@@ -317,4 +317,47 @@ assert.equal(streamTargetText.nodeValue, 'log', '流式 characterData 更新为 
 translateNode(streamedParagraph);
 assert.equal(streamedParagraphText.nodeValue, 'Settings');
 
+// 断言 6：Quote / Ask /btw 在受保护 Markdown 正文内严禁被特权放行误译，在外部浮动按钮仍正常汉化
+const mdQuoteText = createText('Quote');
+const mdAskBtwText = createText('Ask /btw');
+const mdQuoteP = createElement('p', {}, [mdQuoteText]);
+const mdAskBtwStrong = createElement('strong', {}, [mdAskBtwText]);
+markdownRootInChat.appendChild(mdQuoteP);
+markdownRootInChat.appendChild(mdAskBtwStrong);
+assert.equal(shouldSkipNode(mdQuoteText), true, 'AI 正文里的 Quote 必须跳过');
+assert.equal(shouldSkipNode(mdAskBtwText), true, 'AI 正文里的 Ask /btw 必须跳过');
+translateNode(mdQuoteP);
+translateNode(mdAskBtwStrong);
+assert.equal(mdQuoteText.nodeValue, 'Quote');
+assert.equal(mdAskBtwText.nodeValue, 'Ask /btw');
+
+const floatingQuoteText = createText('Quote');
+const floatingQuoteBtn = createElement('button', {}, [floatingQuoteText]);
+floatingQuoteBtn.parentElement = body;
+assert.equal(shouldSkipNode(floatingQuoteText), false, '正文外的快捷引用按钮 Quote 必须正常放行');
+translateNode(floatingQuoteBtn);
+assert.equal(floatingQuoteText.nodeValue, '引用');
+
+// 断言 7：极简 Mock 元素 getAttribute 返回 undefined 时不得误判为 data-markdown-root
+const undefAttrText = createText('Settings');
+const undefAttrEl = {
+  nodeType: 1,
+  tagName: 'DIV',
+  className: '',
+  classList: { contains: () => false },
+  childNodes: [undefAttrText],
+  parentElement: body,
+  getAttribute: () => undefined,
+};
+undefAttrText.parentElement = undefAttrEl;
+assert.equal(shouldSkipNode(undefAttrText), false, 'getAttribute 返回 undefined 时不得误判为 data-markdown-root');
+translateNode(undefAttrEl);
+assert.equal(undefAttrText.nodeValue, '设置');
+
+// 断言 8：直接对 Markdown 正文内的元素调用 tryCombinedSentenceTranslation 不得改写内容
+const mdCombinedSpan = createElement('span', {}, [createText('Settings')]);
+const mdCombinedP = createElement('p', {}, [createText('See '), mdCombinedSpan]);
+markdownRootInChat.appendChild(mdCombinedP);
+assert.equal(tryCombinedSentenceTranslation(mdCombinedP), false, 'Markdown 正文内的元素直接调用 tryCombinedSentenceTranslation 必须跳过');
+
 console.log('PASS: Ticket-58 AI 聊天正文、Markdown 预览与行内代码隔离测试全部通过！');

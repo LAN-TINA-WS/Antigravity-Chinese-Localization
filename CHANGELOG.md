@@ -4,20 +4,24 @@
 
 ---
 
-## v2.35.1 (2026-11-25) — 同步适配官方 2.35.1 版本并补全反馈表单、Hooks、引导条款、查看器、轨迹统计与 Git/排队动态文案
+## v2.35.1 (2026-11-25) — 同步适配官方 2.35.1 版本、根治 AI 正文与行内代码误译（Issue #80）及全量补齐反馈/Hooks/引导/查看器/Git/调度动态文案
 
-### 1. 官方 v2.35.1 差异核验与版本基线对齐
-- **主进程 (`app.asar`) 逐文件比对**：对比官方 `v2.35.1` 原版 `app.asar` 全部 180 个非 `node_modules` 文件，确认主进程模块与 `v2.35.0` 保持一致（`0` 新增/删除文件），`localize.js` 全量 231 处主进程补丁点实现 `0` 跳过 100% 命中。
-- **版本门禁与预编译包升级**：将 `localize.js`（`CURRENT_VERSION` / `RELEASE_VERSION`）、`package.json`、`extracted/package.json`、`index.html` 与轻量 `app.asar.ready`（`8,088,802` 字节 / `7.71 MiB`）同步升级至 **`2.35.1`**，保障 `--auto-restore` 与无 Node.js 离线模式对 `v2.35.1` 客户端的精准版本校验放行。
+### 1. 官方 v2.35.1 差异核验与版本基线对齐（整合 PR #82 `@Justin-Mai`，同步致谢 PR #83 `@wyun100`）
+- **主进程 (`app.asar`) 与内嵌前端逐文件比对**：对比官方 `v2.35.1` 原版 `app.asar` 全部 180 个非 `node_modules` 文件与内嵌 548 个前端资源，确认主进程仅变更 `package.json` 版本号（`0` 新增/删除模块）、前端包 SHA-256 零变动，`localize.js` 全量 231 处主进程补丁点实现 `0` 跳过 100% 命中。
+- **版本门禁与官方瘦身规格重编**：将 `localize.js`（`CURRENT_VERSION` / `RELEASE_VERSION`）、`package.json`、`extracted/package.json`、`index.html` 与轻量 `app.asar.ready` 同步升级至 **`2.35.1`**；消除 Windows CRLF 打包膨胀后，`app.asar.ready` 严格对齐官方瘦身规范为 **`7,970,885` 字节（`7.60 MiB`）**，保障 `--auto-restore` 与无 Node.js 离线模式对 `v2.35.1` 客户端的精准版本校验放行。
 
-### 2. Web UI 增量汉化补漏（+86 条零重复静态词典、+16 组 `$`-安全动态规则）
+### 2. AI 对话正文与 Markdown/行内代码物理隔离（修复 Issue #80，感谢 `@Miafetta` 反馈与 PR #82 `@Justin-Mai`）
+- **`[data-markdown-root]` 全量隔离与白名单精准放行**：逐一审计官方前端全部 11 处 `w1` Markdown 渲染调用点，对 AI 对话回复、侧边提问回复、工件预览、Markdown 文件预览、`markdown-code-block-preview`、`automation-instructions-markdown` 及悬浮文档正文实施物理跳过，仅白名单放行 `toast-notification` 与 `nux-card` 两类系统 UI 提示组件（且其内部 `<code>`/`<pre>` 仍严格锁定）。
+- **行内代码保护与四重边界漏洞封堵**：将 `CODE` / `PRE` / `KBD` / `SAMP` / `VAR` 纳入祖先链与组合句锚点绝对保护；同步修复审查检出的 4 处深层边界漏洞——封堵 `Quote` / `Ask /btw` 快捷引用气泡在 AI Markdown 正文、行内代码或思考链内绕过隔离的旧漏洞；统一抽出 `hasAttr` 辅助函数根治 `data-markdown-root` 与 `data-project-glyph` 在极简 DOM 环境下 `undefined !== null` 误判；为 `tryCombinedSentenceTranslation` 入口补加 `shouldSkipNode` 门禁；升级 `collectSafeLeafTextNodes` 复用 `isNonComposerProtectedSelf` 统一跳过全部受保护容器。
+
+### 3. Web UI 增量汉化补漏（+86 条零重复静态词典、+16 组 `$`-安全动态规则）
 - **反馈弹窗与上传校验 (`XUb` / `YUb`)**：补齐账号与计费（Auth & Billing）反馈指引与 3 项具体条目、Google Chat 交流群组入口、`Screenshot must be under 10 MB`、`Attaching logs requires an email address` 及 `Submitting...`。
-- **Hooks 钩子与组织 MCP 白名单 (`c0b` / `d0b` / `e0b`)**：补齐 `Organization MCP Allowlist (Read-Only)` 及其管理员规则说明、`Pre Tool Use` / `Post Tool Use`、5 项触发时机描述、`Timeout:` / `Handler #` / `Matcher:` 以及动态工具名匹配描述（`Hook will only trigger if the tool name matches/starts with ...`）。
-- **新版引导、条款、AI 额度与账号校验**：补齐 `Terms of Service & Data Use` 安全风险提示、Onboarding 欢迎副标题、侧边栏登录与账号验证引导、`Models Tab`（消除旧分词产生的“模型制表符”误译）与 `AI Credits are used when ...`。
-- **工作流迁移、队列播报、输入占位符、PDF/图表查看器、轨迹统计与 Git/调度规则**：补齐工作流迁移横幅（`Migrate with Agent`）、等待权限批准引导、子智能体/通用输入占位符、`Trajectory Stats` 成本与分页统计表、PDF 暂停文本选择提示条、LaTeX/Mermaid 渲染失败提示、全量队列无障碍播报、`Proceed with implementation plan and N comment(s)`、`Show N earlier steps`、`Turn/Go to turn X of Y`、`N File(s) With Changes`、Git 提交/推送/发布状态以及自动化 `Every hour` / `Today HH:MM`（严格限定时间格式防误伤）规则。
+- **Hooks 钩子与组织 MCP 白名单 (`c0b` / `d0b` / `e0b`)**：补齐 `Organization MCP Allowlist (Read-Only)` 及其管理员规则说明、`Pre Tool Use` / `Post Tool Use`、5 项触发时机描述、`Timeout:` / `Handler #` / `Matcher:` 以及与词典术语对齐的动态工具名匹配描述（`Hook will only trigger if the tool name matches/starts with ...` ➔ `仅当工具名称匹配/以 ... 开头时才会触发 Hook。`）。
+- **新版引导、条款、AI 点数与账号校验**：补齐 `Terms of Service & Data Use` 安全风险提示、Onboarding 欢迎副标题、侧边栏登录与账号验证引导、`Models Tab` ➔ `“模型”标签页`（消除旧分词产生的“模型制表符”误译）与 `AI Credits are used when ...`（统一沿用全库 `AI 点数` 译法）。
+- **工作流迁移、队列播报、输入占位符、PDF/图表查看器、轨迹统计与 Git/调度规则**：补齐工作流迁移横幅（`Migrate with Agent`）、等待权限批准引导、子智能体/通用输入占位符、`Trajectory Stats` 成本与分页统计表、PDF 暂停文本选择提示条、LaTeX（修正中英文空格）/Mermaid 渲染失败提示、全量队列无障碍播报、`Proceed with implementation plan and N comment(s)`、`Show N earlier steps`、`Turn/Go to turn X of Y`、`N File(s) With Changes`、Git 提交/推送/发布状态以及自动化 `Every hour` / `Today HH:MM`（严格限定时间格式防误伤）规则。
 
-### 3. 全链路验证与测试门禁
-- 词典扩充至 **`4,923` 键 `0` 重复**；新增 `tests/ticket-57-v2351-features.test.js` 专项测试套件并注册至 `tests/run-all-tests.js`，同步校验 `v2.35.1` 版本元数据、`app.asar.ready` 规格与防误伤回归。
+### 4. 全链路验证与测试门禁
+- 词典扩充至 **`4,923` 键 `0` 重复**；新增 `tests/ticket-57-v2351-features.test.js` 与 `tests/ticket-58-chat-markdown-skip.test.js`（覆盖全部 8 组 AI 正文/行内代码/`Quote` 防穿透/Mock 边界断言）并注册至 `tests/run-all-tests.js`，同步校验全部 176 个 `extracted/dist/**/*.js` 语法零报错与 `.bat`/`.sh`/`.command` 换行符规范；全工程 **65/65 组 TDD 自动化测试套件 100% ALL GREEN**。
 
 ---
 

@@ -4869,7 +4869,7 @@ const dictionary = {
     "Git-on-Borg repository used when creating a new Cog workspace from your initial prompt (e.g., chromium/chromium/src or android/platform/superproject).": "从初始提示词创建新的 Cog 工作区时使用的 Git-on-Borg 仓库（例如 chromium/chromium/src 或 android/platform/superproject）。",
     "e.g., chromium/chromium/src": "例如：chromium/chromium/src",
 
-    // ===== Ticket-57: Antigravity v2.35.1 适配与全量 UI 补漏（反馈表单/Hooks/引导条款/AI 额度/队列/查看器/CEL/Git） =====
+    // ===== Ticket-57: Antigravity v2.35.1 适配与全量 UI 补漏（反馈表单/Hooks/引导条款/AI 点数/队列/查看器/CEL/Git） =====
     // 反馈弹窗（账号与计费 / Google Chat / 上传校验）
     "Please describe your auth or billing issue. More details will help our support team resolve your issue quicker. Some helpful information includes:": "请描述您的认证或计费问题。更多详细信息将有助于我们的支持团队更快为您解决。有帮助的信息包括：",
     "What quota or feature is being incorrectly limited": "哪些配额或功能被错误限制",
@@ -4909,8 +4909,8 @@ const dictionary = {
     "troubleshooting guide": "故障排除指南",
     "See our": "请参阅我们的",
     "Models Tab": "“模型”标签页",
-    "AI Credits are used when you've exceeded your model quota. Keep track of your current AI Credits in the": "超出模型配额后将使用 AI 额度。您可以在以下位置查看当前 AI 额度：",
-    "AI Credits are used when you've exceeded your model quota. Keep track of your current AI Credits in the Models Tab.": "超出模型配额后将使用 AI 额度。您可以在“模型”标签页中查看当前 AI 额度。",
+    "AI Credits are used when you've exceeded your model quota. Keep track of your current AI Credits in the": "超出模型配额后将使用 AI 点数。您可以在以下位置查看当前 AI 点数：",
+    "AI Credits are used when you've exceeded your model quota. Keep track of your current AI Credits in the Models Tab.": "超出模型配额后将使用 AI 点数。您可以在“模型”标签页中查看当前 AI 点数。",
 
     // 工作流迁移、审批提示、输入占位符、队列与 Best of N
     "Workflows are changing on October 19th—stay tuned for updates. You can use the agent to migrate your workflows.": "工作流功能将于 10 月 19 日迎来调整，敬请关注更新。您可以使用智能体来迁移现有工作流。",

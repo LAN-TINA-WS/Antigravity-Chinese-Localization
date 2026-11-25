@@ -5805,8 +5805,8 @@ if (!isRemoteWindow) {
     "troubleshooting guide": "故障排除指南",
     "See our": "请参阅我们的",
     "Models Tab": "“模型”标签页",
-    "AI Credits are used when you've exceeded your model quota. Keep track of your current AI Credits in the": "超出模型配额后将使用 AI 额度。您可以在以下位置查看当前 AI 额度：",
-    "AI Credits are used when you've exceeded your model quota. Keep track of your current AI Credits in the Models Tab.": "超出模型配额后将使用 AI 额度。您可以在“模型”标签页中查看当前 AI 额度。",
+    "AI Credits are used when you've exceeded your model quota. Keep track of your current AI Credits in the": "超出模型配额后将使用 AI 点数。您可以在以下位置查看当前 AI 点数：",
+    "AI Credits are used when you've exceeded your model quota. Keep track of your current AI Credits in the Models Tab.": "超出模型配额后将使用 AI 点数。您可以在“模型”标签页中查看当前 AI 点数。",
     "Workflows are changing on October 19th—stay tuned for updates. You can use the agent to migrate your workflows.": "工作流功能将于 10 月 19 日迎来调整，敬请关注更新。您可以使用智能体来迁移现有工作流。",
     "Migrate with Agent": "使用智能体迁移",
     "Waiting for tool permission approval — click Open in full conversation (↗) to approve": "正在等待工具权限批准 — 点击“在完整对话中打开 (↗)”进行批准",
@@ -8947,7 +8947,9 @@ if (!isRemoteWindow) {
     if (/^Hook will only trigger if the tool name (matches|starts with) (.+)\.$/.test(trimmed)) {
       const fixed = trimmed.replace(
         /^Hook will only trigger if the tool name (matches|starts with) (.+)\.$/,
-        (_m, op, pat) => '仅当工具名称' + (op === 'matches' ? '匹配' : '开头为') + ' ' + pat + ' 时触发 Hook。'
+        (_m, op, pat) => op === 'matches'
+          ? ('仅当工具名称匹配 ' + pat + ' 时才会触发 Hook。')
+          : ('仅当工具名称以 ' + pat + ' 开头时才会触发 Hook。')
       );
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
@@ -8956,7 +8958,7 @@ if (!isRemoteWindow) {
     if (/^⚠️\s*Failed to render (LaTeX|Mermaid diagram):\s*(.+)$/.test(trimmed)) {
       const fixed = trimmed.replace(
         /^⚠️\s*Failed to render (LaTeX|Mermaid diagram):\s*(.+)$/,
-        (_m, kind, msg) => '⚠️ 渲染 ' + (kind === 'LaTeX' ? 'LaTeX' : 'Mermaid 图表') + '失败：' + msg
+        (_m, kind, msg) => '⚠️ 渲染 ' + (kind === 'LaTeX' ? 'LaTeX ' : 'Mermaid 图表') + '失败：' + msg
       );
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
@@ -9148,16 +9150,20 @@ if (!isRemoteWindow) {
     return false;
   }
 
+  function hasAttr(el, name) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
+    if (el.hasAttribute && el.hasAttribute(name)) return true;
+    const val = el.getAttribute ? el.getAttribute(name) : null;
+    return val !== null && val !== undefined;
+  }
+
   function isProtectedMarkdownElement(el) {
     if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
     const tid = el.getAttribute ? el.getAttribute('data-testid') : null;
     if (tid && PROTECTED_MARKDOWN_TESTIDS.has(tid)) {
       return true;
     }
-    const hasMarkdownRoot =
-      (el.hasAttribute && el.hasAttribute('data-markdown-root')) ||
-      (el.getAttribute && el.getAttribute('data-markdown-root') !== null);
-    if (hasMarkdownRoot) {
+    if (hasAttr(el, 'data-markdown-root')) {
       return !hasAncestorTestId(el, UI_MARKDOWN_CHROME_TESTIDS);
     }
     return false;
@@ -9292,7 +9298,7 @@ if (!isRemoteWindow) {
 
   function isProjectGlyphIconNode(el) {
     if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
-    if (el.getAttribute && el.getAttribute('data-project-glyph') !== null) {
+    if (hasAttr(el, 'data-project-glyph')) {
       return true;
     }
     // 对话悬浮卡片（b6 组件）：<span class="shrink-0 flex items-center"><svg|span.google-symbols data-project-glyph="folder|cloud"/></span>
@@ -9305,7 +9311,7 @@ if (!isRemoteWindow) {
         if (ch.nodeType === Node.TEXT_NODE) {
           if ((ch.nodeValue || '').trim()) return false;
         } else if (ch.nodeType === Node.ELEMENT_NODE) {
-          if (ch.getAttribute && ch.getAttribute('data-project-glyph') !== null) {
+          if (hasAttr(ch, 'data-project-glyph')) {
             hasGlyphChild = true;
           } else {
             return false;
@@ -9320,7 +9326,7 @@ if (!isRemoteWindow) {
   function isProjectGlyphLabelSelf(cur) {
     if (!cur || cur.nodeType !== Node.ELEMENT_NODE) return false;
     // 保护回退为 google-symbols 字体图标的 [data-project-glyph] 节点自身（避免 ligature 如 "folder"/"cloud" 被译为汉字破坏图标）
-    if (cur.getAttribute && cur.getAttribute('data-project-glyph') !== null) {
+    if (hasAttr(cur, 'data-project-glyph')) {
       return true;
     }
     if ((cur.tagName || '').toUpperCase() !== 'SPAN') {
@@ -9562,15 +9568,11 @@ if (!isRemoteWindow) {
       return false;
     }
 
-    // 选中文本快捷引用气泡（Quote）及 /btw 提问气泡（Ask /btw）特权放行（依赖动态文本，不写 skipCache）
+    // 选中文本快捷引用气泡（Quote / Ask /btw）与执行步骤状态药丸（必须校验不处于代码/Markdown正文/用户消息/思考链等受保护容器内，依赖动态文本不写 skipCache）
     const textContent = (element.innerText || element.textContent || '').trim();
-    if (/^(?:Quote|Ask(?:\s+|\s*\/\s*)btw)(?:\s+(?:Ctrl|Cmd)(?:\+[a-zA-Z0-9]+)+)?$/i.test(textContent)) {
-      return false;
-    }
-
-    // 执行步骤状态药丸（已在上方拦截 CODE/PRE，绝不误伤 Markdown 行内代码；依赖动态文本不写 skipCache）
+    const isQuoteOrBtwBubble = textContent.length <= 40 && /^(?:Quote|Ask(?:\s+|\s*\/\s*)btw)(?:\s+(?:Ctrl|Cmd)(?:\+[a-zA-Z0-9]+)+)?$/i.test(textContent);
     const isActionPill = textContent.length <= 40 && /^(Explored|Exploring|Ran|Run|Running|Viewed|Viewing|Edited|Editing|Thought|Thinking|Working|Done|Analyzed|Analyzing|Created|Creating|Deleted|Deleting|Waiting|Rejected|Errored|Completed|Used)(\s+(command|commands|files?|tools?|artifacts?))?$/i.test(textContent);
-    if (isActionPill) {
+    if (isQuoteOrBtwBubble || isActionPill) {
       let inProtectedAncestor = false;
       let checkCur = element;
       while (checkCur && checkCur !== document.body) {
@@ -9724,6 +9726,7 @@ if (!isRemoteWindow) {
   // 组合句翻译兜底（支持原英文锚点与已翻译内联锚点双向定位，不增删任何 Element 节点）
   function tryCombinedSentenceTranslation(element) {
     if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+    if (shouldSkipNode(element)) return false;
     const children = Array.prototype.slice.call(element.childNodes);
     if (children.length < 2) return false;
 
@@ -9853,16 +9856,7 @@ if (!isRemoteWindow) {
           out.push(ch);
         }
       } else if (ch.nodeType === Node.ELEMENT_NODE) {
-        const tag = (ch.tagName || '').toUpperCase();
-        if (
-          CODE_OR_LITERAL_TAGS.has(tag) ||
-          tag === 'SCRIPT' ||
-          tag === 'STYLE' ||
-          tag === 'NOSCRIPT' ||
-          isSwarmProtectedElement(ch) ||
-          isProtectedMarkdownElement(ch) ||
-          (ch.getAttribute && ch.getAttribute('data-testid') === 'user-message-content')
-        ) {
+        if (isNonComposerProtectedSelf(ch)) {
           continue;
         }
         collectSafeLeafTextNodes(ch, out);
