@@ -15,7 +15,7 @@ Antigravity 深度汉化与高性能本地化补丁程序
 
 专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁，现由开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合维护。全面适配 **Antigravity v2.35.2+** 最新架构，完成 `src/` 模块化引擎解耦与 DOM 微任务调度重构，带来百万级吞吐量的极致流畅体验。全量汉化收件箱模式 (`Inbox Mode`)、插件权限管理、语音听写多语言选择、规划模式、系统设置、安全沙盒、Remote SSH 远程开发、Computer Use 桌面操控与预览、内联审批/提问卡片、`Swarm` 多智能体侧栏与 `plugin://` 子框架、`Orchestrator` 模式设置与 `4,920+` 条零重复核心界面文案，严格对齐官方原生轻量级打包规格（v2.35.2 约 7.61 MiB），并对用户打字、代码编辑区及 AI 对话 Markdown 正文实施绝对物理免疫。
 
-> [最新 Release 下载](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [社区讨论与双千星里程碑 (Discussions)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [问题反馈与建议](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
+> [最新 Release 下载](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [社区讨论与 2.5K 里程碑 (Discussions)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [问题反馈与建议](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
 
 ---
 
@@ -225,24 +225,14 @@ node localize.js --apply-only
 
 ## 版本更新日志 (Changelog)
 
-各版本的详细更新记录、新特性适配细节与底层技术架构演进，请参阅独立的 [CHANGELOG.md](CHANGELOG.md)（英文版请参阅 [CHANGELOG.en.md](CHANGELOG.en.md)）：
+以下仅展示近期主要版本摘要；`v2.34.0` 及更早历史版本的完整更新记录与底层演进细节，请参阅 [CHANGELOG.md](CHANGELOG.md)（英文版见 [CHANGELOG.en.md](CHANGELOG.en.md)）：
 
-- **[v2.35.2](CHANGELOG.md#v2352-2026-11-26)** (2026-11-26)：全面同步适配官方 `v2.35.2` 维护更新（整合 PR #90 `@Justin-Mai` 与 PR #86 `@angel12538`）！逐文件对比官方 `v2.35.2` `app.asar` 与内嵌前端 `main.js`，确认主进程 231 处补丁点 `0` 跳过全量命中并重编官方瘦身规格 `app.asar.ready`（`7.61 MiB`）；新增模型选择器运行中切换提示（`Applies to /btw and messages sent after this turn` / `Applies to messages sent after this turn` 与旧版兼容）及 10 组 `$`-安全动态规则（导航拦截、侧栏登录引导、项目/工作区/权限/文件夹/MCP/智能体操作报错前缀，并精准修补 `Error restarting MCP server:` 去夹生与 `Sign in` 边界收紧）；随本版一并放出 Issue #85 智能体错误卡片 `See our troubleshooting guide for more help.` 6 子节点 `<span>` 组合句修复（词典扩充至 `4,928` 键零重复，新增 `Ticket-59` / `Ticket-60` 专项套件，**67/67 组自动化测试门禁 100% ALL GREEN**）。
-- **[v2.35.1](CHANGELOG.md#v2351-2026-11-25)** (2026-11-25)：全面同步适配官方 `v2.35.1` 维护更新（整合 PR #82 `@Justin-Mai`，同步致谢 PR #83 `@wyun100`）！逐文件对比官方 `v2.35.1` `app.asar` 与内嵌前端包，确认主进程 231 处补丁点 `0` 跳过全量命中并重编官方瘦身规格 `app.asar.ready`（`7.60 MiB`）；重磅修复 Issue #80（感谢 `@Miafetta`）：在前端引擎建立 AI 对话正文 `[data-markdown-root]`、行内代码（`code`/`pre`/`kbd`/`samp`/`var`）物理隔离防线并白名单精准放行 `toast-notification` / `nux-card`，同步封堵 `Quote`/`Ask /btw` 特权绕过漏洞、`tryCombinedSentenceTranslation` 入口穿透与 `hasAttr` 边界误判；同时全量补齐反馈弹窗、Hooks 与组织 MCP 白名单、新版引导条款与 `Models Tab`（消除“模型制表符”误译，统一 `AI 点数` 术语）、工作流迁移横幅、队列无障碍播报、PDF/Mermaid/LaTeX 查看器、轨迹统计表、CEL 构建器及 Git/调度动态规则（词典扩充至 `4,923` 键零重复，新增 `Ticket-57` / `Ticket-58` 专项套件，**65/65 组自动化测试门禁 100% ALL GREEN**）。
-- **[v2.35.0](CHANGELOG.md#v2350-2026-11-24)** (2026-11-24)：全面同步适配官方 `v2.35.0` 版本更新！同步 4 个新增主进程模块（`appChannel`、`customWindowControls`、`idleProbe`、`permissionGuide`）并清理官方已移除的旧版 `hud*.js`（保留向后兼容守卫），补齐 28 项原生右键/应用菜单；重磅覆盖 `Inbox Mode` 收件箱模式与自动解决、`Plugin permissions` 插件权限管理页、`Dictation languages` 多语言听写选择器、侧边提问继续为新对话、`Move Conversation` 弹窗、`Open with` 查看器、新版 Onboarding 与 WIF/授权码登录流、远程智能体个人/团队创建菜单及 MCP 表单校验；整合社区 PR #74（路径/URL 权限标题全家族 18 种组合根治）、PR #76（版本强校验门禁与 macOS 签名风险前置指引）、PR #77（AI 点数不足/基础配额刷新/超额使用全变体提示）、PR #79（Hydrogen 配额推荐与模型下线日期防误伤校验）并修复 Issue #73（无 Node.js 批处理防闪退与离线安全一键还原英文原版）（词典扩充至 `4,837` 键零重复、63 组自动化测试门禁 100% ALL GREEN）。
-- **[v2.34.0.1](CHANGELOG.md#v23401-2026-11-23)** (2026-11-23)：重磅新增 `Swarm` 多智能体协作面板与 `plugin://` 子框架实时 DOM 注入钩子（`dist/utils.js`，保留 `Swarm` 品牌名原生英文并严格隔离 AI 帖子与成员徽章）；整合社区 PR #69（首页任务建议、快捷键与输入区无障碍标签）、PR #70（左侧用户项目名与自定义分组防误翻，同时精准放行按状态/按环境/独立等系统内置分组）与 PR #71（60+ 条高频遗漏文案、修复云端凭据多句拼接/方位与 React 三文本节点原位合句）；补齐右侧预览栏等全端原生右键菜单、发送按钮快捷键悬浮提示（`Send Message Enter` 等）与云工作区 4 链接免责声明（词典扩充至 `4,653` 键零重复、62 组自动化测试门禁 100% ALL GREEN）。
-- **[v2.34.0](CHANGELOG.md#v2340-2026-11-21)** (2026-11-21)：全面同步适配官方 `v2.34.0` 版本更新！精准校准并升级 `dist/updater.js`、`dist/computer/hud.js`（`Allow again` ➔ `重新允许`）与 `hudState.js`（`user_takeover` 接管区分）；新增 `Input Box` 发送快捷键、消息即时发送提示、`Orchestrator Settings`（保留模式名 `Orchestrator` 原生）与 `Extra High` ➔ `极高` 校准、全套内联提问与运行时/终端高危权限审批卡片（Issue #68）、技能卡与快捷键录制规则（PR #67）、`Customize Sidebar` 与 `Filter and Sort`、Computer Use 锁屏/实时预览/macOS 权限引导、`UI Plugin (SidePanel)` 与遥测/更早消息分页文案（词典扩充至 `4,444` 键零重复、57 组自动化测试门禁 100% ALL GREEN）。
-- **[v2.33.0](CHANGELOG.md#v2330-2026-11-18)** (2026-11-18)：全面同步适配官方 `v2.33.0` 大版本架构更新！重磅覆盖 `Computer Use` 桌面操控 HUD 悬浮条与 `Agents Live` 实时桌面预览窗格、Remote SSH 服务端重启/共享目录接管/远程麦克风授权与配置诊断、新版 9 款 Gemini Live 音色与实时语音听写、内置浏览器按站点 Cookie 管理、VS Code / AGY 双模快捷键方案以及扩展市场 `Bundles` 插件组合包与安装前源码审查；同步完成 `src/` 模块化引擎解耦、回环安全鉴权与词库去重瘦身（共 `4,250+` 条零重复词条、51 组自动化测试门禁 100% ALL GREEN）。
-- **[v2.32.2.1](CHANGELOG.md#v23221-2026-11-17)** (2026-11-17)：深度补齐对话页排队发送按钮（`Send all (N)` ➔ `全部发送 (N)`）及排队消息卡片（`Sends after agent finishes working`、`Empty message`）、补全模型思考档位 `Extra` / `Max`（`极高` / `最高` 及 `· 上下文窗口` 组合标签）、撤销确认弹窗、过长对话历史提示与 Best of N 回复偏好问卷（共 +44 条词典与 +8 组动态正则），并在放行排队/操作装饰栏的同时保持用户正文与时间标签（如 `2m ago`）原样不变。
-- **[v2.32.2](CHANGELOG.md#v2322-2026-11-17)** (2026-11-17)：全面同步官方 `v2.32.2` 更新，新增官方插件市场 `Robotics` 机器人开发插件（描述及 9 条示例提示词）、GitHub 细粒度权限策略 (`GitHub Policies & Permissions`)、协调器 (`Coordinator`)、跨设备接力、侧边提问 (`Side Question`) 与自动化分步创建向导及定时计划编辑器（共 +140 条词典、+9 组动态正则与 +13 项原生菜单映射），并修复 `replaceInFile` 同义目标幂等逻辑。
-- **[v2.32.1.2](CHANGELOG.md#v23212-2026-11-16)** (2026-11-16)：补全标签页与侧边栏原生右键菜单 40 项（含 `(Default)` 动态后缀）、117 条设置与右侧栏界面文案、`File not found` 兜底、首页问候语与第三方模型公告（PR #57）、模型专属限额动态正则及全套双语外观主题预设；植入 `setupSidebarProjectDragFix` 热修复官方左侧栏项目拖拽偏移 Bug；同步千星纪念组织化治理与共同 MIT 版权声明（PR #58）。
-- **[v2.32.1](CHANGELOG.md#v2321-2026-11-14)** (2026-11-14)：全面深度适配 Antigravity v2.32.1 与 Remote SSH 远程开发子系统（断开页、凭据密钥弹窗、主机管理与连接诊断），补全原生二级右键子菜单、`Ask /btw` 气泡、空状态防夹生机制与 Google Workspace / Gmail 等 16 款官方与合作插件生态汉化。
-- **[v2.31.2](CHANGELOG.md#v2312-2026-11-12)** (2026-11-12)：全面适配 v2.31.2 维护更新；新增 macOS 一键更新恢复启动器并收紧版本安全校验防线；补充浏览器设置、项目作用域及删除弹窗对话统计自适应规则。
-- **[v2.31.0](CHANGELOG.md#v2310-2026-11-10)** (2026-11-10)：全面适配 v2.31.0 大版本架构，验证 50 余处原生补丁点 100% 命中并通过 37+ 套回归测试门禁。
-- **[v2.30.0](CHANGELOG.md#v2300-2026-11-10)** (2026-11-10)：适配 20 个官方新增原生模块与插件侧边栏能力，扩充设置与执行策略词库。
-- **[v2.29.1](CHANGELOG.md#v2291-2026-11-08)** (2026-11-08)：扩展市场（Marketplace）全量插件生态详情页深度汉化，补齐原生右键二级子菜单。
+- **[v2.35.2](CHANGELOG.md#v2352-2026-11-26)** (2026-11-26)：同步官方 `v2.35.2`（整合 PR #90 `@Justin-Mai`、PR #86 `@angel12538`），补齐模型运行中切换提示与 10 组动态规则、修复 Issue #85 智能体错误卡片组合句，重编官方瘦身规格 `7.61 MiB`（`4,928` 词条、67/67 测试全绿）。
+- **[v2.35.1](CHANGELOG.md#v2351-2026-11-25)** (2026-11-25)：同步官方 `v2.35.1`（整合 PR #82 `@Justin-Mai`），修复 Issue #80 建立 AI 对话 Markdown 正文与行内代码物理隔离防线，补全反馈弹窗、Hooks、组织 MCP 白名单、查看器与调度规则（`4,923` 词条、65/65 测试全绿）。
+- **[v2.35.0](CHANGELOG.md#v2350-2026-11-24)** (2026-11-24)：同步官方 `v2.35.0` 大版本，覆盖 `Inbox Mode`、插件权限、多语言听写、侧边提问升级对话与 28 项原生菜单，整合社区 PR #74/#76/#77/#79 并修复 Issue #73 离线一键还原英文原版。
+- **[v2.34.0.1](CHANGELOG.md#v23401-2026-11-23)** (2026-11-23)：新增 `Swarm` 多智能体面板与 `plugin://` 子框架实时注入钩子，整合社区 PR #69/#70/#71 并补齐右侧预览栏等全端原生右键菜单。
 
-> 完整历史版本变更记录与工程细节请查阅 [完整更新日志 (CHANGELOG.md)](CHANGELOG.md)。
+> 查看全部历史版本与详细技术变更：[完整更新日志 (CHANGELOG.md)](CHANGELOG.md)
 
 ---
 
@@ -273,11 +263,11 @@ git clone --depth=1 https://github.com/antigravity-cn-community/Antigravity-Chin
 
 ---
 
-## 双千星里程碑与 Star 增长趋势
+## 2,500+ Stars 里程碑与 Star 增长趋势
 
-> **2026 年 11 月 25 日 11:03（北京时间）**：项目正式突破 **2,000 Stars** 双千星里程碑！从 2026-05-25 第 1 颗星起历时 175 天于 11 月 16 日突破千星并迁入开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合运营后，**仅用 8.9 天即实现翻倍突破 2,000 Stars**。欢迎前往 [Discussions 社区讨论区](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) 参与交流与反馈。
+> **2026 年 11 月 26 日 10:52（北京时间）**：项目正式突破 **2,500 Stars** 里程碑，登顶 GitHub **Google Antigravity 汉化赛道全网第一**！自 2026-05-25 第 1 颗星起历时 175 天于 11 月 16 日突破千星并迁入开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合运营后，**仅用 8.9 天翻倍破双千，随后更在不到 24 小时（23.6 小时）内再涨 +500 星突破 2,500 Stars**。欢迎前往 [Discussions 社区讨论区](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) 参与交流与反馈。
 
-![Antigravity-Chinese-Localization 双千星里程碑历史增长曲线](docs/star_history_light.png)
+![Antigravity-Chinese-Localization 2,500+ Stars 里程碑历史增长曲线](docs/star_history_light.png)
 
 > 矢量图表存档：[docs/star_history_light.svg](docs/star_history_light.svg) · 全量时间戳数据：[docs/stargazers.json](docs/stargazers.json)
 
@@ -288,8 +278,8 @@ git clone --depth=1 https://github.com/antigravity-cn-community/Antigravity-Chin
 | 贡献者 | 角色与主要贡献 |
 | :--- | :--- |
 | [liominsb](https://github.com/liominsb) | 原项目创作者，搭建了最初的 Electron asar 注入与 Web 控制中心基础架构，推动仓库升级至社区组织联合运营 |
-| [LAN-TINA-WS](https://github.com/LAN-TINA-WS) | 组织化联合维护者，2.12.0+ 深度重构、算力与 DOM 调度飞跃优化（168万次/秒）、`src/` 模块化安全加固、全量词库扩充及 2.35.1+ 持续适配 |
-| [Justin-Mai](https://github.com/Justin-Mai) | 2.0 汉化控制中心架构升级、多用户/自定义路径、心跳自愈与防劫持、`v2.35.1` 适配及 AI 对话正文 Markdown 物理隔离机制（PR #82） |
+| [LAN-TINA-WS](https://github.com/LAN-TINA-WS) | 组织化联合维护者，2.12.0+ 深度重构、算力与 DOM 调度飞跃优化（168万次/秒）、`src/` 模块化安全加固、全量词库扩充及 2.35.2+ 持续适配 |
+| [Justin-Mai](https://github.com/Justin-Mai) | 2.0 汉化控制中心架构升级、多用户/自定义路径、心跳自愈与防劫持、`v2.35.1` / `v2.35.2` 适配及 AI 对话正文 Markdown 物理隔离机制（PR #82/#90） |
 | [songxitao](https://github.com/songxitao) | 2.10.0+ 深度适配、三层 DOM 物理隔离防护、Markdown 与代码区防污染、全套 TDD 自动化测试套件构建 |
 | [angel12538](https://github.com/angel12538) | 首页动态问候语、第三方模型公告与下线日期规则、权限审批标题全家族、AI 点数/配额提示与智能体错误卡片组合句汉化（PR #74/#77/#79/#86） |
 | [mojingjing-git](https://github.com/mojingjing-git) | 2.26.0 ~ 2.29.0 多轮官方大版本适配、新增词条全量覆盖与版本校验修复 |
