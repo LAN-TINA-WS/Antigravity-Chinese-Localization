@@ -519,4 +519,287 @@ translateNode(ligatureHoverRow);
 assert.equal(ligatureGlyphText.nodeValue, 'cloud', 'google-symbols 字体图标 ligature 不得被误译为汉字');
 assert.equal(ligatureProjectText.nodeValue, 'Developer', '字体图标包裹下的悬浮卡片项目名 Developer 同样必须跳过');
 
-console.log('PASS: 左侧项目栏及悬浮卡片/设置页(桌面+窄屏)/面包屑项目名隔离与系统内置分组放行回归测试全部通过');
+// 16. 输入框上方项目/工作区选择器触发按钮（data-testid="project-selector-trigger"）：
+// 真实项目名（含撞 isActionPill、字体图标回退、无 data-project-icon 的 deprecated 态、与系统词同名文件夹）必须跳过；
+// 占位态（Select Project / Select Workspace / No Project / New Workspace）及同栏兄弟按钮（This Computer / Local Checkout）与外部 tooltip 应正常汉化
+const triggerDevText = createText('Developer');
+const triggerDevIconLigature = createText('folder');
+const triggerDevBtn = createElement('button', {
+  type: 'button',
+  'data-testid': 'project-selector-trigger',
+  'aria-label': 'Select project, current: Developer',
+}, [
+  createElement('span', { class: 'relative inline-flex shrink-0' }, [
+    createElement('span', { class: 'google-symbols', 'data-project-icon': 'folder' }, [triggerDevIconLigature]),
+  ]),
+  createElement('span', { class: 'truncate flex-1 min-w-0' }, [triggerDevText]),
+  createElement('span', { class: 'google-symbols' }, [createText('keyboard_arrow_down')]),
+]);
+
+const triggerRunText = createText('Run');
+const triggerRunBtn = createElement('button', {
+  type: 'button',
+  'data-testid': 'project-selector-trigger',
+}, [
+  createElement('span', { class: 'relative inline-flex shrink-0' }, [
+    createElement('svg', { 'data-project-icon': 'cloud' }, []),
+  ]),
+  createElement('span', { class: 'truncate flex-1 min-w-0' }, [triggerRunText]),
+  createElement('svg', {}, []),
+]);
+
+// 与系统占位词同名的真实用户项目目录（带 data-project-icon="folder"）
+const triggerFolderNamedNoProjectText = createText('No Project');
+const triggerFolderNamedNoProjectBtn = createElement('button', {
+  type: 'button',
+  'data-testid': 'project-selector-trigger',
+}, [
+  createElement('span', { class: 'relative inline-flex shrink-0' }, [
+    createElement('svg', { 'data-project-icon': 'folder' }, []),
+  ]),
+  createElement('span', { class: 'truncate flex-1 min-w-0' }, [triggerFolderNamedNoProjectText]),
+  createElement('svg', {}, []),
+]);
+
+// deprecated google3 警告态（无 data-project-icon，但文本是真实项目名）
+const triggerWarningDevText = createText('Developer');
+const triggerWarningDevBtn = createElement('button', {
+  type: 'button',
+  'data-testid': 'project-selector-trigger',
+}, [
+  createElement('span', { class: 'google-symbols' }, [createText('warning')]),
+  createElement('span', { class: 'truncate flex-1 min-w-0' }, [triggerWarningDevText]),
+  createElement('span', { class: 'google-symbols' }, [createText('keyboard_arrow_down')]),
+]);
+
+// 系统占位态（无 data-project-icon）：Select Project / Select Workspace / No Project / New Workspace 均应放行汉化
+const triggerSelectProjText = createText('Select Project');
+const triggerSelectProjBtn = createElement('button', {
+  type: 'button',
+  'data-testid': 'project-selector-trigger',
+}, [
+  createElement('span', { class: 'truncate flex-1 min-w-0' }, [triggerSelectProjText]),
+  createElement('svg', {}, []),
+]);
+
+const triggerSelectWsText = createText('Select Workspace');
+const triggerSelectWsBtn = createElement('button', {
+  type: 'button',
+  'data-testid': 'project-selector-trigger',
+}, [
+  createElement('span', { class: 'truncate flex-1 min-w-0' }, [triggerSelectWsText]),
+  createElement('svg', {}, []),
+]);
+
+const triggerNoProjectText = createText('No Project');
+const triggerNoProjectBtn = createElement('button', {
+  type: 'button',
+  'data-testid': 'project-selector-trigger',
+}, [
+  createElement('span', { class: 'truncate flex-1 min-w-0' }, [triggerNoProjectText]),
+  createElement('span', { class: 'google-symbols' }, [createText('keyboard_arrow_down')]),
+]);
+
+const triggerNewWsText = createText('New Workspace');
+const triggerNewWsBtn = createElement('button', {
+  type: 'button',
+  'data-testid': 'project-selector-trigger',
+}, [
+  createElement('svg', {}, []),
+  createElement('span', { class: 'truncate flex-1 min-w-0' }, [triggerNewWsText]),
+  createElement('svg', {}, []),
+]);
+
+// 同栏兄弟控件（本机 / 本地检出）与外部悬浮提示
+const toolbarLocationText = createText('This Computer');
+const toolbarLocationBtn = createElement('button', { 'data-testid': 'location-selector-trigger' }, [
+  createElement('span', { class: 'truncate flex-1 min-w-0' }, [toolbarLocationText]),
+]);
+const toolbarLocalCheckoutText = createText('Local Checkout');
+const toolbarLocalCheckoutBtn = createElement('button', {}, [
+  createElement('span', { class: 'truncate' }, [toolbarLocalCheckoutText]),
+]);
+const triggerTooltipText = createText('Select Project');
+const triggerTooltip = createElement('div', { role: 'tooltip' }, [
+  createElement('span', {}, [triggerTooltipText]),
+]);
+
+const composerTopToolbar = createElement('div', { 'data-testid': 'input-box-bottom-toolbar' }, [
+  toolbarLocationBtn,
+  triggerDevBtn,
+  triggerRunBtn,
+  triggerFolderNamedNoProjectBtn,
+  triggerWarningDevBtn,
+  triggerSelectProjBtn,
+  triggerSelectWsBtn,
+  triggerNoProjectBtn,
+  triggerNewWsBtn,
+  toolbarLocalCheckoutBtn,
+  triggerTooltip,
+]);
+body.childNodes.push(composerTopToolbar);
+composerTopToolbar.parentElement = body;
+translateNode(composerTopToolbar);
+
+assert.equal(triggerDevText.nodeValue, 'Developer', '输入框上方项目选择器触发按钮项目名 Developer 必须跳过');
+assert.equal(triggerDevIconLigature.nodeValue, 'folder', '项目选择器触发按钮 google-symbols 图标 ligature 不得被误译');
+assert.equal(triggerDevBtn.getAttribute('aria-label'), 'Select project, current: Developer');
+assert.equal(triggerRunText.nodeValue, 'Run', '输入框上方项目选择器命中 isActionPill 的项目名 Run 必须跳过');
+assert.equal(triggerFolderNamedNoProjectText.nodeValue, 'No Project', '带 data-project-icon 且名为 No Project 的真实目录必须跳过');
+assert.equal(triggerWarningDevText.nodeValue, 'Developer', 'warning 警告态下的真实项目名 Developer 必须跳过');
+assert.equal(triggerSelectProjText.nodeValue, '选择项目', 'Select Project 占位态应正常汉化');
+assert.equal(triggerSelectWsText.nodeValue, '选择工作区', 'Select Workspace 占位态应正常汉化');
+assert.equal(triggerNoProjectText.nodeValue, '无项目', 'No Project 占位态应正常汉化');
+assert.equal(triggerNewWsText.nodeValue, '新建工作区', 'New Workspace 占位态应正常汉化');
+assert.equal(toolbarLocationText.nodeValue, '本机', '同栏左侧 This Computer 应正常汉化');
+assert.equal(toolbarLocalCheckoutText.nodeValue, '本地检出', '同栏右侧 Local Checkout 应正常汉化');
+assert.equal(triggerTooltipText.nodeValue, '选择项目', '外部 Select Project 悬浮提示应正常汉化');
+
+// 验证动态切换项目名（MutationObserver characterData）同样受保护且不毒化 skipCache
+triggerDevText.nodeValue = 'Tools';
+notifyObserver([{ type: 'characterData', target: triggerDevText }]);
+assert.equal(triggerDevText.nodeValue, 'Tools', '输入框上方触发按钮动态切换为 Tools 时仍须跳过');
+
+// 17. 项目选择器下拉列表项（project-selector-item）与克隆子菜单项（clone-remote / clone-local）：
+// 精准保护项目名与 title，同时放行右侧 Project Settings 设置按钮与克隆副标题（Clone locally / Open in Remote）
+const dropdownDevText = createText('Developer');
+const dropdownDevSpan = createElement('span', { class: 'truncate flex-1 min-w-0', title: 'Developer' }, [dropdownDevText]);
+const dropdownItemSettingsBtn = createElement('button', {
+  type: 'button',
+  'data-testid': 'project-selector-item-settings',
+  'aria-label': 'Project Settings',
+  title: 'Project Settings',
+}, [createElement('svg', {}, [])]);
+const dropdownDevItem = createElement('div', {
+  role: 'menuitem',
+  'data-testid': 'project-selector-item',
+  'data-project-name': 'Developer',
+}, [
+  createElement('span', { 'data-icon': '', class: 'relative inline-flex shrink-0' }, [
+    createElement('span', { class: 'google-symbols', 'data-project-icon': 'folder' }, [createText('folder')]),
+  ]),
+  dropdownDevSpan,
+  createElement('span', { class: 'ml-auto flex shrink-0 items-center gap-2' }, [
+    dropdownItemSettingsBtn,
+    createElement('span', {}, [createElement('svg', { 'data-testid': 'menu-item-check' }, [])]),
+  ]),
+]);
+
+const dropdownPseudoRunText = createText('Run');
+const dropdownPseudoSpan = createElement('span', { class: 'truncate flex-1 min-w-0', title: 'Run' }, [dropdownPseudoRunText]);
+const dropdownPseudoItem = createElement('div', {
+  role: 'menuitem',
+  'data-testid': 'project-selector-item',
+  'data-project-name': 'Run',
+  'data-pseudo-project': 'true',
+}, [
+  createElement('svg', {}, []),
+  dropdownPseudoSpan,
+]);
+
+const cloneRemoteDevText = createText('Developer');
+const cloneRemoteSubText = createText('Clone locally');
+const cloneRemoteItem = createElement('div', {
+  role: 'menuitem',
+  'data-testid': 'project-selector-clone-remote-item',
+  'data-project-name': 'Developer',
+}, [
+  createElement('span', { 'data-icon': '' }, [createElement('svg', {}, [])]),
+  createElement('span', { class: 'flex min-w-0 flex-col' }, [
+    createElement('span', { class: 'truncate' }, [
+      createElement('span', { class: 'truncate flex-1 min-w-0' }, [cloneRemoteDevText]),
+    ]),
+    createElement('span', { class: 'truncate text-sm text-muted-foreground' }, [cloneRemoteSubText]),
+  ]),
+]);
+
+const cloneLocalRunText = createText('Run');
+const cloneLocalSubText = createText('Cloning locally…');
+const cloneLocalItem = createElement('div', {
+  role: 'menuitem',
+  'data-testid': 'project-selector-clone-local-item',
+  'data-project-name': 'Run',
+}, [
+  createElement('span', { 'data-icon': '' }, [createElement('svg', {}, [])]),
+  createElement('span', { class: 'flex min-w-0 flex-col' }, [
+    createElement('span', { class: 'truncate' }, [
+      createElement('span', { class: 'truncate flex-1 min-w-0' }, [cloneLocalRunText]),
+    ]),
+    createElement('span', { class: 'truncate text-sm text-muted-foreground' }, [cloneLocalSubText]),
+  ]),
+]);
+
+const dropdownList = createElement('div', { 'data-testid': 'project-selector-list' }, [
+  dropdownDevItem,
+  dropdownPseudoItem,
+  cloneRemoteItem,
+  cloneLocalItem,
+]);
+body.childNodes.push(dropdownList);
+dropdownList.parentElement = body;
+translateNode(dropdownList);
+
+assert.equal(dropdownDevText.nodeValue, 'Developer', '下拉列表项目名 Developer 必须跳过');
+assert.equal(dropdownDevSpan.getAttribute('title'), 'Developer', '下拉列表项目名 title 属性必须跳过');
+assert.equal(dropdownDevItem.childNodes[0].childNodes[0].childNodes[0].nodeValue, 'folder', '下拉列表图标 ligature 不得被误译');
+assert.equal(dropdownItemSettingsBtn.getAttribute('title'), '项目设置', '下拉项目右侧悬停设置按钮 title 应正常汉化');
+assert.equal(dropdownItemSettingsBtn.getAttribute('aria-label'), '项目设置', '下拉项目右侧悬停设置按钮 aria-label 应正常汉化');
+assert.equal(dropdownPseudoRunText.nodeValue, 'Run', '下拉列表伪项目项撞 isActionPill 的 Run 必须跳过');
+assert.equal(dropdownPseudoSpan.getAttribute('title'), 'Run');
+assert.equal(cloneRemoteDevText.nodeValue, 'Developer', 'Clone from Remote 子菜单项目名 Developer 必须跳过');
+assert.equal(cloneRemoteSubText.nodeValue, '克隆到本地', 'Clone from Remote 子菜单副标题 Clone locally 应正常汉化');
+assert.equal(cloneLocalRunText.nodeValue, 'Run', 'Clone from This Computer 子菜单项目名 Run 必须跳过');
+
+// 验证克隆项内层文本动态变更（characterData）依然受保护
+cloneRemoteDevText.nodeValue = 'Docs';
+notifyObserver([{ type: 'characterData', target: cloneRemoteDevText }]);
+assert.equal(cloneRemoteDevText.nodeValue, 'Docs', '克隆子菜单项目名动态变更后仍须跳过');
+
+// 18. 对话菜单「Move to Project」子菜单中的项目勾选项（conversation-project-*）：
+// 仅保护单数 conversation-project-*，不影响复数 conversation-projects-submenu / new / remove
+const moveMenuTriggerText = createText('Move to Project');
+const moveMenuTrigger = createElement('div', { 'data-testid': 'conversation-projects-submenu' }, [
+  createElement('span', { class: 'truncate' }, [moveMenuTriggerText]),
+]);
+const moveProjDevText = createText('Developer');
+const moveProjDevItem = createElement('div', { 'data-testid': 'conversation-project-proj-1' }, [
+  createElement('span', { class: 'truncate' }, [moveProjDevText]),
+  createElement('span', { class: 'ml-auto flex shrink-0 items-center gap-2 pl-4' }, [
+    createElement('svg', { 'data-testid': 'menu-item-check' }, []),
+  ]),
+]);
+const moveProjRunText = createText('Run');
+const moveProjRunItem = createElement('div', { 'data-testid': 'conversation-project-proj-2' }, [
+  createElement('span', { class: 'truncate' }, [moveProjRunText]),
+]);
+const moveProjUnknownText = createText('Unknown Project');
+const moveProjUnknownItem = createElement('div', { 'data-testid': 'conversation-project-unknown' }, [
+  createElement('span', { class: 'truncate' }, [moveProjUnknownText]),
+]);
+const moveMenuNewText = createText('New Project...');
+const moveMenuNewItem = createElement('div', { 'data-testid': 'conversation-projects-new' }, [
+  createElement('span', { class: 'truncate' }, [moveMenuNewText]),
+]);
+const moveMenuRemoveText = createText('Remove from Project');
+const moveMenuRemoveItem = createElement('div', { 'data-testid': 'conversation-projects-remove' }, [
+  createElement('span', { class: 'truncate' }, [moveMenuRemoveText]),
+]);
+const moveMenuContainer = createElement('div', { role: 'menu' }, [
+  moveMenuTrigger,
+  moveProjDevItem,
+  moveProjRunItem,
+  moveProjUnknownItem,
+  moveMenuNewItem,
+  moveMenuRemoveItem,
+]);
+body.childNodes.push(moveMenuContainer);
+moveMenuContainer.parentElement = body;
+translateNode(moveMenuContainer);
+
+assert.equal(moveMenuTriggerText.nodeValue, '移动到项目', 'conversation-projects-submenu 应正常汉化');
+assert.equal(moveProjDevText.nodeValue, 'Developer', 'conversation-project-* 真实项目名 Developer 必须跳过');
+assert.equal(moveProjRunText.nodeValue, 'Run', 'conversation-project-* 撞 isActionPill 的项目名 Run 必须跳过');
+assert.equal(moveProjUnknownText.nodeValue, '未知项目', 'conversation-project-* 中的 Unknown Project 占位应放行汉化');
+assert.equal(moveMenuRemoveText.nodeValue, '从项目中移除', 'conversation-projects-remove 应正常汉化');
+
+console.log('PASS: 左侧项目栏及悬浮卡片/设置页(桌面+窄屏)/面包屑/项目选择器/移动菜单项目名隔离与系统内置分组放行回归测试全部通过');
