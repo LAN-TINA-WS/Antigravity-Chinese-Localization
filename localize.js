@@ -1992,8 +1992,14 @@ function describeSshConfigProblem(file, { what, why, fix }) {
         try {
             const raw = fs.readFileSync(path_1.default.join(__dirname, 'preload.js'), 'utf-8');
             const marker = '// Antigravity 2.0 Chinese Localization Engine';
+            const endMarker = '// Antigravity 2.0 Chinese Localization Engine End';
             const idx = raw.indexOf(marker);
-            globalThis.__agyCachedPluginDomI18nSource = idx !== -1 ? raw.slice(idx) : '';
+            let slice = idx !== -1 ? raw.slice(idx) : '';
+            const endIdx = slice.indexOf(endMarker);
+            if (endIdx !== -1) {
+                slice = slice.slice(0, endIdx + endMarker.length);
+            }
+            globalThis.__agyCachedPluginDomI18nSource = slice;
         }
         catch {
             globalThis.__agyCachedPluginDomI18nSource = '';

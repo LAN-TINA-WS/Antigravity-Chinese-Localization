@@ -3360,11 +3360,10 @@
       }
       cur = cur.parentElement;
     }
+    // 仅读取 textContent（真实浏览器中零回流），无 textContent 属性的 mock 节点回退 innerText
     const rawLabel = (
       headerEl.getAttribute('data-project-label') ||
-      headerEl.innerText ||
-      headerEl.textContent ||
-      ''
+      (typeof headerEl.textContent === 'string' ? headerEl.textContent : (headerEl.innerText || ''))
     ).trim().toLowerCase();
     if (rawLabel === 'unknown project' || rawLabel === '未知项目') {
       return true;
@@ -3456,6 +3455,39 @@
     return false;
   }
 
+  function readElementTextNoReflow(el) {
+    if (!el) return '';
+    if (typeof el.textContent === 'string') return el.textContent;
+    return el.innerText || '';
+  }
+
+  // 有界短文本读取：最多访问 24 个元素或收集 48 个字符即早退，彻底杜绝超长步骤容器拼接几十万字字符串
+  function readShortTextNoReflow(el, maxLen = 48) {
+    if (!el) return '';
+    if (!el.childNodes || el.childNodes.length === 0) {
+      return readElementTextNoReflow(el);
+    }
+    let acc = '';
+    const stack = [el];
+    let visited = 0;
+    while (stack.length > 0) {
+      const cur = stack.pop();
+      if (!cur) continue;
+      if (cur.nodeType === Node.TEXT_NODE) {
+        if (cur.nodeValue) {
+          acc += cur.nodeValue;
+          if (acc.length > maxLen) return acc;
+        }
+      } else if (cur.nodeType === Node.ELEMENT_NODE && cur.childNodes) {
+        if (++visited > 24) return acc + '\uFFFF';
+        for (let i = cur.childNodes.length - 1; i >= 0; i--) {
+          stack.push(cur.childNodes[i]);
+        }
+      }
+    }
+    return acc;
+  }
+
   function isProjectGlyphLabelSelf(cur) {
     if (!cur || cur.nodeType !== Node.ELEMENT_NODE) return false;
     // 保护回退为 google-symbols 字体图标的 [data-project-glyph] 节点自身（避免 ligature 如 "folder"/"cloud" 被译为汉字破坏图标）
@@ -3467,7 +3499,7 @@
     }
     const prev = getPreviousElementSibling(cur);
     if (!isProjectGlyphIconNode(prev)) return false;
-    const rawLabel = (cur.innerText || cur.textContent || '').trim().toLowerCase();
+    const rawLabel = readElementTextNoReflow(cur).trim().toLowerCase();
     return !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
   }
 
@@ -3499,7 +3531,7 @@
       }
     }
     if (!headingEl) return false;
-    const text = (headingEl.innerText || headingEl.textContent || '').trim().toLowerCase();
+    const text = readElementTextNoReflow(headingEl).trim().toLowerCase();
     return allowedTitles.has(text);
   }
 
@@ -3514,7 +3546,7 @@
   // 2) 兼容桌面设置侧栏（settings-sidebar）：保留顶部 Settings 下官方 Developer、Show All、Not in Project 及底部 Provide Feedback 正常汉化
   function isSettingsProjectNavButton(navBtn) {
     if (!isSettingsNavButton(navBtn)) return false;
-    const rawLabel = (navBtn.innerText || navBtn.textContent || '').trim().toLowerCase();
+    const rawLabel = readElementTextNoReflow(navBtn).trim().toLowerCase();
     if (PROJECT_PLACEHOLDER_LABELS.has(rawLabel)) return false;
 
     // 窄屏平铺模式：向前仅跨越同类 settings-nav-item-* 按钮，遇到 <h2> 容器即判定，遇其他隔断元素立即停止
@@ -3578,7 +3610,7 @@
     }
     const aria = (next.getAttribute('aria-label') || '').trim();
     if (!EDIT_PROJECT_NAME_ARIA_RE.test(aria)) return false;
-    const rawLabel = (cur.innerText || cur.textContent || '').trim().toLowerCase();
+    const rawLabel = readElementTextNoReflow(cur).trim().toLowerCase();
     return !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
   }
 
@@ -3599,7 +3631,7 @@
     if (seg.getAttribute('data-testid') !== 'breadcrumb-segment') return false;
     const aria = (seg.getAttribute('aria-label') || '').trim();
     if (!PROJECT_BREADCRUMB_ARIA_RE.test(aria)) return false;
-    const rawLabel = (seg.innerText || seg.textContent || '').trim().toLowerCase();
+    const rawLabel = readElementTextNoReflow(seg).trim().toLowerCase();
     return !BREADCRUMB_PLACEHOLDER_LABELS.has(rawLabel);
   }
 
@@ -3683,7 +3715,7 @@
     // 斜杠命令与提及建议菜单触发词标签（动态复用节点，绝不写入 skipCache 防止缓存毒化）
     const isMenuOptionLabel = element.closest && element.closest('[data-testid="menu-option-label"]');
     if (isMenuOptionLabel) {
-      const labelText = (isMenuOptionLabel.innerText || isMenuOptionLabel.textContent || '').trim();
+      const labelText = readElementTextNoReflow(isMenuOptionLabel).trim();
       return !MENTION_CATEGORIES.has(labelText);
     }
 
@@ -3701,10 +3733,21 @@
       return false;
     }
 
+    // 受保护区命中缓存快速返回：已确认处于代码/Markdown正文/用户消息/思考链内部时，绝不再拼接子树文本
+    if (skipCache.get(element) === true) {
+      return true;
+    }
+
     // 选中文本快捷引用气泡（Quote / Ask /btw）与执行步骤状态药丸（必须校验不处于代码/Markdown正文/用户消息/思考链等受保护容器内，依赖动态文本不写 skipCache）
-    const textContent = (element.innerText || element.textContent || '').trim();
-    const isQuoteOrBtwBubble = textContent.length <= 40 && /^(?:Quote|Ask(?:\s+|\s*\/\s*)btw)(?:\s+(?:Ctrl|Cmd)(?:\+[a-zA-Z0-9]+)+)?$/i.test(textContent);
-    const isActionPill = textContent.length <= 40 && /^(Explored|Exploring|Ran|Run|Running|Viewed|Viewing|Edited|Editing|Thought|Thinking|Working|Done|Analyzed|Analyzing|Created|Creating|Deleted|Deleting|Waiting|Rejected|Errored|Completed|Used)(\s+(command|commands|files?|tools?|artifacts?))?$/i.test(textContent);
+    // 仅对轻量叶子/浅容器读取 textContent（零回流），彻底避免对 document.body / 超长对话容器反复序列化整棵子树文本
+    const canBeShortPill =
+      element !== document.body &&
+      element !== document.documentElement &&
+      !(element.childElementCount > 4) &&
+      !(element.childNodes && element.childNodes.length > 8);
+    const textContent = canBeShortPill ? readShortTextNoReflow(element, 48).trim() : '';
+    const isQuoteOrBtwBubble = canBeShortPill && textContent.length <= 40 && /^(?:Quote|Ask(?:\s+|\s*\/\s*)btw)(?:\s+(?:Ctrl|Cmd)(?:\+[a-zA-Z0-9]+)+)?$/i.test(textContent);
+    const isActionPill = canBeShortPill && textContent.length <= 40 && /^(Explored|Exploring|Ran|Run|Running|Viewed|Viewing|Edited|Editing|Thought|Thinking|Working|Done|Analyzed|Analyzing|Created|Creating|Deleted|Deleting|Waiting|Rejected|Errored|Completed|Used)(\s+(command|commands|files?|tools?|artifacts?))?$/i.test(textContent);
     if (isQuoteOrBtwBubble || isActionPill) {
       let inProtectedAncestor = false;
       let checkCur = element;
@@ -3979,20 +4022,22 @@
     return true;
   }
 
-  // 收集元素下安全的叶子文本节点（排除 SVG / STYLE / SCRIPT / MATH，绝不触碰 Element 结构）
-  function collectSafeLeafTextNodes(rootEl, out) {
-    if (!rootEl || !rootEl.childNodes) return;
+  // 收集元素下安全的叶子文本节点（排除 SVG / STYLE / SCRIPT / MATH，绝不触碰 Element 结构；带上限早退防止 O(N*depth) 遍历）
+  function collectSafeLeafTextNodes(rootEl, out, maxCount = 9) {
+    if (!rootEl || !rootEl.childNodes || out.length >= maxCount) return;
     for (let i = 0; i < rootEl.childNodes.length; i++) {
+      if (out.length >= maxCount) return;
       const ch = rootEl.childNodes[i];
       if (ch.nodeType === Node.TEXT_NODE) {
         if (ch.nodeValue && ch.nodeValue.trim()) {
           out.push(ch);
+          if (out.length >= maxCount) return;
         }
       } else if (ch.nodeType === Node.ELEMENT_NODE) {
         if (isNonComposerProtectedSelf(ch)) {
           continue;
         }
-        collectSafeLeafTextNodes(ch, out);
+        collectSafeLeafTextNodes(ch, out, maxCount);
       }
     }
   }
@@ -4205,31 +4250,33 @@
       });
 
       // 空状态提示收敛（纯叶子 TEXT_NODE 改写，严禁赋值 ELEMENT_NODE.textContent，保留 <svg> 与全部 React Fiber 子元素引用）
-      const leafTexts = [];
-      collectSafeLeafTextNodes(node, leafTexts);
-      if (leafTexts.length >= 1 && leafTexts.length <= 8) {
-        const joinedLeafText = leafTexts.map(t => t.nodeValue).join('').trim();
-        const emptyStateMatch = joinedLeafText.match(/^No\s+(automations?|automation|自动化|conversations?|conversation|对话|groups?|group|分组)\s+yet[.。]?$/i);
-        if (emptyStateMatch) {
-          const emptyStateMap = {
-            automations: '暂无自动化',
-            automation: '暂无自动化',
-            '自动化': '暂无自动化',
-            conversations: '暂无对话',
-            conversation: '暂无对话',
-            '对话': '暂无对话',
-            groups: '暂无分组',
-            group: '暂无分组',
-            '分组': '暂无分组'
-          };
-          const targetText = emptyStateMap[emptyStateMatch[1].toLowerCase()] || '暂无自动化';
-          leafTexts[0].nodeValue = targetText;
-          translatedNodes.set(leafTexts[0], targetText);
-          for (let i = 1; i < leafTexts.length; i++) {
-            leafTexts[i].nodeValue = '';
-            translatedNodes.set(leafTexts[i], '');
+      if (node !== document.body && node !== document.documentElement && !(node.childElementCount > 12)) {
+        const leafTexts = [];
+        collectSafeLeafTextNodes(node, leafTexts, 9);
+        if (leafTexts.length >= 1 && leafTexts.length <= 8) {
+          const joinedLeafText = leafTexts.map(t => t.nodeValue).join('').trim();
+          const emptyStateMatch = joinedLeafText.match(/^No\s+(automations?|automation|自动化|conversations?|conversation|对话|groups?|group|分组)\s+yet[.。]?$/i);
+          if (emptyStateMatch) {
+            const emptyStateMap = {
+              automations: '暂无自动化',
+              automation: '暂无自动化',
+              '自动化': '暂无自动化',
+              conversations: '暂无对话',
+              conversation: '暂无对话',
+              '对话': '暂无对话',
+              groups: '暂无分组',
+              group: '暂无分组',
+              '分组': '暂无分组'
+            };
+            const targetText = emptyStateMap[emptyStateMatch[1].toLowerCase()] || '暂无自动化';
+            leafTexts[0].nodeValue = targetText;
+            translatedNodes.set(leafTexts[0], targetText);
+            for (let i = 1; i < leafTexts.length; i++) {
+              leafTexts[i].nodeValue = '';
+              translatedNodes.set(leafTexts[i], '');
+            }
+            return;
           }
-          return;
         }
       }
 
@@ -4610,3 +4657,4 @@
     startObserver();
   }
 })();
+// Antigravity 2.0 Chinese Localization Engine End
