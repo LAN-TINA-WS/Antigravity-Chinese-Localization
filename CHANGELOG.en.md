@@ -4,6 +4,21 @@ This document tracks all version releases, core architecture adaptations, and fe
 
 ---
 
+## v2.35.2 (2026-11-26) — Official v2.35.2 Sync: Mid-Turn Model Switch Notices & Navigation/Error Prefix Rules
+
+### 1. Official v2.35.2 Verification & Version Baseline Alignment
+- **Main-Process (`app.asar`) & Embedded Web UI Diff Audit**: Diffed all 180 non-`node_modules` files in the official `v2.35.2` `app.asar` against `v2.35.1`; confirmed zero added/removed/changed main-process JS modules and `0` skips across all 231 patch points in `localize.js`; inspected `language_server.exe` (`CL: 1029311855`) embedded `main.js` (`12,798,822` bytes) and identified the new mid-turn `ModelSelector` switch notices.
+- **Version Gate & LF-Slim `app.asar.ready` Rebuild**: Bumped `localize.js` (`CURRENT_VERSION` / `RELEASE_VERSION`), `package.json`, `extracted/package.json`, `index.html`, and LF-slim `app.asar.ready` (`8,029,213` bytes / `7.66 MiB`) to **`2.35.2`** for seamless `--auto-restore` and zero-Node offline compatibility.
+
+### 2. Web UI v2.35.2 Coverage & Dynamic Error Rules
+- **Mid-Turn Model Switch Notices**: Added `Applies to /btw and messages sent after this turn`, `Applies to messages sent after this turn`, and `Model cannot be changed while the agent is running`.
+- **Navigation Blocks, Sign-In Prompts & Operation Error Prefixes (10 `$`-Safe Dynamic Rules)**: Added `Blocked navigation to "<url>"`, `Sign in from the <panel> panel.`, `Sign in to use <app>!`, and project/workspace/settings/permissions/folder/MCP/agent failure prefixes (`Failed to create/save/unarchive/delete ...:`, `Could not attach folder/attach image/open folder:`, `Error installing/refreshing/updating/restarting ...:`, `Added MCP server "...", but it failed to start:`, `Failed to send interaction:`).
+
+### 3. End-to-End Verification & Gate
+- Zero-duplicate dictionary expanded to **`4,928` entries**; added `tests/ticket-60-v2352-features.test.js` in `tests/run-all-tests.js` covering `v2.35.2` metadata, `app.asar.ready` verification, `$`-safety, and anti-false-positive regressions.
+
+---
+
 ## v2.35.1 (2026-11-25) — Official v2.35.1 Sync, AI Chat Markdown & Inline-Code Isolation (Issue #80) & Web UI Coverage Expansion
 
 ### 1. Official v2.35.1 Verification & Version Baseline Alignment (Merged PR #82 by `@Justin-Mai`, with thanks to PR #83 by `@wyun100`)

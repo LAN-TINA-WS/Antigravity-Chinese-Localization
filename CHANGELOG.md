@@ -4,6 +4,21 @@
 
 ---
 
+## v2.35.2 (2026-11-26) — 同步适配官方 2.35.2 版本：模型切换运行提示与导航/操作报错动态规则补齐
+
+### 1. 官方 v2.35.2 差异核验与版本基线对齐
+- **主进程 (`app.asar`) 与内嵌前端逐文件比对**：对比官方 `v2.35.2` 原版 `app.asar` 全部 180 个非 `node_modules` 文件，确认主进程业务逻辑与 `v2.35.1` 保持一致（`0` 新增/删除文件），`localize.js` 全量 231 处主进程补丁点实现 `0` 跳过 100% 命中；同步分析 `language_server.exe`（`CL: 1029311855`）内嵌前端 `main.js`（`12,798,822` 字节），精准定位模型选择器运行中切换提示更新。
+- **版本门禁与轻量预编译包升级**：将 `localize.js`（`CURRENT_VERSION` / `RELEASE_VERSION`）、`package.json`、`extracted/package.json`、`index.html` 与 LF 轻量规格 `app.asar.ready`（`8,029,213` 字节 / `7.66 MiB`）同步升级至 **`2.35.2`**，保障 `--auto-restore` 与无 Node.js 离线模式对 `v2.35.2` 客户端的精准版本校验放行。
+
+### 2. Web UI v2.35.2 新增文案与周边动态报错规则补齐
+- **模型选择器运行中切换提示**：新增 `Applies to /btw and messages sent after this turn`（➔ `适用于 /btw 及本回合之后发送的消息`）、`Applies to messages sent after this turn`（➔ `适用于本回合之后发送的消息`）及 `Model cannot be changed while the agent is running`（➔ `智能体运行期间无法切换模型`）。
+- **导航拦截、登录面板与操作失败错误前缀（10 组 `$`-安全动态规则）**：补齐 `Blocked navigation to "<url>"`、`Sign in from the <panel> panel.`、`Sign in to use <app>!`，以及项目/工作区/设置/权限/文件夹/MCP/智能体等常见报错前缀（`Failed to create/save/unarchive/delete ...:`、`Could not attach folder/attach image/open folder:`、`Error installing/refreshing/updating/restarting ...:`、`Added MCP server "...", but it failed to start:`、`Failed to send interaction:`）。
+
+### 3. 全链路验证与测试门禁
+- 词典扩充至 **`4,928` 键 `0` 重复**；新增 `tests/ticket-60-v2352-features.test.js` 专项测试套件并注册至 `tests/run-all-tests.js`，同步校验 `v2.35.2` 版本元数据、`app.asar.ready` 规格与 `$`-安全/防误伤回归。
+
+---
+
 ## v2.35.1 (2026-11-25) — 同步适配官方 2.35.1 版本、根治 AI 正文与行内代码误译（Issue #80）及全量补齐反馈/Hooks/引导/查看器/Git/调度动态文案
 
 ### 1. 官方 v2.35.1 差异核验与版本基线对齐（整合 PR #82 `@Justin-Mai`，同步致谢 PR #83 `@wyun100`）
