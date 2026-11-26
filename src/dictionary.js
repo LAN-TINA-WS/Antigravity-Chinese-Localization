@@ -4970,7 +4970,12 @@ const dictionary = {
     "Schedules only.": "仅定时计划。",
     "Generating commit message...": "正在生成提交信息...",
     "Committing...": "正在提交...",
-    "All changes since the branch point": "自当前分支起点以来的所有更改"
+    "All changes since the branch point": "自当前分支起点以来的所有更改",
+
+    // ===== Ticket-60: Antigravity v2.35.2 模型切换提示与高频动态报错前缀补漏 =====
+    "Applies to /btw and messages sent after this turn": "适用于 /btw 及本回合之后发送的消息",
+    "Applies to messages sent after this turn": "适用于本回合之后发送的消息",
+    "Model cannot be changed while the agent is running": "智能体运行期间无法切换模型"
 };
 
 const coreWords = {
