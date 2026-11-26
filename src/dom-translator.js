@@ -3461,24 +3461,42 @@
     return el.innerText || '';
   }
 
-  // 有界短文本读取：最多访问 24 个元素或收集 48 个字符即早退，彻底杜绝超长步骤容器拼接几十万字字符串
+  const SHORT_TEXT_SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'SVG', 'MATH']);
+
+  // 有界短文本读取：最多访问 24 个元素或收集 48 个字符即早退，跳过 SVG/STYLE/SCRIPT 子树并在跨元素拼接时保留空白分隔
   function readShortTextNoReflow(el, maxLen = 48) {
     if (!el) return '';
     if (!el.childNodes || el.childNodes.length === 0) {
       return readElementTextNoReflow(el);
     }
     let acc = '';
+    let prevTextParent = null;
     const stack = [el];
     let visited = 0;
     while (stack.length > 0) {
       const cur = stack.pop();
       if (!cur) continue;
       if (cur.nodeType === Node.TEXT_NODE) {
-        if (cur.nodeValue) {
-          acc += cur.nodeValue;
-          if (acc.length > maxLen) return acc;
+        const raw = cur.nodeValue;
+        if (raw) {
+          const normalized = acc.length === 0 ? raw.replace(/^\s+/, '') : raw;
+          if (normalized) {
+            if (
+              acc.length > 0 &&
+              cur.parentElement !== prevTextParent &&
+              !/\s$/.test(acc) &&
+              !/^\s/.test(normalized)
+            ) {
+              acc += ' ';
+            }
+            acc += normalized;
+            prevTextParent = cur.parentElement || null;
+            if (acc.length > maxLen) return acc;
+          }
         }
       } else if (cur.nodeType === Node.ELEMENT_NODE && cur.childNodes) {
+        const tag = (cur.tagName || '').toUpperCase();
+        if (cur !== el && SHORT_TEXT_SKIP_TAGS.has(tag)) continue;
         if (++visited > 24) return acc + '\uFFFF';
         for (let i = cur.childNodes.length - 1; i >= 0; i--) {
           stack.push(cur.childNodes[i]);
@@ -3746,8 +3764,8 @@
       !(element.childElementCount > 4) &&
       !(element.childNodes && element.childNodes.length > 8);
     const textContent = canBeShortPill ? readShortTextNoReflow(element, 48).trim() : '';
-    const isQuoteOrBtwBubble = canBeShortPill && textContent.length <= 40 && /^(?:Quote|Ask(?:\s+|\s*\/\s*)btw)(?:\s+(?:Ctrl|Cmd)(?:\+[a-zA-Z0-9]+)+)?$/i.test(textContent);
-    const isActionPill = canBeShortPill && textContent.length <= 40 && /^(Explored|Exploring|Ran|Run|Running|Viewed|Viewing|Edited|Editing|Thought|Thinking|Working|Done|Analyzed|Analyzing|Created|Creating|Deleted|Deleting|Waiting|Rejected|Errored|Completed|Used)(\s+(command|commands|files?|tools?|artifacts?))?$/i.test(textContent);
+    const isQuoteOrBtwBubble = textContent.length <= 40 && /^(?:Quote|Ask(?:\s+|\s*\/\s*)btw)(?:\s+(?:Ctrl|Cmd)(?:\+[a-zA-Z0-9]+)+)?$/i.test(textContent);
+    const isActionPill = textContent.length <= 40 && /^(Explored|Exploring|Ran|Run|Running|Viewed|Viewing|Edited|Editing|Thought|Thinking|Working|Done|Analyzed|Analyzing|Created|Creating|Deleted|Deleting|Waiting|Rejected|Errored|Completed|Used)(\s+(command|commands|files?|tools?|artifacts?))?$/i.test(textContent);
     if (isQuoteOrBtwBubble || isActionPill) {
       let inProtectedAncestor = false;
       let checkCur = element;
@@ -4022,11 +4040,11 @@
     return true;
   }
 
-  // 收集元素下安全的叶子文本节点（排除 SVG / STYLE / SCRIPT / MATH，绝不触碰 Element 结构；带上限早退防止 O(N*depth) 遍历）
-  function collectSafeLeafTextNodes(rootEl, out, maxCount = 9) {
-    if (!rootEl || !rootEl.childNodes || out.length >= maxCount) return;
+  // 收集元素下安全的叶子文本节点（排除 SVG / STYLE / SCRIPT / MATH，绝不触碰 Element 结构；双上限早退防止 O(N*depth) 与空壳子树遍历）
+  function collectSafeLeafTextNodes(rootEl, out, maxCount = 9, budget = { visited: 0, maxVisited: 32 }) {
+    if (!rootEl || !rootEl.childNodes || out.length >= maxCount || budget.visited >= budget.maxVisited) return;
     for (let i = 0; i < rootEl.childNodes.length; i++) {
-      if (out.length >= maxCount) return;
+      if (out.length >= maxCount || budget.visited >= budget.maxVisited) return;
       const ch = rootEl.childNodes[i];
       if (ch.nodeType === Node.TEXT_NODE) {
         if (ch.nodeValue && ch.nodeValue.trim()) {
@@ -4034,10 +4052,11 @@
           if (out.length >= maxCount) return;
         }
       } else if (ch.nodeType === Node.ELEMENT_NODE) {
+        if (++budget.visited > budget.maxVisited) return;
         if (isNonComposerProtectedSelf(ch)) {
           continue;
         }
-        collectSafeLeafTextNodes(ch, out, maxCount);
+        collectSafeLeafTextNodes(ch, out, maxCount, budget);
       }
     }
   }

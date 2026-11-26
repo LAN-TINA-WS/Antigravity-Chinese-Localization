@@ -394,14 +394,25 @@ function replaceInFile(filePath, target, replacement) {
 function applyTranslations(targetExtractDir = EXTRACT_DIR) {
   log('开始对解压的文件进行汉化替换和代码注入...');
 
-  function injectOrUpdate(filePath, content, startMarker, desc) {
+  function injectOrUpdate(filePath, content, startMarker, desc, endMarker = null) {
     if (!fs.existsSync(filePath)) {
       throw new Error(`找不到要修改的文件: ${filePath}`);
     }
     let existing = fs.readFileSync(filePath, 'utf-8');
     const markerIndex = existing.indexOf(startMarker);
     if (markerIndex !== -1) {
-      existing = existing.substring(0, markerIndex).trimEnd() + '\n\n' + content;
+      const before = existing.substring(0, markerIndex).trimEnd();
+      let after = '';
+      if (endMarker) {
+        const endIdx = existing.indexOf(endMarker, markerIndex);
+        if (endIdx !== -1) {
+          const trailing = existing.substring(endIdx + endMarker.length).replace(/^\r?\n+/, '');
+          if (trailing) {
+            after = '\n\n' + trailing;
+          }
+        }
+      }
+      existing = before + '\n\n' + content + after;
       fs.writeFileSync(filePath, existing, 'utf-8');
       log(`已更新 ${path.basename(filePath)} 中的 ${desc} 为最新版本。`);
     } else {
@@ -410,12 +421,15 @@ function applyTranslations(targetExtractDir = EXTRACT_DIR) {
     }
   }
 
+  const DOM_ENGINE_START_MARKER = '// Antigravity 2.0 Chinese Localization Engine';
+  const DOM_ENGINE_END_MARKER = '// Antigravity 2.0 Chinese Localization Engine End';
+
   // 1. Localize & Inject DOM Localization in dist/preload.js
   const preloadPath = path.join(targetExtractDir, 'dist', 'preload.js');
   // Patch official preload SSH fallback error before appending/updating the injected DOM engine
   if (fs.existsSync(preloadPath)) {
     const rawPreload = fs.readFileSync(preloadPath, 'utf-8');
-    const markerIdx = rawPreload.indexOf('// Antigravity 2.0 Chinese Localization Engine');
+    const markerIdx = rawPreload.indexOf(DOM_ENGINE_START_MARKER);
     const headPart = markerIdx !== -1 ? rawPreload.slice(0, markerIdx) : rawPreload;
     const tailPart = markerIdx !== -1 ? rawPreload.slice(markerIdx) : '';
     const enSshFallback = 'message: "Couldn\'t connect to the SSH host. See the app log.",';
@@ -425,11 +439,11 @@ function applyTranslations(targetExtractDir = EXTRACT_DIR) {
       log('已成功修改 preload.js (SSH 错误提示)');
     }
   }
-  injectOrUpdate(preloadPath, DOM_TRANSLATOR_INJECTION, '// Antigravity 2.0 Chinese Localization Engine', 'Web UI 实时汉化引擎');
+  injectOrUpdate(preloadPath, DOM_TRANSLATOR_INJECTION, DOM_ENGINE_START_MARKER, 'Web UI 实时汉化引擎', DOM_ENGINE_END_MARKER);
 
   // 2. Inject DOM Localization in dist/ideInstall/wizardPreload.js
   const wizardPreloadPath = path.join(targetExtractDir, 'dist', 'ideInstall', 'wizardPreload.js');
-  injectOrUpdate(wizardPreloadPath, DOM_TRANSLATOR_INJECTION, '// Antigravity 2.0 Chinese Localization Engine', '新版向导 Web UI 汉化引擎');
+  injectOrUpdate(wizardPreloadPath, DOM_TRANSLATOR_INJECTION, DOM_ENGINE_START_MARKER, '新版向导 Web UI 汉化引擎', DOM_ENGINE_END_MARKER);
 
   // 3. Localize dist/menu.js (Native Application Menu)
   const menuPath = path.join(targetExtractDir, 'dist', 'menu.js');

@@ -127,10 +127,15 @@ for (let step = 0; step < 356; step++) {
 }
 
 const injCode = buildDomTranslatorInjection();
-const instrumented = injCode.replace(
-  'function translateNode(node) {',
-  'globalThis.__testTranslateNode = translateNode; function translateNode(node) {'
-);
+const instrumented = injCode
+  .replace(
+    'function translateNode(node) {',
+    'globalThis.__testTranslateNode = translateNode; function translateNode(node) {'
+  )
+  .replace(
+    'function collectSafeLeafTextNodes(',
+    'globalThis.__testCollectSafeLeafTextNodes = collectSafeLeafTextNodes; function collectSafeLeafTextNodes('
+  );
 const perfSandbox = {
   console,
   setTimeout,
@@ -240,6 +245,68 @@ try {
 check('截断后的子框架汉化脚本语法合法', sliceSyntaxOk, true);
 check('截断后的子框架汉化脚本不携带末尾第三方 electron_1 代码', sliced.includes('electron_1'), false);
 check('截断后的子框架汉化脚本不携带末尾第三方 API 暴露代码', sliced.includes('thirdPartyAPI'), false);
+
+// -----------------------------------------------------------------------------
+// 4. 边界加固：SVG 图标药丸、多 Span 快捷引用气泡、前导缩进、空壳元素预算与重复注入保留尾部
+// -----------------------------------------------------------------------------
+console.log('\n--- 4. 边界加固专项校验 ---');
+
+// 4.1 带 30 个 <path> 与 <title> 的 SVG 动作药丸按钮
+const svgPillBtn = new PerfMockNode(1, 'BUTTON');
+const svgEl = svgPillBtn.appendChild(new PerfMockNode(1, 'SVG'));
+const svgTitle = svgEl.appendChild(new PerfMockNode(1, 'TITLE'));
+svgTitle.appendChild(new PerfMockNode(3, '', 'icon-title'));
+for (let k = 0; k < 30; k++) {
+  svgEl.appendChild(new PerfMockNode(1, 'PATH'));
+}
+const svgLabelSpan = svgPillBtn.appendChild(new PerfMockNode(1, 'SPAN'));
+const svgLabelText = svgLabelSpan.appendChild(new PerfMockNode(3, '', 'Explored'));
+check('带复杂 SVG (<title>+30 path) 的动作药丸仍正常识别放行', shouldSkipNode(svgPillBtn), false);
+translateNode(svgPillBtn);
+check('带复杂 SVG 的动作药丸文本正常汉化且不泄露 title', svgLabelText.nodeValue, '已探索');
+
+// 4.2 跨相邻元素 <span>Quote</span><span>Ctrl+L</span> 保持空格分隔并匹配引用气泡
+const splitQuoteBtn = new PerfMockNode(1, 'BUTTON');
+const qSpan1 = splitQuoteBtn.appendChild(new PerfMockNode(1, 'SPAN'));
+qSpan1.appendChild(new PerfMockNode(3, '', 'Quote'));
+const qSpan2 = splitQuoteBtn.appendChild(new PerfMockNode(1, 'SPAN'));
+qSpan2.appendChild(new PerfMockNode(3, '', 'Ctrl+L'));
+check('多 Span 快捷引用按钮 <span>Quote</span><span>Ctrl+L</span> 正常识别放行', shouldSkipNode(splitQuoteBtn), false);
+
+// 4.3 带大量前导空白缩进的动作药丸不被 48 字符上限误截断
+const indentedPill = new PerfMockNode(1, 'SPAN');
+indentedPill.appendChild(new PerfMockNode(3, '', ' '.repeat(60) + 'Ran command'));
+check('带 60 字符前导空白的动作药丸仍正常识别放行', shouldSkipNode(indentedPill), false);
+
+// 4.4 大量空壳子元素容器在 collectSafeLeafTextNodes 预算内快速早退（确定性验证访问元素数 <= 32）
+const emptyShellRoot = new PerfMockNode(1, 'DIV');
+const shellInner = emptyShellRoot.appendChild(new PerfMockNode(1, 'DIV'));
+const visitedEmptyShells = new Set();
+for (let i = 0; i < 200; i++) {
+  const emptyDiv = new PerfMockNode(1, 'DIV');
+  Object.defineProperty(emptyDiv, 'childNodes', {
+    get() {
+      visitedEmptyShells.add(i);
+      return [];
+    },
+  });
+  shellInner.appendChild(emptyDiv);
+}
+const shellLeafOut = [];
+perfSandbox.__testCollectSafeLeafTextNodes(emptyShellRoot, shellLeafOut, 9);
+check(`200 个空壳容器子树的 collectSafeLeafTextNodes 严格早退 (实际访问 ${visitedEmptyShells.size}/200 个 <= 32)`, visitedEmptyShells.size <= 32, true);
+
+// 4.5 injectOrUpdate 保留结束边界后的第三方附加代码
+check('localize.js injectOrUpdate 支持 endMarker 保留尾部第三方代码',
+  localizeSrc.includes('DOM_ENGINE_END_MARKER') && localizeSrc.includes('endIdx + endMarker.length'),
+  true
+);
+
+// 4.6 校验与 ticket-18 / ticket-19 源码正则兼容
+check('src/dom-translator.js isActionPill 保持与 ticket-18/19 源码正则兼容',
+  /const isActionPill\s*=\s*textContent\.length\s*<=\s*\d+\s*&&\s*(\/[^/]+\/i)\.test/.test(injCode),
+  true
+);
 
 console.log(`\n=== Ticket-61 测试总结: ${passed}/${total} 通过 ===`);
 if (passed !== total) {
