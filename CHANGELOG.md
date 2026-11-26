@@ -4,18 +4,19 @@
 
 ---
 
-## v2.35.2 (2026-11-26) — 同步适配官方 2.35.2 版本：模型切换运行提示与导航/操作报错动态规则补齐
+## v2.35.2 (2026-11-26) — 同步适配官方 2.35.2 版本：模型运行中切换提示、导航/操作报错动态规则与智能体错误卡片组合句修复
 
-### 1. 官方 v2.35.2 差异核验与版本基线对齐
-- **主进程 (`app.asar`) 与内嵌前端逐文件比对**：对比官方 `v2.35.2` 原版 `app.asar` 全部 180 个非 `node_modules` 文件，确认主进程业务逻辑与 `v2.35.1` 保持一致（`0` 新增/删除文件），`localize.js` 全量 231 处主进程补丁点实现 `0` 跳过 100% 命中；同步分析 `language_server.exe`（`CL: 1029311855`）内嵌前端 `main.js`（`12,798,822` 字节），精准定位模型选择器运行中切换提示更新。
-- **版本门禁与轻量预编译包升级**：将 `localize.js`（`CURRENT_VERSION` / `RELEASE_VERSION`）、`package.json`、`extracted/package.json`、`index.html` 与 LF 轻量规格 `app.asar.ready`（`8,029,213` 字节 / `7.66 MiB`）同步升级至 **`2.35.2`**，保障 `--auto-restore` 与无 Node.js 离线模式对 `v2.35.2` 客户端的精准版本校验放行。
+### 1. 官方 v2.35.2 差异核验与版本基线对齐（整合 PR #90 `@Justin-Mai`）
+- **主进程 (`app.asar`) 与内嵌前端逐文件比对**：对比官方 `v2.35.2` 原版 `app.asar` 全部 180 个非 `node_modules` 文件，确认仅 `package.json` 版本号更新为 `2.35.2`（`0` 新增/删除/逻辑变更），`localize.js` 全量 231 处主进程补丁点实现 `0` 跳过 100% 命中；同步比对 `language_server.exe`（`CL: 1029311855`）内嵌前端 `main.js`（`12,798,822` 字节），确认模型选择器放开运行中切换并替换了两条提示文案。
+- **版本门禁与官方瘦身规格重编**：将 `localize.js`（`CURRENT_VERSION` / `RELEASE_VERSION`）、`package.json`、`extracted/package.json`、`index.html` 与轻量 `app.asar.ready` 同步升级至 **`2.35.2`**；消除残留 CRLF 膨胀后，`app.asar.ready` 严格对齐官方瘦身规范为 **`7,981,627` 字节（`7.61 MiB`）**，保障 `--auto-restore` 与无 Node.js 离线模式对 `v2.35.2` 客户端的精准版本校验放行。
 
-### 2. Web UI v2.35.2 新增文案与周边动态报错规则补齐
-- **模型选择器运行中切换提示**：新增 `Applies to /btw and messages sent after this turn`（➔ `适用于 /btw 及本回合之后发送的消息`）、`Applies to messages sent after this turn`（➔ `适用于本回合之后发送的消息`）及 `Model cannot be changed while the agent is running`（➔ `智能体运行期间无法切换模型`）。
-- **导航拦截、登录面板与操作失败错误前缀（10 组 `$`-安全动态规则）**：补齐 `Blocked navigation to "<url>"`、`Sign in from the <panel> panel.`、`Sign in to use <app>!`，以及项目/工作区/设置/权限/文件夹/MCP/智能体等常见报错前缀（`Failed to create/save/unarchive/delete ...:`、`Could not attach folder/attach image/open folder:`、`Error installing/refreshing/updating/restarting ...:`、`Added MCP server "...", but it failed to start:`、`Failed to send interaction:`）。
+### 2. Web UI v2.35.2 新增文案、动态报错规则与社区 PR 整合（PR #86 / PR #90）
+- **模型选择器运行中切换提示（PR #90）**：新增 `Applies to /btw and messages sent after this turn`（➔ `适用于 /btw 及本回合之后发送的消息`）、`Applies to messages sent after this turn`（➔ `适用于本回合之后发送的消息`）及旧版向后兼容文案 `Model cannot be changed while the agent is running`（➔ `智能体运行期间无法切换模型`）。
+- **导航拦截、登录面板与操作失败错误前缀（10 组 `$`-安全动态规则，含红队加固）**：补齐 `Blocked navigation to "<url>"`、`Sign in from the <panel> panel.`、`Sign in to use <app>!`（收紧捕获组为 `[^.!?\r\n]{1,40}` 杜绝跨句误伤），以及项目/工作区/设置/权限/文件夹/MCP/智能体高频失败前缀（`Failed to create/save/unarchive/delete ...:`、`Could not attach folder/attach image/open folder:`、`Error installing/refreshing/restarting MCP server/updating agent:`、`Error restarting <name>:`、`Added MCP server "...", but it failed to start:`、`Failed to send interaction:`；同步修复 `Error restarting MCP server:` 落入泛化规则输出“重启 MCP server 出错”的夹生问题）。
+- **智能体错误卡片「故障排除指南」组合句修复（整合 PR #86 `@angel12538`，修复 Issue #85）**：补齐 `See our troubleshooting guide for more help.` 及其完整组合句词条并统一锚点词为 `故障排除指南`，彻底消除错误卡片 6 子节点 `<span>`（`[" ", "See our", " ", <a>troubleshooting guide</a>, " ", "for more help."]`）渲染出 `请参阅我们的 故障排除指南 for more help.` 的夹生问题。
 
 ### 3. 全链路验证与测试门禁
-- 词典扩充至 **`4,928` 键 `0` 重复**；新增 `tests/ticket-60-v2352-features.test.js` 专项测试套件并注册至 `tests/run-all-tests.js`，同步校验 `v2.35.2` 版本元数据、`app.asar.ready` 规格与 `$`-安全/防误伤回归。
+- 词典扩充至 **`4,928` 键 `0` 重复**；新增 `tests/ticket-59-agent-error-card.test.js`（含官方真实 6 子节点 `<span>` 组合句断言）与 `tests/ticket-60-v2352-features.test.js` 并注册至 `tests/run-all-tests.js`，同步校验全部 176 个 `extracted/dist/**/*.js` 语法零报错与 `.bat`/`.sh`/`.command` 换行符规范；全工程 **67/67 组 TDD 自动化测试套件 100% ALL GREEN**。
 
 ---
 

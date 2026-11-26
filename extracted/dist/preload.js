@@ -8998,18 +8998,18 @@ if (!isRemoteWindow) {
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^Sign in from the (.+) panel\.$/.test(trimmed)) {
+    if (/^Sign in from the ([^.!?\r\n]{1,40}) panel\.$/.test(trimmed)) {
       const fixed = trimmed.replace(
-        /^Sign in from the (.+) panel\.$/,
+        /^Sign in from the ([^.!?\r\n]{1,40}) panel\.$/,
         (_m, panel) => '请从 ' + panel + ' 面板登录。'
       );
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^Sign in to use (.+)!$/.test(trimmed)) {
+    if (/^Sign in to use ([^.!?\r\n]{1,40})!$/.test(trimmed)) {
       const fixed = trimmed.replace(
-        /^Sign in to use (.+)!$/,
+        /^Sign in to use ([^.!?\r\n]{1,40})!$/,
         (_m, prod) => '请登录以使用 ' + prod + '！'
       );
       cacheSet(trimmed, fixed);
@@ -9054,14 +9054,15 @@ if (!isRemoteWindow) {
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^Error (installing MCP server|refreshing MCP servers|updating agent):\s*(.+)$/.test(trimmed)) {
+    if (/^Error (installing MCP server|refreshing MCP servers|restarting MCP server|updating agent):\s*(.+)$/.test(trimmed)) {
       const errActMap2352 = {
         'installing MCP server': '安装 MCP 服务器',
         'refreshing MCP servers': '刷新 MCP 服务器',
+        'restarting MCP server': '重启 MCP 服务器',
         'updating agent': '更新智能体',
       };
       const fixed = trimmed.replace(
-        /^Error (installing MCP server|refreshing MCP servers|updating agent):\s*(.+)$/,
+        /^Error (installing MCP server|refreshing MCP servers|restarting MCP server|updating agent):\s*(.+)$/,
         (_m, act, detail) => (errActMap2352[act] || act) + '出错：' + detail
       );
       cacheSet(trimmed, fixed);

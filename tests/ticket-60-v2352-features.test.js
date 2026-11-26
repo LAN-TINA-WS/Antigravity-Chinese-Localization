@@ -93,6 +93,7 @@ const dynamicChecks = [
   ['Could not open folder: access denied', '无法打开文件夹：access denied'],
   ['Error installing MCP server: timeout', '安装 MCP 服务器出错：timeout'],
   ['Error refreshing MCP servers: network error', '刷新 MCP 服务器出错：network error'],
+  ['Error restarting MCP server: timeout', '重启 MCP 服务器出错：timeout'],
   ['Error updating agent: permission denied', '更新智能体出错：permission denied'],
   ['Error restarting github-mcp: exit code 1', '重启 github-mcp 出错：exit code 1'],
   ['Added MCP server "github", but it failed to start: exit 1', '已添加 MCP 服务器“github”，但启动失败：exit 1'],
@@ -107,6 +108,7 @@ for (const [src, expected] of dynamicChecks) {
 
 const antiFalsePositiveCases = [
   'NAVIGATION_BLOCKED: Payment page (https://pay.example.com) cannot be inspected or actuated by the agent; ask the user to complete the payment in the browser pane',
+  'Sign in to use this app! Then restart your PC.',
   'Gemini 4 Hydrogen (High)',
   'Orchestrator',
   'Swarm',
