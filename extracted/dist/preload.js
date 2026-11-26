@@ -5858,7 +5858,10 @@ if (!isRemoteWindow) {
     "Schedules only.": "仅定时计划。",
     "Generating commit message...": "正在生成提交信息...",
     "Committing...": "正在提交...",
-    "All changes since the branch point": "自当前分支起点以来的所有更改"
+    "All changes since the branch point": "自当前分支起点以来的所有更改",
+    "Applies to /btw and messages sent after this turn": "适用于 /btw 及本回合之后发送的消息",
+    "Applies to messages sent after this turn": "适用于本回合之后发送的消息",
+    "Model cannot be changed while the agent is running": "智能体运行期间无法切换模型"
 };
 
   const coreWords = {
@@ -8980,6 +8983,113 @@ if (!isRemoteWindow) {
       const fixed = trimmed.replace(
         /^(Today|Tomorrow|Yesterday)\s+(\d{1,2}:\d{2}(?:\s*[AP]M)?)$/i,
         (_m, d, t) => (dayWordMap[d.toLowerCase()] || d) + ' ' + t
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    // ===== Antigravity v2.35.2 动态规则：导航拦截、登录面板与操作失败错误前缀 =====
+    if (/^Blocked navigation to "(.+)"$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Blocked navigation to "(.+)"$/,
+        (_m, url) => '已拦截前往“' + url + '”的导航'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Sign in from the (.+) panel\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Sign in from the (.+) panel\.$/,
+        (_m, panel) => '请从 ' + panel + ' 面板登录。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Sign in to use (.+)!$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Sign in to use (.+)!$/,
+        (_m, prod) => '请登录以使用 ' + prod + '！'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Failed to (create|save|unarchive|delete) (project|workspace|settings|project settings|project permissions|cloud permission settings|configuration):\s*(.+)$/i.test(trimmed)) {
+      const actMap2352 = { create: '创建', save: '保存', unarchive: '取消归档', delete: '删除' };
+      const targetMap2352 = {
+        project: '项目',
+        workspace: '工作区',
+        settings: '设置',
+        'project settings': '项目设置',
+        'project permissions': '项目权限',
+        'cloud permission settings': '云端权限设置',
+        configuration: '配置',
+      };
+      const fixed = trimmed.replace(
+        /^Failed to (create|save|unarchive|delete) (project|workspace|settings|project settings|project permissions|cloud permission settings|configuration):\s*(.+)$/i,
+        (_m, act, target, detail) =>
+          (actMap2352[act.toLowerCase()] || act) + (targetMap2352[target.toLowerCase()] || target) + '失败：' + detail
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Could not attach folder "(.+)":\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Could not attach folder "(.+)":\s*(.+)$/,
+        (_m, folder, detail) => '无法附加文件夹“' + folder + '”：' + detail
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Could not (attach image|open folder):\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Could not (attach image|open folder):\s*(.+)$/,
+        (_m, act, detail) => '无法' + (act === 'attach image' ? '附加图片' : '打开文件夹') + '：' + detail
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Error (installing MCP server|refreshing MCP servers|updating agent):\s*(.+)$/.test(trimmed)) {
+      const errActMap2352 = {
+        'installing MCP server': '安装 MCP 服务器',
+        'refreshing MCP servers': '刷新 MCP 服务器',
+        'updating agent': '更新智能体',
+      };
+      const fixed = trimmed.replace(
+        /^Error (installing MCP server|refreshing MCP servers|updating agent):\s*(.+)$/,
+        (_m, act, detail) => (errActMap2352[act] || act) + '出错：' + detail
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Error restarting ([^:\r\n]{1,60}):\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Error restarting ([^:\r\n]{1,60}):\s*(.+)$/,
+        (_m, name, detail) => '重启 ' + name + ' 出错：' + detail
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Added MCP server "(.+)", but it failed to start:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Added MCP server "(.+)", but it failed to start:\s*(.+)$/,
+        (_m, name, detail) => '已添加 MCP 服务器“' + name + '”，但启动失败：' + detail
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Failed to send interaction:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Failed to send interaction:\s*(.+)$/,
+        (_m, detail) => '发送交互失败：' + detail
       );
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
