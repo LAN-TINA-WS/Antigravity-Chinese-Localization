@@ -47,7 +47,7 @@ Antigravity 深度汉化与高性能本地化补丁程序
 | **极致吞吐与防夹生守卫** | 吞吐量突破 168 万次/秒 | 模块化拆分为 `src/dictionary.js` 与 `src/dom-translator.js`，前置 `O(1)` 哈希精确查找、ASCII 纯中文短路、DOM 祖先剪枝、`queueMicrotask` 帧聚合及 `coreWords` 100% 实词命中防夹生守卫。 |
 | **本机回环安全装甲** | `127.0.0.1` + CSRF 强鉴权 | 控制中心强制绑定 `127.0.0.1`，全接口实施 `Host`/`Origin` 回环校验、单进程一次性 CSRF Token 鉴权、JSON 请求体大小限制与显式 TLS 证书校验。 |
 | **轻量打包与标准规格** | 严格对齐官方原生规格（约 7.61 MiB） | 使用 `--unpack-dir` 排除外部解包依赖，彻底消除历史版本体积膨胀问题，与官方原生分发包规格保持一致。 |
-| **全套 TDD 自动化测试门禁** | 68 组测试套件全面回归校验 | 覆盖模块化翻译引擎、超长对话零回流遍历、词典零重复基线、AI 正文 Markdown/行内代码物理隔离、智能体错误卡片组合句、主进程功能沙盒、AST 语法门禁、回环安全鉴权、无 Node.js 实机批处理离线桥接及流式发布下载防护。 |
+| **全套 TDD 自动化测试门禁** | 69 组测试套件全面回归校验 | 覆盖模块化翻译引擎、超长对话零回流遍历、词典零重复基线、AI 正文 Markdown/行内代码物理隔离、智能体错误卡片组合句、主进程功能沙盒、AST 语法门禁、回环安全鉴权、无 Node.js 实机批处理离线桥接及流式发布下载防护。 |
 
 ---
 
@@ -287,7 +287,7 @@ git clone --depth=1 https://github.com/antigravity-cn-community/Antigravity-Chin
 | [UncleLiu-0306](https://github.com/UncleLiu-0306) | 智能体安全安装版本强校验门禁、macOS 签名风险前置指引及 macOS 重签方案探索（PR #76） |
 | [mutezebra](https://github.com/mutezebra) | macOS 双击「一键更新汉化.command」离线恢复启动器及自动恢复版本校验安全加固 |
 | [12cjn](https://github.com/12cjn) | 首页任务建议卡片、快捷键与输入区无障碍标签补全（PR #69） |
-| [omsd512-W](https://github.com/omsd512-W) | 左侧项目栏用户项目名与自定义分组防误翻保护（PR #70） |
+| [omsd512-W](https://github.com/omsd512-W) | 左侧项目栏、项目选择器、下拉列表及移动菜单的项目名防误翻保护与新建项目/SSH 补漏（PR #70/#93/#94） |
 | [dsasanim4-source](https://github.com/dsasanim4-source) | `v2.34.0` 高频遗漏界面文案、云端凭据与站点数据规则补全（PR #71） |
 | [501Ranger](https://github.com/501Ranger) | Linux / Ubuntu 平台适配及低版本 Node.js 兼容性支持 |
 | [shixiaogaoya](https://github.com/shixiaogaoya) | 早期词典扩充及重复注入崩溃问题修复 |

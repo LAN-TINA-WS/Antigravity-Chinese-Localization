@@ -680,6 +680,23 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
+    // 项目选择器克隆子菜单副标题（gad(): `${repoLabel} · Clone locally` / `Open in Remote` / `Cloning locally…`）
+    // 必须前置高于下方档位/状态 `·` 规则，并短路已译中文确保二次幂等且绝不误伤如 Max/Low/High/Compacting 等仓库名
+    if (/^([^\r\n]+?)\s*·\s*(Clone locally|Open in Remote|Cloning locally…|Cloning locally\.\.\.|克隆到本地|在远程打开|正在克隆到本地…|正在克隆到本地\.\.\.)$/.test(trimmed)) {
+      const cloneActMap = {
+        'Clone locally': '克隆到本地',
+        'Open in Remote': '在远程打开',
+        'Cloning locally…': '正在克隆到本地…',
+        'Cloning locally...': '正在克隆到本地...',
+      };
+      const fixed = trimmed.replace(
+        /^([^\r\n]+?)\s*·\s*(Clone locally|Open in Remote|Cloning locally…|Cloning locally\.\.\.|克隆到本地|在远程打开|正在克隆到本地…|正在克隆到本地\.\.\.)$/,
+        (_m, repoLabel, act) => repoLabel + ' · ' + (cloneActMap[act] || act)
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
     if (/^(Low|Medium|High|Extra\s+High|Extra|Max)\s*·\s*(.+)$/i.test(trimmed)) {
       const fixed = trimmed.replace(/^(Low|Medium|High|Extra\s+High|Extra|Max)\s*·\s*(.+)$/i, (_m, tier, ctx) => {
         const tierMap = { low: '低', medium: '中', high: '高', xhigh: '极高', 'extra high': '极高', extra: '极高', max: '最高' };
@@ -3360,10 +3377,10 @@
       }
       cur = cur.parentElement;
     }
-    // 仅读取 textContent（真实浏览器中零回流），无 textContent 属性的 mock 节点回退 innerText
+    // 仅读取剥离图标后的纯文本（真实浏览器中零回流，避免 .google-symbols ligature 污染系统标题识别）
     const rawLabel = (
       headerEl.getAttribute('data-project-label') ||
-      (typeof headerEl.textContent === 'string' ? headerEl.textContent : (headerEl.innerText || ''))
+      readElementLabelWithoutIcons(headerEl)
     ).trim().toLowerCase();
     if (rawLabel === 'unknown project' || rawLabel === '未知项目') {
       return true;
@@ -3591,7 +3608,7 @@
   // 2) 兼容桌面设置侧栏（settings-sidebar）：保留顶部 Settings 下官方 Developer、Show All、Not in Project 及底部 Provide Feedback 正常汉化
   function isSettingsProjectNavButton(navBtn) {
     if (!isSettingsNavButton(navBtn)) return false;
-    const rawLabel = readElementTextNoReflow(navBtn).trim().toLowerCase();
+    const rawLabel = readElementLabelWithoutIcons(navBtn).trim().toLowerCase();
     if (PROJECT_PLACEHOLDER_LABELS.has(rawLabel)) return false;
 
     // 窄屏平铺模式：向前仅跨越同类 settings-nav-item-* 按钮，遇到 <h2> 容器即判定，遇其他隔断元素立即停止
@@ -3676,7 +3693,7 @@
     if (seg.getAttribute('data-testid') !== 'breadcrumb-segment') return false;
     const aria = (seg.getAttribute('aria-label') || '').trim();
     if (!PROJECT_BREADCRUMB_ARIA_RE.test(aria)) return false;
-    const rawLabel = readElementTextNoReflow(seg).trim().toLowerCase();
+    const rawLabel = readElementLabelWithoutIcons(seg).trim().toLowerCase();
     return !BREADCRUMB_PLACEHOLDER_LABELS.has(rawLabel);
   }
 
@@ -3697,6 +3714,15 @@
       depth++;
     }
     return false;
+  }
+
+  function isFontIconElement(el) {
+    return Boolean(
+      el &&
+      el.nodeType === Node.ELEMENT_NODE &&
+      el.classList &&
+      (el.classList.contains('google-symbols') || el.classList.contains('material-symbols-outlined'))
+    );
   }
 
   function isIconOrBadgeElement(el) {
@@ -3779,20 +3805,6 @@
       return !PROJECT_SELECTOR_TRIGGER_FALLBACK_PLACEHOLDERS.has(rawLabel);
     }
     return !PROJECT_SELECTOR_TRIGGER_ALL_PLACEHOLDERS.has(rawLabel);
-  }
-
-  // 输入框上方项目/工作区选择器触发按钮（O(1) 常数深度最多上溯 4 层，放行 Select Project / No Project / New Workspace 占位态）
-  function isProjectSelectorTriggerElement(el) {
-    let cur = el;
-    let depth = 0;
-    while (cur && cur !== document.body && depth < 4) {
-      if (cur.nodeType === Node.ELEMENT_NODE && cur.getAttribute && cur.getAttribute('data-testid') === 'project-selector-trigger') {
-        return isProjectSelectorTriggerSelf(cur);
-      }
-      cur = cur.parentElement;
-      depth++;
-    }
-    return false;
   }
 
   function findProjectSelectorItemAncestor(el) {
@@ -3901,15 +3913,27 @@
     return Boolean(rawLabel) && !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
   }
 
-  // 对话右键/更多菜单「Move to Project」子菜单中的项目勾选项（仅匹配单数 conversation-project-*，不影响复数 conversation-projects-* 系统菜单项）
-  function isConversationProjectMenuItemElement(el) {
+  // 单次有界上溯（最多 6 层）合并判定项目选择器触发器、下拉列表项与移动对话项目菜单，避免在普通长对话节点上重复三次爬树
+  function isProtectedSelectorOrMenuProjectElement(el) {
     let cur = el;
     let depth = 0;
-    while (cur && cur !== document.body && depth < 4) {
+    let hitSettingsBtn = false;
+    while (cur && cur !== document.body && depth < 6) {
       if (cur.nodeType === Node.ELEMENT_NODE && cur.getAttribute) {
-        const tid = cur.getAttribute('data-testid') || '';
-        if (tid.startsWith('conversation-project-')) {
-          return isConversationProjectMenuItemSelf(cur);
+        const tid = cur.getAttribute('data-testid');
+        if (tid) {
+          if (depth < 4 && tid === 'project-selector-trigger') {
+            return isProjectSelectorTriggerSelf(cur);
+          }
+          if (depth < 4 && tid.startsWith('conversation-project-')) {
+            return isConversationProjectMenuItemSelf(cur);
+          }
+          if ((cur.tagName || '').toUpperCase() === 'BUTTON' && tid === 'project-selector-item-settings') {
+            hitSettingsBtn = true;
+          }
+          if (!hitSettingsBtn && PROJECT_SELECTOR_ITEM_TESTIDS.has(tid)) {
+            return isProjectSelectorItemLabelElement(el);
+          }
         }
       }
       cur = cur.parentElement;
@@ -3937,9 +3961,7 @@
       isSettingsProjectNavItem(el) ||
       isSettingsProjectTitleElement(el) ||
       isProjectBreadcrumbSegment(el) ||
-      isProjectSelectorTriggerElement(el) ||
-      isProjectSelectorItemLabelElement(el) ||
-      isConversationProjectMenuItemElement(el)
+      isProtectedSelectorOrMenuProjectElement(el)
     );
   }
 
@@ -3962,7 +3984,7 @@
 
     // 绝对禁止翻译的脚本/样式/矢量图/公式/行内代码/预格式化代码块标签
     const skipTags = ['SCRIPT', 'STYLE', 'NOSCRIPT', 'KBD', 'SAMP', 'VAR', 'SVG', 'MATH', 'CODE', 'PRE', 'INPUT', 'TEXTAREA'];
-    if (skipTags.includes(upperTag)) {
+    if (skipTags.includes(upperTag) || isFontIconElement(element)) {
       skipCache.set(element, true);
       return true;
     }
@@ -4023,7 +4045,7 @@
       let checkCur = element;
       while (checkCur && checkCur !== document.body) {
         const curTag = (checkCur.tagName || '').toUpperCase();
-        if (CODE_OR_LITERAL_TAGS.has(curTag) || isSwarmProtectedElement(checkCur) || isProtectedMarkdownElement(checkCur)) {
+        if (CODE_OR_LITERAL_TAGS.has(curTag) || isFontIconElement(checkCur) || isSwarmProtectedElement(checkCur) || isProtectedMarkdownElement(checkCur)) {
           inProtectedAncestor = true;
           break;
         }
@@ -4092,7 +4114,7 @@
       }
 
       const curTag = (cur.tagName || '').toUpperCase();
-      if (CODE_OR_LITERAL_TAGS.has(curTag) || isProtectedMarkdownElement(cur)) {
+      if (CODE_OR_LITERAL_TAGS.has(curTag) || isFontIconElement(cur) || isProtectedMarkdownElement(cur)) {
         shouldSkip = true;
         break;
       }
@@ -4228,6 +4250,59 @@
           }
         }
       }
+      // 兼容 React 连续两段/三段文本节点（如 gad() 克隆子菜单空态：{"No matching "}{projectNoun}）
+      // 严格按 React 静态前缀/动态名词槽位原位写入，避免后续动态切换 projects -> workspaces 时发生串味拼接
+      if (children.length === 2 && children.every(c => c.nodeType === Node.TEXT_NODE)) {
+        const rawPre = children[0].nodeValue || '';
+        const rawNoun = children[1].nodeValue || '';
+        const pre = rawPre.trim();
+        const noun = rawNoun.trim().toLowerCase();
+        const isEnPre = /^No matching$/i.test(pre) && (/\s$/.test(rawPre) || /^\s/.test(rawNoun));
+        const isZhPre = pre === '没有匹配的';
+        if (isEnPre || isZhPre) {
+          if (noun === 'projects' || noun === '项目') {
+            children[0].nodeValue = '没有匹配的';
+            children[1].nodeValue = '项目';
+            translatedNodes.set(children[0], '没有匹配的');
+            translatedNodes.set(children[1], '项目');
+            return true;
+          }
+          if (noun === 'workspaces' || noun === '工作区') {
+            children[0].nodeValue = '没有匹配的';
+            children[1].nodeValue = '工作区';
+            translatedNodes.set(children[0], '没有匹配的');
+            translatedNodes.set(children[1], '工作区');
+            return true;
+          }
+        }
+      }
+      if (children.length === 3 && children.every(c => c.nodeType === Node.TEXT_NODE)) {
+        const pre = (children[0].nodeValue || '').trim();
+        const mid = children[1].nodeValue || '';
+        const noun = (children[2].nodeValue || '').trim().toLowerCase();
+        const isEnPre = /^No matching$/i.test(pre) && /^\s+$/.test(mid);
+        const isZhPre = pre === '没有匹配的' && mid.trim() === '';
+        if (isEnPre || isZhPre) {
+          if (noun === 'projects' || noun === '项目') {
+            children[0].nodeValue = '没有匹配的';
+            children[1].nodeValue = '';
+            children[2].nodeValue = '项目';
+            translatedNodes.set(children[0], '没有匹配的');
+            translatedNodes.set(children[1], '');
+            translatedNodes.set(children[2], '项目');
+            return true;
+          }
+          if (noun === 'workspaces' || noun === '工作区') {
+            children[0].nodeValue = '没有匹配的';
+            children[1].nodeValue = '';
+            children[2].nodeValue = '工作区';
+            translatedNodes.set(children[0], '没有匹配的');
+            translatedNodes.set(children[1], '');
+            translatedNodes.set(children[2], '工作区');
+            return true;
+          }
+        }
+      }
       return false;
     }
 
@@ -4347,7 +4422,7 @@
   function isNonComposerProtectedSelf(cur) {
     if (!cur || cur.nodeType !== Node.ELEMENT_NODE) return false;
     const curTag = (cur.tagName || '').toUpperCase();
-    if (CODE_OR_LITERAL_TAGS.has(curTag) || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT' || isSwarmProtectedElement(cur) || isProtectedMarkdownElement(cur)) {
+    if (CODE_OR_LITERAL_TAGS.has(curTag) || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT' || isFontIconElement(cur) || isSwarmProtectedElement(cur) || isProtectedMarkdownElement(cur)) {
       return true;
     }
     if (isUserProjectHeader(cur) || isProtectedProjectNameSelf(cur)) {

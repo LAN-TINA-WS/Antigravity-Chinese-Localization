@@ -5861,7 +5861,33 @@ if (!isRemoteWindow) {
     "All changes since the branch point": "自当前分支起点以来的所有更改",
     "Applies to /btw and messages sent after this turn": "适用于 /btw 及本回合之后发送的消息",
     "Applies to messages sent after this turn": "适用于本回合之后发送的消息",
-    "Model cannot be changed while the agent is running": "智能体运行期间无法切换模型"
+    "Model cannot be changed while the agent is running": "智能体运行期间无法切换模型",
+    "Create a project on a machine you reach over SSH. It opens in that host's own window.": "在通过 SSH 连接的远程主机上创建项目，并将在该主机的独立窗口中打开。",
+    "Create a project on this computer or remotely.": "在本机或远程创建项目。",
+    "Create a new Piper (g4) workspace from your initial prompt. Customize in General Settings, under Advanced.": "根据初始提示词创建新的 Piper (g4) 工作区。可在通用设置的“高级”中自定义。",
+    "Create a new JJ workspace from your initial prompt. Customize in General Settings, under Advanced.": "根据初始提示词创建新的 JJ 工作区。可在通用设置的“高级”中自定义。",
+    "Create a new Cog (GoB) workspace from your initial prompt. Customize in General Settings, under Advanced.": "根据初始提示词创建新的 Cog (GoB) 工作区。可在通用设置的“高级”中自定义。",
+    "Create a new Fig workspace from your initial prompt. Customize in General Settings, under Advanced.": "根据初始提示词创建新的 Fig 工作区。可在通用设置的“高级”中自定义。",
+    "Runs on this machine": "在本机运行",
+    "Runs in a cloud environment": "在云端环境中运行",
+    "Search Hosts…": "搜索主机…",
+    "Search Hosts...": "搜索主机...",
+    "Search Remote...": "搜索远端...",
+    "Search Projects…": "搜索项目…",
+    "Search Workspaces…": "搜索工作区…",
+    "No matching hosts": "没有匹配的主机",
+    "No hosts in ~/.ssh/config yet": "~/.ssh/config 中尚无主机",
+    "Loading Repositories…": "正在加载代码仓库…",
+    "Loading Repositories...": "正在加载代码仓库...",
+    "Open in Remote": "在远程打开",
+    "Cloning locally…": "正在克隆到本地…",
+    "Cloning locally...": "正在克隆到本地...",
+    "Google3 projects are being deprecated. Select a CitC workspace instead.": "Google3 项目即将弃用，请改选 CitC 工作区。",
+    "No matching projects": "没有匹配的项目",
+    "No matching workspaces": "没有匹配的工作区",
+    "No remote projects": "暂无远程项目",
+    "No remote workspaces": "暂无远程工作区",
+    "No projects found": "未找到项目"
 };
 
   const coreWords = {
@@ -6656,6 +6682,23 @@ if (!isRemoteWindow) {
 
     if (/^Send\s+all$/i.test(trimmed)) {
       const fixed = '全部发送';
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    // 项目选择器克隆子菜单副标题（gad(): `${repoLabel} · Clone locally` / `Open in Remote` / `Cloning locally…`）
+    // 必须前置高于下方档位/状态 `·` 规则，并短路已译中文确保二次幂等且绝不误伤如 Max/Low/High/Compacting 等仓库名
+    if (/^([^\r\n]+?)\s*·\s*(Clone locally|Open in Remote|Cloning locally…|Cloning locally\.\.\.|克隆到本地|在远程打开|正在克隆到本地…|正在克隆到本地\.\.\.)$/.test(trimmed)) {
+      const cloneActMap = {
+        'Clone locally': '克隆到本地',
+        'Open in Remote': '在远程打开',
+        'Cloning locally…': '正在克隆到本地…',
+        'Cloning locally...': '正在克隆到本地...',
+      };
+      const fixed = trimmed.replace(
+        /^([^\r\n]+?)\s*·\s*(Clone locally|Open in Remote|Cloning locally…|Cloning locally\.\.\.|克隆到本地|在远程打开|正在克隆到本地…|正在克隆到本地\.\.\.)$/,
+        (_m, repoLabel, act) => repoLabel + ' · ' + (cloneActMap[act] || act)
+      );
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
@@ -9340,10 +9383,10 @@ if (!isRemoteWindow) {
       }
       cur = cur.parentElement;
     }
-    // 仅读取 textContent（真实浏览器中零回流），无 textContent 属性的 mock 节点回退 innerText
+    // 仅读取剥离图标后的纯文本（真实浏览器中零回流，避免 .google-symbols ligature 污染系统标题识别）
     const rawLabel = (
       headerEl.getAttribute('data-project-label') ||
-      (typeof headerEl.textContent === 'string' ? headerEl.textContent : (headerEl.innerText || ''))
+      readElementLabelWithoutIcons(headerEl)
     ).trim().toLowerCase();
     if (rawLabel === 'unknown project' || rawLabel === '未知项目') {
       return true;
@@ -9375,6 +9418,25 @@ if (!isRemoteWindow) {
     'unknown workspace', '未知工作区',
     'new project', '新建项目',
     'new workspace', '新建工作区'
+  ]);
+  const PROJECT_SELECTOR_TRIGGER_FALLBACK_PLACEHOLDERS = new Set([
+    'select project', '选择项目',
+    'select workspace', '选择工作区',
+    'unknown project', '未知项目',
+    'unknown workspace', '未知工作区'
+  ]);
+  const PROJECT_SELECTOR_TRIGGER_ALL_PLACEHOLDERS = new Set([
+    'select project', '选择项目',
+    'select workspace', '选择工作区',
+    'no project', '无项目',
+    'new workspace', '新建工作区',
+    'unknown project', '未知项目',
+    'unknown workspace', '未知工作区'
+  ]);
+  const PROJECT_SELECTOR_ITEM_TESTIDS = new Set([
+    'project-selector-item',
+    'project-selector-clone-remote-item',
+    'project-selector-clone-local-item'
   ]);
   const EDIT_PROJECT_NAME_ARIA_RE = /^(?:Edit\s+(?:project|workspace)\s+name|编辑\s*(?:项目|工作区)\s*名称?)$/i;
   const PROJECT_BREADCRUMB_ARIA_RE = /^(?:(?:Project|Workspace)\s*:\s*|(?:项目|工作区)\s*[:：]\s*)/i;
@@ -9488,8 +9550,16 @@ if (!isRemoteWindow) {
 
   function isProjectGlyphLabelSelf(cur) {
     if (!cur || cur.nodeType !== Node.ELEMENT_NODE) return false;
-    // 保护回退为 google-symbols 字体图标的 [data-project-glyph] 节点自身（避免 ligature 如 "folder"/"cloud" 被译为汉字破坏图标）
+    // 保护回退为 google-symbols 字体图标的 [data-project-glyph] 与图标 [data-project-icon] 节点自身（避免 ligature 如 "folder"/"cloud" 被译为汉字破坏图标）
     if (hasAttr(cur, 'data-project-glyph')) {
+      return true;
+    }
+    if (
+      !isProjectHeaderElement(cur) &&
+      hasAttr(cur, 'data-project-icon') &&
+      cur.classList &&
+      (cur.classList.contains('google-symbols') || cur.classList.contains('material-symbols-outlined'))
+    ) {
       return true;
     }
     if ((cur.tagName || '').toUpperCase() !== 'SPAN') {
@@ -9544,7 +9614,7 @@ if (!isRemoteWindow) {
   // 2) 兼容桌面设置侧栏（settings-sidebar）：保留顶部 Settings 下官方 Developer、Show All、Not in Project 及底部 Provide Feedback 正常汉化
   function isSettingsProjectNavButton(navBtn) {
     if (!isSettingsNavButton(navBtn)) return false;
-    const rawLabel = readElementTextNoReflow(navBtn).trim().toLowerCase();
+    const rawLabel = readElementLabelWithoutIcons(navBtn).trim().toLowerCase();
     if (PROJECT_PLACEHOLDER_LABELS.has(rawLabel)) return false;
 
     // 窄屏平铺模式：向前仅跨越同类 settings-nav-item-* 按钮，遇到 <h2> 容器即判定，遇其他隔断元素立即停止
@@ -9629,7 +9699,7 @@ if (!isRemoteWindow) {
     if (seg.getAttribute('data-testid') !== 'breadcrumb-segment') return false;
     const aria = (seg.getAttribute('aria-label') || '').trim();
     if (!PROJECT_BREADCRUMB_ARIA_RE.test(aria)) return false;
-    const rawLabel = readElementTextNoReflow(seg).trim().toLowerCase();
+    const rawLabel = readElementLabelWithoutIcons(seg).trim().toLowerCase();
     return !BREADCRUMB_PLACEHOLDER_LABELS.has(rawLabel);
   }
 
@@ -9652,13 +9722,242 @@ if (!isRemoteWindow) {
     return false;
   }
 
+  function isFontIconElement(el) {
+    return Boolean(
+      el &&
+      el.nodeType === Node.ELEMENT_NODE &&
+      el.classList &&
+      (el.classList.contains('google-symbols') || el.classList.contains('material-symbols-outlined'))
+    );
+  }
+
+  function isIconOrBadgeElement(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
+    const tag = (el.tagName || '').toUpperCase();
+    if (tag === 'SVG' || tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT' || tag === 'MATH') {
+      return true;
+    }
+    if (
+      hasAttr(el, 'data-project-icon') ||
+      hasAttr(el, 'data-project-glyph') ||
+      hasAttr(el, 'data-icon')
+    ) {
+      return true;
+    }
+    if (el.getAttribute) {
+      const tid = el.getAttribute('data-testid');
+      if (tid === 'menu-item-check' || tid === 'project-selector-trigger-badge' || tid === 'project-selector-item-badge') {
+        return true;
+      }
+    }
+    if (el.classList && (el.classList.contains('google-symbols') || el.classList.contains('material-symbols-outlined'))) {
+      return true;
+    }
+    return false;
+  }
+
+  function hasDescendantProjectIcon(rootEl) {
+    if (!rootEl || !rootEl.childNodes) return false;
+    const stack = [rootEl];
+    let visited = 0;
+    while (stack.length > 0 && visited < 16) {
+      const cur = stack.pop();
+      if (!cur || cur.nodeType !== Node.ELEMENT_NODE) continue;
+      visited++;
+      if (cur !== rootEl && hasAttr(cur, 'data-project-icon')) return true;
+      if (cur.childNodes) {
+        for (let i = cur.childNodes.length - 1; i >= 0; i--) {
+          if (cur.childNodes[i] && cur.childNodes[i].nodeType === Node.ELEMENT_NODE) {
+            stack.push(cur.childNodes[i]);
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  function readElementLabelWithoutIcons(rootEl) {
+    if (!rootEl) return '';
+    if (!rootEl.childNodes || rootEl.childNodes.length === 0) {
+      return readElementTextNoReflow(rootEl);
+    }
+    let acc = '';
+    const stack = [rootEl];
+    let visited = 0;
+    while (stack.length > 0 && visited < 24) {
+      const cur = stack.pop();
+      if (!cur) continue;
+      if (cur.nodeType === Node.TEXT_NODE) {
+        if (cur.nodeValue) acc += cur.nodeValue;
+      } else if (cur.nodeType === Node.ELEMENT_NODE) {
+        if (cur !== rootEl && isIconOrBadgeElement(cur)) continue;
+        visited++;
+        if (cur.childNodes) {
+          for (let i = cur.childNodes.length - 1; i >= 0; i--) {
+            stack.push(cur.childNodes[i]);
+          }
+        }
+      }
+    }
+    return acc;
+  }
+
+  function isProjectSelectorTriggerSelf(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE || !el.getAttribute) return false;
+    if (el.getAttribute('data-testid') !== 'project-selector-trigger') return false;
+    const rawLabel = readElementLabelWithoutIcons(el).trim().toLowerCase();
+    if (!rawLabel) return false;
+    if (hasDescendantProjectIcon(el)) {
+      return !PROJECT_SELECTOR_TRIGGER_FALLBACK_PLACEHOLDERS.has(rawLabel);
+    }
+    return !PROJECT_SELECTOR_TRIGGER_ALL_PLACEHOLDERS.has(rawLabel);
+  }
+
+  function findProjectSelectorItemAncestor(el) {
+    let cur = el;
+    let depth = 0;
+    while (cur && cur !== document.body && depth < 4) {
+      if (cur.nodeType === Node.ELEMENT_NODE && cur.getAttribute) {
+        const tid = cur.getAttribute('data-testid');
+        if (tid && PROJECT_SELECTOR_ITEM_TESTIDS.has(tid)) {
+          return { item: cur, testId: tid, depth };
+        }
+        // 绝不误伤下拉项右侧悬停设置按钮（如 Project Settings）
+        if ((cur.tagName || '').toUpperCase() === 'BUTTON' && tid === 'project-selector-item-settings') {
+          return null;
+        }
+      }
+      cur = cur.parentElement;
+      depth++;
+    }
+    return null;
+  }
+
+  function hasDirectButtonOrCheckChild(el) {
+    if (!el || !el.childNodes) return false;
+    for (let i = 0; i < el.childNodes.length; i++) {
+      const ch = el.childNodes[i];
+      if (!ch || ch.nodeType !== Node.ELEMENT_NODE) continue;
+      if ((ch.tagName || '').toUpperCase() === 'BUTTON') return true;
+      if (ch.getAttribute && ch.getAttribute('data-testid') === 'menu-item-check') return true;
+    }
+    return false;
+  }
+
+  function isMultiRowFlexColContainer(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
+    if (el.classList && el.classList.contains('flex-col')) return true;
+    if (!el.childNodes) return false;
+    let spanChildren = 0;
+    for (let i = 0; i < el.childNodes.length; i++) {
+      const ch = el.childNodes[i];
+      if (ch && ch.nodeType === Node.ELEMENT_NODE && (ch.tagName || '').toUpperCase() === 'SPAN') {
+        spanChildren++;
+        if (spanChildren >= 2) return true;
+      }
+    }
+    return false;
+  }
+
+  // 项目选择器下拉列表项与克隆子菜单项中的项目名 <span>：
+  // 精准保护项目名与 title，同时保留右侧设置按钮（Project Settings）与克隆副标题（Clone locally / Open in Remote / Cloning locally…）正常汉化
+  function isProjectSelectorItemLabelSelf(cur) {
+    if (!cur || cur.nodeType !== Node.ELEMENT_NODE || (cur.tagName || '').toUpperCase() !== 'SPAN') {
+      return false;
+    }
+    if (isIconOrBadgeElement(cur)) return false;
+    if (cur.classList && cur.classList.contains('ml-auto')) return false;
+    const info = findProjectSelectorItemAncestor(cur.parentElement);
+    if (!info) return false;
+
+    if (info.testId === 'project-selector-item') {
+      if (info.depth !== 0 || hasDirectButtonOrCheckChild(cur)) return false;
+      const rawLabel = readElementLabelWithoutIcons(cur).trim().toLowerCase();
+      return Boolean(rawLabel) && !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
+    }
+
+    // project-selector-clone-remote-item / project-selector-clone-local-item
+    if (info.depth === 0) {
+      if (hasDirectButtonOrCheckChild(cur) || isMultiRowFlexColContainer(cur)) return false;
+      const rawLabel = readElementLabelWithoutIcons(cur).trim().toLowerCase();
+      return Boolean(rawLabel) && !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
+    }
+    if (info.depth === 1) {
+      const parent = cur.parentElement;
+      if (!parent || (parent.classList && parent.classList.contains('ml-auto'))) return false;
+      if (getPreviousElementSibling(cur)) return false;
+      const rawLabel = readElementLabelWithoutIcons(cur).trim().toLowerCase();
+      return Boolean(rawLabel) && !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
+    }
+    if (info.depth === 2) {
+      const slot = cur.parentElement;
+      const container = slot && slot.parentElement;
+      if (!slot || !container || (container.classList && container.classList.contains('ml-auto'))) return false;
+      if (getPreviousElementSibling(slot)) return false;
+      const rawLabel = readElementLabelWithoutIcons(cur).trim().toLowerCase();
+      return Boolean(rawLabel) && !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
+    }
+    return false;
+  }
+
+  function isProjectSelectorItemLabelElement(el) {
+    let cur = el;
+    let depth = 0;
+    while (cur && cur !== document.body && depth < 3) {
+      if (isProjectSelectorItemLabelSelf(cur)) return true;
+      cur = cur.parentElement;
+      depth++;
+    }
+    return false;
+  }
+
+  function isConversationProjectMenuItemSelf(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE || !el.getAttribute) return false;
+    const tid = el.getAttribute('data-testid') || '';
+    if (!tid.startsWith('conversation-project-')) return false;
+    const rawLabel = readElementLabelWithoutIcons(el).trim().toLowerCase();
+    return Boolean(rawLabel) && !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
+  }
+
+  // 单次有界上溯（最多 6 层）合并判定项目选择器触发器、下拉列表项与移动对话项目菜单，避免在普通长对话节点上重复三次爬树
+  function isProtectedSelectorOrMenuProjectElement(el) {
+    let cur = el;
+    let depth = 0;
+    let hitSettingsBtn = false;
+    while (cur && cur !== document.body && depth < 6) {
+      if (cur.nodeType === Node.ELEMENT_NODE && cur.getAttribute) {
+        const tid = cur.getAttribute('data-testid');
+        if (tid) {
+          if (depth < 4 && tid === 'project-selector-trigger') {
+            return isProjectSelectorTriggerSelf(cur);
+          }
+          if (depth < 4 && tid.startsWith('conversation-project-')) {
+            return isConversationProjectMenuItemSelf(cur);
+          }
+          if ((cur.tagName || '').toUpperCase() === 'BUTTON' && tid === 'project-selector-item-settings') {
+            hitSettingsBtn = true;
+          }
+          if (!hitSettingsBtn && PROJECT_SELECTOR_ITEM_TESTIDS.has(tid)) {
+            return isProjectSelectorItemLabelElement(el);
+          }
+        }
+      }
+      cur = cur.parentElement;
+      depth++;
+    }
+    return false;
+  }
+
   // 仅判断当前元素自身（供 isNonComposerProtectedSelf 在外层祖先遍历中 O(1) 调用，避免 O(D^2) 嵌套爬树）
   function isProtectedProjectNameSelf(el) {
     return (
       isProjectGlyphLabelSelf(el) ||
       isSettingsProjectNavButton(el) ||
       isSettingsProjectTitleSelf(el) ||
-      isProjectBreadcrumbSegmentSelf(el)
+      isProjectBreadcrumbSegmentSelf(el) ||
+      isProjectSelectorTriggerSelf(el) ||
+      isProjectSelectorItemLabelSelf(el) ||
+      isConversationProjectMenuItemSelf(el)
     );
   }
 
@@ -9667,7 +9966,8 @@ if (!isRemoteWindow) {
       isProjectGlyphLabelElement(el) ||
       isSettingsProjectNavItem(el) ||
       isSettingsProjectTitleElement(el) ||
-      isProjectBreadcrumbSegment(el)
+      isProjectBreadcrumbSegment(el) ||
+      isProtectedSelectorOrMenuProjectElement(el)
     );
   }
 
@@ -9690,7 +9990,7 @@ if (!isRemoteWindow) {
 
     // 绝对禁止翻译的脚本/样式/矢量图/公式/行内代码/预格式化代码块标签
     const skipTags = ['SCRIPT', 'STYLE', 'NOSCRIPT', 'KBD', 'SAMP', 'VAR', 'SVG', 'MATH', 'CODE', 'PRE', 'INPUT', 'TEXTAREA'];
-    if (skipTags.includes(upperTag)) {
+    if (skipTags.includes(upperTag) || isFontIconElement(element)) {
       skipCache.set(element, true);
       return true;
     }
@@ -9751,7 +10051,7 @@ if (!isRemoteWindow) {
       let checkCur = element;
       while (checkCur && checkCur !== document.body) {
         const curTag = (checkCur.tagName || '').toUpperCase();
-        if (CODE_OR_LITERAL_TAGS.has(curTag) || isSwarmProtectedElement(checkCur) || isProtectedMarkdownElement(checkCur)) {
+        if (CODE_OR_LITERAL_TAGS.has(curTag) || isFontIconElement(checkCur) || isSwarmProtectedElement(checkCur) || isProtectedMarkdownElement(checkCur)) {
           inProtectedAncestor = true;
           break;
         }
@@ -9820,7 +10120,7 @@ if (!isRemoteWindow) {
       }
 
       const curTag = (cur.tagName || '').toUpperCase();
-      if (CODE_OR_LITERAL_TAGS.has(curTag) || isProtectedMarkdownElement(cur)) {
+      if (CODE_OR_LITERAL_TAGS.has(curTag) || isFontIconElement(cur) || isProtectedMarkdownElement(cur)) {
         shouldSkip = true;
         break;
       }
@@ -9956,6 +10256,59 @@ if (!isRemoteWindow) {
           }
         }
       }
+      // 兼容 React 连续两段/三段文本节点（如 gad() 克隆子菜单空态：{"No matching "}{projectNoun}）
+      // 严格按 React 静态前缀/动态名词槽位原位写入，避免后续动态切换 projects -> workspaces 时发生串味拼接
+      if (children.length === 2 && children.every(c => c.nodeType === Node.TEXT_NODE)) {
+        const rawPre = children[0].nodeValue || '';
+        const rawNoun = children[1].nodeValue || '';
+        const pre = rawPre.trim();
+        const noun = rawNoun.trim().toLowerCase();
+        const isEnPre = /^No matching$/i.test(pre) && (/\s$/.test(rawPre) || /^\s/.test(rawNoun));
+        const isZhPre = pre === '没有匹配的';
+        if (isEnPre || isZhPre) {
+          if (noun === 'projects' || noun === '项目') {
+            children[0].nodeValue = '没有匹配的';
+            children[1].nodeValue = '项目';
+            translatedNodes.set(children[0], '没有匹配的');
+            translatedNodes.set(children[1], '项目');
+            return true;
+          }
+          if (noun === 'workspaces' || noun === '工作区') {
+            children[0].nodeValue = '没有匹配的';
+            children[1].nodeValue = '工作区';
+            translatedNodes.set(children[0], '没有匹配的');
+            translatedNodes.set(children[1], '工作区');
+            return true;
+          }
+        }
+      }
+      if (children.length === 3 && children.every(c => c.nodeType === Node.TEXT_NODE)) {
+        const pre = (children[0].nodeValue || '').trim();
+        const mid = children[1].nodeValue || '';
+        const noun = (children[2].nodeValue || '').trim().toLowerCase();
+        const isEnPre = /^No matching$/i.test(pre) && /^\s+$/.test(mid);
+        const isZhPre = pre === '没有匹配的' && mid.trim() === '';
+        if (isEnPre || isZhPre) {
+          if (noun === 'projects' || noun === '项目') {
+            children[0].nodeValue = '没有匹配的';
+            children[1].nodeValue = '';
+            children[2].nodeValue = '项目';
+            translatedNodes.set(children[0], '没有匹配的');
+            translatedNodes.set(children[1], '');
+            translatedNodes.set(children[2], '项目');
+            return true;
+          }
+          if (noun === 'workspaces' || noun === '工作区') {
+            children[0].nodeValue = '没有匹配的';
+            children[1].nodeValue = '';
+            children[2].nodeValue = '工作区';
+            translatedNodes.set(children[0], '没有匹配的');
+            translatedNodes.set(children[1], '');
+            translatedNodes.set(children[2], '工作区');
+            return true;
+          }
+        }
+      }
       return false;
     }
 
@@ -10075,7 +10428,7 @@ if (!isRemoteWindow) {
   function isNonComposerProtectedSelf(cur) {
     if (!cur || cur.nodeType !== Node.ELEMENT_NODE) return false;
     const curTag = (cur.tagName || '').toUpperCase();
-    if (CODE_OR_LITERAL_TAGS.has(curTag) || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT' || isSwarmProtectedElement(cur) || isProtectedMarkdownElement(cur)) {
+    if (CODE_OR_LITERAL_TAGS.has(curTag) || curTag === 'SCRIPT' || curTag === 'STYLE' || curTag === 'NOSCRIPT' || isFontIconElement(cur) || isSwarmProtectedElement(cur) || isProtectedMarkdownElement(cur)) {
       return true;
     }
     if (isUserProjectHeader(cur) || isProtectedProjectNameSelf(cur)) {

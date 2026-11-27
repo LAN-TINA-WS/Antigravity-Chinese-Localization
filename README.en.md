@@ -47,7 +47,7 @@ A high-performance, non-destructive deep Chinese localization patch designed for
 | **High Throughput & Anti-Chinglish Guard** | Over 1.68 Million QPS | Modularized under `src/dictionary.js` & `src/dom-translator.js` with hoisted `O(1)` exact Map lookup, ASCII bypass, DOM ancestor pruning, `queueMicrotask` batching, and 100%-hit `coreWords` guards. |
 | **Loopback Security Shield** | `127.0.0.1` + CSRF Auth | Binds strictly to `127.0.0.1` with `Host`/`Origin` loopback validation, per-process CSRF tokens, JSON payload caps, and explicit TLS certificate verification. |
 | **Slim Packaging Standards** | Aligned with Official Spec (~7.61 MiB) | Uses `--unpack-dir` to exclude unpacked native MCP modules, matching official distribution size. |
-| **TDD Automated Test Gate** | 68 Test Suites Regression Gate | Comprehensive regression matrix (`Ticket-01` through `Ticket-61` plus security/AST/archive gates) covering zero-reflow long-conversation traversal, AI Markdown/inline-code isolation, agent error-card combined sentences, and real Windows `cmd.exe` zero-Node offline auto-bridge verification. |
+| **TDD Automated Test Gate** | 69 Test Suites Regression Gate | Comprehensive regression matrix (`Ticket-01` through `Ticket-62` plus security/AST/archive gates) covering zero-reflow long-conversation traversal, AI Markdown/inline-code isolation, agent error-card combined sentences, and real Windows `cmd.exe` zero-Node offline auto-bridge verification. |
 
 ---
 
@@ -284,7 +284,7 @@ For complete architectural details on binary trade-offs, history pruning, and dy
 | [UncleLiu-0306](https://github.com/UncleLiu-0306) | Version-match installation guardrails, upfront macOS signing guidance, and macOS re-signing exploration (PR #76) |
 | [mutezebra](https://github.com/mutezebra) | macOS one-click `一键更新汉化.command` offline restore launcher and hardened version mismatch validation |
 | [12cjn](https://github.com/12cjn) | Home task suggestions, shortcut labels, and composer accessibility coverage (PR #69) |
-| [omsd512-W](https://github.com/omsd512-W) | Scoped sidebar user project-name and custom group protection (PR #70) |
+| [omsd512-W](https://github.com/omsd512-W) | Scoped project-name protection across sidebar, project selector, dropdowns & move menu plus New Project/SSH copy coverage (PR #70/#93/#94) |
 | [dsasanim4-source](https://github.com/dsasanim4-source) | `v2.34.0` high-frequency UI gaps, cloud credentials, and site-data rules (PR #71) |
 | [501Ranger](https://github.com/501Ranger) | Linux/Ubuntu platform adaptation and legacy Node.js compatibility support |
 | [shixiaogaoya](https://github.com/shixiaogaoya) | Early dictionary expansion and duplicate-injection crash fix |

@@ -802,4 +802,71 @@ assert.equal(moveProjRunText.nodeValue, 'Run', 'conversation-project-* 撞 isAct
 assert.equal(moveProjUnknownText.nodeValue, '未知项目', 'conversation-project-* 中的 Unknown Project 占位应放行汉化');
 assert.equal(moveMenuRemoveText.nodeValue, '从项目中移除', 'conversation-projects-remove 应正常汉化');
 
+// 19. 全局 google-symbols / material-symbols-outlined 字体图标 ligature 保护（无 data-project-icon 时同样不破坏图标）
+const iconSettingsText = createText('settings');
+const iconWarningText = createText('warning');
+const iconFolderMatText = createText('folder');
+const iconGuardWrap = createElement('div', {}, [
+  createElement('span', { class: 'google-symbols', 'aria-hidden': 'true' }, [iconSettingsText]),
+  createElement('span', { class: 'google-symbols', 'aria-hidden': 'true' }, [iconWarningText]),
+  createElement('span', { class: 'material-symbols-outlined', 'aria-hidden': 'true' }, [iconFolderMatText]),
+]);
+body.childNodes.push(iconGuardWrap);
+iconGuardWrap.parentElement = body;
+translateNode(iconGuardWrap);
+assert.equal(iconSettingsText.nodeValue, 'settings', 'google-symbols settings 图标 ligature 不得被译为设置');
+assert.equal(iconWarningText.nodeValue, 'warning', 'google-symbols warning 图标 ligature 不得被译为警告');
+assert.equal(iconFolderMatText.nodeValue, 'folder', 'material-symbols-outlined folder 图标 ligature 不得被译为文件夹');
+
+// 20. 带 google-symbols 图标的系统标题（无 data-project-label）与嵌套字体图标祖先保护
+const sysUnknownIcon = createText('folder');
+const sysUnknownLabel = createText('Unknown Project');
+const sysUnknownHeader = createElement('button', {
+  'data-testid': 'project-header',
+  'data-project-card': 'true',
+}, [
+  createElement('span', { class: 'google-symbols' }, [sysUnknownIcon]),
+  createElement('span', {}, [sysUnknownLabel]),
+]);
+
+const sysCustomIcon = createText('computer');
+const sysCustomLabel = createText('This Computer');
+const sysCustomHeader = createElement('button', {
+  'data-testid': 'project-header',
+  'data-project-icon': 'custom',
+}, [
+  createElement('span', { class: 'google-symbols' }, [sysCustomIcon]),
+  createElement('span', {}, [sysCustomLabel]),
+]);
+
+const bcUnknownIcon = createText('folder');
+const bcUnknownLabel = createText('Unknown Project');
+const bcUnknownSeg = createElement('a', {
+  'data-testid': 'breadcrumb-segment',
+  'aria-label': 'Project: Unknown Project',
+}, [
+  createElement('span', { class: 'google-symbols' }, [bcUnknownIcon]),
+  createElement('span', {}, [bcUnknownLabel]),
+]);
+
+const nestedFontIconText = createText('settings');
+const nestedFontIconInner = createElement('span', {}, [nestedFontIconText]);
+const nestedFontIconOuter = createElement('span', { class: 'google-symbols' }, [nestedFontIconInner]);
+
+const iconSysWrap = createElement('div', {}, [sysUnknownHeader, sysCustomHeader, bcUnknownSeg, nestedFontIconOuter]);
+body.childNodes.push(iconSysWrap);
+iconSysWrap.parentElement = body;
+// 先验证未预缓存外层时，嵌套字体图标的 characterData 增量变更也能通过祖先链被拦截
+notifyObserver([{ type: 'characterData', target: nestedFontIconText }]);
+assert.equal(nestedFontIconText.nodeValue, 'settings', '嵌套 google-symbols 内层文本节点必须通过祖先链跳过保护');
+
+translateNode(iconSysWrap);
+assert.equal(sysUnknownIcon.nodeValue, 'folder');
+assert.equal(sysUnknownLabel.nodeValue, '未知项目', '含 google-symbols 图标且无 data-project-label 的 Unknown Project 系统标题应正常汉化');
+assert.equal(sysCustomIcon.nodeValue, 'computer');
+assert.equal(sysCustomLabel.nodeValue, '本机', '含 google-symbols 图标的 custom This Computer 系统标题应正常汉化');
+assert.equal(bcUnknownIcon.nodeValue, 'folder');
+assert.equal(bcUnknownLabel.nodeValue, '未知项目', '含 google-symbols 图标的 Unknown Project 面包屑应正常汉化');
+assert.equal(nestedFontIconText.nodeValue, 'settings');
+
 console.log('PASS: 左侧项目栏及悬浮卡片/设置页(桌面+窄屏)/面包屑/项目选择器/移动菜单项目名隔离与系统内置分组放行回归测试全部通过');
