@@ -15,7 +15,7 @@ Antigravity 深度汉化与高性能本地化补丁程序
 
 专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁，现由开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合维护。全面适配 **Antigravity v2.35.2+** 最新架构，完成 `src/` 模块化引擎解耦与 DOM 微任务调度重构，带来百万级吞吐量的极致流畅体验。全量汉化收件箱模式 (`Inbox Mode`)、插件权限管理、语音听写多语言选择、规划模式、系统设置、安全沙盒、Remote SSH 远程开发、Computer Use 桌面操控与预览、内联审批/提问卡片、`Swarm` 多智能体侧栏与 `plugin://` 子框架、`Orchestrator` 模式设置与 `4,920+` 条零重复核心界面文案，严格对齐官方原生轻量级打包规格（v2.35.2 约 7.61 MiB），并对用户打字、代码编辑区及 AI 对话 Markdown 正文实施绝对物理免疫。
 
-> [最新 Release 下载](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [社区讨论与 2.5K 里程碑 (Discussions)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [问题反馈与建议](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
+> [最新 Release 下载](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [社区讨论与三千星里程碑 (Discussions)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [问题反馈与建议](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
 
 ---
 
@@ -47,7 +47,7 @@ Antigravity 深度汉化与高性能本地化补丁程序
 | **极致吞吐与防夹生守卫** | 吞吐量突破 168 万次/秒 | 模块化拆分为 `src/dictionary.js` 与 `src/dom-translator.js`，前置 `O(1)` 哈希精确查找、ASCII 纯中文短路、DOM 祖先剪枝、`queueMicrotask` 帧聚合及 `coreWords` 100% 实词命中防夹生守卫。 |
 | **本机回环安全装甲** | `127.0.0.1` + CSRF 强鉴权 | 控制中心强制绑定 `127.0.0.1`，全接口实施 `Host`/`Origin` 回环校验、单进程一次性 CSRF Token 鉴权、JSON 请求体大小限制与显式 TLS 证书校验。 |
 | **轻量打包与标准规格** | 严格对齐官方原生规格（约 7.61 MiB） | 使用 `--unpack-dir` 排除外部解包依赖，彻底消除历史版本体积膨胀问题，与官方原生分发包规格保持一致。 |
-| **全套 TDD 自动化测试门禁** | 67 组测试套件全面回归校验 | 覆盖模块化翻译引擎、词典零重复基线、AI 正文 Markdown/行内代码物理隔离、智能体错误卡片组合句、主进程功能沙盒、AST 语法门禁、回环安全鉴权、无 Node.js 实机批处理离线桥接及流式发布下载防护。 |
+| **全套 TDD 自动化测试门禁** | 68 组测试套件全面回归校验 | 覆盖模块化翻译引擎、超长对话零回流遍历、词典零重复基线、AI 正文 Markdown/行内代码物理隔离、智能体错误卡片组合句、主进程功能沙盒、AST 语法门禁、回环安全鉴权、无 Node.js 实机批处理离线桥接及流式发布下载防护。 |
 
 ---
 
@@ -263,11 +263,11 @@ git clone --depth=1 https://github.com/antigravity-cn-community/Antigravity-Chin
 
 ---
 
-## 2,500+ Stars 里程碑与 Star 增长趋势
+## 3,000+ Stars 三千星里程碑与 Star 增长趋势
 
-> **2026 年 11 月 26 日 10:52（北京时间）**：项目正式突破 **2,500 Stars** 里程碑，登顶 GitHub **Google Antigravity 汉化赛道全网第一**！自 2026-05-25 第 1 颗星起历时 175 天于 11 月 16 日突破千星并迁入开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合运营后，**仅用 8.9 天翻倍破双千，随后更在不到 24 小时（23.6 小时）内再涨 +500 星突破 2,500 Stars**。欢迎前往 [Discussions 社区讨论区](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) 参与交流与反馈。
+> **2026 年 11 月 27 日 09:38（北京时间）**：项目正式突破 **3,000 Stars** 三千星里程碑，稳居 GitHub **Google Antigravity 汉化赛道全网第一**、跻身 `antigravity` 全生态 Top 8！自 2026-05-25 第 1 颗星起历时 175 天于 11 月 16 日突破千星并迁入开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合运营后，**仅用 8.8 天翻倍破双千，随后更在不到 2 天（46.0 小时）内再涨 +1,000 星突破 3,000 Stars**（11 月 26 日单日峰值狂飙 `+614` 星）。欢迎前往 [Discussions 社区讨论区](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) 参与交流与反馈。
 
-![Antigravity-Chinese-Localization 2,500+ Stars 里程碑历史增长曲线](docs/star_history_light.png)
+![Antigravity-Chinese-Localization 3,000+ Stars 三千星里程碑历史增长曲线](docs/star_history_light.png)
 
 > 矢量图表存档：[docs/star_history_light.svg](docs/star_history_light.svg) · 全量时间戳数据：[docs/stargazers.json](docs/stargazers.json)
 
@@ -282,6 +282,7 @@ git clone --depth=1 https://github.com/antigravity-cn-community/Antigravity-Chin
 | [Justin-Mai](https://github.com/Justin-Mai) | 2.0 汉化控制中心架构升级、多用户/自定义路径、心跳自愈与防劫持、`v2.35.1` / `v2.35.2` 适配及 AI 对话正文 Markdown 物理隔离机制（PR #82/#90） |
 | [songxitao](https://github.com/songxitao) | 2.10.0+ 深度适配、三层 DOM 物理隔离防护、Markdown 与代码区防污染、全套 TDD 自动化测试套件构建 |
 | [angel12538](https://github.com/angel12538) | 首页动态问候语、第三方模型公告与下线日期规则、权限审批标题全家族、AI 点数/配额提示与智能体错误卡片组合句汉化（PR #74/#77/#79/#86） |
+| [Jzhiyshen](https://github.com/Jzhiyshen) | 消除超长对话下 `innerText` 同步回流与嵌套遍历卡死，规范 `plugin://` 子框架注入结束边界（PR #92） |
 | [mojingjing-git](https://github.com/mojingjing-git) | 2.26.0 ~ 2.29.0 多轮官方大版本适配、新增词条全量覆盖与版本校验修复 |
 | [UncleLiu-0306](https://github.com/UncleLiu-0306) | 智能体安全安装版本强校验门禁、macOS 签名风险前置指引及 macOS 重签方案探索（PR #76） |
 | [mutezebra](https://github.com/mutezebra) | macOS 双击「一键更新汉化.command」离线恢复启动器及自动恢复版本校验安全加固 |
