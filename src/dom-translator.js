@@ -3396,6 +3396,25 @@
     'new project', '新建项目',
     'new workspace', '新建工作区'
   ]);
+  const PROJECT_SELECTOR_TRIGGER_FALLBACK_PLACEHOLDERS = new Set([
+    'select project', '选择项目',
+    'select workspace', '选择工作区',
+    'unknown project', '未知项目',
+    'unknown workspace', '未知工作区'
+  ]);
+  const PROJECT_SELECTOR_TRIGGER_ALL_PLACEHOLDERS = new Set([
+    'select project', '选择项目',
+    'select workspace', '选择工作区',
+    'no project', '无项目',
+    'new workspace', '新建工作区',
+    'unknown project', '未知项目',
+    'unknown workspace', '未知工作区'
+  ]);
+  const PROJECT_SELECTOR_ITEM_TESTIDS = new Set([
+    'project-selector-item',
+    'project-selector-clone-remote-item',
+    'project-selector-clone-local-item'
+  ]);
   const EDIT_PROJECT_NAME_ARIA_RE = /^(?:Edit\s+(?:project|workspace)\s+name|编辑\s*(?:项目|工作区)\s*名称?)$/i;
   const PROJECT_BREADCRUMB_ARIA_RE = /^(?:(?:Project|Workspace)\s*:\s*|(?:项目|工作区)\s*[:：]\s*)/i;
 
@@ -3508,8 +3527,16 @@
 
   function isProjectGlyphLabelSelf(cur) {
     if (!cur || cur.nodeType !== Node.ELEMENT_NODE) return false;
-    // 保护回退为 google-symbols 字体图标的 [data-project-glyph] 节点自身（避免 ligature 如 "folder"/"cloud" 被译为汉字破坏图标）
+    // 保护回退为 google-symbols 字体图标的 [data-project-glyph] 与图标 [data-project-icon] 节点自身（避免 ligature 如 "folder"/"cloud" 被译为汉字破坏图标）
     if (hasAttr(cur, 'data-project-glyph')) {
+      return true;
+    }
+    if (
+      !isProjectHeaderElement(cur) &&
+      hasAttr(cur, 'data-project-icon') &&
+      cur.classList &&
+      (cur.classList.contains('google-symbols') || cur.classList.contains('material-symbols-outlined'))
+    ) {
       return true;
     }
     if ((cur.tagName || '').toUpperCase() !== 'SPAN') {
@@ -3672,13 +3699,235 @@
     return false;
   }
 
+  function isIconOrBadgeElement(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
+    const tag = (el.tagName || '').toUpperCase();
+    if (tag === 'SVG' || tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT' || tag === 'MATH') {
+      return true;
+    }
+    if (
+      hasAttr(el, 'data-project-icon') ||
+      hasAttr(el, 'data-project-glyph') ||
+      hasAttr(el, 'data-icon')
+    ) {
+      return true;
+    }
+    if (el.getAttribute) {
+      const tid = el.getAttribute('data-testid');
+      if (tid === 'menu-item-check' || tid === 'project-selector-trigger-badge' || tid === 'project-selector-item-badge') {
+        return true;
+      }
+    }
+    if (el.classList && (el.classList.contains('google-symbols') || el.classList.contains('material-symbols-outlined'))) {
+      return true;
+    }
+    return false;
+  }
+
+  function hasDescendantProjectIcon(rootEl) {
+    if (!rootEl || !rootEl.childNodes) return false;
+    const stack = [rootEl];
+    let visited = 0;
+    while (stack.length > 0 && visited < 16) {
+      const cur = stack.pop();
+      if (!cur || cur.nodeType !== Node.ELEMENT_NODE) continue;
+      visited++;
+      if (cur !== rootEl && hasAttr(cur, 'data-project-icon')) return true;
+      if (cur.childNodes) {
+        for (let i = cur.childNodes.length - 1; i >= 0; i--) {
+          if (cur.childNodes[i] && cur.childNodes[i].nodeType === Node.ELEMENT_NODE) {
+            stack.push(cur.childNodes[i]);
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  function readElementLabelWithoutIcons(rootEl) {
+    if (!rootEl) return '';
+    if (!rootEl.childNodes || rootEl.childNodes.length === 0) {
+      return readElementTextNoReflow(rootEl);
+    }
+    let acc = '';
+    const stack = [rootEl];
+    let visited = 0;
+    while (stack.length > 0 && visited < 24) {
+      const cur = stack.pop();
+      if (!cur) continue;
+      if (cur.nodeType === Node.TEXT_NODE) {
+        if (cur.nodeValue) acc += cur.nodeValue;
+      } else if (cur.nodeType === Node.ELEMENT_NODE) {
+        if (cur !== rootEl && isIconOrBadgeElement(cur)) continue;
+        visited++;
+        if (cur.childNodes) {
+          for (let i = cur.childNodes.length - 1; i >= 0; i--) {
+            stack.push(cur.childNodes[i]);
+          }
+        }
+      }
+    }
+    return acc;
+  }
+
+  function isProjectSelectorTriggerSelf(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE || !el.getAttribute) return false;
+    if (el.getAttribute('data-testid') !== 'project-selector-trigger') return false;
+    const rawLabel = readElementLabelWithoutIcons(el).trim().toLowerCase();
+    if (!rawLabel) return false;
+    if (hasDescendantProjectIcon(el)) {
+      return !PROJECT_SELECTOR_TRIGGER_FALLBACK_PLACEHOLDERS.has(rawLabel);
+    }
+    return !PROJECT_SELECTOR_TRIGGER_ALL_PLACEHOLDERS.has(rawLabel);
+  }
+
+  // 输入框上方项目/工作区选择器触发按钮（O(1) 常数深度最多上溯 4 层，放行 Select Project / No Project / New Workspace 占位态）
+  function isProjectSelectorTriggerElement(el) {
+    let cur = el;
+    let depth = 0;
+    while (cur && cur !== document.body && depth < 4) {
+      if (cur.nodeType === Node.ELEMENT_NODE && cur.getAttribute && cur.getAttribute('data-testid') === 'project-selector-trigger') {
+        return isProjectSelectorTriggerSelf(cur);
+      }
+      cur = cur.parentElement;
+      depth++;
+    }
+    return false;
+  }
+
+  function findProjectSelectorItemAncestor(el) {
+    let cur = el;
+    let depth = 0;
+    while (cur && cur !== document.body && depth < 4) {
+      if (cur.nodeType === Node.ELEMENT_NODE && cur.getAttribute) {
+        const tid = cur.getAttribute('data-testid');
+        if (tid && PROJECT_SELECTOR_ITEM_TESTIDS.has(tid)) {
+          return { item: cur, testId: tid, depth };
+        }
+        // 绝不误伤下拉项右侧悬停设置按钮（如 Project Settings）
+        if ((cur.tagName || '').toUpperCase() === 'BUTTON' && tid === 'project-selector-item-settings') {
+          return null;
+        }
+      }
+      cur = cur.parentElement;
+      depth++;
+    }
+    return null;
+  }
+
+  function hasDirectButtonOrCheckChild(el) {
+    if (!el || !el.childNodes) return false;
+    for (let i = 0; i < el.childNodes.length; i++) {
+      const ch = el.childNodes[i];
+      if (!ch || ch.nodeType !== Node.ELEMENT_NODE) continue;
+      if ((ch.tagName || '').toUpperCase() === 'BUTTON') return true;
+      if (ch.getAttribute && ch.getAttribute('data-testid') === 'menu-item-check') return true;
+    }
+    return false;
+  }
+
+  function isMultiRowFlexColContainer(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
+    if (el.classList && el.classList.contains('flex-col')) return true;
+    if (!el.childNodes) return false;
+    let spanChildren = 0;
+    for (let i = 0; i < el.childNodes.length; i++) {
+      const ch = el.childNodes[i];
+      if (ch && ch.nodeType === Node.ELEMENT_NODE && (ch.tagName || '').toUpperCase() === 'SPAN') {
+        spanChildren++;
+        if (spanChildren >= 2) return true;
+      }
+    }
+    return false;
+  }
+
+  // 项目选择器下拉列表项与克隆子菜单项中的项目名 <span>：
+  // 精准保护项目名与 title，同时保留右侧设置按钮（Project Settings）与克隆副标题（Clone locally / Open in Remote / Cloning locally…）正常汉化
+  function isProjectSelectorItemLabelSelf(cur) {
+    if (!cur || cur.nodeType !== Node.ELEMENT_NODE || (cur.tagName || '').toUpperCase() !== 'SPAN') {
+      return false;
+    }
+    if (isIconOrBadgeElement(cur)) return false;
+    if (cur.classList && cur.classList.contains('ml-auto')) return false;
+    const info = findProjectSelectorItemAncestor(cur.parentElement);
+    if (!info) return false;
+
+    if (info.testId === 'project-selector-item') {
+      if (info.depth !== 0 || hasDirectButtonOrCheckChild(cur)) return false;
+      const rawLabel = readElementLabelWithoutIcons(cur).trim().toLowerCase();
+      return Boolean(rawLabel) && !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
+    }
+
+    // project-selector-clone-remote-item / project-selector-clone-local-item
+    if (info.depth === 0) {
+      if (hasDirectButtonOrCheckChild(cur) || isMultiRowFlexColContainer(cur)) return false;
+      const rawLabel = readElementLabelWithoutIcons(cur).trim().toLowerCase();
+      return Boolean(rawLabel) && !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
+    }
+    if (info.depth === 1) {
+      const parent = cur.parentElement;
+      if (!parent || (parent.classList && parent.classList.contains('ml-auto'))) return false;
+      if (getPreviousElementSibling(cur)) return false;
+      const rawLabel = readElementLabelWithoutIcons(cur).trim().toLowerCase();
+      return Boolean(rawLabel) && !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
+    }
+    if (info.depth === 2) {
+      const slot = cur.parentElement;
+      const container = slot && slot.parentElement;
+      if (!slot || !container || (container.classList && container.classList.contains('ml-auto'))) return false;
+      if (getPreviousElementSibling(slot)) return false;
+      const rawLabel = readElementLabelWithoutIcons(cur).trim().toLowerCase();
+      return Boolean(rawLabel) && !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
+    }
+    return false;
+  }
+
+  function isProjectSelectorItemLabelElement(el) {
+    let cur = el;
+    let depth = 0;
+    while (cur && cur !== document.body && depth < 3) {
+      if (isProjectSelectorItemLabelSelf(cur)) return true;
+      cur = cur.parentElement;
+      depth++;
+    }
+    return false;
+  }
+
+  function isConversationProjectMenuItemSelf(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE || !el.getAttribute) return false;
+    const tid = el.getAttribute('data-testid') || '';
+    if (!tid.startsWith('conversation-project-')) return false;
+    const rawLabel = readElementLabelWithoutIcons(el).trim().toLowerCase();
+    return Boolean(rawLabel) && !PROJECT_PLACEHOLDER_LABELS.has(rawLabel);
+  }
+
+  // 对话右键/更多菜单「Move to Project」子菜单中的项目勾选项（仅匹配单数 conversation-project-*，不影响复数 conversation-projects-* 系统菜单项）
+  function isConversationProjectMenuItemElement(el) {
+    let cur = el;
+    let depth = 0;
+    while (cur && cur !== document.body && depth < 4) {
+      if (cur.nodeType === Node.ELEMENT_NODE && cur.getAttribute) {
+        const tid = cur.getAttribute('data-testid') || '';
+        if (tid.startsWith('conversation-project-')) {
+          return isConversationProjectMenuItemSelf(cur);
+        }
+      }
+      cur = cur.parentElement;
+      depth++;
+    }
+    return false;
+  }
+
   // 仅判断当前元素自身（供 isNonComposerProtectedSelf 在外层祖先遍历中 O(1) 调用，避免 O(D^2) 嵌套爬树）
   function isProtectedProjectNameSelf(el) {
     return (
       isProjectGlyphLabelSelf(el) ||
       isSettingsProjectNavButton(el) ||
       isSettingsProjectTitleSelf(el) ||
-      isProjectBreadcrumbSegmentSelf(el)
+      isProjectBreadcrumbSegmentSelf(el) ||
+      isProjectSelectorTriggerSelf(el) ||
+      isProjectSelectorItemLabelSelf(el) ||
+      isConversationProjectMenuItemSelf(el)
     );
   }
 
@@ -3687,7 +3936,10 @@
       isProjectGlyphLabelElement(el) ||
       isSettingsProjectNavItem(el) ||
       isSettingsProjectTitleElement(el) ||
-      isProjectBreadcrumbSegment(el)
+      isProjectBreadcrumbSegment(el) ||
+      isProjectSelectorTriggerElement(el) ||
+      isProjectSelectorItemLabelElement(el) ||
+      isConversationProjectMenuItemElement(el)
     );
   }
 
