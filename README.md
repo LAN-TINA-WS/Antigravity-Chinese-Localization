@@ -265,7 +265,7 @@ git clone --depth=1 https://github.com/antigravity-cn-community/Antigravity-Chin
 
 ## 3,000+ Stars 三千星里程碑与 Star 增长趋势
 
-> **2026 年 11 月 27 日 09:38（北京时间）**：项目正式突破 **3,000 Stars** 三千星里程碑，稳居 GitHub **Google Antigravity 汉化赛道全网第一**、跻身 `antigravity` 全生态 Top 8！自 2026-05-25 第 1 颗星起历时 175 天于 11 月 16 日突破千星并迁入开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合运营后，**仅用 8.8 天翻倍破双千，随后更在不到 2 天（46.0 小时）内再涨 +1,000 星突破 3,000 Stars**（11 月 26 日单日峰值狂飙 `+614` 星）。欢迎前往 [Discussions 社区讨论区](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) 参与交流与反馈。
+> **2026 年 11 月 27 日 09:38（北京时间）**：项目正式突破 **3,000 Stars** 三千星里程碑！自 2026-05-25 第 1 颗星起历时 175 天于 11 月 16 日突破千星并迁入开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合运营后，**仅用 8.8 天翻倍破双千，随后更在不到 2 天（46.0 小时）内再涨 +1,000 星突破 3,000 Stars**（11 月 26 日单日峰值狂飙 `+614` 星）。欢迎前往 [Discussions 社区讨论区](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) 参与交流与反馈。
 
 ![Antigravity-Chinese-Localization 3,000+ Stars 三千星里程碑历史增长曲线](docs/star_history_light.png)
 

@@ -262,7 +262,7 @@ For complete architectural details on binary trade-offs, history pruning, and dy
 
 ## 3,000+ Stars Milestone & Growth History
 
-> **November 27, 2026 at 09:38 CST**: This project officially crossed **3,000 Stars**, ranking **#1 among Google Antigravity localization projects on GitHub** and Top 8 across the entire Antigravity ecosystem! After reaching 1,000 Stars in 175 days (May 25 – Nov 16, 2026) and transitioning to the open-source organization **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)**, the community **doubled to 2,000 Stars in 8.8 days and surged another +1,000 Stars past 3,000 in just 46.0 hours (under 2 days)**, peaking at `+614` Stars on Nov 26. Join the conversation in [GitHub Discussions](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions).
+> **November 27, 2026 at 09:38 CST**: This project officially crossed **3,000 Stars**! After reaching 1,000 Stars in 175 days (May 25 – Nov 16, 2026) and transitioning to the open-source organization **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)**, the community **doubled to 2,000 Stars in 8.8 days and surged another +1,000 Stars past 3,000 in just 46.0 hours (under 2 days)**, peaking at `+614` Stars on Nov 26. Join the conversation in [GitHub Discussions](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions).
 
 ![Antigravity-Chinese-Localization 3,000+ Stars Milestone Growth Curve](docs/star_history_light.png)
 
