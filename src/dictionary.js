@@ -4975,7 +4975,32 @@ const dictionary = {
     // ===== Ticket-60: Antigravity v2.35.2 模型切换提示与高频动态报错前缀补漏 =====
     "Applies to /btw and messages sent after this turn": "适用于 /btw 及本回合之后发送的消息",
     "Applies to messages sent after this turn": "适用于本回合之后发送的消息",
-    "Model cannot be changed while the agent is running": "智能体运行期间无法切换模型"
+    "Model cannot be changed while the agent is running": "智能体运行期间无法切换模型",
+
+    // ===== Ticket-62: 新建项目/SSH 主机悬浮提示、位置选择器与项目下拉菜单遗漏文案补全 =====
+    "Create a project on a machine you reach over SSH. It opens in that host's own window.": "在通过 SSH 连接的远程主机上创建项目，并将在该主机的独立窗口中打开。",
+    "Create a project on this computer or remotely.": "在本机或远程创建项目。",
+    "Create a new Piper (g4) workspace from your initial prompt. Customize in General Settings, under Advanced.": "根据初始提示词创建新的 Piper (g4) 工作区。可在通用设置的“高级”中自定义。",
+    "Create a new JJ workspace from your initial prompt. Customize in General Settings, under Advanced.": "根据初始提示词创建新的 JJ 工作区。可在通用设置的“高级”中自定义。",
+    "Create a new Cog (GoB) workspace from your initial prompt. Customize in General Settings, under Advanced.": "根据初始提示词创建新的 Cog (GoB) 工作区。可在通用设置的“高级”中自定义。",
+    "Create a new Fig workspace from your initial prompt. Customize in General Settings, under Advanced.": "根据初始提示词创建新的 Fig 工作区。可在通用设置的“高级”中自定义。",
+    "Runs on this machine": "在本机运行",
+    "Runs in a cloud environment": "在云端环境中运行",
+    "Search Hosts…": "搜索主机…",
+    "Search Hosts...": "搜索主机...",
+    "No matching hosts": "没有匹配的主机",
+    "No hosts in ~/.ssh/config yet": "~/.ssh/config 中尚无主机",
+    "Loading Repositories…": "正在加载代码仓库…",
+    "Loading Repositories...": "正在加载代码仓库...",
+    "Open in Remote": "在远程打开",
+    "Cloning locally…": "正在克隆到本地…",
+    "Cloning locally...": "正在克隆到本地...",
+    "Google3 projects are being deprecated. Select a CitC workspace instead.": "Google3 项目即将弃用，请改选 CitC 工作区。",
+    "No matching projects": "没有匹配的项目",
+    "No matching workspaces": "没有匹配的工作区",
+    "No remote projects": "暂无远程项目",
+    "No remote workspaces": "暂无远程工作区",
+    "No projects found": "未找到项目"
 };
 
 const coreWords = {

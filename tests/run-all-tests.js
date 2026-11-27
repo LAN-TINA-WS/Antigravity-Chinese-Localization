@@ -67,6 +67,7 @@ const tests = [
   'ticket-59-agent-error-card.test.js',
   'ticket-60-v2352-features.test.js',
   'ticket-61-long-conversation-perf.test.js',
+  'ticket-62-project-ssh-selector-copy.test.js',
   'check-injection-syntax.js',
   'verify-ready-asar.js',
   'asar-version.test.js',
