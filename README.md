@@ -15,7 +15,7 @@ Antigravity 深度汉化与高性能本地化补丁程序
 
 专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁，现由开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合维护。全面适配 **Antigravity v2.36.0+** 最新架构，完成 `src/` 模块化引擎解耦与 DOM 微任务调度重构，带来百万级吞吐量的极致流畅体验。全量汉化 Git Worktree 对话派生、环境变量与网络密钥管理、Feed 动态流与会话线程/FYI、收件箱模式 (`Inbox Mode`)、插件权限管理、语音听写多语言选择、规划模式、系统设置、安全沙盒、Remote SSH 远程开发、Computer Use 桌面操控与预览、内联审批/提问卡片、`Swarm` 多智能体侧栏与 `plugin://` 子框架、`Orchestrator` 模式设置与 `5,282` 条零重复核心界面文案，严格对齐官方原生轻量级打包规格（v2.36.0 约 7.75 MiB），并对用户打字、代码编辑区及 AI 对话 Markdown 正文实施绝对物理免疫。
 
-> [最新 Release 下载](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [社区讨论与三千星里程碑 (Discussions)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [问题反馈与建议](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
+> [最新 Release 下载](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [社区讨论与 3.5K 里程碑 (Discussions)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [问题反馈与建议](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
 
 ---
 
@@ -264,11 +264,11 @@ git clone --depth=1 https://github.com/antigravity-cn-community/Antigravity-Chin
 
 ---
 
-## 3,000+ Stars 三千星里程碑与 Star 增长趋势
+## 3.5K Stars 里程碑与 Star 增长趋势
 
-> **2026 年 11 月 27 日 09:38（北京时间）**：项目正式突破 **3,000 Stars** 三千星里程碑！自 2026-05-25 第 1 颗星起历时 175 天于 11 月 16 日突破千星并迁入开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合运营后，**仅用 8.8 天翻倍破双千，随后更在不到 2 天（46.0 小时）内再涨 +1,000 星突破 3,000 Stars**（11 月 26 日单日峰值狂飙 `+614` 星）。欢迎前往 [Discussions 社区讨论区](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) 参与交流与反馈。
+> **2026 年 11 月 28 日（北京时间）**：项目正式迈入 **3.5K Stars**（`3,481+` Stars / `126K+` 累计下载）新里程碑，并同步发布 **`v2.36.0`** 正式版！自 2026-05-25 第 1 颗星起历时 175 天于 11 月 16 日突破千星并迁入开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合运营后，仅用 8.8 天翻倍破双千、46.0 小时再涨 +1,000 星突破 3,000 Stars（11 月 26 日单日峰值 `+613` 星），紧接着在 28 小时内再度跃升近 +500 星迈入 3.5K。欢迎前往 [Discussions 社区讨论区](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) 参与交流与反馈。
 
-![Antigravity-Chinese-Localization 3,000+ Stars 三千星里程碑历史增长曲线](docs/star_history_light.png)
+![Antigravity-Chinese-Localization 3.5K Stars 里程碑历史增长曲线](docs/star_history_light.png)
 
 > 矢量图表存档：[docs/star_history_light.svg](docs/star_history_light.svg) · 全量时间戳数据：[docs/stargazers.json](docs/stargazers.json)
 
@@ -279,12 +279,12 @@ git clone --depth=1 https://github.com/antigravity-cn-community/Antigravity-Chin
 | 贡献者 | 角色与主要贡献 |
 | :--- | :--- |
 | [liominsb](https://github.com/liominsb) | 原项目创作者，搭建了最初的 Electron asar 注入与 Web 控制中心基础架构，推动仓库升级至社区组织联合运营 |
-| [LAN-TINA-WS](https://github.com/LAN-TINA-WS) | 组织化联合维护者，2.12.0+ 深度重构、算力与 DOM 调度飞跃优化（168万次/秒）、`src/` 模块化安全加固、全量词库扩充及 2.35.2+ 持续适配 |
-| [Justin-Mai](https://github.com/Justin-Mai) | 2.0 汉化控制中心架构升级、多用户/自定义路径、心跳自愈与防劫持、`v2.35.1` / `v2.35.2` 适配及 AI 对话正文 Markdown 物理隔离机制（PR #82/#90） |
+| [LAN-TINA-WS](https://github.com/LAN-TINA-WS) | 组织化联合维护者，2.12.0+ 深度重构、算力与 DOM 调度飞跃优化（168万次/秒）、`src/` 模块化安全加固、全量词库扩充及 2.36.0+ 持续适配 |
+| [Justin-Mai](https://github.com/Justin-Mai) | 2.0 汉化控制中心架构升级、多用户/自定义路径、心跳自愈与防劫持、`v2.35.1` / `v2.35.2` / `v2.36.0` 适配及 AI 对话正文 Markdown 物理隔离机制（PR #82/#90/#96） |
 | [songxitao](https://github.com/songxitao) | 2.10.0+ 深度适配、三层 DOM 物理隔离防护、Markdown 与代码区防污染、全套 TDD 自动化测试套件构建 |
 | [angel12538](https://github.com/angel12538) | 首页动态问候语、第三方模型公告与下线日期规则、权限审批标题全家族、AI 点数/配额提示与智能体错误卡片组合句汉化（PR #74/#77/#79/#86） |
 | [Jzhiyshen](https://github.com/Jzhiyshen) | 消除超长对话下 `innerText` 同步回流与嵌套遍历卡死，规范 `plugin://` 子框架注入结束边界（PR #92） |
-| [mojingjing-git](https://github.com/mojingjing-git) | 2.26.0 ~ 2.29.0 多轮官方大版本适配、新增词条全量覆盖与版本校验修复 |
+| [mojingjing-git](https://github.com/mojingjing-git) | 2.26.0 ~ 2.29.0 多轮官方大版本适配、`v2.36.0` 社区高价值词条补充及版本校验修复（PR #98） |
 | [UncleLiu-0306](https://github.com/UncleLiu-0306) | 智能体安全安装版本强校验门禁、macOS 签名风险前置指引及 macOS 重签方案探索（PR #76） |
 | [mutezebra](https://github.com/mutezebra) | macOS 双击「一键更新汉化.command」离线恢复启动器及自动恢复版本校验安全加固 |
 | [12cjn](https://github.com/12cjn) | 首页任务建议卡片、快捷键与输入区无障碍标签补全（PR #69） |

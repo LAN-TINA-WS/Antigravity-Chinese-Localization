@@ -15,7 +15,7 @@ Deep Localization & High-Performance Chinese Patch for Google Antigravity
 
 A high-performance, non-destructive deep Chinese localization patch designed for Google Antigravity, now co-maintained under the open-source organization **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)**. Fully adapted to the latest architecture of **Antigravity v2.36.0+**, featuring modular `src/` engine decoupling and DOM micro-batch scheduling that delivers 1.68 million queries/sec throughput. It provides comprehensive localization across `5,282` zero-duplicate UI strings covering Git Worktree conversation forking, Environment Variables & Network Secrets (`.env` & plugin keys), dynamic Feed stream & Session Threads/FYI, `Inbox Mode` & `Auto-Resolve`, `Plugin permissions`, multi-language `Dictation languages`, Planning Mode, `Swarm` & `plugin://` subframes, Input Box shortcuts, Orchestrator Settings & Thinking effort, Inline approval/question cards, Security Sandbox, Remote SSH, Computer Use, 9 Gemini Live voices, and Marketplace `Bundles`, strictly aligns with the official slim packaging spec (~7.75 MiB for v2.36.0), and guarantees absolute physical immunity for code editors, user input fields, and AI Markdown chat bodies.
 
-> [Download Latest Release](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [Discussions & 3K Stars Milestone](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [Issues & Feedback](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
+> [Download Latest Release](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [Discussions & 3.5K Stars Milestone](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [Issues & Feedback](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
 
 ---
 
@@ -261,11 +261,11 @@ For complete architectural details on binary trade-offs, history pruning, and dy
 
 ---
 
-## 3,000+ Stars Milestone & Growth History
+## 3.5K Stars Milestone & Growth History
 
-> **November 27, 2026 at 09:38 CST**: This project officially crossed **3,000 Stars**! After reaching 1,000 Stars in 175 days (May 25 – Nov 16, 2026) and transitioning to the open-source organization **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)**, the community **doubled to 2,000 Stars in 8.8 days and surged another +1,000 Stars past 3,000 in just 46.0 hours (under 2 days)**, peaking at `+614` Stars on Nov 26. Join the conversation in [GitHub Discussions](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions).
+> **November 28, 2026 (CST)**: This project officially entered the **3.5K Stars** milestone (`3,481+` Stars / `126K+` total downloads) alongside the **`v2.36.0`** official release! After reaching 1,000 Stars in 175 days (May 25 – Nov 16, 2026) and transitioning to **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)**, the community doubled to 2,000 Stars in 8.8 days, surged past 3,000 Stars in 46.0 hours (peaking at `+613` Stars on Nov 26), and added nearly +500 more Stars in the following 28 hours. Join the conversation in [GitHub Discussions](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions).
 
-![Antigravity-Chinese-Localization 3,000+ Stars Milestone Growth Curve](docs/star_history_light.png)
+![Antigravity-Chinese-Localization 3.5K Stars Milestone Growth Curve](docs/star_history_light.png)
 
 > Vector chart archive: [docs/star_history_light.svg](docs/star_history_light.svg) · Full timestamp dataset: [docs/stargazers.json](docs/stargazers.json)
 
@@ -276,12 +276,12 @@ For complete architectural details on binary trade-offs, history pruning, and dy
 | Contributor | Role & Contributions |
 | :--- | :--- |
 | [liominsb](https://github.com/liominsb) | Original project creator, built the initial Electron asar injection and Web dashboard architecture, and initiated the community organization transition |
-| [LAN-TINA-WS](https://github.com/LAN-TINA-WS) | Community co-maintainer, v2.12.0+ deep refactoring, 1.68M QPS engine optimization, `src/` modular security hardening, comprehensive dictionary expansion, and ongoing v2.35.2+ maintenance |
-| [Justin-Mai](https://github.com/Justin-Mai) | 2.0 Web dashboard architecture upgrade, multi-user/custom path support, heartbeat self-healing, `v2.35.1` / `v2.35.2` sync, and AI Markdown chat-body isolation (PR #82/#90) |
+| [LAN-TINA-WS](https://github.com/LAN-TINA-WS) | Community co-maintainer, v2.12.0+ deep refactoring, 1.68M QPS engine optimization, `src/` modular security hardening, comprehensive dictionary expansion, and ongoing v2.36.0+ maintenance |
+| [Justin-Mai](https://github.com/Justin-Mai) | 2.0 Web dashboard architecture upgrade, multi-user/custom path support, heartbeat self-healing, `v2.35.1` / `v2.35.2` / `v2.36.0` sync, and AI Markdown chat-body isolation (PR #82/#90/#96) |
 | [songxitao](https://github.com/songxitao) | v2.10.0+ deep adaptation, 3-layer DOM physical isolation defense, Markdown & code area anti-pollution, and full TDD automated test suite construction |
 | [angel12538](https://github.com/angel12538) | Dynamic home greeting, model deprecation & quota notices, full path/URL permission title family, AI Credits notices, and agent error-card combined-sentence coverage (PR #74/#77/#79/#86) |
 | [Jzhiyshen](https://github.com/Jzhiyshen) | Eliminated synchronous `innerText` layout thrashing & quadratic leaf traversal on huge conversations, and added `plugin://` subframe end boundaries (PR #92) |
-| [mojingjing-git](https://github.com/mojingjing-git) | Comprehensive v2.26.0–v2.29.0 upstream version adaptations, missing UI copy coverage, and version assertion fixes |
+| [mojingjing-git](https://github.com/mojingjing-git) | Comprehensive v2.26.0–v2.29.0 upstream version adaptations, curated v2.36.0 community UI copy coverage, and version assertion fixes (PR #98) |
 | [UncleLiu-0306](https://github.com/UncleLiu-0306) | Version-match installation guardrails, upfront macOS signing guidance, and macOS re-signing exploration (PR #76) |
 | [mutezebra](https://github.com/mutezebra) | macOS one-click `一键更新汉化.command` offline restore launcher and hardened version mismatch validation |
 | [12cjn](https://github.com/12cjn) | Home task suggestions, shortcut labels, and composer accessibility coverage (PR #69) |
