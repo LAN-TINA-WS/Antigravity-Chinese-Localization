@@ -6,20 +6,21 @@
 
 ## v2.36.0 (2026-11-28) — 全面适配官方 2.36.0 版本：Git Worktree 对话派生、环境变量与网络密钥管理、Feed 动态流与会话线程/FYI 汉化
 
-### 1. 官方 v2.36.0 差异核验与版本基线对齐
+### 1. 官方 v2.36.0 差异核验与版本基线对齐（整合 PR #96 `@Justin-Mai`、精选吸收 PR #98 `@mojingjing-git`，并囊括自 v2.35.2 以来的 PR #92 `@Jzhiyshen`、PR #93/#94 `@omsd512-W`）
 - **主进程 (`app.asar`) 与内嵌前端逐文件比对**：对比官方 `v2.36.0` 原版 `app.asar` 全部 180 个非 `node_modules` 文件，确认仅 `package.json` 版本号更新为 `2.36.0`（`0` 新增/删除/逻辑变更），`localize.js` 全量主进程补丁点实现 `0` 跳过 100% 命中；提取 `language_server.exe`（`CL: 1029995663`）内嵌前端 `main.js`（由 `12,798,822` 字节增至 **`13,177,377` 字节**），全量审计并定位新增及遗漏界面文案。
-- **版本门禁与官方瘦身规格重编**：将 `localize.js`（`CURRENT_VERSION` / `RELEASE_VERSION`）、`package.json`、`extracted/package.json`、`index.html` 与轻量 `app.asar.ready` 同步升级至 **`2.36.0`**；经 LF 归一化与 `--unpack-dir "**/chrome-devtools-mcp/**"` 规范重编，`app.asar.ready` 体积为 **`8,064,913` 字节（`7.69 MiB`）**，保障 `--auto-restore` 与无 Node.js 离线模式对 `v2.36.0` 客户端的精准放行。
+- **版本门禁与官方瘦身规格重编**：将 `localize.js`（`CURRENT_VERSION` / `RELEASE_VERSION`）、`package.json`、`extracted/package.json`、`index.html` 与轻量 `app.asar.ready` 同步升级至 **`2.36.0`**；经 LF 归一化与 `--unpack-dir "**/chrome-devtools-mcp/**"` 规范重编，`app.asar.ready` 体积为 **`8,122,187` 字节（`7.75 MiB`）**，保障 `--auto-restore` 与无 Node.js 离线模式对 `v2.36.0` 客户端的精准放行。
 
-### 2. Web UI v2.36.0 全量新增特性与扫漏汉化（+161 条零重复静态词典、+39 组 `$`-安全动态规则）
-- **Git Worktree 对话派生**：补齐 `Fork in Current Folder`、`Fork in New Git Worktree`、工作树创建进度条、回退提示、以及 `Work locally on ...` / `Work in ...` / `Checked out in ...` 等动态状态规则。
-- **环境变量与网络密钥管理 (`.env` / Secrets / 插件密钥)**：完整汉化 `.env` 单行粘贴与解析、凭证增删替换与作用域选择（`Global (all projects)` / `Project: <name>`）、系统保留变量名及冲突动态校验提示、以及插件配置密钥表单（Arize AX / Dynatrace / Meshy）。
-- **动态 Feed 信息流与后台状态**：补齐 `Filter feed`、空态提示、`<N> agent(s) are working quietly in the background...`、`Show all (N)` 与 `Restore N cleared` React 三节点原位合句、以及规划与交付物快捷操作按钮与回复占位符。
-- **会话线程、表情回应 (Reactions)、静默 FYI 与消息搜索**：覆盖 `Reply in Thread`、`Add reaction`、`FYI` 徽章说明、动态反应数量/移除提示、链接复制与预览开关、分页及搜索匹配导航。
-- **组织预付钱包与 Google Cloud 许可证选择**：补齐 `Organization prepaid wallet is empty` 余额耗尽阻断通知、`Billing model`、`Available licenses`、`Auto-assignment not configured` 与项目信任提示。
-- **Remote Control 与高频遗漏 UI**：补齐 `Get started with Remote Control`、`Loading Remote Control QR code…`、`Failed to load instances:`、Hooks 删除确认、Sidecar 不可信/错误提示、终端企业密码警示、远程端口预览提示、GitHub Token 保存/校验失败、播放器 `2x playback speed`、评论草稿胶囊、Diff 查找开关、Notebook 提示及标注框无障碍标签。
+### 2. Web UI v2.36.0 全量新增特性与扫漏汉化（+328 条零重复静态词典、+66 组 `$`-安全动态规则、6 组 React 多节点原位合句）
+- **Git Worktree 对话派生**：补齐 `Fork in Current Folder`、`Fork in New Git Worktree`、工作树创建进度条、回退提示、以及 `Work locally on ...` / `Work in ...`（收紧常规英文句防误伤守卫）/ `Checked out in ...` 等动态状态规则。
+- **环境变量与网络密钥管理 (`.env` / Secrets / 表单校验 / 插件密钥)**：完整汉化 `.env` 单行粘贴与解析、类型下拉选项（`Network Secret` 统一译为“网络密钥”/`Environment Variable`）、凭证增删替换与作用域选择（`Global (all projects)` / `Project: <name>`）、系统保留变量名/冲突及全量表单必填与格式校验提示、以及插件配置密钥表单（Arize AX / Dynatrace / Meshy / `Configure <Plugin>` 标题）。
+- **动态 Feed 信息流与后台状态**：补齐 `Feeds`、`Filter feed`、`Approve & proceed`、`Approve & run`、`Back to split view`、`Expand full view`、`Full screen`、`Hide from Sidebar`、`Subagent worker`、`Run error`、`Unread message`、`View plan`、`<N> needing your input`、`<N> tasks running`、`<N> agent(s) are working quietly in the background...`，以及 `Show all (N)`、`Show all (N hidden)`、`Reset (N cleared)` 与 `Restore N cleared` 四组 React 三节点原位合句。
+- **会话线程、表情回应 (Reactions)、静默 FYI 与消息搜索**：覆盖 `Reply in Thread`、`Add reaction`、`FYI` 徽章说明、动态反应数量/移除提示、链接复制与预览开关、`<N+?> match(es)` 动态匹配计数、`No messages matching “q” ...` React 四节点与 `Searching <N> loaded message(s) — older history available` React 六节点原位合句（叠加 `processBatchTranslation` `characterData` 父容器合句通道，彻底杜绝 React 原位切换单复数/尾段时出现“消息消息”叠词），并收紧 `Thread/Topic <id>` ID 形态守卫防止误伤 `Thread safety` 等普通英文词组。
+- **组织预付钱包、项目管理与 Google Cloud 许可证选择**：补齐 `Organization prepaid wallet is empty` 余额耗尽阻断通知、`Billing model`、`Available licenses`、`Auto-assignment not configured`、`Non-admin`、项目/工作区重名与保存/创建/删除/取消归档及文件夹解析错误动态规则。
+- **Remote Control、浏览器动作与高频遗漏 UI**：补齐 `Get started with Remote Control`、全量官方 Unicode `…` 省略号文案（`Loading Remote Control QR code…`、`Filter agents…`、`Searching messages…`、`Resuming environment…`、`Waiting for you to finish signing in…` 等）、`Failed to load instances:`、`Remove <host> from Recent`、Hooks 删除确认、Sidecar 启停/删除与不可信警告、终端企业密码警示、远程端口预览提示、GitHub Token 保存/校验失败、自动化任务凭据过期提示、播放器 `2x playback speed` / 快捷键提示、评论草稿胶囊、Diff 查找开关、Notebook 提示及标注框无障碍标签。
+- **性能与保护加固基线继承**：包含 PR #92 长对话零回流（Zero-Reflow）与 `injectOrUpdate` 尾标记保护、PR #93/#94 项目选择器跳过与 `.google-symbols` 图标连字全局免疫。
 
 ### 3. 全链路验证与测试门禁
-- 词典扩充至 **`5,115` 键 `0` 重复**；新增 `tests/ticket-63-v2360-features.test.js` 并注册至 `tests/run-all-tests.js`，同步校验 `app.asar.ready` 预编包与增量注入语法；全工程 **70/70 组 TDD 自动化测试套件 100% ALL GREEN**。
+- 词典扩充至 **`5,282` 键 `0` 重复、`0` 大小写值冲突**；新增 `tests/ticket-63-v2360-features.test.js`（含 280 项断言与 WHATWG 规范 `MutationObserver` `characterData` 防死循环回归测试）并注册至 `tests/run-all-tests.js`，同步校验 `app.asar.ready` 预编包与增量注入语法；全工程 **70/70 组 TDD 自动化测试套件 100% ALL GREEN**。
 
 ---
 

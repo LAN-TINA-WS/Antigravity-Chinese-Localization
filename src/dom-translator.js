@@ -3053,7 +3053,7 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^Failed to (create|save|unarchive|delete) (project|workspace|settings|project settings|project permissions|cloud permission settings|configuration):\s*(.+)$/i.test(trimmed)) {
+    if (/^Failed to (create|save|unarchive|delete) (project|workspace|settings|project settings|project permissions|cloud permission settings|project Google3 configuration|configuration):\s*(.+)$/i.test(trimmed)) {
       const actMap2352 = { create: '创建', save: '保存', unarchive: '取消归档', delete: '删除' };
       const targetMap2352 = {
         project: '项目',
@@ -3062,10 +3062,11 @@
         'project settings': '项目设置',
         'project permissions': '项目权限',
         'cloud permission settings': '云端权限设置',
+        'project google3 configuration': '项目 Google3 配置',
         configuration: '配置',
       };
       const fixed = trimmed.replace(
-        /^Failed to (create|save|unarchive|delete) (project|workspace|settings|project settings|project permissions|cloud permission settings|configuration):\s*(.+)$/i,
+        /^Failed to (create|save|unarchive|delete) (project|workspace|settings|project settings|project permissions|cloud permission settings|project Google3 configuration|configuration):\s*(.+)$/i,
         (_m, act, target, detail) =>
           (actMap2352[act.toLowerCase()] || act) + (targetMap2352[target.toLowerCase()] || target) + '失败：' + detail
       );
@@ -3278,9 +3279,9 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^([^:\r\n]{1,60}) reacted with (.+)$/.test(trimmed)) {
+    if (/^([^:\r\n]{1,40}) reacted with (thumbs up|thumbs down|eyes|heart|[^\x00-\x7F\s]{1,12})$/.test(trimmed)) {
       const fixed = trimmed.replace(
-        /^([^:\r\n]{1,60}) reacted with (.+)$/,
+        /^([^:\r\n]{1,40}) reacted with (thumbs up|thumbs down|eyes|heart|[^\x00-\x7F\s]{1,12})$/,
         (_m, user, emoji) => user + ' 添加了回应 ' + emoji
       );
       cacheSet(trimmed, fixed);
@@ -3323,7 +3324,7 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^(Thread|Topic)\s+([A-Za-z0-9_#-]{1,64})$/.test(trimmed)) {
+    if (/^(Thread|Topic)\s+(?=[A-Za-z0-9_#-]{1,64}$)(?=[A-Za-z0-9_#-]*[\d_#-])([A-Za-z0-9_#-]+)$/.test(trimmed)) {
       const fixed = trimmed.replace(
         /^(Thread|Topic)\s+([A-Za-z0-9_#-]{1,64})$/,
         (_m, kind, id) => (kind === 'Thread' ? '线程 ' : '主题 ') + id
@@ -3341,10 +3342,13 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^No messages matching [“"](.+)[”"] in loaded messages\.$/.test(trimmed)) {
+    if (/^No messages matching [“"](.+)[”"]( in loaded messages)?\.$/.test(trimmed)) {
       const fixed = trimmed.replace(
-        /^No messages matching [“"](.+)[”"] in loaded messages\.$/,
-        (_m, q) => '在已加载的消息中没有匹配“' + q + '”的结果。'
+        /^No messages matching [“"](.+)[”"]( in loaded messages)?\.$/,
+        (_m, q, inLoaded) =>
+          inLoaded
+            ? '在已加载的消息中没有匹配“' + q + '”的结果。'
+            : '没有匹配“' + q + '”的消息。'
       );
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
@@ -3377,7 +3381,12 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^Work in (.+)$/.test(trimmed) && !/^Work in progress$/i.test(trimmed)) {
+    if (
+      /^Work in (.+)$/.test(trimmed) &&
+      !/^Work in (?:progress|a|an|the|this|your|my|our)\b/i.test(trimmed) &&
+      !/[.!?]$/.test(trimmed) &&
+      /(?:[\/\\:~]|\.[A-Za-z0-9_-])/.test(trimmed.slice(8))
+    ) {
       const fixed = trimmed.replace(
         /^Work in (.+)$/,
         (_m, dir) => '工作目录：' + dir
@@ -3405,7 +3414,10 @@
     }
 
     if (/^Environment paused\. Click to resume it and load the ([^.!?\r\n]{1,40})\.$/.test(trimmed)) {
-      const envTargetMap = { terminal: '终端', preview: '预览', diff: '差异', file: '文件', editor: '编辑器' };
+      const envTargetMap = {
+        terminal: '终端', preview: '预览', diff: '差异', file: '文件', editor: '编辑器',
+        image: '图片', video: '视频', audio: '音频', media: '媒体',
+      };
       const fixed = trimmed.replace(
         /^Environment paused\. Click to resume it and load the ([^.!?\r\n]{1,40})\.$/,
         (_m, target) => '环境已暂停，点击恢复以加载' + (envTargetMap[target.toLowerCase()] || target) + '。'
@@ -3414,10 +3426,10 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^Failed to load (terminal|preview|diff|file|editor|document|notebook|image|video|audio|logs|data|page|frame|view|content)$/i.test(trimmed)) {
+    if (/^Failed to load (terminal|preview|diff|file|editor|document|notebook|video|audio|logs|data|page|frame|view|content)$/i.test(trimmed)) {
       const loadTargetMap = {
         terminal: '终端', preview: '预览', diff: '差异', file: '文件', editor: '编辑器',
-        document: '文档', notebook: 'Notebook', image: '图片', video: '视频', audio: '音频',
+        document: '文档', notebook: 'Notebook', video: '视频', audio: '音频',
         logs: '日志', data: '数据', page: '页面', frame: '框架', view: '视图', content: '内容',
       };
       const fixed = trimmed.replace(
@@ -3464,10 +3476,13 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^This deletes (\d+) call recordings? \(([^)]+)\) and cannot be undone\.$/.test(trimmed)) {
+    if (/^This deletes (\d+) call recordings? \(([^)]+)\)(?: from your machine\. You can['’]t undo this\.| and cannot be undone\.)$/.test(trimmed)) {
       const fixed = trimmed.replace(
-        /^This deletes (\d+) call recordings? \(([^)]+)\) and cannot be undone\.$/,
-        (_m, n, size) => '此操作将删除 ' + n + ' 条通话录音（' + size + '），且无法撤销。'
+        /^This deletes (\d+) call recordings? \(([^)]+)\)(?: from your machine\. You can['’]t undo this\.| and cannot be undone\.)$/,
+        (_m, n, size) =>
+          trimmed.includes('from your machine.')
+            ? '此操作将从你的设备中删除 ' + n + ' 条通话录音（' + size + '），且无法撤销。'
+            : '此操作将删除 ' + n + ' 条通话录音（' + size + '），且无法撤销。'
       );
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
@@ -3491,7 +3506,10 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^(Secret|Label|Authorization code|More) for ([^!?\r\n]{1,80})$/.test(trimmed)) {
+    if (
+      /^(Secret|Label|Authorization code|More) for ([^!?\r\n]{1,80})$/.test(trimmed) &&
+      !/^More for (?:you|your|me|my|us|our|them|their|everyone|everybody|all|details|info|information|now)(?:\s|$)/i.test(trimmed)
+    ) {
       const prefixMap236 = {
         Secret: '密钥：',
         Label: '标签：',
@@ -3654,15 +3672,151 @@
       return replaceTrimmed(text, trimmed, fixed);
     }
 
-    if (/^(Web app|Language server|Release channel):\s*(.+)$/.test(trimmed)) {
+    if (/^(?:Web app|Language server|Release channel):\s*[^\r\n]+(?:\r?\n(?:Web app|Language server|Release channel):\s*[^\r\n]+)*$/.test(trimmed)) {
       const keyMap236 = {
         'Web app': 'Web 应用',
         'Language server': '语言服务器',
         'Release channel': '发布通道',
       };
       const fixed = trimmed.replace(
-        /^(Web app|Language server|Release channel):\s*(.+)$/,
+        /^(Web app|Language server|Release channel):\s*([^\r\n]+)$/gm,
         (_m, key, val) => (keyMap236[key] || key) + '：' + val
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+\+?)\s+match(?:es)?$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(\d+\+?)\s+match(?:es)?$/,
+        (_m, n) => n + ' 个匹配项'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+needing your input$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(\d+)\s+needing your input$/,
+        (_m, n) => n + ' 项需要你处理'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+tasks?\s+running$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(\d+)\s+tasks?\s+running$/,
+        (_m, n) => n + ' 个任务正在运行'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (
+      /^Configure\s+([^.!?\r\n]{1,60})$/.test(trimmed) &&
+      !/^Configure\s+(?:your|the|a|an|this|these|those|all|how|to|global|custom|default|local|remote|environment|network|project|workspace|settings?|permissions?|access|tools?)\b/i.test(trimmed) &&
+      !/\b(?:for|to|with|in|on|of|from|the|your)\b/i.test(trimmed.slice(10)) &&
+      !/^[a-z]+ [a-z]+/.test(trimmed.slice(10))
+    ) {
+      const fixed = trimmed.replace(
+        /^Configure\s+([^.!?\r\n]{1,60})$/,
+        (_m, target) => '配置 ' + target
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(Remove|Removed|Couldn['’]t remove) ([^\r\n]{1,100}) from Recent$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(Remove|Removed|Couldn['’]t remove) ([^\r\n]{1,100}) from Recent$/,
+        (_m, act, host) => {
+          if (act === 'Removed') return '已从最近记录中移除 ' + host;
+          if (act === 'Remove') return '从最近记录中移除 ' + host;
+          return '无法从最近记录中移除 ' + host;
+        }
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Cannot add folder:\s*"([^"]+)" is not a valid folder location\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Cannot add folder:\s*"([^"]+)" is not a valid folder location\.$/,
+        (_m, loc) => '无法添加文件夹：“' + loc + '”不是有效的文件夹路径。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Failed to resolve folder:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Failed to resolve folder:\s*(.+)$/,
+        (_m, detail) => '解析文件夹失败：' + detail
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^A file already exists at (.+)\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^A file already exists at (.+)\.$/,
+        (_m, targetPath) => '路径 ' + targetPath + ' 处已存在同名文件。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Can[’']t create this path — [“"](.+?)[”"] is a file, not a folder\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Can[’']t create this path — [“"](.+?)[”"] is a file, not a folder\.$/,
+        (_m, name) => '无法创建此路径——“' + name + '”是一个文件，而非文件夹。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Couldn[’']t disconnect ([^:\r\n]{1,80}):\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Couldn[’']t disconnect ([^:\r\n]{1,80}):\s*(.+)$/,
+        (_m, target, detail) => '无法断开 ' + target + ' 的连接：' + detail
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(Restarted|Deleted) "([^"]+)"\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(Restarted|Deleted) "([^"]+)"\.$/,
+        (_m, act, name) => (act === 'Restarted' ? '已重启' : '已删除') + '“' + name + '”。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Created automation "([^"]+)"\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Created automation "([^"]+)"\.$/,
+        (_m, name) => '已创建自动化任务“' + name + '”。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Failed to (update|save|delete) "([^"]+)"$/.test(trimmed)) {
+      const failActMap236 = { update: '更新', save: '保存', delete: '删除' };
+      const fixed = trimmed.replace(
+        /^Failed to (update|save|delete) "([^"]+)"$/,
+        (_m, act, name) => (failActMap236[act] || act) + '“' + name + '”失败'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Failed to load page (\d+):\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Failed to load page (\d+):\s*(.+)$/,
+        (_m, page, detail) => '加载第 ' + page + ' 页失败：' + detail
       );
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
@@ -4726,6 +4880,14 @@
   // 已处理文本节点记忆化 WeakMap（记录 node -> 上次处理后的 nodeValue，消除窗口 focus 时未变化英文段落重复扫描）
   const translatedNodes = new WeakMap();
 
+  // 仅在值发生实际变化时才写入 TextNode.nodeValue，严格遵循 WHATWG DOM §4.10 规范避免同值写入触发无意义 characterData 死循环
+  function setTextNodeValueIfChanged(node, val) {
+    if (node.nodeValue !== val) {
+      node.nodeValue = val;
+    }
+    translatedNodes.set(node, val);
+  }
+
   // 组合句翻译兜底（支持原英文锚点与已翻译内联锚点双向定位，不增删任何 Element 节点）
   function tryCombinedSentenceTranslation(element) {
     if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
@@ -4768,19 +4930,15 @@
         const post = (children[2].nodeValue || '').trim();
         if (mid && (post === '.' || post === '。' || post === '')) {
           if (/^Site data cleared for$/i.test(pre)) {
-            children[0].nodeValue = '已清除 ';
-            children[2].nodeValue = ' 的站点数据。';
-            translatedNodes.set(children[0], '已清除 ');
+            setTextNodeValueIfChanged(children[0], '已清除 ');
             translatedNodes.set(children[1], children[1].nodeValue);
-            translatedNodes.set(children[2], ' 的站点数据。');
+            setTextNodeValueIfChanged(children[2], ' 的站点数据。');
             return true;
           }
           if (/^Could not clear site data for$/i.test(pre)) {
-            children[0].nodeValue = '无法清除 ';
-            children[2].nodeValue = ' 的站点数据。';
-            translatedNodes.set(children[0], '无法清除 ');
+            setTextNodeValueIfChanged(children[0], '无法清除 ');
             translatedNodes.set(children[1], children[1].nodeValue);
-            translatedNodes.set(children[2], ' 的站点数据。');
+            setTextNodeValueIfChanged(children[2], ' 的站点数据。');
             return true;
           }
         }
@@ -4796,17 +4954,13 @@
         const isZhPre = pre === '没有匹配的';
         if (isEnPre || isZhPre) {
           if (noun === 'projects' || noun === '项目') {
-            children[0].nodeValue = '没有匹配的';
-            children[1].nodeValue = '项目';
-            translatedNodes.set(children[0], '没有匹配的');
-            translatedNodes.set(children[1], '项目');
+            setTextNodeValueIfChanged(children[0], '没有匹配的');
+            setTextNodeValueIfChanged(children[1], '项目');
             return true;
           }
           if (noun === 'workspaces' || noun === '工作区') {
-            children[0].nodeValue = '没有匹配的';
-            children[1].nodeValue = '工作区';
-            translatedNodes.set(children[0], '没有匹配的');
-            translatedNodes.set(children[1], '工作区');
+            setTextNodeValueIfChanged(children[0], '没有匹配的');
+            setTextNodeValueIfChanged(children[1], '工作区');
             return true;
           }
         }
@@ -4819,26 +4973,22 @@
         const isZhPre = pre === '没有匹配的' && mid.trim() === '';
         if (isEnPre || isZhPre) {
           if (noun === 'projects' || noun === '项目') {
-            children[0].nodeValue = '没有匹配的';
-            children[1].nodeValue = '';
-            children[2].nodeValue = '项目';
-            translatedNodes.set(children[0], '没有匹配的');
-            translatedNodes.set(children[1], '');
-            translatedNodes.set(children[2], '项目');
+            setTextNodeValueIfChanged(children[0], '没有匹配的');
+            setTextNodeValueIfChanged(children[1], '');
+            setTextNodeValueIfChanged(children[2], '项目');
             return true;
           }
           if (noun === 'workspaces' || noun === '工作区') {
-            children[0].nodeValue = '没有匹配的';
-            children[1].nodeValue = '';
-            children[2].nodeValue = '工作区';
-            translatedNodes.set(children[0], '没有匹配的');
-            translatedNodes.set(children[1], '');
-            translatedNodes.set(children[2], '工作区');
+            setTextNodeValueIfChanged(children[0], '没有匹配的');
+            setTextNodeValueIfChanged(children[1], '');
+            setTextNodeValueIfChanged(children[2], '工作区');
             return true;
           }
         }
       }
-      // 兼容 Feed 空态按钮 React 三段文本节点：{"Show all ("}{count}{")"} 与 {"Restore "}{count}{" cleared"}
+      // 兼容 Feed 空态/侧栏按钮 React 三段文本节点：
+      // {"Show all ("}{count}{")"}、{"Show all ("}{count}{" hidden)"}、
+      // {"Reset ("}{count}{" cleared)"} 与 {"Restore "}{count}{" cleared"}
       // 严格保留中间动态计数文本节点引用不动，仅改写前后固定文本节点
       if (children.length === 3 && children.every(c => c.nodeType === Node.TEXT_NODE)) {
         const preRaw = children[0].nodeValue || '';
@@ -4846,20 +4996,90 @@
         const postRaw = children[2].nodeValue || '';
         if (/^\d+$/.test(midRaw)) {
           if ((preRaw === 'Show all (' || preRaw === '显示全部 (') && postRaw === ')') {
-            children[0].nodeValue = '显示全部 (';
-            translatedNodes.set(children[0], '显示全部 (');
+            setTextNodeValueIfChanged(children[0], '显示全部 (');
             translatedNodes.set(children[1], children[1].nodeValue);
             translatedNodes.set(children[2], ')');
             return true;
           }
-          if ((preRaw === 'Restore ' && postRaw === ' cleared') || (preRaw === '恢复已清除的 ' && postRaw === ' 项')) {
-            children[0].nodeValue = '恢复已清除的 ';
-            children[2].nodeValue = ' 项';
-            translatedNodes.set(children[0], '恢复已清除的 ');
+          if (
+            (preRaw === 'Show all (' || preRaw === '显示全部 (') &&
+            (postRaw === ' hidden)' || postRaw === ' 个已隐藏)')
+          ) {
+            setTextNodeValueIfChanged(children[0], '显示全部 (');
             translatedNodes.set(children[1], children[1].nodeValue);
-            translatedNodes.set(children[2], ' 项');
+            setTextNodeValueIfChanged(children[2], ' 个已隐藏)');
             return true;
           }
+          if (
+            (preRaw === 'Reset (' || preRaw === '重置 (') &&
+            (postRaw === ' cleared)' || postRaw === ' 项已清除)')
+          ) {
+            setTextNodeValueIfChanged(children[0], '重置 (');
+            translatedNodes.set(children[1], children[1].nodeValue);
+            setTextNodeValueIfChanged(children[2], ' 项已清除)');
+            return true;
+          }
+          if ((preRaw === 'Restore ' && postRaw === ' cleared') || (preRaw === '恢复已清除的 ' && postRaw === ' 项')) {
+            setTextNodeValueIfChanged(children[0], '恢复已清除的 ');
+            translatedNodes.set(children[1], children[1].nodeValue);
+            setTextNodeValueIfChanged(children[2], ' 项');
+            return true;
+          }
+        }
+      }
+      // 兼容远程会话搜索空态 React 四段文本节点：
+      // {"No messages matching “"}{query}{"”"}{" in loaded messages." | "."}
+      // 保留 children[1]（搜索关键词）引用不动，支持尾段在 " in loaded messages." 与 "." 之间原位切换
+      if (children.length === 4 && children.every(c => c.nodeType === Node.TEXT_NODE)) {
+        const q0 = children[0].nodeValue || '';
+        const q2 = children[2].nodeValue || '';
+        const q3 = children[3].nodeValue || '';
+        const isHead =
+          q0 === 'No messages matching “' ||
+          q0 === 'No messages matching "' ||
+          q0 === '在已加载的消息中没有匹配“' ||
+          q0 === '没有匹配“';
+        const isClose = q2 === '”' || q2 === '"';
+        if (isHead && isClose) {
+          if (q3 === ' in loaded messages.' || q3 === '的结果。') {
+            setTextNodeValueIfChanged(children[0], '在已加载的消息中没有匹配“');
+            translatedNodes.set(children[1], children[1].nodeValue);
+            setTextNodeValueIfChanged(children[2], '”');
+            setTextNodeValueIfChanged(children[3], '的结果。');
+            return true;
+          }
+          if (q3 === '.' || q3 === '的消息。') {
+            setTextNodeValueIfChanged(children[0], '没有匹配“');
+            translatedNodes.set(children[1], children[1].nodeValue);
+            setTextNodeValueIfChanged(children[2], '”');
+            setTextNodeValueIfChanged(children[3], '的消息。');
+            return true;
+          }
+        }
+      }
+      // 兼容远程会话搜索 React 六段文本节点：
+      // {"Searching "}{count}{" loaded"}{" "}{"message"|"messages"}{" — older history available"}
+      // 将 " 条" 写入 children[2]、"消息" 写入 children[4]，与 React 单复数节点语义一一对齐，杜绝独立文本更新触发“消息消息”叠词
+      if (children.length === 6 && children.every(c => c.nodeType === Node.TEXT_NODE)) {
+        const s0 = children[0].nodeValue || '';
+        const s1 = (children[1].nodeValue || '').trim();
+        const s2 = children[2].nodeValue || '';
+        const s3 = children[3].nodeValue || '';
+        const s4 = children[4].nodeValue || '';
+        const s5 = children[5].nodeValue || '';
+        const isEnOrZhSearch =
+          (s0 === 'Searching ' && s2 === ' loaded' && s3 === ' ') ||
+          (s0 === '正在搜索已加载的 ' && s2 === ' 条' && (s3 === '' || s3 === ' '));
+        const isValidUnit = s4 === 'message' || s4 === 'messages' || s4 === '消息';
+        const isValidTail = s5 === ' — older history available' || s5 === ' — 可加载更早历史';
+        if (/^\d+$/.test(s1) && isEnOrZhSearch && isValidUnit && isValidTail) {
+          setTextNodeValueIfChanged(children[0], '正在搜索已加载的 ');
+          translatedNodes.set(children[1], children[1].nodeValue);
+          setTextNodeValueIfChanged(children[2], ' 条');
+          setTextNodeValueIfChanged(children[3], '');
+          setTextNodeValueIfChanged(children[4], '消息');
+          setTextNodeValueIfChanged(children[5], ' — 可加载更早历史');
+          return true;
         }
       }
       return false;
@@ -4905,22 +5125,19 @@
       if (s.type === 'anchor') {
         const anc = anchors[anchorIdx];
         if (anc.newAnchorText) {
-          s.node.firstChild.nodeValue = anc.newAnchorText;
-          translatedNodes.set(s.node.firstChild, anc.newAnchorText);
+          setTextNodeValueIfChanged(s.node.firstChild, anc.newAnchorText);
         }
         consumed = anc.end;
         anchorIdx++;
         continue;
       }
       if (s.type === 'space') {
-        s.node.nodeValue = '';
-        translatedNodes.set(s.node, '');
+        setTextNodeValueIfChanged(s.node, '');
         continue;
       }
       const segEnd = anchorIdx < anchors.length ? anchors[anchorIdx].start : translated.length;
       const segVal = translated.slice(consumed, segEnd);
-      s.node.nodeValue = segVal;
-      translatedNodes.set(s.node, segVal);
+      setTextNodeValueIfChanged(s.node, segVal);
       consumed = segEnd;
     }
     return true;
@@ -5271,8 +5488,30 @@
       }
 
       // 2. 批量处理文本变更 (characterData)
+      // 先尝试父容器的多节点原位合句（避免 React 原位切换单复数/尾段时落入单节点翻译），未命中再逐个翻译叶子文本节点
       if (pendingTextNodes.size > 0) {
+        const handledParents = new Set();
+        const checkedParents = new Set();
         for (const node of pendingTextNodes) {
+          const parent = node && node.parentElement;
+          if (
+            parent &&
+            !checkedParents.has(parent) &&
+            parent.childNodes &&
+            parent.childNodes.length >= 2 &&
+            parent.childNodes.length <= 16 &&
+            !shouldSkipNode(parent)
+          ) {
+            checkedParents.add(parent);
+            if (tryCombinedSentenceTranslation(parent)) {
+              handledParents.add(parent);
+            }
+          }
+        }
+        for (const node of pendingTextNodes) {
+          if (node && node.parentElement && handledParents.has(node.parentElement)) {
+            continue;
+          }
           if (!shouldSkipNode(node)) {
             translateTextNode(node);
           }

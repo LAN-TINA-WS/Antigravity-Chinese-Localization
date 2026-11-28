@@ -100,6 +100,33 @@ const staticChecks = [
   ['2x playback speed', '2 倍播放速度'],
   ['Resume 1 comment draft', '继续编辑 1 条评论草稿'],
   ['1 Draft', '1 条草稿'],
+  ['Feeds', '信息流'],
+  ['Approve & proceed', '批准并继续'],
+  ['Approve & run', '批准并运行'],
+  ['Auth format', '认证格式'],
+  ['Network Secret', '网络密钥'],
+  ['Environment Variable', '环境变量'],
+  ['Back to split view', '返回分屏视图'],
+  ['Expand full view', '展开完整视图'],
+  ['Full screen', '全屏'],
+  ['Hide from Sidebar', '从侧边栏隐藏'],
+  ['Configuration saved.', '配置已保存。'],
+  ['Add your API key or configuration to use this plugin.', '添加你的 API 密钥或配置以使用此插件。'],
+  ['Filter agents…', '筛选智能体…'],
+  ['Searching messages…', '正在搜索消息…'],
+  ['Resuming environment…', '正在恢复环境…'],
+  ['Waiting for you to finish signing in…', '正在等待你完成登录…'],
+  ['Value is required.', '值不能为空。'],
+  ['Key is required.', '键名不能为空。'],
+  ['Key can only use letters, numbers, and underscores, and cannot start with a number or $.', '键名只能包含字母、数字和下划线，且不能以数字或 $ 开头。'],
+  ['Cookie name is required.', 'Cookie 名称不能为空。'],
+  ['Query param is required.', '查询参数不能为空。'],
+  ['No matches', '无匹配项'],
+  ['Grant permission', '授予权限'],
+  ['Duplicate project name', '项目名称重复'],
+  ['Duplicate workspace name', '工作区名称重复'],
+  ['Failed to delete project', '删除项目失败'],
+  ['Failed to delete workspace', '删除工作区失败'],
 ];
 
 for (const [src, expected] of staticChecks) {
@@ -128,25 +155,63 @@ const dynamicChecks = [
   ['Reply in thread to Alice', '在线程中回复 Alice'],
   ['You reacted with 👍', '你添加了回应 👍'],
   ['Alice reacted with 👍', 'Alice 添加了回应 👍'],
+  ['Alice reacted with thumbs up', 'Alice 添加了回应 thumbs up'],
+  ['Alice reacted with thumbs down', 'Alice 添加了回应 thumbs down'],
+  ['Alice reacted with heart', 'Alice 添加了回应 heart'],
   ['👍 (3), click to remove your reaction', '👍 (3)，点击移除你的回应'],
   ['Copied link to Thread 1', '已复制 Thread 1 的链接'],
   ['3 replies', '3 条回复'],
   ['No messages matching “$1” in loaded messages.', '在已加载的消息中没有匹配“$1”的结果。'],
+  ['No messages matching “$1”.', '没有匹配“$1”的消息。'],
   ['Resume the conversation to start its workspace again, then start the server on port 3000 and retry.', '请恢复对话以重新启动其工作区，然后在端口 3000 上启动服务器后重试。'],
   ['No server is listening on port 3000 inside the remote workspace. Start it, or ask the agent to, then retry.', '远程工作区内的端口 3000 上没有正在监听的服务。请启动服务（或让智能体启动）后重试。'],
   ['Work in /tmp/$&', '工作目录：/tmp/$&'],
+  ['Work in file:///Users/dev/repo', '工作目录：file:///Users/dev/repo'],
   ['Environment paused. Click to resume it and load the terminal.', '环境已暂停，点击恢复以加载终端。'],
+  ['Environment paused. Click to resume it and load the image.', '环境已暂停，点击恢复以加载图片。'],
+  ['Environment paused. Click to resume it and load the video.', '环境已暂停，点击恢复以加载视频。'],
   ['Failed to update agent: denied', '更新智能体失败：denied'],
   ['Error toggling MCP server: timeout', '切换 MCP 服务器出错：timeout'],
+  ['This deletes 2 call recordings (4.5 MB) from your machine. You can\'t undo this.', '此操作将从你的设备中删除 2 条通话录音（4.5 MB），且无法撤销。'],
   ['This deletes 2 call recordings (4.5 MB) and cannot be undone.', '此操作将删除 2 条通话录音（4.5 MB），且无法撤销。'],
   ['Secret for a new GitHub account', '新 GitHub 账户的密钥'],
   ['New secret for user@example.com', '新建密钥：user@example.com'],
   ['Secret for GitHub', '密钥：GitHub'],
+  ['More for my-plugin', '更多操作：my-plugin'],
+  ['More for us-east-1', '更多操作：us-east-1'],
   ['Scroll to Bottom (7 unread)', '滚动到底部（7 条未读）'],
   ['Still thinking, 15 seconds', '仍在思考中，已用时 15 秒'],
   ['Unfold lines 12-48', '展开第 12-48 行'],
   ['Generating with Gemini 🍌', '正在使用 Gemini 生成 🍌'],
   ['Web app: 2.36.0', 'Web 应用：2.36.0'],
+  ['Web app: 2.36.0\nLanguage server: 1029995663\nRelease channel: stable', 'Web 应用：2.36.0\n语言服务器：1029995663\n发布通道：stable'],
+  ['1 match', '1 个匹配项'],
+  ['12+ matches', '12+ 个匹配项'],
+  ['3 needing your input', '3 项需要你处理'],
+  ['2 tasks running', '2 个任务正在运行'],
+  ['Configure Arize AX', '配置 Arize AX'],
+  ['Remove dev-box.internal from Recent', '从最近记录中移除 dev-box.internal'],
+  ['Removed dev-box.internal from Recent', '已从最近记录中移除 dev-box.internal'],
+  ['Couldn\'t remove dev-box.internal from Recent', '无法从最近记录中移除 dev-box.internal'],
+  ['Cannot add folder: "/tmp/$&" is not a valid folder location.', '无法添加文件夹：“/tmp/$&”不是有效的文件夹路径。'],
+  ['Failed to resolve folder: /bad ($&)', '解析文件夹失败：/bad ($&)'],
+  ['A file already exists at /tmp/foo.', '路径 /tmp/foo 处已存在同名文件。'],
+  ['Can’t create this path — “foo” is a file, not a folder.', '无法创建此路径——“foo”是一个文件，而非文件夹。'],
+  ['Failed to save project settings: denied $&', '保存项目设置失败：denied $&'],
+  ['Failed to save project Google3 configuration: denied', '保存项目 Google3 配置失败：denied'],
+  ['Failed to save cloud permission settings: denied', '保存云端权限设置失败：denied'],
+  ['Failed to create project: quota exceeded', '创建项目失败：quota exceeded'],
+  ['Failed to delete workspace: locked', '删除工作区失败：locked'],
+  ['Couldn\'t disconnect github: timeout', '无法断开 github 的连接：timeout'],
+  ['Restarted "my-sidecar".', '已重启“my-sidecar”。'],
+  ['Created automation "Nightly Check".', '已创建自动化任务“Nightly Check”。'],
+  ['Failed to update "my-trigger"', '更新“my-trigger”失败'],
+  ['Failed to load page 3: Unknown error', '加载第 3 页失败：Unknown error'],
+  ['Opens the New Conversation screen for this project', '为此项目打开新建对话界面'],
+  ['Opens the New Conversation screen for this workspace', '为此工作区打开新建对话界面'],
+  ['Thread #42', '线程 #42'],
+  ['Topic sess_01', '主题 sess_01'],
+  ['failed to load image', '图片加载失败'],
 ];
 
 for (const [src, expected] of dynamicChecks) {
@@ -169,8 +234,210 @@ check('Feed Restore 5 cleared 数字节点原位保留', restoreBtn.childNodes[1
 check('Feed Restore 5 cleared 尾段译文', restoreBtn.childNodes[2].nodeValue, ' 项');
 check('Feed Restore 5 cleared 幂等', tryCombinedSentenceTranslation(restoreBtn), true);
 
+const resetBtn = mockEl('button', [mockText('Reset ('), mockText('4'), mockText(' cleared)')]);
+check('Feed Reset (4 cleared) 三节点命中', tryCombinedSentenceTranslation(resetBtn), true);
+check('Feed Reset (4 cleared) 首段译文', resetBtn.childNodes[0].nodeValue, '重置 (');
+check('Feed Reset (4 cleared) 数字节点原位保留', resetBtn.childNodes[1].nodeValue, '4');
+check('Feed Reset (4 cleared) 尾段译文', resetBtn.childNodes[2].nodeValue, ' 项已清除)');
+check('Feed Reset (4 cleared) 幂等', tryCombinedSentenceTranslation(resetBtn), true);
+
+const showHiddenBtn = mockEl('button', [mockText('Show all ('), mockText('3'), mockText(' hidden)')]);
+check('Sidebar Show all (3 hidden) 三节点命中', tryCombinedSentenceTranslation(showHiddenBtn), true);
+check('Sidebar Show all (3 hidden) 首段译文', showHiddenBtn.childNodes[0].nodeValue, '显示全部 (');
+check('Sidebar Show all (3 hidden) 数字节点原位保留', showHiddenBtn.childNodes[1].nodeValue, '3');
+check('Sidebar Show all (3 hidden) 尾段译文', showHiddenBtn.childNodes[2].nodeValue, ' 个已隐藏)');
+check('Sidebar Show all (3 hidden) 幂等', tryCombinedSentenceTranslation(showHiddenBtn), true);
+
+const searchingSpan = mockEl('span', [
+  mockText('Searching '),
+  mockText('1'),
+  mockText(' loaded'),
+  mockText(' '),
+  mockText('message'),
+  mockText(' — older history available'),
+]);
+check('Searching 1 loaded message 六节点命中', tryCombinedSentenceTranslation(searchingSpan), true);
+check('Searching 1 loaded message 拼接文本', searchingSpan.childNodes.map(n => n.nodeValue).join(''), '正在搜索已加载的 1 条消息 — 可加载更早历史');
+// 模拟 React 原位将 1 -> 50 且将 message -> messages 后再触发翻译
+searchingSpan.childNodes[1].nodeValue = '50';
+searchingSpan.childNodes[4].nodeValue = 'messages';
+check('Searching React 原位切单复数后二次命中', tryCombinedSentenceTranslation(searchingSpan), true);
+check('Searching React 原位切单复数无残余英文', searchingSpan.childNodes.map(n => n.nodeValue).join(''), '正在搜索已加载的 50 条消息 — 可加载更早历史');
+
+// 模拟真实 MutationObserver characterData 批量管道，验证 React 原位更新绝不出现“消息消息”叠词或断层
+let capturedMoCb = null;
+const mockDocBody = { nodeType: 1, tagName: 'BODY', childNodes: [], parentElement: null, getAttribute: () => null };
+const liveEnv = loadTranslatorSandbox({
+  MutationObserver: class {
+    constructor(cb) {
+      capturedMoCb = cb;
+    }
+    observe() {}
+    disconnect() {}
+  },
+  document: {
+    body: mockDocBody,
+    documentElement: mockDocBody,
+    readyState: 'complete',
+    addEventListener: () => {},
+    querySelectorAll: () => [],
+  },
+});
+
+function linkParent(el) {
+  el.parentElement = mockDocBody;
+  el.getAttribute = () => null;
+  for (const ch of el.childNodes) ch.parentElement = el;
+  return el;
+}
+
+const liveSearching = linkParent(
+  mockEl('span', [
+    mockText('Searching '),
+    mockText('1'),
+    mockText(' loaded'),
+    mockText(' '),
+    mockText('message'),
+    mockText(' — older history available'),
+  ])
+);
+liveEnv.translateNode(liveSearching);
+check('Live MO 初始渲染 Searching 1 loaded message', liveSearching.childNodes.map(n => n.nodeValue).join(''), '正在搜索已加载的 1 条消息 — 可加载更早历史');
+// 模拟 React characterData 原位变更：1 -> 50 且 message -> messages
+liveSearching.childNodes[1].nodeValue = '50';
+liveSearching.childNodes[4].nodeValue = 'messages';
+capturedMoCb([
+  { type: 'characterData', target: liveSearching.childNodes[1] },
+  { type: 'characterData', target: liveSearching.childNodes[4] },
+]);
+check('Live MO characterData 1->50 绝无“消息消息”叠词', liveSearching.childNodes.map(n => n.nodeValue).join(''), '正在搜索已加载的 50 条消息 — 可加载更早历史');
+// 再切回 1 message
+liveSearching.childNodes[1].nodeValue = '1';
+liveSearching.childNodes[4].nodeValue = 'message';
+capturedMoCb([
+  { type: 'characterData', target: liveSearching.childNodes[1] },
+  { type: 'characterData', target: liveSearching.childNodes[4] },
+]);
+check('Live MO characterData 50->1 依然精确无叠词', liveSearching.childNodes.map(n => n.nodeValue).join(''), '正在搜索已加载的 1 条消息 — 可加载更早历史');
+
+// 模拟 4 节点 No messages matching “foo” in loaded messages. <-> “bar”. 实机切换
+const liveNoMatch = linkParent(
+  mockEl('div', [mockText('No messages matching “'), mockText('foo'), mockText('”'), mockText(' in loaded messages.')])
+);
+liveEnv.translateNode(liveNoMatch);
+check('Live MO 4节点 No messages matching 初始态', liveNoMatch.childNodes.map(n => n.nodeValue).join(''), '在已加载的消息中没有匹配“foo”的结果。');
+liveNoMatch.childNodes[1].nodeValue = 'bar';
+liveNoMatch.childNodes[3].nodeValue = '.';
+capturedMoCb([
+  { type: 'characterData', target: liveNoMatch.childNodes[1] },
+  { type: 'characterData', target: liveNoMatch.childNodes[3] },
+]);
+check('Live MO 4节点切换为短句号变体并保留新查询词', liveNoMatch.childNodes.map(n => n.nodeValue).join(''), '没有匹配“bar”的消息。');
+liveNoMatch.childNodes[3].nodeValue = ' in loaded messages.';
+capturedMoCb([{ type: 'characterData', target: liveNoMatch.childNodes[3] }]);
+check('Live MO 4节点切回 in loaded messages 变体', liveNoMatch.childNodes.map(n => n.nodeValue).join(''), '在已加载的消息中没有匹配“bar”的结果。');
+
+// 按 WHATWG DOM §4.10 规范（任何 nodeValue 赋值即使同值也必入队 characterData MutationRecord）验证全部 8 组多节点合句零死循环
+{
+  let specMoCb = null;
+  const microtasks = [];
+  const pendingMutations = [];
+  let mutationFlushScheduled = false;
+  const specBody = { nodeType: 1, tagName: 'BODY', childNodes: [], parentElement: null, getAttribute: () => null };
+
+  const specEnv = loadTranslatorSandbox({
+    queueMicrotask: (fn) => microtasks.push(fn),
+    MutationObserver: class {
+      constructor(cb) {
+        specMoCb = cb;
+      }
+      observe() {}
+      disconnect() {}
+    },
+    document: {
+      body: specBody,
+      documentElement: specBody,
+      readyState: 'complete',
+      addEventListener: () => {},
+      querySelectorAll: () => [],
+    },
+  });
+
+  function enqueueMutation(node) {
+    pendingMutations.push({ type: 'characterData', target: node });
+    if (!mutationFlushScheduled) {
+      mutationFlushScheduled = true;
+      microtasks.push(() => {
+        mutationFlushScheduled = false;
+        const batch = pendingMutations.splice(0);
+        if (batch.length && specMoCb) specMoCb(batch);
+      });
+    }
+  }
+
+  function makeSpecText(initial) {
+    let val = initial;
+    const node = { nodeType: 3, parentElement: null };
+    Object.defineProperty(node, 'nodeValue', {
+      get: () => val,
+      set: (next) => {
+        val = String(next);
+        enqueueMutation(node);
+      },
+      enumerable: true,
+    });
+    return node;
+  }
+
+  function runSpecSettleTest(label, tag, texts, expected) {
+    microtasks.length = 0;
+    pendingMutations.length = 0;
+    mutationFlushScheduled = false;
+    const el = {
+      nodeType: 1,
+      tagName: tag.toUpperCase(),
+      childNodes: texts.map(makeSpecText),
+      parentElement: specBody,
+      getAttribute: () => null,
+    };
+    for (const ch of el.childNodes) ch.parentElement = el;
+    specEnv.translateNode(el);
+    let ticks = 0;
+    while (microtasks.length > 0 && ticks < 50) {
+      const fn = microtasks.shift();
+      fn();
+      ticks++;
+    }
+    check(`WHATWG 规范零死循环 (${label}) ticks <= 4`, ticks <= 4, true);
+    check(`WHATWG 规范稳态译文 (${label})`, el.childNodes.map(n => n.nodeValue).join(''), expected);
+  }
+
+  runSpecSettleTest('Show all (12)', 'button', ['Show all (', '12', ')'], '显示全部 (12)');
+  runSpecSettleTest('Show all (3 hidden)', 'button', ['Show all (', '3', ' hidden)'], '显示全部 (3 个已隐藏)');
+  runSpecSettleTest('Reset (4 cleared)', 'button', ['Reset (', '4', ' cleared)'], '重置 (4 项已清除)');
+  runSpecSettleTest('Restore 5 cleared', 'button', ['Restore ', '5', ' cleared'], '恢复已清除的 5 项');
+  runSpecSettleTest('No messages matching in loaded', 'div', ['No messages matching “', 'foo', '”', ' in loaded messages.'], '在已加载的消息中没有匹配“foo”的结果。');
+  runSpecSettleTest('No messages matching short .', 'div', ['No messages matching “', 'foo', '”', '.'], '没有匹配“foo”的消息。');
+  runSpecSettleTest('Searching 1 loaded message', 'span', ['Searching ', '1', ' loaded', ' ', 'message', ' — older history available'], '正在搜索已加载的 1 条消息 — 可加载更早历史');
+  runSpecSettleTest('No matching projects', 'div', ['No matching ', 'projects'], '没有匹配的项目');
+}
+
 const antiFalsePositiveCases = [
   'Work in progress',
+  'Work in a new git worktree.',
+  'Work in sync',
+  'Work in parallel',
+  'Work in background',
+  'Thread safety',
+  'Topic list',
+  'More for you',
+  'More for your team',
+  'More for everyone',
+  'The server reacted with 500 Internal Server Error',
+  'Users reacted with surprise',
+  'Configure proxy server',
+  'Configure API keys for this project',
+  'Fig share',
   'Gemini Flash Next',
   'Orchestrator',
   'Swarm',

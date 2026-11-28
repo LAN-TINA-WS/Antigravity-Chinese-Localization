@@ -9,11 +9,11 @@ Deep Localization & High-Performance Chinese Patch for Google Antigravity
 [![GitHub stars](https://img.shields.io/github/stars/antigravity-cn-community/Antigravity-Chinese-Localization?style=flat&color=gold)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/stargazers)
 [![GitHub Discussions](https://img.shields.io/github/discussions/antigravity-cn-community/Antigravity-Chinese-Localization?style=flat&color=purple)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
-[![Package Size](https://img.shields.io/badge/ASAR%20Size-~7.69%20MiB%20(Official%20Slim)-success)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
+[![Package Size](https://img.shields.io/badge/ASAR%20Size-~7.75%20MiB%20(Official%20Slim)-success)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
 [![Node Runtime](https://img.shields.io/badge/Node.js-%3E%3D%2018.18.0-informational)](https://nodejs.org/)
 [![license](https://img.shields.io/github/license/antigravity-cn-community/Antigravity-Chinese-Localization)](LICENSE)
 
-A high-performance, non-destructive deep Chinese localization patch designed for Google Antigravity, now co-maintained under the open-source organization **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)**. Fully adapted to the latest architecture of **Antigravity v2.36.0+**, featuring modular `src/` engine decoupling and DOM micro-batch scheduling that delivers 1.68 million queries/sec throughput. It provides comprehensive localization across `5,110+` zero-duplicate UI strings covering Git Worktree conversation forking, Environment Variables & Network Secrets (`.env` & plugin keys), dynamic Feed stream & Session Threads/FYI, `Inbox Mode` & `Auto-Resolve`, `Plugin permissions`, multi-language `Dictation languages`, Planning Mode, `Swarm` & `plugin://` subframes, Input Box shortcuts, Orchestrator Settings & Thinking effort, Inline approval/question cards, Security Sandbox, Remote SSH, Computer Use, 9 Gemini Live voices, and Marketplace `Bundles`, strictly aligns with the official slim packaging spec (~7.69 MiB for v2.36.0), and guarantees absolute physical immunity for code editors, user input fields, and AI Markdown chat bodies.
+A high-performance, non-destructive deep Chinese localization patch designed for Google Antigravity, now co-maintained under the open-source organization **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)**. Fully adapted to the latest architecture of **Antigravity v2.36.0+**, featuring modular `src/` engine decoupling and DOM micro-batch scheduling that delivers 1.68 million queries/sec throughput. It provides comprehensive localization across `5,282` zero-duplicate UI strings covering Git Worktree conversation forking, Environment Variables & Network Secrets (`.env` & plugin keys), dynamic Feed stream & Session Threads/FYI, `Inbox Mode` & `Auto-Resolve`, `Plugin permissions`, multi-language `Dictation languages`, Planning Mode, `Swarm` & `plugin://` subframes, Input Box shortcuts, Orchestrator Settings & Thinking effort, Inline approval/question cards, Security Sandbox, Remote SSH, Computer Use, 9 Gemini Live voices, and Marketplace `Bundles`, strictly aligns with the official slim packaging spec (~7.75 MiB for v2.36.0), and guarantees absolute physical immunity for code editors, user input fields, and AI Markdown chat bodies.
 
 > [Download Latest Release](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [Discussions & 3K Stars Milestone](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [Issues & Feedback](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
 
@@ -46,7 +46,7 @@ A high-performance, non-destructive deep Chinese localization patch designed for
 | :--- | :--- | :--- |
 | **High Throughput & Anti-Chinglish Guard** | Over 1.68 Million QPS | Modularized under `src/dictionary.js` & `src/dom-translator.js` with hoisted `O(1)` exact Map lookup, ASCII bypass, DOM ancestor pruning, `queueMicrotask` batching, and 100%-hit `coreWords` guards. |
 | **Loopback Security Shield** | `127.0.0.1` + CSRF Auth | Binds strictly to `127.0.0.1` with `Host`/`Origin` loopback validation, per-process CSRF tokens, JSON payload caps, and explicit TLS certificate verification. |
-| **Slim Packaging Standards** | Aligned with Official Spec (~7.69 MiB) | Uses `--unpack-dir` to exclude unpacked native MCP modules, matching official distribution size. |
+| **Slim Packaging Standards** | Aligned with Official Spec (~7.75 MiB) | Uses `--unpack-dir` to exclude unpacked native MCP modules, matching official distribution size. |
 | **TDD Automated Test Gate** | 70 Test Suites Regression Gate | Comprehensive regression matrix (`Ticket-01` through `Ticket-63` plus security/AST/archive gates) covering zero-reflow long-conversation traversal, AI Markdown/inline-code isolation, agent error-card combined sentences, and real Windows `cmd.exe` zero-Node offline auto-bridge verification. |
 
 ---
@@ -177,7 +177,7 @@ This project is not a simple string replacement script, but an industrial-grade 
 
 ```text
 [ Modular Build Layer: src/ ]
-  • src/dictionary.js (4,920+ zero-duplicate entries + coreWords)
+  • src/dictionary.js (5,282 zero-duplicate entries + coreWords)
   • src/dom-translator.js (Web UI live translator & anti-Chinglish guard)
   • src/build-injection.js (payload assembly & validation)
   • src/http-security.js & src/backup-utils.js (127.0.0.1 loopback auth & versioned backups)
@@ -224,7 +224,7 @@ Detailed architectural designs, benchmarks (1.68M qps), and engineering practice
 
 Only recent major releases are summarized below; for `v2.34.0` and all earlier releases with full engineering notes, see [CHANGELOG.en.md](CHANGELOG.en.md) (Chinese: [CHANGELOG.md](CHANGELOG.md)):
 
-- **[v2.36.0](CHANGELOG.en.md#v2360-2026-11-28)** (2026-11-28): Full official `v2.36.0` adaptation adding Git Worktree forking, Env Vars & Network Secrets (`.env` / plugin keys), Feed stream & Session Threads/FYI, Org Prepaid Wallet notices, and 39 dynamic rules with slim `7.69 MiB` rebuild (`5,115` entries, 70/70 suites ALL GREEN).
+- **[v2.36.0](CHANGELOG.en.md#v2360-2026-11-28)** (2026-11-28): Full official `v2.36.0` adaptation (merging PR #96 by `@Justin-Mai`, curating PR #98 by `@mojingjing-git`, plus PR #92/#93/#94 zero-reflow & protection hardening) adding Git Worktree forking, Env Vars & Network Secrets (`.env` / validation / plugin keys), Feed stream & Session Threads/FYI, Org Prepaid Wallet notices, 66 `$`-safe dynamic rules, and 6 React multi-node in-place rules with slim `7.75 MiB` rebuild (`5,282` entries, 70/70 suites ALL GREEN).
 - **[v2.35.2](CHANGELOG.en.md#v2352-2026-11-26)** (2026-11-26): Full official `v2.35.2` adaptation (PR #90 by `@Justin-Mai`, PR #86 by `@angel12538`) with mid-turn `ModelSelector` notices, 10 dynamic rule groups, Issue #85 agent error-card combined-sentence fix, and slim `7.61 MiB` rebuild (`4,928` entries, 67/67 suites ALL GREEN).
 - **[v2.35.1](CHANGELOG.en.md#v2351-2026-11-25)** (2026-11-25): Full official `v2.35.1` adaptation (PR #82 by `@Justin-Mai`), resolving Issue #80 with physical `[data-markdown-root]` & inline-code isolation for AI replies plus expanded Hooks, Org MCP allowlist, viewers, and schedule rules (`4,923` entries, 65/65 suites ALL GREEN).
 - **[v2.35.0](CHANGELOG.en.md#v2350-2026-11-24)** (2026-11-24): Full `v2.35.0` adaptation covering `Inbox Mode`, `Plugin permissions`, `Dictation languages`, Side Question promotion, 28 native menus, community PR #74/#76/#77/#79, and Issue #73 zero-Node offline restore.
@@ -253,7 +253,7 @@ Click "还原英文原版" in the dashboard; alternatively, copy the previously 
 > Make sure Antigravity is fully closed before copying, otherwise the file may be locked. Keeping a copy of `app.asar.bak` also lets you re-localize later.
 
 ### Q4: Will tracking app.asar.ready bloat the repository over time?
-No for end users. Release assets and GitHub "Download ZIP" archives are clean snapshots (~7.69 MiB currently) with zero Git history. Developers cloning the repository can use shallow clones to avoid downloading past binary history:
+No for end users. Release assets and GitHub "Download ZIP" archives are clean snapshots (~7.75 MiB currently) with zero Git history. Developers cloning the repository can use shallow clones to avoid downloading past binary history:
 ```bash
 git clone --depth=1 https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization.git
 ```

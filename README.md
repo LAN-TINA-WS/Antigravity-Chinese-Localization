@@ -9,11 +9,11 @@ Antigravity 深度汉化与高性能本地化补丁程序
 [![GitHub stars](https://img.shields.io/github/stars/antigravity-cn-community/Antigravity-Chinese-Localization?style=flat&color=gold)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/stargazers)
 [![GitHub Discussions](https://img.shields.io/github/discussions/antigravity-cn-community/Antigravity-Chinese-Localization?style=flat&color=purple)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
-[![Package Size](https://img.shields.io/badge/ASAR%20Size-~7.69%20MiB%20(Official%20Slim)-success)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
+[![Package Size](https://img.shields.io/badge/ASAR%20Size-~7.75%20MiB%20(Official%20Slim)-success)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)
 [![Node Runtime](https://img.shields.io/badge/Node.js-%3E%3D%2018.18.0-informational)](https://nodejs.org/)
 [![license](https://img.shields.io/github/license/antigravity-cn-community/Antigravity-Chinese-Localization)](LICENSE)
 
-专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁，现由开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合维护。全面适配 **Antigravity v2.36.0+** 最新架构，完成 `src/` 模块化引擎解耦与 DOM 微任务调度重构，带来百万级吞吐量的极致流畅体验。全量汉化 Git Worktree 对话派生、环境变量与网络密钥管理、Feed 动态流与会话线程/FYI、收件箱模式 (`Inbox Mode`)、插件权限管理、语音听写多语言选择、规划模式、系统设置、安全沙盒、Remote SSH 远程开发、Computer Use 桌面操控与预览、内联审批/提问卡片、`Swarm` 多智能体侧栏与 `plugin://` 子框架、`Orchestrator` 模式设置与 `5,110+` 条零重复核心界面文案，严格对齐官方原生轻量级打包规格（v2.36.0 约 7.69 MiB），并对用户打字、代码编辑区及 AI 对话 Markdown 正文实施绝对物理免疫。
+专为 Google Antigravity 打造的高性能、非破坏性深度汉化补丁，现由开源社区组织 **[`antigravity-cn-community`](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization)** 联合维护。全面适配 **Antigravity v2.36.0+** 最新架构，完成 `src/` 模块化引擎解耦与 DOM 微任务调度重构，带来百万级吞吐量的极致流畅体验。全量汉化 Git Worktree 对话派生、环境变量与网络密钥管理、Feed 动态流与会话线程/FYI、收件箱模式 (`Inbox Mode`)、插件权限管理、语音听写多语言选择、规划模式、系统设置、安全沙盒、Remote SSH 远程开发、Computer Use 桌面操控与预览、内联审批/提问卡片、`Swarm` 多智能体侧栏与 `plugin://` 子框架、`Orchestrator` 模式设置与 `5,282` 条零重复核心界面文案，严格对齐官方原生轻量级打包规格（v2.36.0 约 7.75 MiB），并对用户打字、代码编辑区及 AI 对话 Markdown 正文实施绝对物理免疫。
 
 > [最新 Release 下载](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/releases/latest) · [社区讨论与三千星里程碑 (Discussions)](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/discussions) · [问题反馈与建议](https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization/issues)
 
@@ -46,7 +46,7 @@ Antigravity 深度汉化与高性能本地化补丁程序
 | :--- | :--- | :--- |
 | **极致吞吐与防夹生守卫** | 吞吐量突破 168 万次/秒 | 模块化拆分为 `src/dictionary.js` 与 `src/dom-translator.js`，前置 `O(1)` 哈希精确查找、ASCII 纯中文短路、DOM 祖先剪枝、`queueMicrotask` 帧聚合及 `coreWords` 100% 实词命中防夹生守卫。 |
 | **本机回环安全装甲** | `127.0.0.1` + CSRF 强鉴权 | 控制中心强制绑定 `127.0.0.1`，全接口实施 `Host`/`Origin` 回环校验、单进程一次性 CSRF Token 鉴权、JSON 请求体大小限制与显式 TLS 证书校验。 |
-| **轻量打包与标准规格** | 严格对齐官方原生规格（约 7.69 MiB） | 使用 `--unpack-dir` 排除外部解包依赖，彻底消除历史版本体积膨胀问题，与官方原生分发包规格保持一致。 |
+| **轻量打包与标准规格** | 严格对齐官方原生规格（约 7.75 MiB） | 使用 `--unpack-dir` 排除外部解包依赖，彻底消除历史版本体积膨胀问题，与官方原生分发包规格保持一致。 |
 | **全套 TDD 自动化测试门禁** | 70 组测试套件全面回归校验 | 覆盖模块化翻译引擎、超长对话零回流遍历、词典零重复基线、AI 正文 Markdown/行内代码物理隔离、智能体错误卡片组合句、主进程功能沙盒、AST 语法门禁、回环安全鉴权、无 Node.js 实机批处理离线桥接及流式发布下载防护。 |
 
 ---
@@ -180,7 +180,7 @@ node localize.js --apply-only
 
 ```text
 [ 模块化构建层: src/ ]
-  • src/dictionary.js (4,920+ 零重复词典 + 实词库)
+  • src/dictionary.js (5,282 零重复词典 + 实词库)
   • src/dom-translator.js (Web UI 实时翻译与防夹生引擎)
   • src/build-injection.js (编译拼接与载荷校验)
   • src/http-security.js & src/backup-utils.js (127.0.0.1 回环鉴权与双轨备份校验)
@@ -227,7 +227,7 @@ node localize.js --apply-only
 
 以下仅展示近期主要版本摘要；`v2.34.0` 及更早历史版本的完整更新记录与底层演进细节，请参阅 [CHANGELOG.md](CHANGELOG.md)（英文版见 [CHANGELOG.en.md](CHANGELOG.en.md)）：
 
-- **[v2.36.0](CHANGELOG.md#v2360-2026-11-28)** (2026-11-28)：同步官方 `v2.36.0` 大版本，新增 Git Worktree 对话派生、环境变量与网络密钥（`.env`/插件密钥）、Feed 动态流与会话线程/FYI、组织预付钱包及 39 组动态规则，重编官方瘦身规格 `7.69 MiB`（`5,115` 词条、70/70 测试全绿）。
+- **[v2.36.0](CHANGELOG.md#v2360-2026-11-28)** (2026-11-28)：同步官方 `v2.36.0` 大版本（整合 PR #96 `@Justin-Mai` 并精选吸收 PR #98 `@mojingjing-git`、叠加 PR #92/#93/#94 性能与保护加固），新增 Git Worktree 对话派生、环境变量与网络密钥（`.env`/校验/插件密钥）、Feed 动态流与会话线程/FYI、组织预付钱包、66 组 `$`-安全动态规则及 6 组 React 多节点原位合句，重编官方瘦身规格 `7.75 MiB`（`5,282` 词条、70/70 测试全绿）。
 - **[v2.35.2](CHANGELOG.md#v2352-2026-11-26)** (2026-11-26)：同步官方 `v2.35.2`（整合 PR #90 `@Justin-Mai`、PR #86 `@angel12538`），补齐模型运行中切换提示与 10 组动态规则、修复 Issue #85 智能体错误卡片组合句，重编官方瘦身规格 `7.61 MiB`（`4,928` 词条、67/67 测试全绿）。
 - **[v2.35.1](CHANGELOG.md#v2351-2026-11-25)** (2026-11-25)：同步官方 `v2.35.1`（整合 PR #82 `@Justin-Mai`），修复 Issue #80 建立 AI 对话 Markdown 正文与行内代码物理隔离防线，补全反馈弹窗、Hooks、组织 MCP 白名单、查看器与调度规则（`4,923` 词条、65/65 测试全绿）。
 - **[v2.35.0](CHANGELOG.md#v2350-2026-11-24)** (2026-11-24)：同步官方 `v2.35.0` 大版本，覆盖 `Inbox Mode`、插件权限、多语言听写、侧边提问升级对话与 28 项原生菜单，整合社区 PR #74/#76/#77/#79 并修复 Issue #73 离线一键还原英文原版。
@@ -256,7 +256,7 @@ node localize.js --now
 > 覆盖前请确认 Antigravity 已完全退出，否则文件可能被占用而复制失败；同时建议保留一份 `app.asar.bak`，以便下次重新汉化。
 
 ### Q4: 源码包中自带的 app.asar.ready 会导致仓库体积无限膨胀吗？
-不会。终端用户下载的 Release 资产包或网页 "Download ZIP" 仅包含单版本快照（当前约 7.69 MiB），零历史冗余包。对于通过 `git clone` 参与贡献的开发者，推荐使用浅克隆（Shallow Clone）：
+不会。终端用户下载的 Release 资产包或网页 "Download ZIP" 仅包含单版本快照（当前约 7.75 MiB），零历史冗余包。对于通过 `git clone` 参与贡献的开发者，推荐使用浅克隆（Shallow Clone）：
 ```bash
 git clone --depth=1 https://github.com/antigravity-cn-community/Antigravity-Chinese-Localization.git
 ```
