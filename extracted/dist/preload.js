@@ -5887,7 +5887,168 @@ if (!isRemoteWindow) {
     "No matching workspaces": "没有匹配的工作区",
     "No remote projects": "暂无远程项目",
     "No remote workspaces": "暂无远程工作区",
-    "No projects found": "未找到项目"
+    "No projects found": "未找到项目",
+    "Fork in Current Folder": "在当前文件夹中派生",
+    "Rewinds the conversation only. Files in this folder stay as they are now.": "仅回退对话，此文件夹中的文件将保持当前状态。",
+    "Fork in New Git Worktree": "在新的 Git 工作树中派生",
+    "Creates a git worktree of this repository, with a working copy of its own.": "创建此仓库的 Git 工作树，并拥有独立的工作副本。",
+    "Creating git worktree for the forked conversation...": "正在为派生的对话创建 Git 工作树...",
+    "Paste a single KEY=VALUE line or fill fields below": "粘贴单行 KEY=VALUE 或填写下方字段",
+    "Paste .env": "粘贴 .env",
+    "Paste .env entries": "粘贴 .env 条目",
+    "Parse .env": "解析 .env",
+    "Code in the environment can read this value directly. Use Network Secrets for API keys instead.": "环境中的代码可直接读取此值。API 密钥请改用网络密钥。",
+    "Enter value (hidden after saving; multiline supported)": "输入值（保存后隐藏；支持多行）",
+    "New value": "新值",
+    "Value": "值",
+    "New secret value": "新密钥值",
+    "Secret value": "密钥值",
+    "Paste secret key (hidden after saving)": "粘贴密钥（保存后隐藏）",
+    "Header name": "请求头名称",
+    "Header prefix (optional)": "请求头前缀（可选）",
+    "Username (optional)": "用户名（可选）",
+    "Env var (optional)": "环境变量（可选）",
+    "Custom Header": "自定义请求头",
+    "Cookie name": "Cookie 名称",
+    "Query param": "查询参数",
+    "Global (all projects)": "全局（所有项目）",
+    "Add Environment Variable": "添加环境变量",
+    "Add Network Secret": "添加网络密钥",
+    "Replace Variable": "替换变量",
+    "Replace Secret": "替换密钥",
+    "Save Variable": "保存变量",
+    "Save Secret": "保存密钥",
+    "Environment variables": "环境变量",
+    "Network secrets": "网络密钥",
+    "Available directly inside your environment. Code running in the environment can read these values.": "直接在你的环境中可用，环境内运行的代码可以读取这些值。",
+    "Kept outside your environment and sent only on requests to allowed hosts.": "保存在环境外部，仅在向允许的主机发起请求时发送。",
+    "No global environment variables saved yet.": "尚未保存全局环境变量。",
+    "No network secrets saved for this project yet.": "尚未为此项目保存网络密钥。",
+    "No global network secrets saved yet.": "尚未保存全局网络密钥。",
+    "+ Add variable": "+ 添加变量",
+    "+ Add secret": "+ 添加密钥",
+    "Saved securely. Secret values are hidden after saving.": "已安全保存。密钥值在保存后将隐藏显示。",
+    "Delete Environment Variable": "删除环境变量",
+    "Delete Network Secret": "删除网络密钥",
+    "Deleted environment variables cannot be recovered.": "已删除的环境变量无法恢复。",
+    "Deleted secrets cannot be recovered.": "已删除的密钥无法恢复。",
+    "Configure global network secrets and environment variables for your remote environments.": "为你的远程环境配置全局网络密钥和环境变量。",
+    "Configure global network secrets for your remote environments.": "为你的远程环境配置全局网络密钥。",
+    "Secret value is required.": "密钥值不能为空。",
+    "At least one allowed host is required.": "至少需要填写一个允许的主机。",
+    "Name is required.": "名称不能为空。",
+    "Failed to save credential.": "保存凭证失败。",
+    "Failed to delete credential.": "删除凭证失败。",
+    "e.g. App Environment": "例如：应用环境",
+    "e.g. Service API Key": "例如：服务 API 密钥",
+    "e.g., https://example.com": "例如：https://example.com",
+    "Arize API Key": "Arize API 密钥",
+    "API key for Arize AX": "Arize AX 的 API 密钥",
+    "Environment URL": "环境 URL",
+    "Your Dynatrace environment URL": "你的 Dynatrace 环境 URL",
+    "Platform Token": "平台令牌",
+    "Dynatrace API token": "Dynatrace API 令牌",
+    "Meshy API Key": "Meshy API 密钥",
+    "API key for Meshy 3D generation": "用于 Meshy 3D 生成的 API 密钥",
+    "Latest screenshot": "最新截图",
+    "Filter feed": "筛选动态",
+    "Nothing in this view": "此视图中暂无内容",
+    "You're all caught up": "已全部处理完毕",
+    "Nothing needs your attention right now. New deliverables, docs, and agent updates will appear here.": "当前没有需要你处理的事项。新的交付物、文档和智能体更新将显示在此处。",
+    "Everything here is handled. Switch back to All to see the rest of your stream.": "此处事项已全部处理完毕。切换回“全部”即可查看其余动态。",
+    "Doc reviewed": "文档已审阅",
+    "Marked done": "已标记完成",
+    "Run cleared": "运行记录已清除",
+    "Subagent cleared": "子智能体记录已清除",
+    "Pick →": "选择 →",
+    "Comment on plan": "评论计划",
+    "Open doc": "打开文档",
+    "Inspect": "检查",
+    "Mark done": "标记完成",
+    "Parent thread": "父线程",
+    "Respond": "回复",
+    "Looks good": "看起来不错",
+    "Open linked conversation": "打开关联对话",
+    "Reply, or approve with changes…": "回复，或附带修改意见批准…",
+    "Steer while it works…": "在运行时进行引导…",
+    "Ask for a follow-up…": "要求后续跟进…",
+    "Pick this back up…": "继续处理此项…",
+    "Earlier": "更早",
+    "Accumulated State": "累积状态",
+    "Add reaction": "添加回应",
+    "Reply in Thread": "在线程中回复",
+    "Reply in thread": "在线程中回复",
+    "Sent as a quiet FYI (delivered on next turn without waking agent)": "作为静默提示发送（将在下一回合送达，不会唤醒智能体）",
+    "FYI": "仅供参考",
+    "Open thread": "打开线程",
+    "Group chat · Thread": "群聊 · 线程",
+    "DM · Thread": "私信 · 线程",
+    "Topic": "主题",
+    "Link copied to clipboard": "链接已复制到剪贴板",
+    "Show link previews": "显示链接预览",
+    "Hide link previews": "隐藏链接预览",
+    "Hide matching messages list": "隐藏匹配消息列表",
+    "Show matching messages list": "显示匹配消息列表",
+    "Previous (older) match (Shift+Enter)": "上一个（更早）匹配项 (Shift+Enter)",
+    "Next (newer) match (Enter)": "下一个（更新）匹配项 (Enter)",
+    "Close search (Esc)": "关闭搜索 (Esc)",
+    "Load older": "加载更早内容",
+    "No matches on this page.": "当前页无匹配项。",
+    "Thread reply": "线程回复",
+    "In thread": "线程内",
+    "Loading more results…": "正在加载更多结果…",
+    "Load more results": "加载更多结果",
+    "0+ matches": "0+ 个匹配项",
+    "Organization prepaid wallet is empty": "组织预付钱包余额已耗尽",
+    "Your organization has run out of Antigravity funds. Prompt generation is paused until your administrator adds funds.": "你的组织已用完 Antigravity 预付资金。在管理员充值之前，提示词生成已暂停。",
+    "Billing model": "计费模式",
+    "Available licenses": "可用许可证",
+    "Auto-assignment not configured": "未配置自动分配",
+    "Toggle Google Cloud projects": "切换 Google Cloud 项目",
+    "No license available for this project and location": "此项目和位置没有可用的许可证",
+    "Failed to inspect license for this project": "检查此项目的许可证失败",
+    "Your Antigravity use will be associated with provided project. Make sure you trust the project ID before proceeding. Account activity and data may be logged by your organization.": "你对 Antigravity 的使用将与所提供的项目关联。继续前请确认你信任该项目 ID。你的组织可能会记录账户活动与数据。",
+    "Get started with Remote Control": "开始使用远程控制",
+    "Loading Remote Control QR code…": "正在加载远程控制二维码…",
+    "Are you sure you want to delete this handler?": "确定要删除此处理程序吗？",
+    "Untrusted sidecar": "不受信任的 Sidecar",
+    "Sidecar error": "Sidecar 错误",
+    "This sidecar failed to start.": "此 Sidecar 启动失败。",
+    "Don't enter corp passwords": "请勿输入企业密码",
+    "Typing your corp password here may trigger a Password Alert reset.": "在此处输入企业密码可能会触发密码警报重置。",
+    "2x playback speed": "2 倍播放速度",
+    "Copy gh auth login command": "复制 gh auth login 命令",
+    "Mention suggestions": "提及建议",
+    "Address bar": "地址栏",
+    "Address bar suggestions": "地址栏建议",
+    "About embedding": "关于嵌入",
+    "Org required": "组织必填",
+    "Org recommended": "组织推荐",
+    "Signed-in accounts": "已登录账户",
+    "Failed to load resources": "加载资源失败",
+    "Settings search results": "设置搜索结果",
+    "Filter rows": "筛选行",
+    "Resume it to see its git changes.": "恢复运行以查看其 Git 更改。",
+    "Match case": "区分大小写",
+    "Match whole word": "全字匹配",
+    "Use regular expression": "使用正则表达式",
+    "Notebook execution not implemented": "暂未实现 Notebook 执行",
+    "Resize side question panel": "调整侧边提问面板大小",
+    "Dismiss microphone warning": "关闭麦克风警告",
+    "Resize details panel": "调整详情面板大小",
+    "Previous card": "上一张卡片",
+    "Next card": "下一张卡片",
+    "Click to open docs": "点击打开文档",
+    "Dismiss artifact update notice": "关闭产物更新通知",
+    "Failed to validate the saved GitHub token.": "验证已保存的 GitHub 令牌失败。",
+    "Failed to save token to ~/.env": "保存令牌到 ~/.env 失败",
+    "drawing line preview": "绘制线条预览",
+    "drawing rectangle preview": "绘制矩形预览",
+    "square bounding box": "方形边界框",
+    "line bounding box": "线条边界框",
+    "Scroll position": "滚动位置",
+    "1 Draft": "1 条草稿",
+    "Resume 1 comment draft": "继续编辑 1 条评论草稿"
 };
 
   const coreWords = {
@@ -9138,6 +9299,541 @@ if (!isRemoteWindow) {
       cacheSet(trimmed, fixed);
       return replaceTrimmed(text, trimmed, fixed);
     }
+
+    // ===== Antigravity v2.36.0 动态规则：远程控制实例/环境变量密钥/Feed 信息流/线程回应/预览端口/工作区与操作报错 =====
+    if (/^Failed to load instances:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Failed to load instances:\s*(.+)$/,
+        (_m, detail) => '加载实例失败：' + detail
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Project:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Project:\s*(.+)$/,
+        (_m, name) => '项目：' + name
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(Replace|Add) (environment variable|network secret|secret):\s*(.+)$/.test(trimmed)) {
+      const kindMap236 = {
+        'environment variable': '环境变量',
+        'network secret': '网络密钥',
+        secret: '密钥',
+      };
+      const fixed = trimmed.replace(
+        /^(Replace|Add) (environment variable|network secret|secret):\s*(.+)$/,
+        (_m, act, kind, label) => (act === 'Replace' ? '替换' : '添加') + (kindMap236[kind] || kind) + '：' + label
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Please fill in all required fields:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Please fill in all required fields:\s*(.+)$/,
+        (_m, fields) => '请填写所有必填字段：' + fields
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Environment variable "([^"]+)" is reserved by the system and cannot be used\. Choose a different (key|name)\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Environment variable "([^"]+)" is reserved by the system and cannot be used\. Choose a different (key|name)\.$/,
+        (_m, name, unit) => '环境变量“' + name + '”为系统保留名称，无法使用，请换一个' + (unit === 'key' ? '键名' : '名称') + '。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Environment variable "([^"]+)" is already used by (.+) in this scope\. Choose a different (key|name|an Environment Variable|a Network Secret) or (delete|replace|update) the existing credential\.$/.test(trimmed)) {
+      const targetKindMap236 = {
+        'an Environment Variable': '环境变量',
+        'a Network Secret': '网络密钥',
+        'another credential': '其他凭证',
+      };
+      const unitMap236 = {
+        key: '键名',
+        name: '名称',
+        'an Environment Variable': '环境变量',
+        'a Network Secret': '网络密钥',
+      };
+      const actMap236 = { delete: '删除', replace: '替换', update: '更新' };
+      const fixed = trimmed.replace(
+        /^Environment variable "([^"]+)" is already used by (.+) in this scope\. Choose a different (key|name|an Environment Variable|a Network Secret) or (delete|replace|update) the existing credential\.$/,
+        (_m, name, owner, unit, act) => {
+          let ownerCn = owner;
+          if (ownerCn.startsWith('an Environment Variable')) {
+            ownerCn = '环境变量' + ownerCn.slice('an Environment Variable'.length);
+          } else if (ownerCn.startsWith('a Network Secret')) {
+            ownerCn = '网络密钥' + ownerCn.slice('a Network Secret'.length);
+          } else if (targetKindMap236[ownerCn]) {
+            ownerCn = targetKindMap236[ownerCn];
+          }
+          return '环境变量“' + name + '”在当前作用域内已被 ' + ownerCn + ' 占用，请换一个' + (unitMap236[unit] || unit) + '，或' + (actMap236[act] || act) + '现有凭证。';
+        }
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+agents?\s+(?:is|are)\s+working quietly in the background\. Anything that needs your input will show up here\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(\d+)\s+agents?\s+(?:is|are)\s+working quietly in the background\. Anything that needs your input will show up here\.$/,
+        (_m, n) => n + ' 个智能体正在后台静默运行。任何需要你确认的内容都会显示在这里。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Looks good on (.+?) — go ahead and proceed\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Looks good on (.+?) — go ahead and proceed\.$/,
+        (_m, artifact) => '关于“' + artifact + '”的内容没有问题 — 请继续执行。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Running [“"](.+?)[”"] now$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Running [“"](.+?)[”"] now$/,
+        (_m, name) => '正在立即运行“' + name + '”'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+)\s+of\s+(\d+)\s+steps done$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(\d+)\s+of\s+(\d+)\s+steps done$/,
+        (_m, done, total) => '已完成 ' + done + ' / ' + total + ' 步'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Restore (\d+) cleared$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Restore (\d+) cleared$/,
+        (_m, n) => '恢复已清除的 ' + n + ' 项'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Reply in thread to (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Reply in thread to (.+)$/,
+        (_m, user) => '在线程中回复 ' + user
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^You reacted with (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^You reacted with (.+)$/,
+        (_m, emoji) => '你添加了回应 ' + emoji
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^([^:\r\n]{1,60}) reacted with (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^([^:\r\n]{1,60}) reacted with (.+)$/,
+        (_m, user, emoji) => user + ' 添加了回应 ' + emoji
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(.+?) \((\d+)\), click to remove your reaction$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(.+?) \((\d+)\), click to remove your reaction$/,
+        (_m, emoji, count) => emoji + ' (' + count + ')，点击移除你的回应'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Remove (.+?) reaction$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Remove (.+?) reaction$/,
+        (_m, emoji) => '移除 ' + emoji + ' 回应'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(Copied|Copy) link to (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(Copied|Copy) link to (.+)$/,
+        (_m, act, target) => (act === 'Copied' ? '已复制 ' : '复制 ') + target + ' 的链接'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Thread:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Thread:\s*(.+)$/,
+        (_m, title) => '线程：' + title
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(Thread|Topic)\s+([A-Za-z0-9_#-]{1,64})$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(Thread|Topic)\s+([A-Za-z0-9_#-]{1,64})$/,
+        (_m, kind, id) => (kind === 'Thread' ? '线程 ' : '主题 ') + id
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(\d+) (?:replies|reply)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(\d+) (?:replies|reply)$/,
+        (_m, n) => n + ' 条回复'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^No messages matching [“"](.+)[”"] in loaded messages\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^No messages matching [“"](.+)[”"] in loaded messages\.$/,
+        (_m, q) => '在已加载的消息中没有匹配“' + q + '”的结果。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Resume the conversation to start its workspace again, then start the server on port (\d+) and retry\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Resume the conversation to start its workspace again, then start the server on port (\d+) and retry\.$/,
+        (_m, port) => '请恢复对话以重新启动其工作区，然后在端口 ' + port + ' 上启动服务器后重试。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^No server is listening on port (\d+) inside the remote workspace\. Start it, or ask the agent to, then retry\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^No server is listening on port (\d+) inside the remote workspace\. Start it, or ask the agent to, then retry\.$/,
+        (_m, port) => '远程工作区内的端口 ' + port + ' 上没有正在监听的服务。请启动服务（或让智能体启动）后重试。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Work locally on (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Work locally on (.+)$/,
+        (_m, target) => '在本地处理 ' + target
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Work in (.+)$/.test(trimmed) && !/^Work in progress$/i.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Work in (.+)$/,
+        (_m, dir) => '工作目录：' + dir
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Checked out in (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Checked out in (.+)$/,
+        (_m, branch) => '已检出至 ' + branch
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Automatically create a new (.+?) workspace when the conversation starts$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Automatically create a new (.+?) workspace when the conversation starts$/,
+        (_m, vcs) => '对话开始时自动创建新的 ' + vcs + ' 工作区'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Environment paused\. Click to resume it and load the ([^.!?\r\n]{1,40})\.$/.test(trimmed)) {
+      const envTargetMap = { terminal: '终端', preview: '预览', diff: '差异', file: '文件', editor: '编辑器' };
+      const fixed = trimmed.replace(
+        /^Environment paused\. Click to resume it and load the ([^.!?\r\n]{1,40})\.$/,
+        (_m, target) => '环境已暂停，点击恢复以加载' + (envTargetMap[target.toLowerCase()] || target) + '。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Failed to load (terminal|preview|diff|file|editor|document|notebook|image|video|audio|logs|data|page|frame|view|content)$/i.test(trimmed)) {
+      const loadTargetMap = {
+        terminal: '终端', preview: '预览', diff: '差异', file: '文件', editor: '编辑器',
+        document: '文档', notebook: 'Notebook', image: '图片', video: '视频', audio: '音频',
+        logs: '日志', data: '数据', page: '页面', frame: '框架', view: '视图', content: '内容',
+      };
+      const fixed = trimmed.replace(
+        /^Failed to load ([a-z]+)$/i,
+        (_m, target) => '加载' + (loadTargetMap[target.toLowerCase()] || target) + '失败'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Failed to (update|remove|toggle) (agent|plugin):\s*(.+)$/i.test(trimmed)) {
+      const actMap236 = { update: '更新', remove: '移除', toggle: '切换' };
+      const objMap236 = { agent: '智能体', plugin: '插件' };
+      const fixed = trimmed.replace(
+        /^Failed to (update|remove|toggle) (agent|plugin):\s*(.+)$/i,
+        (_m, act, obj, detail) => (actMap236[act.toLowerCase()] || act) + (objMap236[obj.toLowerCase()] || obj) + '失败：' + detail
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Failed to (delete recordings|write MCP config):\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Failed to (delete recordings|write MCP config):\s*(.+)$/,
+        (_m, act, detail) => (act === 'delete recordings' ? '删除录音失败：' : '写入 MCP 配置失败：') + detail
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Error (submitting auth code|disconnecting MCP server|toggling MCP server|deleting MCP server|toggling tool):\s*(.+)$/.test(trimmed)) {
+      const errMap236 = {
+        'submitting auth code': '提交授权码',
+        'disconnecting MCP server': '断开 MCP 服务器',
+        'toggling MCP server': '切换 MCP 服务器',
+        'deleting MCP server': '删除 MCP 服务器',
+        'toggling tool': '切换工具',
+      };
+      const fixed = trimmed.replace(
+        /^Error (submitting auth code|disconnecting MCP server|toggling MCP server|deleting MCP server|toggling tool):\s*(.+)$/,
+        (_m, act, detail) => (errMap236[act] || act) + '出错：' + detail
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^This deletes (\d+) call recordings? \(([^)]+)\) and cannot be undone\.$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^This deletes (\d+) call recordings? \(([^)]+)\) and cannot be undone\.$/,
+        (_m, n, size) => '此操作将删除 ' + n + ' 条通话录音（' + size + '），且无法撤销。'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Secret for a new ([^.!?\r\n]{1,60}) account$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Secret for a new ([^.!?\r\n]{1,60}) account$/,
+        (_m, provider) => '新 ' + provider + ' 账户的密钥'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^New secret for ([^\r\n]{1,100})$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^New secret for ([^\r\n]{1,100})$/,
+        (_m, target) => '新建密钥：' + target
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(Secret|Label|Authorization code|More) for ([^!?\r\n]{1,80})$/.test(trimmed)) {
+      const prefixMap236 = {
+        Secret: '密钥：',
+        Label: '标签：',
+        'Authorization code': '授权码：',
+        More: '更多操作：',
+      };
+      const fixed = trimmed.replace(
+        /^(Secret|Label|Authorization code|More) for ([^!?\r\n]{1,80})$/,
+        (_m, kind, target) => (prefixMap236[kind] || kind + '：') + target
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Sign in to ([^.!?\r\n]{1,40}) remotely$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Sign in to ([^.!?\r\n]{1,40}) remotely$/,
+        (_m, target) => '远程登录到 ' + target
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Scroll to Bottom \((\d+) unread\)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Scroll to Bottom \((\d+) unread\)$/,
+        (_m, n) => '滚动到底部（' + n + ' 条未读）'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Still thinking, (\d+) seconds?$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Still thinking, (\d+) seconds?$/,
+        (_m, n) => '仍在思考中，已用时 ' + n + ' 秒'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Unfold lines (\d+)-(\d+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Unfold lines (\d+)-(\d+)$/,
+        (_m, start, end) => '展开第 ' + start + '-' + end + ' 行'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Edit comment:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Edit comment:\s*(.+)$/,
+        (_m, comment) => '编辑评论：' + comment
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^App view for ([^.!?\r\n]{1,60})$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^App view for ([^.!?\r\n]{1,60})$/,
+        (_m, tool) => (tool === 'tool' ? '工具的应用视图' : tool + ' 的应用视图')
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Retry uploading (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Retry uploading (.+)$/,
+        (_m, file) => '重试上传 ' + file
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Upload failed for (.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Upload failed for (.+)$/,
+        (_m, file) => file + ' 上传失败'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Open conversation ([^.!?\r\n]{1,60})$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Open conversation ([^.!?\r\n]{1,60})$/,
+        (_m, name) => '打开对话 ' + name
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Open the ([^.!?\r\n]{1,60}) plugin$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Open the ([^.!?\r\n]{1,60}) plugin$/,
+        (_m, name) => '打开 ' + name + ' 插件'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(Rejected|Suggested|Error) sending (.+?) to command$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(Rejected|Suggested|Error) sending (.+?) to command$/,
+        (_m, status, input) => {
+          if (status === 'Rejected') return '已拒绝向命令发送 ' + input;
+          if (status === 'Suggested') return '已建议向命令发送 ' + input;
+          return '向命令发送 ' + input + ' 出错';
+        }
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Error while running:\s*(.+)$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Error while running:\s*(.+)$/,
+        (_m, cmd) => '运行出错：' + cmd
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Error while running ([^:\r\n]{1,60})$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^Error while running ([^:\r\n]{1,60})$/,
+        (_m, target) => '运行 ' + target + ' 时出错'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^Error while (saving|loading|deleting|creating|updating|connecting|disconnecting|syncing|uploading|downloading)$/i.test(trimmed)) {
+      const actGerundMap = {
+        saving: '保存', loading: '加载', deleting: '删除', creating: '创建',
+        updating: '更新', connecting: '连接', disconnecting: '断开连接',
+        syncing: '同步', uploading: '上传', downloading: '下载',
+      };
+      const fixed = trimmed.replace(
+        /^Error while ([a-z]+)$/i,
+        (_m, act) => (actGerundMap[act.toLowerCase()] || act) + '时出错'
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(Generating|Generated|Generate) with (.+?) 🍌$/.test(trimmed)) {
+      const fixed = trimmed.replace(
+        /^(Generating|Generated|Generate) with (.+?) 🍌$/,
+        (_m, state, model) => {
+          if (state === 'Generating') return '正在使用 ' + model + ' 生成 🍌';
+          if (state === 'Generated') return '已使用 ' + model + ' 生成 🍌';
+          return '使用 ' + model + ' 生成 🍌';
+        }
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
+
+    if (/^(Web app|Language server|Release channel):\s*(.+)$/.test(trimmed)) {
+      const keyMap236 = {
+        'Web app': 'Web 应用',
+        'Language server': '语言服务器',
+        'Release channel': '发布通道',
+      };
+      const fixed = trimmed.replace(
+        /^(Web app|Language server|Release channel):\s*(.+)$/,
+        (_m, key, val) => (keyMap236[key] || key) + '：' + val
+      );
+      cacheSet(trimmed, fixed);
+      return replaceTrimmed(text, trimmed, fixed);
+    }
     // 5. 大小写不敏感词典查找与末尾标点剥离重拼（O(1)，命中写入 stringCache）
     const caseInsensitiveHit = lowerDictionary.get(trimmed.toLowerCase());
     if (caseInsensitiveHit !== undefined) {
@@ -10305,6 +11001,30 @@ if (!isRemoteWindow) {
             translatedNodes.set(children[0], '没有匹配的');
             translatedNodes.set(children[1], '');
             translatedNodes.set(children[2], '工作区');
+            return true;
+          }
+        }
+      }
+      // 兼容 Feed 空态按钮 React 三段文本节点：{"Show all ("}{count}{")"} 与 {"Restore "}{count}{" cleared"}
+      // 严格保留中间动态计数文本节点引用不动，仅改写前后固定文本节点
+      if (children.length === 3 && children.every(c => c.nodeType === Node.TEXT_NODE)) {
+        const preRaw = children[0].nodeValue || '';
+        const midRaw = (children[1].nodeValue || '').trim();
+        const postRaw = children[2].nodeValue || '';
+        if (/^\d+$/.test(midRaw)) {
+          if ((preRaw === 'Show all (' || preRaw === '显示全部 (') && postRaw === ')') {
+            children[0].nodeValue = '显示全部 (';
+            translatedNodes.set(children[0], '显示全部 (');
+            translatedNodes.set(children[1], children[1].nodeValue);
+            translatedNodes.set(children[2], ')');
+            return true;
+          }
+          if ((preRaw === 'Restore ' && postRaw === ' cleared') || (preRaw === '恢复已清除的 ' && postRaw === ' 项')) {
+            children[0].nodeValue = '恢复已清除的 ';
+            children[2].nodeValue = ' 项';
+            translatedNodes.set(children[0], '恢复已清除的 ');
+            translatedNodes.set(children[1], children[1].nodeValue);
+            translatedNodes.set(children[2], ' 项');
             return true;
           }
         }
